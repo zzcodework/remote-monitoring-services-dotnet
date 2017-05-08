@@ -6,7 +6,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Akka.Configuration;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.Runtime
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 {
     public interface IConfig
     {
@@ -21,11 +21,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.Runtime
     public class Config : IConfig
     {
         private const string Namespace = "com.microsoft.azure.iotsolutions.";
-        private const string Application = "device-simulation.";
+        private const string Application = "IotHubManager.";
 
         public Config()
         {
-            var config = ConfigurationFactory.ParseString(GetHoconConfiguration());
+            string hoconConfig = GetHoconConfiguration();
+
+            Akka.Configuration.Config config = ConfigurationFactory.ParseString(hoconConfig);
 
             this.Port = config.GetInt(Namespace + Application + "webservice-port");
 
@@ -55,7 +57,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.Runtime
             hocon += "\n";
             foreach (DictionaryEntry x in Environment.GetEnvironmentVariables())
             {
-                if (filter.IsMatch(x.Value.ToString())) hocon += x.Key + " : \"" + x.Value + "\"\n";
+                //TODO: this pulls in just the connection string environment variable, it'd be better if akka could read it.
+                if (x.Key.ToString() == "PCS_IOTHUB_CONN_STRING") hocon += x.Key + " : \"" + x.Value + "\"\n";
+                //if (filter.IsMatch(x.Value.ToString())) hocon += x.Key + " : \"" + x.Value + "\"\n";
             }
 
             return hocon;

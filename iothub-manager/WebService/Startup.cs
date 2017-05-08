@@ -3,7 +3,7 @@
 using System.Web.Http;
 using Owin;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
 {
     /// <summary>Application wrapper started by the entry point, see Program.cs</summary>
     public class Startup

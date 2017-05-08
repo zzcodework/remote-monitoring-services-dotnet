@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.Runtime;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
 using Microsoft.Owin.Hosting;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
 {
     /// <summary>Application entry point</summary>
     public class Program

@@ -42,7 +42,7 @@ Some scripts also require .NET Core, where we are migrating the solution.
 * [Mono 5](http://www.mono-project.com/download/beta)
 * [.NET Core](https://dotnet.github.io/)
 
-We provide also a [Java version here](https://github.com/Azure/device-simulation-java).
+We provide also a [Java version here](https://github.com/Azure/IotHubManager-java).
 
 ## IDE
 
@@ -78,7 +78,7 @@ under `.git/hooks`. You can also bypass the pre-commit hook using the
 
 If you use ReSharper or Rider, you can load the code style settings from
 the repository, stored in
-[device-simulation.sln.DotSettings](device-simulation.sln.DotSettings)
+[IotHubManager.sln.DotSettings](IotHubManager.sln.DotSettings)
 
 Build, Run locally and with Docker
 ==================================

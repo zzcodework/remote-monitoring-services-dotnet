@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.Services.Exceptions
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions
 {
     public class InvalidInput : Exception
     {

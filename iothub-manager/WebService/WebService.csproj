@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2834A1FA-8D60-4BA4-9155-E318608B1C4F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService</RootNamespace>
-    <AssemblyName>Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService</AssemblyName>
+    <RootNamespace>Microsoft.Azure.IoTSolutions.IotHubManager.WebService</RootNamespace>
+    <AssemblyName>Microsoft.Azure.IoTSolutions.IotHubManager.WebService</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

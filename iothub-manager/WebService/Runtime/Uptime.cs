@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.Runtime
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 {
     /// <summary>Simple helper capturing uptime information</summary>
     public static class Uptime

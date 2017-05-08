@@ -1,10 +1,10 @@
 FROM mono:latest
 
-MAINTAINER Devis Lucato (https://github.com/dluc)
+MAINTAINER Tim Laverty (https://github.com/timlav)
 
 EXPOSE 8080
 
-ENTRYPOINT ["mono", "Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.exe"]
+ENTRYPOINT ["mono", "Microsoft.Azure.IoTSolutions.IotHubManager.WebService.exe"]
 
 COPY . /app/
 WORKDIR /app

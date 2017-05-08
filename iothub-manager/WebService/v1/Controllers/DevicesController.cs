@@ -2,11 +2,11 @@
 
 using System.Threading.Tasks;
 using System.Web.Http;
-using Microsoft.Azure.IoTSolutions.DeviceSimulation.Services;
-using Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.Runtime;
-using Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.v1.Models;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.v1.Controllers
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
     [RoutePrefix(Version.Name)]
     public class DevicesController : ApiController

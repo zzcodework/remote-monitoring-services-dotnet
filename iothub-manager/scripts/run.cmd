@@ -17,7 +17,7 @@ IF NOT ERRORLEVEL 0 GOTO FAIL
 copy .\scripts\run.vbs .\WebService\bin\%CONFIGURATION%
 
 cd WebService\bin\%CONFIGURATION%
-call cscript run.vbs "Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.exe"
+call cscript run.vbs "Microsoft.Azure.IoTSolutions.IotHubManager.WebService.exe"
 
 :: - - - - - - - - - - - - - -
 goto :END

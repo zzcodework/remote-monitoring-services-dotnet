@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
-using Microsoft.Azure.IoTSolutions.DeviceSimulation.Services.Models;
-using Microsoft.Azure.IoTSolutions.DeviceSimulation.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.Services
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
     public interface IDevices
     {

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.Services.Runtime
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
 {
     public interface IConfig
     {

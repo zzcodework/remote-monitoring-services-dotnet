@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Azure.Devices.Shared;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.Services.Models
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
     public class DeviceTwinServiceModel
     {

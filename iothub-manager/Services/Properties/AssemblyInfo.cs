@@ -3,8 +3,8 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Microsoft.Azure.IoTSolutions.DeviceSimulation.Services")]
-[assembly: AssemblyProduct("Microsoft.Azure.IoTSolutions.DeviceSimulation.Services")]
+[assembly: AssemblyTitle("Microsoft.Azure.IoTSolutions.IotHubManager.Services")]
+[assembly: AssemblyProduct("Microsoft.Azure.IoTSolutions.IotHubManager.Services")]
 [assembly: AssemblyCopyright("Copyright (c) Microsoft. All rights reserved.")]
 [assembly: ComVisible(false)]
 [assembly: Guid("8ACBC846-B16C-4857-94F1-0BB297FE1CD3")]

@@ -39,4 +39,4 @@ msbuild /m /p:Configuration=$CONFIGURATION /verbosity:quiet
 
 echo "Starting web service..."
 cd $APP_HOME/WebService/bin/$CONFIGURATION/
-mono Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.exe
+mono Microsoft.Azure.IoTSolutions.IotHubManager.WebService.exe

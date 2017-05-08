@@ -2,10 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Azure.IoTSolutions.DeviceSimulation.Services.Models;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.v1.Models
+namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
     public class DeviceApiModel
     {

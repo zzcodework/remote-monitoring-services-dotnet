@@ -1,6 +1,6 @@
 @ECHO off
 
-SET DOCKER_IMAGE="azureiotpcs/device-simulation-dotnet:0.1-SNAPSHOT"
+SET DOCKER_IMAGE="azureiotpcs/IotHubManager-dotnet:0.1-SNAPSHOT"
 
 echo Starting web service at: http://localhost:8080
 
