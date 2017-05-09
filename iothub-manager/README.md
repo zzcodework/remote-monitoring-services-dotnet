@@ -33,13 +33,13 @@ For Debugging:
 	* <todo - create device> 
 	* <todo - create device> 
 
-5. <todo Swagger> 
+5. <todo - Swagger> 
 
 6. For running locally in a container: 
-	* <todo> 
+	* <todo - container instructions> 
 
 7. For running on Azure in a container in ACS: 
-	* <todo> 
+	* <todo - cloud environment container instructions> 
 
 
 			
@@ -48,17 +48,15 @@ Configuration
 
 1. webservice\application.conf allows setting of port for the microservice (defaults to 8080). 
 2. PCS_IOTHUB_CONN_STRING is a system environment variable and should contain your IoT Hub connection string. Create this environment variable before running the microservice. 
-3. <todo logging/monitoring>
-
-
+3. <todo - logging/monitoring>
 
 
 Other documents
 ===============
 
 1. [Contributing and Development setup](CONTRIBUTING.md)
-2. <todo architecture docs link>
-3. <doc pointing to overarching doc for how this microservice is used in remote monitoring and other PCS types>
+2. <todo - architecture docs link>
+3. <todo - doc pointing to overarching doc for how this microservice is used in remote monitoring and other PCS types>
 
 
 
