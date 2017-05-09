@@ -15,12 +15,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             { "$uri", "/" + Version.Name + "/devices" }
         };
 
-        public List<DeviceRegistryModel> Items { get; set; }
+        public List<DeviceRegistryApiModel> Items { get; set; }
 
         public DeviceListApiModel(IEnumerable<DeviceServiceModel> devices)
         {
-            this.Items = new List<DeviceRegistryModel>();
-            foreach (var d in devices) this.Items.Add(new DeviceRegistryModel(d));
+            this.Items = new List<DeviceRegistryApiModel>();
+            foreach (var d in devices) this.Items.Add(new DeviceRegistryApiModel(d));
         }
     }
 }

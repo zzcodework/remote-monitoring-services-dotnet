@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
-    public class DeviceRegistryModel
+    public class DeviceRegistryApiModel
     {
         public string Etag { get; set; }
         public string Id { get; set; }
@@ -28,11 +28,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DeviceTwinApiModel Twin { get; set; }
 
-        public DeviceRegistryModel()
+        public DeviceRegistryApiModel()
         {
         }
 
-        public DeviceRegistryModel(DeviceServiceModel device)
+        public DeviceRegistryApiModel(DeviceServiceModel device)
         {
             this.Id = device.Id;
             this.Etag = device.Etag;

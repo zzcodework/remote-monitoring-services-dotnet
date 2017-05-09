@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
-    public class StatusModel
+    public class StatusApiModel
     {
         public string Message { get; set; }
         public DateTime CurrentTime => DateTime.UtcNow;
