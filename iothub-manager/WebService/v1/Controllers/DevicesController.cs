@@ -24,17 +24,17 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <summary>Get one device</summary>
         /// <param name="id">Device Id</param>
         /// <returns>Device information</returns>
-        public async Task<DeviceApiModel> Get(string id)
+        public async Task<DeviceRegistryModel> Get(string id)
         {
-            return new DeviceApiModel(await this.devices.GetAsync(id));
+            return new DeviceRegistryModel(await this.devices.GetAsync(id));
         }
 
         /// <summary>Create one device</summary>
         /// <param name="device">Device information</param>
         /// <returns>Device information</returns>
-        public async Task<DeviceApiModel> Post(DeviceApiModel device)
+        public async Task<DeviceRegistryModel> Post(DeviceRegistryModel device)
         {
-            return new DeviceApiModel(await this.devices.CreateAsync(device.ToServiceModel()));
+            return new DeviceRegistryModel(await this.devices.CreateAsync(device.ToServiceModel()));
         }
     }
 }

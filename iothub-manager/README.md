@@ -10,12 +10,11 @@ Handles communication with the IoT Hub (device registration, device queries, etc
 Overview
 ========
 
-... quick demonstrative examples ...
-
 How to use it
 =============
 
-Need to add clean setup instructions here.  
+http://127.0.0.1:8080/v1/devices
+http://127.0.0.1:8080//v1/devices/timdevice
 
 ... steps to use this project ...
 ... deployment notes ...
