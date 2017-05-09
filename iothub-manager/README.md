@@ -10,13 +10,13 @@ Handles communication with the IoT Hub (device registration, device queries, etc
 Overview
 ========
 
-WebService.csproj - C# web service exposing REST interface for IoT Hub management functionality 
-WebService.Test.csproj - Unit tests for web services functionality 
+* WebService.csproj - C# web service exposing REST interface for IoT Hub management functionality 
+* WebService.Test.csproj - Unit tests for web services functionality 
 
-Services.csproj - C# dll containining business logic for interacting with Azure services (IoTHub, etc.) 
-Services.Test.csproj - Unit tests for services functionality 
+* Services.csproj - C# dll containining business logic for interacting with Azure services (IoTHub, etc.) 
+* Services.Test.csproj - Unit tests for services functionality 
 
-Solution/scripts - contains build scripts, docker container creation scripts, and scripts for running the microservice from the command line 
+* Solution/scripts - contains build scripts, docker container creation scripts, and scripts for running the microservice from the command line 
 
 
 How to use it
@@ -33,14 +33,14 @@ For Debugging:
 	* <todo - create device> 
 	* <todo - create device> 
 
-5. <todo - Swagger> 
+Using Swagger:
+1. <todo - Swagger> 
 
-6. For running locally in a container: 
-	* <todo - container instructions> 
+Running locally in a container: 
+2. <todo - container instructions> 
 
-7. For running on Azure in a container in ACS: 
-	* <todo - cloud environment container instructions> 
-
+Running on Azure in a container in ACS: 
+3. <todo - cloud environment container instructions> 
 
 			
 Configuration
