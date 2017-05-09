@@ -26,15 +26,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{62C8
 		scripts\.functions.sh = scripts\.functions.sh
 		scripts\build = scripts\build
 		scripts\build.cmd = scripts\build.cmd
-		scripts\run = scripts\run
-		scripts\run.cmd = scripts\run.cmd
-		scripts\run.vbs = scripts\run.vbs
 		scripts\compile = scripts\compile
 		scripts\compile.cmd = scripts\compile.cmd
 		scripts\docker-build = scripts\docker-build
 		scripts\docker-build.cmd = scripts\docker-build.cmd
 		scripts\docker-run = scripts\docker-run
 		scripts\docker-run.cmd = scripts\docker-run.cmd
+		scripts\run = scripts\run
+		scripts\run.cmd = scripts\run.cmd
+		scripts\run.vbs = scripts\run.vbs
 	EndProjectSection
 EndProject
 Global

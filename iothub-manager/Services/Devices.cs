@@ -50,7 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             // TODO: do we need to fetch the twin and return it?
             if (device.Twin == null) return new DeviceServiceModel(azureDevice, (Twin)null);
 
-            // TODO: do we need to fetch the twin Etag first?
+            // TODO: do we need to fetch the twin Etag first? - how will concurrency work?
             var azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.Etag);
             return new DeviceServiceModel(azureDevice, azureTwin);
         }
