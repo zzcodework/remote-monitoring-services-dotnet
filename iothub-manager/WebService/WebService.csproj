@@ -77,7 +77,7 @@
     <Compile Include="Runtime\Uptime.cs" />
     <Compile Include="v1\Controllers\DevicesController.cs" />
     <Compile Include="v1\Controllers\StatusController.cs" />
-    <Compile Include="v1\Models\DeviceApiModel.cs" />
+    <Compile Include="v1\Models\DeviceRegistryModel.cs" />
     <Compile Include="v1\Models\DeviceListApiModel.cs" />
     <Compile Include="v1\Models\DeviceTwinApiModel.cs" />
     <Compile Include="Program.cs" />

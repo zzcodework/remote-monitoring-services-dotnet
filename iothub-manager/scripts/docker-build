@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DOCKER_IMAGE="azureiotpcs/IotHubManager-dotnet:0.1-SNAPSHOT"
+DOCKER_IMAGE="azureiotpcs/iothubmanager-dotnet:0.1-SNAPSHOT"
 
 # Debug|Release
 CONFIGURATION=Release

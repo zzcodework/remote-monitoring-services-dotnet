@@ -13,6 +13,7 @@ Overview
 How to use it
 =============
 
+http://127.0.0.1:8080/v1/status
 http://127.0.0.1:8080/v1/devices
 http://127.0.0.1:8080//v1/devices/timdevice
 

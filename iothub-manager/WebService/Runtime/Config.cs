@@ -21,7 +21,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
     public class Config : IConfig
     {
         private const string Namespace = "com.microsoft.azure.iotsolutions.";
-        private const string Application = "IotHubManager.";
+        private const string Application = "iothubmanager.";
 
         public Config()
         {

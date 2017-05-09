@@ -1,7 +1,7 @@
 @ECHO off
 setlocal
 
-SET DOCKER_IMAGE="azureiotpcs/IotHubManager-dotnet:0.1-SNAPSHOT"
+SET DOCKER_IMAGE="azureiotpcs/iothubmanager-dotnet:0.1-SNAPSHOT"
 
 :: Debug|Release
 SET CONFIGURATION=Release
