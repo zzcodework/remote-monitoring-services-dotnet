@@ -27,19 +27,19 @@ For Debugging:
 2. Set your PCS_IOTHUB_CONN_STRING system environment variable for your IoT Hub connection.
 3. Run F5 from VS.
 4. Hit the REST api for the web service using: 
-	a. http://127.0.0.1:8080/v1/status (checks status of the web service) 
-	b. http://127.0.0.1:8080/v1/devices (queries for all devices) 
-	c. http://127.0.0.1:8080//v1/devices/<yourindividualdevice> (queries for a single device) 
-	d. <todo - create device> 
-	e. <todo - create device> 
+	* http://127.0.0.1:8080/v1/status (checks status of the web service) 
+	* http://127.0.0.1:8080/v1/devices (queries for all devices) 
+	* http://127.0.0.1:8080//v1/devices/<yourindividualdevice> (queries for a single device) 
+	* <todo - create device> 
+	* <todo - create device> 
 
 5. <todo Swagger> 
 
 6. For running locally in a container: 
-	a. <todo> 
+	* <todo> 
 
 7. For running on Azure in a container in ACS: 
-	a. <todo> 
+	* <todo> 
 
 
 			
