@@ -36,11 +36,11 @@ For Debugging:
 Using Swagger:
 1. <todo - Swagger> 
 
-Running locally in a container: 
-2. <todo - container instructions> 
+Running locally in a container:
+1. <todo - container instructions> 
 
-Running on Azure in a container in ACS: 
-3. <todo - cloud environment container instructions> 
+Running on Azure in a container in ACS:
+1. <todo - cloud environment container instructions> 
 
 			
 Configuration
