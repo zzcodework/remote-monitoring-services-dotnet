@@ -11,27 +11,31 @@ cd $APP_HOME
 check_dependencies() {
     set +e
 
-    TEST=$(which nuget)
+    TEST=$(which nuget 2> /dev/null)
     if [[ -z "$TEST" ]]; then
         echo "ERROR: 'nuget' command not found. Install Mono 5.x first (http://www.mono-project.com/docs/about-mono/releases/5.0.0)."
+        echo "Remember to add nuget's path to the PATH environment variable."
         exit 1
     fi
 
-    TEST=$(which msbuild)
+    TEST=$(which msbuild 2> /dev/null)
     if [[ -z "$TEST" ]]; then
         echo "ERROR: 'msbuild' command not found. Install Mono 5.x first (http://www.mono-project.com/docs/about-mono/releases/5.0.0)."
+        echo "Remember to add msbuild's path to the PATH environment variable."
         exit 1
     fi
 
-    TEST=$(which dotnet)
-    if [[ -z "$TEST" ]]; then
-        echo "ERROR: 'dotnet' command not found. Install .NET Core first (https://dotnet.github.io)."
-        exit 1
-    fi
-
-    TEST=$(which mono)
+    TEST=$(which mono 2> /dev/null)
     if [[ -z "$TEST" ]]; then
         echo "ERROR: 'mono' command not found. Install Mono 5.x first (http://www.mono-project.com/docs/about-mono/releases/5.0.0)."
+        echo "Remember to add mono's path to the PATH environment variable."
+        exit 1
+    fi
+
+    TEST=$(which dotnet 2> /dev/null)
+    if [[ -z "$TEST" ]]; then
+        echo "ERROR: 'dotnet' command not found. Install .NET Core first (https://dotnet.github.io)."
+        echo "Remember to add dotnet's path to the PATH environment variable."
         exit 1
     fi
     set -e

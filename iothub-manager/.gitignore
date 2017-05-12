@@ -679,3 +679,5 @@ paket-files/
 
 
 # Overrides
+!.nuget/nuget.core.dll
+!.nuget/nuget.exe

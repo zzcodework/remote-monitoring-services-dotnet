@@ -9,7 +9,14 @@ SET APP_HOME=%~dp0
 SET APP_HOME=%APP_HOME:~0,-9%
 cd %APP_HOME%
 
-call nuget restore
+WHERE /Q msbuild
+IF %ERRORLEVEL% NEQ 0 (
+  echo "msbuild" command not found.
+  echo Make sure "msbuild" directory is in the PATH environment variable.
+  GOTO FAIL
+)
+
+call .nuget\nuget restore
 IF NOT ERRORLEVEL 0 GOTO FAIL
 call msbuild /m /p:Configuration=%CONFIGURATION%;Platform="Any CPU"
 IF NOT ERRORLEVEL 0 GOTO FAIL

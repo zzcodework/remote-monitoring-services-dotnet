@@ -11,9 +11,10 @@ fi
 
 check_dependencies() {
     set +e
-    TEST=$(which dotnet)
+    TEST=$(which dotnet 2> /dev/null)
     if [[ -z "$TEST" ]]; then
         error "ERROR: 'dotnet' command not found. Install .NET Core first (https://dotnet.github.io)."
+        echo "Remember to add dotnet's path to the PATH environment variable."
         exit 1
     fi
     set -e
