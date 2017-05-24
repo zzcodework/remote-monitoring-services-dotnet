@@ -12,11 +12,24 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
         {
             var config = new HttpConfiguration();
 
+            config.AddApiVersioning(o =>
+            {
+                // When this property is set to `true`, the HTTP headers
+                // "api-supported-versions" and "api-deprecated-versions" will
+                // be added to all valid service routes. This information is
+                // useful for advertising which versions are supported and
+                // scheduled for deprecation to clients. This information is
+                // also useful when supporting the OPTIONS verb.
+                o.ReportApiVersions = true;
+                o.AssumeDefaultVersionWhenUnspecified = false;
+            });
+
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+                routeTemplate: "v{apiVersion}/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional },
+                constraints: new { apiVersion = new ApiVersionRouteConstraint() });
 
             app.UseWebApi(config);
         }

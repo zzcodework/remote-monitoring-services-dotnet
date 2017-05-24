@@ -5,7 +5,7 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
-    [RoutePrefix(Version.Name)]
+    [ApiVersion(Version.Number)]
     public class StatusController : ApiController
     {
         /// <summary>Return the service status</summary>

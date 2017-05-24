@@ -8,7 +8,7 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
-    [RoutePrefix(Version.Name)]
+    [ApiVersion(Version.Number)]
     public class DevicesController : ApiController
     {
         private static readonly IConfig config = new Config();
