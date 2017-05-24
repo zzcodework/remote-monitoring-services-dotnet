@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Web.Http;
+using Microsoft.Web.Http.Routing;
 using Owin;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
@@ -26,7 +27,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
 
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
+                name: "VersionedApi",
                 routeTemplate: "v{apiVersion}/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional },
                 constraints: new { apiVersion = new ApiVersionRouteConstraint() });
