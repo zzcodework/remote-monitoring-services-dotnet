@@ -18,9 +18,16 @@ Overview
 
 * Solution/scripts - contains build scripts, docker container creation scripts, and scripts for running the microservice from the command line 
 
-
 How to use it
 =============
+
+For Unit Tests:
+1. There are two test projects: 1) Services.Test - this contains tests for the Services project which interacts 
+with Azure services through the dotNet Azure SDKs, e.g. the IoT Hub, and 2) WebService.Test - this contains tests 
+for the WebService project which contains the webservices APIs (note these tests are also dependent on Services code).
+2. Open the desired test project, e.g. WebService.Test
+3. Open the controller test file, e.g. DevicesControllerTest.cs
+4. Right click on a test and run it, e.g. Right click on TestAllDevices and select Run Intellitest from the context menu.
 
 For Debugging:
 1. If using Visual Studio make sure you run VS as an Administrator.
@@ -41,7 +48,6 @@ Running locally in a container:
 
 Running on Azure in a container in ACS:
 1. <todo - cloud environment container instructions> 
-
 			
 Configuration
 =============
@@ -50,14 +56,12 @@ Configuration
 2. PCS_IOTHUB_CONN_STRING is a system environment variable and should contain your IoT Hub connection string. Create this environment variable before running the microservice. 
 3. <todo - logging/monitoring>
 
-
 Other documents
 ===============
 
 1. [Contributing and Development setup](CONTRIBUTING.md)
 2. <todo - architecture docs link>
 3. <todo - doc pointing to overarching doc for how this microservice is used in remote monitoring and other PCS types>
-
 
 
 [build-badge]: https://img.shields.io/travis/Azure/iothub-manager-dotnet.svg

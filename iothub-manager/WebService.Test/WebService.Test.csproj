@@ -52,8 +52,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\StatusControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\SomeControllerTest.cs" />
+    <Compile Include="Controllers\DevicesControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

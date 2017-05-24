@@ -4,16 +4,8 @@ using Xunit;
 
 namespace WebService.Test.Controllers
 {
-    public class SomeControllerTest
+    public class DevicesControllerTest
     {
-
-
-        [Fact]
-        public void TestStatus()
-        {
-            //http://127.0.0.1:" + config.Port + "/v1/status");
-            Assert.True(true);
-        }
 
         [Fact]
         public void TestAllDevices()

@@ -13,7 +13,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
         {
             var config = new HttpConfiguration();
 
-
             config.AddApiVersioning(o =>
             {
                 // When this property is set to `true`, the HTTP headers
@@ -26,14 +25,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
                 o.AssumeDefaultVersionWhenUnspecified = false;
             });
 
-
             config.Routes.MapHttpRoute(
                 name: "VersionedApi",
                 routeTemplate: "v{apiVersion}/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional },
                 constraints: new { apiVersion = new ApiVersionRouteConstraint() });
 
-            //TODO: If this fails with "Exception thrown: 'System.Reflection.TargetInvocationException' in mscorlib.dll" tell the developer to run VS as an admin
+            //TODO: If this fails with "Exception thrown: 'System.Reflection.TargetInvocationException' 
+            //in mscorlib.dll" tell the developer to run VS as an admin
             app.UseWebApi(config);
         }
     }
