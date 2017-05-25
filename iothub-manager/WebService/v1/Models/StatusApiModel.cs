@@ -17,8 +17,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata => new Dictionary<string, string>
         {
-            { "$type", "Status;" + Version.Name },
-            { "$uri", "/" + Version.Name + "/status" }
+            { "$type", "Status;" + Version.Number },
+            { "$uri", "/" + Version.Path + "/status" }
         };
     }
 }
