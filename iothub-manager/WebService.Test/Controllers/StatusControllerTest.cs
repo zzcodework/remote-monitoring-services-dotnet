@@ -6,8 +6,6 @@ namespace WebService.Test.Controllers
 {
     public class SomeControllerTest
     {
-
-
         [Fact]
         public void TestStatus()
         {

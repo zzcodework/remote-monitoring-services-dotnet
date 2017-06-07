@@ -28,14 +28,57 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{62C8
 		scripts\build.cmd = scripts\build.cmd
 		scripts\compile = scripts\compile
 		scripts\compile.cmd = scripts\compile.cmd
-		scripts\docker-build = scripts\docker-build
-		scripts\docker-build.cmd = scripts\docker-build.cmd
-		scripts\docker-run = scripts\docker-run
-		scripts\docker-run.cmd = scripts\docker-run.cmd
 		scripts\run = scripts\run
 		scripts\run.cmd = scripts\run.cmd
 		scripts\run.vbs = scripts\run.vbs
+		scripts\build-in-sandbox = scripts\build-in-sandbox
+		scripts\build-in-sandbox.cmd = scripts\build-in-sandbox.cmd
+		scripts\compile-in-sandbox = scripts\compile-in-sandbox
+		scripts\compile-in-sandbox.cmd = scripts\compile-in-sandbox.cmd
+		scripts\run-in-sandbox = scripts\run-in-sandbox
+		scripts\run-in-sandbox.cmd = scripts\run-in-sandbox.cmd
+		scripts\clean-up = scripts\clean-up
+		scripts\clean-up.cmd = scripts\clean-up.cmd
+		scripts\env-vars-check = scripts\env-vars-check
+		scripts\env-vars-check.cmd = scripts\env-vars-check.cmd
+		scripts\env-vars-setup = scripts\env-vars-setup
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{9A99F89B-ABE2-4FD1-BFDE-D7173B9FE3F8}"
+ProjectSection(SolutionItems) = preProject
+	scripts\docker\.dockerignore = scripts\docker\.dockerignore
+	scripts\docker\build = scripts\docker\build
+	scripts\docker\build.cmd = scripts\docker\build.cmd
+	scripts\docker\Dockerfile = scripts\docker\Dockerfile
+	scripts\docker\run = scripts\docker\run
+	scripts\docker\run.cmd = scripts\docker\run.cmd
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "git", "git", "{96B5493E-894F-4723-B255-300F2F2BB6D2}"
+ProjectSection(SolutionItems) = preProject
+	scripts\git\.functions.sh = scripts\git\.functions.sh
+	scripts\git\fix-perms.sh = scripts\git\fix-perms.sh
+	scripts\git\pre-commit-runner-no-sandbox.sh = scripts\git\pre-commit-runner-no-sandbox.sh
+	scripts\git\pre-commit-runner-with-sandbox.sh = scripts\git\pre-commit-runner-with-sandbox.sh
+	scripts\git\pre-commit.sh = scripts\git\pre-commit.sh
+	scripts\git\setup = scripts\git\setup
+	scripts\git\setup.cmd = scripts\git\setup.cmd
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "iothub", "iothub", "{B3AA13A2-6E08-42BC-9E59-5981EA3EA9CF}"
+ProjectSection(SolutionItems) = preProject
+	scripts\iothub\create-hub.sh = scripts\iothub\create-hub.sh
+	scripts\iothub\list-hubs.sh = scripts\iothub\list-hubs.sh
+	scripts\iothub\list-subscriptions.sh = scripts\iothub\list-subscriptions.sh
+	scripts\iothub\select-subscription.sh = scripts\iothub\select-subscription.sh
+	scripts\iothub\show-hub.sh = scripts\iothub\show-hub.sh
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{426B42F0-CD8E-4865-A436-B040873D461F}"
+ProjectSection(SolutionItems) = preProject
+	scripts\docker\content\README.md = scripts\docker\content\README.md
+	scripts\docker\content\run.sh = scripts\docker\content\run.sh
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,5 +108,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{62C8C8A3-CD4F-4A9B-9BB5-F5C6D7BE94CC} = {3FC36D0A-780E-49C1-9AE0-F8B4B07CC802}
+		{9A99F89B-ABE2-4FD1-BFDE-D7173B9FE3F8} = {62C8C8A3-CD4F-4A9B-9BB5-F5C6D7BE94CC}
+		{96B5493E-894F-4723-B255-300F2F2BB6D2} = {62C8C8A3-CD4F-4A9B-9BB5-F5C6D7BE94CC}
+		{B3AA13A2-6E08-42BC-9E59-5981EA3EA9CF} = {62C8C8A3-CD4F-4A9B-9BB5-F5C6D7BE94CC}
+		{426B42F0-CD8E-4865-A436-B040873D461F} = {9A99F89B-ABE2-4FD1-BFDE-D7173B9FE3F8}
 	EndGlobalSection
 EndGlobal

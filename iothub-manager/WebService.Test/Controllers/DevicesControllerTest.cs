@@ -6,7 +6,6 @@ namespace WebService.Test.Controllers
 {
     public class DevicesControllerTest
     {
-
         [Fact]
         public void TestAllDevices()
         {

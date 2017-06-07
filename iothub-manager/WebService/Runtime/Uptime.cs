@@ -12,5 +12,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 
         /// <summary>How long the service has been running</summary>
         public static TimeSpan Duration => DateTime.UtcNow.Subtract(Start);
+
+        /// <summary>A randomly generated ID used to identify the process in the logs</summary>
+        public static string ProcessId { get; } = "WebService." + Guid.NewGuid();
     }
 }

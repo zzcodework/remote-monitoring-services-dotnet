@@ -37,13 +37,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Azure.Amqp, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <HintPath>..\packages\Microsoft.Azure.Amqp.2.0.3\lib\net45\Microsoft.Azure.Amqp.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Azure.Amqp.2.0.6\lib\net45\Microsoft.Azure.Amqp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.Devices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <HintPath>..\packages\Microsoft.Azure.Devices.1.2.4\lib\net451\Microsoft.Azure.Devices.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Azure.Devices.1.2.7\lib\net451\Microsoft.Azure.Devices.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.Devices.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <HintPath>..\packages\Microsoft.Azure.Devices.Shared.1.0.10\lib\net45\Microsoft.Azure.Devices.Shared.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Azure.Devices.Shared.1.0.11\lib\net45\Microsoft.Azure.Devices.Shared.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     </Reference>
@@ -82,14 +82,21 @@
   <ItemGroup>
     <Compile Include="Devices.cs" />
     <Compile Include="DeviceTwins.cs" />
-    <Compile Include="Exceptions\InvalidInput.cs" />
+    <Compile Include="Exceptions\ConflictingResourceException.cs" />
+    <Compile Include="Exceptions\InvalidConfigurationException.cs" />
+    <Compile Include="Exceptions\InvalidInputException.cs" />
+    <Compile Include="Exceptions\ResourceNotFoundException.cs" />
+    <Compile Include="Exceptions\ResourceOutOfDateException.cs" />
     <Compile Include="Models\DeviceServiceModel.cs" />
     <Compile Include="Models\DeviceTwinServiceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runtime\Config.cs" />
+    <Compile Include="Runtime\ServicesConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

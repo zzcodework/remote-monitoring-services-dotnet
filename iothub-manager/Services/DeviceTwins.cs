@@ -23,7 +23,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         private readonly RegistryManager registry;
 
-        public DeviceTwins(IConfig config)
+        public DeviceTwins(IServicesConfig config)
         {
             this.registry = RegistryManager.CreateFromConnectionString(config.HubConnString);
         }

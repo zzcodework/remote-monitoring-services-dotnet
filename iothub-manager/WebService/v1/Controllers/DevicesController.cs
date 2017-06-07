@@ -4,16 +4,21 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 using Microsoft.Web.Http;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
-    [ApiVersion(Version.Number)]
+    [ApiVersion(Version.Number), ExceptionsFilter]
     public class DevicesController : ApiController
     {
-        private static readonly IConfig config = new Config();
-        private readonly IDevices devices = new Devices(config.ServicesConfig);
+        private readonly IDevices devices;
+
+        public DevicesController(IDevices devices)
+        {
+            this.devices = devices;
+        }
 
         /// <summary>Get a list of devices</summary>
         /// <returns>List of devices</returns>
