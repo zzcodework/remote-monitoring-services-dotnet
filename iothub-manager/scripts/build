@@ -16,12 +16,15 @@ compile() {
     nuget restore
 
     header "Compiling code..."
-    msbuild /p:Configuration=$CONFIGURATION
+    # verbosity options: q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic]
+    msbuild /p:Configuration=$CONFIGURATION /detailedsummary /verbosity:m
 }
 
 run_tests() {
     check_dependency_dotnet
     check_dependency_mono
+
+    ./scripts/env-vars-check
 
     cd $APP_HOME
     header "Running tests..."

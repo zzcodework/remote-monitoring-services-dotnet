@@ -13,6 +13,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
         {
             var config = new HttpConfiguration();
 
+            DependencyResolution.Setup(app, config);
+
             config.AddApiVersioning(o =>
             {
                 // When this property is set to `true`, the HTTP headers

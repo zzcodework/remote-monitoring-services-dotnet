@@ -2,7 +2,7 @@
 
 using Xunit;
 
-namespace WebService.Test.Controllers
+namespace WebService.Test.v1.Controllers
 {
     public class SomeControllerTest
     {
