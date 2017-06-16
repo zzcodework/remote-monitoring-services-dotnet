@@ -16,6 +16,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public bool Connected { get; set; }
         public bool Enabled { get; set; }
         public DateTime LastStatusUpdated { get; set; }
+        public string IoTHubHostName { get; set; }
+        public string AuthPrimaryKey { get; set; }
 
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata => new Dictionary<string, string>
@@ -34,6 +36,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         public DeviceRegistryApiModel(DeviceServiceModel device)
         {
+            if (device == null) return;
+
             this.Id = device.Id;
             this.Etag = device.Etag;
             this.C2DMessageCount = device.C2DMessageCount;
@@ -42,6 +46,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.Enabled = device.Enabled;
             this.LastStatusUpdated = device.LastStatusUpdated;
             this.Twin = new DeviceTwinApiModel(device.Id,device.Twin);
+            this.IoTHubHostName = device.IoTHubHostName;
+            this.AuthPrimaryKey = device.AuthPrimaryKey;
         }
 
         public DeviceServiceModel ToServiceModel()
@@ -55,7 +61,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 connected: this.Connected,
                 enabled: this.Enabled,
                 lastStatusUpdated: this.LastStatusUpdated,
-                twin: this.Twin?.ToServiceModel()
+                twin: this.Twin?.ToServiceModel(),
+                ioTHubHostName: this.IoTHubHostName,
+                primaryKey: this.AuthPrimaryKey
             );
         }
     }

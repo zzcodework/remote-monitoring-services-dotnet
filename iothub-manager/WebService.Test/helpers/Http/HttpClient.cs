@@ -138,7 +138,7 @@ namespace WebService.Test.helpers.Http
                 var s = JsonConvert.SerializeObject(o, Formatting.Indented);
                 this.logger.WriteLine(s);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.logger.WriteLine(response.Content);
             }

@@ -16,6 +16,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public bool Enabled { get; set; }
         public DateTime LastStatusUpdated { get; set; }
         public DeviceTwinServiceModel Twin { get; set; }
+        public string IoTHubHostName { get; set; }
+        public string AuthPrimaryKey { get; set; }
 
         public DeviceServiceModel(
             string etag,
@@ -25,7 +27,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             bool connected,
             bool enabled,
             DateTime lastStatusUpdated,
-            DeviceTwinServiceModel twin)
+            DeviceTwinServiceModel twin,
+            string primaryKey,
+            string ioTHubHostName)
         {
             this.Etag = etag;
             this.Id = id;
@@ -35,9 +39,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.Enabled = enabled;
             this.LastStatusUpdated = lastStatusUpdated;
             this.Twin = twin;
+            this.IoTHubHostName = ioTHubHostName;
+            this.AuthPrimaryKey = primaryKey;
         }
 
-        public DeviceServiceModel(Device azureDevice, DeviceTwinServiceModel twin) :
+        public DeviceServiceModel(Device azureDevice, DeviceTwinServiceModel twin, string ioTHubHostName) :
             this(
                 etag: azureDevice.ETag,
                 id: azureDevice.Id,
@@ -46,12 +52,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 connected: azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected),
                 enabled: azureDevice.Status.Equals(DeviceStatus.Enabled),
                 lastStatusUpdated: azureDevice.StatusUpdatedTime,
-                twin: twin)
+                twin: twin,
+                ioTHubHostName: ioTHubHostName,
+                primaryKey: azureDevice.Authentication.SymmetricKey.PrimaryKey)
         {
         }
 
-        public DeviceServiceModel(Device azureDevice, Twin azureTwin) :
-            this(azureDevice, new DeviceTwinServiceModel(azureTwin))
+        public DeviceServiceModel(Device azureDevice, Twin azureTwin, string ioTHubHostName) :
+            this(azureDevice, new DeviceTwinServiceModel(azureTwin), ioTHubHostName)
         {
         }
 

@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
-using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 using Microsoft.Web.Http;
