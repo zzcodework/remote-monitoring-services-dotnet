@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
 using System.Net.Http;
@@ -8,9 +8,26 @@ using Xunit.Abstractions;
 
 namespace WebService.Test.helpers.Http
 {
-    public class HttpClient
+    public interface IHttpClient
     {
-        private ITestOutputHelper logger;
+        Task<IHttpResponse> GetAsync(IHttpRequest request);
+
+        Task<IHttpResponse> PostAsync(IHttpRequest request);
+
+        Task<IHttpResponse> PutAsync(IHttpRequest request);
+
+        Task<IHttpResponse> PatchAsync(IHttpRequest request);
+
+        Task<IHttpResponse> DeleteAsync(IHttpRequest request);
+
+        Task<IHttpResponse> HeadAsync(IHttpRequest request);
+
+        Task<IHttpResponse> OptionsAsync(IHttpRequest request);
+    }
+
+    public class HttpClient : IHttpClient
+    {
+        private readonly ITestOutputHelper log;
 
         public HttpClient()
         {
@@ -18,34 +35,49 @@ namespace WebService.Test.helpers.Http
 
         public HttpClient(ITestOutputHelper logger)
         {
-            this.logger = logger;
+            this.log = logger;
         }
 
-        public async Task<HttpResponse> GetAsync(HttpRequest request)
+        public async Task<IHttpResponse> GetAsync(IHttpRequest request)
         {
             return await this.SendAsync(request, HttpMethod.Get);
         }
 
-        public async Task<HttpResponse> PostAsync(HttpRequest request)
+        public async Task<IHttpResponse> PostAsync(IHttpRequest request)
         {
             return await this.SendAsync(request, HttpMethod.Post);
         }
 
-        public async Task<HttpResponse> PutAsync(HttpRequest request)
+        public async Task<IHttpResponse> PutAsync(IHttpRequest request)
         {
             return await this.SendAsync(request, HttpMethod.Put);
         }
 
-        public async Task<HttpResponse> DeleteAsync(HttpRequest request)
+        public async Task<IHttpResponse> PatchAsync(IHttpRequest request)
+        {
+            return await this.SendAsync(request, new HttpMethod("PATCH"));
+        }
+
+        public async Task<IHttpResponse> DeleteAsync(IHttpRequest request)
         {
             return await this.SendAsync(request, HttpMethod.Delete);
         }
 
-        private async Task<HttpResponse> SendAsync(HttpRequest request, HttpMethod httpMethod)
+        public async Task<IHttpResponse> HeadAsync(IHttpRequest request)
+        {
+            return await this.SendAsync(request, HttpMethod.Head);
+        }
+
+        public async Task<IHttpResponse> OptionsAsync(IHttpRequest request)
+        {
+            return await this.SendAsync(request, HttpMethod.Options);
+        }
+
+        private async Task<IHttpResponse> SendAsync(IHttpRequest request, HttpMethod httpMethod)
         {
             this.LogRequest(request);
 
-            var clientHandler = new WebRequestHandler();
+            var clientHandler = new HttpClientHandler();
             using (var client = new System.Net.Http.HttpClient(clientHandler))
             {
                 var httpRequest = new HttpRequestMessage
@@ -55,7 +87,7 @@ namespace WebService.Test.helpers.Http
                 };
 
                 SetServerSSLSecurity(request, clientHandler);
-                SetTimeout(request, clientHandler, client);
+                SetTimeout(request, client);
                 SetContent(request, httpMethod, httpRequest);
                 SetHeaders(request, httpRequest);
 
@@ -63,7 +95,7 @@ namespace WebService.Test.helpers.Http
                 {
                     if (request.Options.EnsureSuccess) response.EnsureSuccessStatusCode();
 
-                    var result = new HttpResponse
+                    IHttpResponse result = new HttpResponse
                     {
                         StatusCode = response.StatusCode,
                         Headers = response.Headers,
@@ -77,7 +109,7 @@ namespace WebService.Test.helpers.Http
             }
         }
 
-        private static void SetContent(HttpRequest request, HttpMethod httpMethod, HttpRequestMessage httpRequest)
+        private static void SetContent(IHttpRequest request, HttpMethod httpMethod, HttpRequestMessage httpRequest)
         {
             if (httpMethod != HttpMethod.Post && httpMethod != HttpMethod.Put) return;
 
@@ -88,7 +120,7 @@ namespace WebService.Test.helpers.Http
             }
         }
 
-        private static void SetHeaders(HttpRequest request, HttpRequestMessage httpRequest)
+        private static void SetHeaders(IHttpRequest request, HttpRequestMessage httpRequest)
         {
             foreach (var header in request.Headers)
             {
@@ -96,51 +128,49 @@ namespace WebService.Test.helpers.Http
             }
         }
 
-        private static void SetServerSSLSecurity(HttpRequest request, WebRequestHandler clientHandler)
+        private static void SetServerSSLSecurity(IHttpRequest request, HttpClientHandler clientHandler)
         {
             if (request.Options.AllowInsecureSSLServer)
             {
-                clientHandler.ServerCertificateValidationCallback = delegate { return true; };
+                clientHandler.ServerCertificateCustomValidationCallback = delegate { return true; };
             }
         }
 
         private static void SetTimeout(
-            HttpRequest request,
-            WebRequestHandler clientHandler,
+            IHttpRequest request,
             System.Net.Http.HttpClient client)
         {
-            clientHandler.ReadWriteTimeout = request.Options.Timeout;
             client.Timeout = TimeSpan.FromMilliseconds(request.Options.Timeout);
         }
 
-        private void LogRequest(HttpRequest request)
+        private void LogRequest(IHttpRequest request)
         {
-            if (this.logger == null) return;
+            if (this.log == null) return;
 
-            this.logger.WriteLine("### REQUEST ##############################");
-            this.logger.WriteLine("# URI: " + request.Uri);
-            this.logger.WriteLine("# Timeout: " + request.Options.Timeout);
-            this.logger.WriteLine("# Headers:\n" + request.Headers);
+            this.log.WriteLine("### REQUEST ##############################");
+            this.log.WriteLine("# URI: " + request.Uri);
+            this.log.WriteLine("# Timeout: " + request.Options.Timeout);
+            this.log.WriteLine("# Headers:\n" + request.Headers);
         }
 
-        private void LogResponse(HttpResponse response)
+        private void LogResponse(IHttpResponse response)
         {
-            if (this.logger == null) return;
+            if (this.log == null) return;
 
-            this.logger.WriteLine("### RESPONSE ##############################");
-            this.logger.WriteLine("# Status code: " + response.StatusCode);
-            this.logger.WriteLine("# Headers:\n" + response.Headers.ToString());
-            this.logger.WriteLine("# Content:");
+            this.log.WriteLine("### RESPONSE ##############################");
+            this.log.WriteLine("# Status code: " + response.StatusCode);
+            this.log.WriteLine("# Headers:\n" + response.Headers.ToString());
+            this.log.WriteLine("# Content:");
 
             try
             {
                 var o = JsonConvert.DeserializeObject(response.Content);
                 var s = JsonConvert.SerializeObject(o, Formatting.Indented);
-                this.logger.WriteLine(s);
+                this.log.WriteLine(s);
             }
             catch (Exception)
             {
-                this.logger.WriteLine(response.Content);
+                this.log.WriteLine(response.Content);
             }
         }
     }

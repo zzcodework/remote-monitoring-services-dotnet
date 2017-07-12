@@ -2,6 +2,5 @@
 
 cd /app/
 
-cd webservice
-
-mono Microsoft.Azure.IoTSolutions.IotHubManager.WebService.exe
+cd webservice && dotnet Microsoft.Azure.IoTSolutions.IotHubManager.WebService.dll && \
+    fg

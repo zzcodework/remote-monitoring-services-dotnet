@@ -8,9 +8,44 @@ using Newtonsoft.Json;
 
 namespace WebService.Test.helpers.Http
 {
-    public class HttpRequest
+    public interface IHttpRequest
     {
-        private const string DefaultMediaType = "application/json";
+        Uri Uri { get; set; }
+
+        HttpHeaders Headers { get; }
+
+        MediaTypeHeaderValue ContentType { get; }
+
+        HttpRequestOptions Options { get; }
+
+        HttpContent Content { get; }
+
+        void AddHeader(string name, string value);
+
+        void SetUriFromString(string uri);
+
+        void SetContent(string content);
+
+        void SetContent(string content, Encoding encoding);
+
+        void SetContent(string content, Encoding encoding, string mediaType);
+
+        void SetContent(string content, Encoding encoding, MediaTypeHeaderValue mediaType);
+
+        void SetContent(StringContent stringContent);
+
+        void SetContent<T>(T sourceObject);
+
+        void SetContent<T>(T sourceObject, Encoding encoding);
+
+        void SetContent<T>(T sourceObject, Encoding encoding, string mediaType);
+
+        void SetContent<T>(T sourceObject, Encoding encoding, MediaTypeHeaderValue mediaType);
+    }
+
+    public class HttpRequest : IHttpRequest
+    {
+        private readonly MediaTypeHeaderValue defaultMediaType = new MediaTypeHeaderValue("application/json");
         private readonly Encoding defaultEncoding = new UTF8Encoding();
 
         // Http***Headers classes don't have a public ctor, so we use this class
@@ -59,22 +94,19 @@ namespace WebService.Test.helpers.Http
             this.Uri = new Uri(uri);
         }
 
-        public void SetContent(StringContent stringContent)
-        {
-            this.requestContent.Content = stringContent;
-            this.ContentType = new MediaTypeHeaderValue(DefaultMediaType);
-        }
-
         public void SetContent(string content)
         {
-            this.requestContent.Content = new StringContent(content, this.defaultEncoding, DefaultMediaType);
-            this.ContentType = new MediaTypeHeaderValue(DefaultMediaType);
+            this.SetContent(content, this.defaultEncoding, this.defaultMediaType);
         }
 
         public void SetContent(string content, Encoding encoding)
         {
-            this.requestContent.Content = new StringContent(content, encoding, DefaultMediaType);
-            this.ContentType = new MediaTypeHeaderValue(DefaultMediaType);
+            this.SetContent(content, encoding, this.defaultMediaType);
+        }
+
+        public void SetContent(string content, Encoding encoding, string mediaType)
+        {
+            this.SetContent(content, encoding, new MediaTypeHeaderValue(mediaType));
         }
 
         public void SetContent(string content, Encoding encoding, MediaTypeHeaderValue mediaType)
@@ -83,17 +115,32 @@ namespace WebService.Test.helpers.Http
             this.ContentType = mediaType;
         }
 
-        public void SetContent(string content, Encoding encoding, String mediaType)
+        public void SetContent(StringContent stringContent)
         {
-            this.requestContent.Content = new StringContent(content, encoding, mediaType);
-            this.ContentType = new MediaTypeHeaderValue(mediaType);
+            this.requestContent.Content = stringContent;
+            this.ContentType = stringContent.Headers.ContentType;
         }
 
         public void SetContent<T>(T sourceObject)
         {
+            this.SetContent(sourceObject, this.defaultEncoding, this.defaultMediaType);
+        }
+
+        public void SetContent<T>(T sourceObject, Encoding encoding)
+        {
+            this.SetContent(sourceObject, encoding, this.defaultMediaType);
+        }
+
+        public void SetContent<T>(T sourceObject, Encoding encoding, string mediaType)
+        {
+            this.SetContent(sourceObject, encoding, new MediaTypeHeaderValue(mediaType));
+        }
+
+        public void SetContent<T>(T sourceObject, Encoding encoding, MediaTypeHeaderValue mediaType)
+        {
             var content = JsonConvert.SerializeObject(sourceObject, Formatting.None);
-            this.requestContent.Content = new StringContent(content, this.defaultEncoding, DefaultMediaType);
-            this.ContentType = new MediaTypeHeaderValue(DefaultMediaType);
+            this.requestContent.Content = new StringContent(content, encoding, mediaType.MediaType);
+            this.ContentType = mediaType;
         }
     }
 }

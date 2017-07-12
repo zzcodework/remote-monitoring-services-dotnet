@@ -1,36 +1,33 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
-using Microsoft.Owin.Hosting;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
 {
-    /// <summary>Application entry point</summary>
     public class Program
     {
-        static readonly IConfig config = new Config(new ConfigData());
-
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var options = new StartOptions("http://*:" + config.Port);
-            using (WebApp.Start<Startup>(options))
-            {
-                Console.WriteLine($"[{Uptime.ProcessId}] Web service started, process ID: " + Uptime.ProcessId);
-                Console.WriteLine($"[{Uptime.ProcessId}] Web service listening on port " + config.Port);
-                Console.WriteLine($"[{Uptime.ProcessId}] Web service health check at: http://127.0.0.1:" + config.Port + "/" + v1.Version.Path + "/status");
-                Console.WriteLine($"[{Uptime.ProcessId}] Query all devices: http://127.0.0.1:" + config.Port + "/" + v1.Version.Path + "/devices");
+            var config = new Config(new ConfigData());
 
-                // Production mode: keep the service alive until killed
-                if (args.Length > 0 && args[0] == "--background")
-                {
-                    while (true) Console.ReadLine();
-                }
+            /*
+            Print some information to help development and debugging, like
+            runtime and configuration settings
+            */
+            Console.WriteLine($"[{Uptime.ProcessId}] Starting web service, process ID: " + Uptime.ProcessId);
+            Console.WriteLine($"[{Uptime.ProcessId}] Web service listening on port " + config.Port);
+            Console.WriteLine($"[{Uptime.ProcessId}] Web service health check at: http://127.0.0.1:" + config.Port + "/" + v1.Version.Path + "/status");
+            Console.WriteLine($"[{Uptime.ProcessId}] Query all devices: http://127.0.0.1:" + config.Port + "/" + v1.Version.Path + "/devices");
 
-                // Development mode: keep the service alive until Enter is pressed
-                Console.WriteLine("Press [Enter] to quit...");
-                Console.ReadLine();
-            }
+            var host = new WebHostBuilder()
+                .UseUrls("http://*:" + config.Port)
+                .UseKestrel(options => { options.AddServerHeader = false; })
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .Build();
+
+            host.Run();
         }
     }
 }

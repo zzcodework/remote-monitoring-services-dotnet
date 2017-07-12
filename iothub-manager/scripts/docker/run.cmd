@@ -1,12 +1,15 @@
-@ECHO off
+@ECHO off & setlocal enableextensions enabledelayedexpansion
 
 :: Note: use lowercase names for the Docker images
-SET DOCKER_IMAGE="azureiotpcs/iothubmanager-dotnet:0.1-SNAPSHOT"
+SET DOCKER_IMAGE="azureiotpcs/iothubmanager-dotnet"
 
 :: strlen("\scripts\docker\") => 16
 SET APP_HOME=%~dp0
 SET APP_HOME=%APP_HOME:~0,-16%
 cd %APP_HOME%
+
+:: The version is stored in a file, to avoid hardcoding it in multiple places
+set /P APP_VERSION=<%APP_HOME%/version
 
 :: Check dependencies
 docker version > NUL 2>&1
@@ -18,10 +21,10 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 :: Start the application
 echo Starting IoT Hub Manager ...
-docker run -it -p %PCS_IOTHUBMANAGER_WEBSERVICE_PORT%:8080 ^
-    -e PCS_IOTHUBMANAGER_WEBSERVICE_PORT=8080 ^
+docker run -it -p %PCS_IOTHUBMANAGER_WEBSERVICE_PORT%:%PCS_IOTHUBMANAGER_WEBSERVICE_PORT% ^
+    -e PCS_IOTHUBMANAGER_WEBSERVICE_PORT=%PCS_IOTHUBMANAGER_WEBSERVICE_PORT% ^
     -e PCS_IOTHUB_CONN_STRING=%PCS_IOTHUB_CONN_STRING% ^
-    %DOCKER_IMAGE%
+    %DOCKER_IMAGE%:%APP_VERSION%
 
 :: - - - - - - - - - - - - - -
 goto :END

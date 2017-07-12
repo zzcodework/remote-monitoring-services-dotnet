@@ -1,5 +1,4 @@
-@ECHO off
-setlocal
+@ECHO off & setlocal enableextensions enabledelayedexpansion
 
 :: strlen("\scripts\") => 9
 SET APP_HOME=%~dp0
@@ -16,6 +15,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 rmdir /s /q .\packages
 rmdir /s /q .\target
+rmdir /s /q .\out
 
 rmdir /s /q .\Services\bin
 rmdir /s /q .\Services\obj

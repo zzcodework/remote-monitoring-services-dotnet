@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
+using System.IO;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
@@ -16,7 +18,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
     /// <summary>Web service configuration</summary>
     public class Config : IConfig
     {
-        private const string Application = "iothubmanager.";
+        private const string ApplicationKey = "iothubmanager:";
+        private const string PortKey = ApplicationKey + "webservice_port";
+        private const string IoTHubConnStrKey = ApplicationKey + "iothub_connstring";
 
         /// <summary>Web service listening port</summary>
         public int Port { get; }
@@ -26,12 +30,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 
         public Config(IConfigData configData)
         {
-            this.Port = configData.GetInt(Application + "webservice.port");
+            this.Port = configData.GetInt(PortKey);
 
             this.ServicesConfig = new ServicesConfig
             {
-                HubConnString = configData.GetString(Application + "iothub.connstring")
+                HubConnString = configData.GetString(IoTHubConnStrKey)
             };
+        }
+
+        private static string MapRelativePath(string path)
+        {
+            if (path.StartsWith(".")) return AppContext.BaseDirectory + Path.DirectorySeparatorChar + path;
+            return path;
         }
     }
 }

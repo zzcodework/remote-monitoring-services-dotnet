@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Note: use lowercase names for the Docker images
-DOCKER_IMAGE="azureiotpcs/iothubmanager-dotnet:0.1-SNAPSHOT"
+DOCKER_IMAGE="azureiotpcs/iothubmanager-dotnet"
 
 # Debug|Release
 CONFIGURATION=Release
@@ -10,29 +10,37 @@ set -e
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && cd .. && pwd )/"
 source "$APP_HOME/scripts/.functions.sh"
 
+# The version is stored in a file, to avoid hardcoding it in multiple places
+APP_VERSION=$(cat "$APP_HOME/version")
+
 compile() {
-    check_dependency_nuget
-    check_dependency_msbuild
+    check_dependency_dotnet
 
     cd $APP_HOME
-    nuget restore
-    msbuild /m /p:Configuration=$CONFIGURATION
+    dotnet restore
+    dotnet build --configuration $CONFIGURATION
 }
 
 build_docker_image() {
     check_dependency_docker
 
     cd $APP_HOME
+
     rm -fR out/docker
+    rm -fR WebService/bin/Docker
+
     mkdir -p out/docker/webservice
 
-    cp -pR WebService/bin/$CONFIGURATION/*       out/docker/webservice/
+    dotnet publish WebService      --configuration $CONFIGURATION --output bin/Docker
+
+    cp -pR WebService/bin/Docker/*       out/docker/webservice/
+
     cp scripts/docker/.dockerignore              out/docker/
     cp scripts/docker/Dockerfile                 out/docker/
     cp scripts/docker/content/run.sh             out/docker/
 
     cd out/docker/
-    docker build --tag "$DOCKER_IMAGE" --squash --compress --label "Tags=azure,iot,pcs,.NET" .
+    docker build --tag "$DOCKER_IMAGE:$APP_VERSION" --squash --compress --label "Tags=azure,iot,pcs,.NET" .
 }
 
 compile

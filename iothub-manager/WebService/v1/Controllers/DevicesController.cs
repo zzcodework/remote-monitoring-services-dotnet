@@ -1,16 +1,15 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Threading.Tasks;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
-using Microsoft.Web.Http;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
-    [ApiVersion(Version.Number), ExceptionsFilter]
-    public class DevicesController : ApiController
+    [Route(Version.Path + "/[controller]"), ExceptionsFilter]
+    public class DevicesController : Controller
     {
         private readonly IDevices devices;
 
