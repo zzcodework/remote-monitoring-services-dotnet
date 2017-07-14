@@ -9,14 +9,31 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
     public class DeviceRegistryApiModel
     {
+        [JsonProperty(PropertyName = "Etag")]
         public string Etag { get; set; }
+
+        [JsonProperty(PropertyName = "Id")]
         public string Id { get; set; }
+
+        [JsonProperty(PropertyName = "C2DMessageCount")]
         public int C2DMessageCount { get; set; }
+
+        [JsonProperty(PropertyName = "LastActivity")]
         public DateTime LastActivity { get; set; }
+
+        [JsonProperty(PropertyName = "Connected")]
         public bool Connected { get; set; }
+
+        [JsonProperty(PropertyName = "Enabled")]
         public bool Enabled { get; set; }
+
+        [JsonProperty(PropertyName = "LastStatusUpdated")]
         public DateTime LastStatusUpdated { get; set; }
+
+        [JsonProperty(PropertyName = "IoTHubHostName")]
         public string IoTHubHostName { get; set; }
+
+        [JsonProperty(PropertyName = "AuthPrimaryKey")]
         public string AuthPrimaryKey { get; set; }
 
         [JsonProperty(PropertyName = "$metadata")]
@@ -27,7 +44,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             { "$twin_uri", "/" + Version.Path + "/devices/" + this.Id + "/twin" }
         };
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "Twin", NullValueHandling = NullValueHandling.Ignore)]
         public DeviceTwinApiModel Twin { get; set; }
 
         public DeviceRegistryApiModel()

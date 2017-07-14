@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Net;
-using Microsoft.AspNetCore.Hosting;
 using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
 using Xunit;
@@ -13,8 +12,6 @@ namespace WebService.Test.IntegrationTests
     {
         private readonly ITestOutputHelper log;
         private readonly HttpClient httpClient;
-        private readonly string root;
-        private readonly IWebHost host;
 
         // Pull Request don't have access to secret credentials, which are
         // required to run tests interacting with Azure IoT Hub.
@@ -25,16 +22,16 @@ namespace WebService.Test.IntegrationTests
         {
             this.log = log;
             this.httpClient = new HttpClient(this.log);
-            credentialsAvailable = !CIVariableHelper.IsPullRequest(this.log);
+            this.credentialsAvailable = !CIVariableHelper.IsPullRequest(this.log);
         }
 
         [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
         public void GetDeviceIsHealthy()
         {
-            Skip.IfNot(credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
 
             var request = new HttpRequest();
-            request.SetUriFromString(AssemblyInitialize.Current.wsHostname + "/v1/devices");
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + "/v1/devices");
 
             // Act
             var response = this.httpClient.GetAsync(request).Result;
@@ -46,10 +43,10 @@ namespace WebService.Test.IntegrationTests
         [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
         public void GetDeviceByIdIsHealthy()
         {
-            Skip.IfNot(credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
 
             var request = new HttpRequest();
-            request.SetUriFromString(AssemblyInitialize.Current.wsHostname + "/v1/devices/foobar");
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + "/v1/devices/foobar");
 
             // Act
             var response = this.httpClient.GetAsync(request).Result;

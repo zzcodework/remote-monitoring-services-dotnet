@@ -3,22 +3,25 @@
 using System;
 using Xunit.Abstractions;
 
-public class CIVariableHelper
+namespace WebService.Test.helpers
 {
-    public static bool IsPullRequest(ITestOutputHelper log)
+    public class CIVariableHelper
     {
-        var CIVariable = "TRAVIS_PULL_REQUEST";
-        try
+        public static bool IsPullRequest(ITestOutputHelper log)
         {
-            var env = Environment.GetEnvironmentVariable("TRAVIS_PULL_REQUEST").ToLowerInvariant();
-            log.WriteLine(CIVariable + " = " + env);
-            return env != "false";
-        }
-        catch (Exception)
-        {
-            //Assume that we are running locally and return false so that we can run the test.
-        }
+            const string CIVariable = "TRAVIS_PULL_REQUEST";
+            try
+            {
+                var env = Environment.GetEnvironmentVariable("TRAVIS_PULL_REQUEST").ToLowerInvariant();
+                log.WriteLine(CIVariable + " = " + env);
+                return env != "false";
+            }
+            catch (Exception)
+            {
+                // Assume that we are running locally and return false so that we can run the test.
+            }
 
-        return false;
+            return false;
+        }
     }
 }

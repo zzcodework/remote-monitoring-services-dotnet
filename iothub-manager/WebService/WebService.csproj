@@ -2,6 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <LangVersion>6</LangVersion>
+    <AssemblyName>Microsoft.Azure.IoTSolutions.IotHubManager.WebService</AssemblyName>
+    <RootNamespace>Microsoft.Azure.IoTSolutions.IotHubManager.WebService</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.0" />
@@ -13,17 +15,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="appsettings.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="appsettings.ini" />
   </ItemGroup>
 </Project>

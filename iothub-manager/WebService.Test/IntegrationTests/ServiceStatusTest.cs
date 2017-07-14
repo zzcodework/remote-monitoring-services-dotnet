@@ -11,7 +11,7 @@ namespace WebService.Test.IntegrationTests
     public class ServiceStatusTest
     {
         private readonly ITestOutputHelper log;
-        private HttpClient httpClient;
+        private readonly HttpClient httpClient;
 
         // Pull Request don't have access to secret credentials, which are
         // required to run tests interacting with Azure IoT Hub.
@@ -22,14 +22,14 @@ namespace WebService.Test.IntegrationTests
         {
             this.log = log;
             this.httpClient = new HttpClient(this.log);
-            credentialsAvailable = !CIVariableHelper.IsPullRequest(this.log);
+            this.credentialsAvailable = !CIVariableHelper.IsPullRequest(this.log);
         }
 
         [Fact, Trait(Constants.Type, Constants.IntegrationTest)]
         public void TheServiceIsHealthy()
         {
             var request = new HttpRequest();
-            request.SetUriFromString(AssemblyInitialize.Current.wsHostname + "/v1/status");
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + "/v1/status");
 
             // Act
             var response = this.httpClient.GetAsync(request).Result;

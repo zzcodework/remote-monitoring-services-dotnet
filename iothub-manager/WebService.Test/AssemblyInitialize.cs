@@ -5,43 +5,46 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService;
 using WebService.Test.helpers;
 
-public sealed class AssemblyInitialize : IDisposable
+namespace WebService.Test
 {
-    public string wsHostname { get; }
-    private IWebHost host;
-
-    static AssemblyInitialize()
+    public sealed class AssemblyInitialize : IDisposable
     {
-        Current = new AssemblyInitialize();
-    }
+        public string WsHostname { get; }
+        private readonly IWebHost host;
 
-    public static AssemblyInitialize Current { get; private set; }
+        static AssemblyInitialize()
+        {
+            Current = new AssemblyInitialize();
+        }
 
-    internal static void Run()
-    {
-    }
+        public static AssemblyInitialize Current { get; private set; }
 
-    private AssemblyInitialize()
-    {
-        this.wsHostname = WebServiceHost.GetBaseAddress();
-        this.host = new WebHostBuilder()
-            .UseUrls(wsHostname)
-            .UseKestrel()
-            .UseIISIntegration()
-            .UseStartup<Startup>()
-            .Build();
-        this.host.Start();
-    }
+        internal static void Run()
+        {
+        }
 
-    ~AssemblyInitialize()
-    {
-        Dispose();
-    }
+        private AssemblyInitialize()
+        {
+            this.WsHostname = WebServiceHost.GetBaseAddress();
+            this.host = new WebHostBuilder()
+                .UseUrls(this.WsHostname)
+                .UseKestrel()
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .Build();
+            this.host.Start();
+        }
 
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
+        ~AssemblyInitialize()
+        {
+            this.Dispose();
+        }
 
-        this.host.Dispose();
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+
+            this.host.Dispose();
+        }
     }
 }
