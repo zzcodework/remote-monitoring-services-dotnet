@@ -10,7 +10,6 @@ namespace WebService.Test.IntegrationTests
 {
     public class ServiceStatusTest
     {
-        private readonly ITestOutputHelper log;
         private readonly HttpClient httpClient;
 
         // Pull Request don't have access to secret credentials, which are
@@ -20,9 +19,8 @@ namespace WebService.Test.IntegrationTests
 
         public ServiceStatusTest(ITestOutputHelper log)
         {
-            this.log = log;
-            this.httpClient = new HttpClient(this.log);
-            this.credentialsAvailable = !CIVariableHelper.IsPullRequest(this.log);
+            this.httpClient = new HttpClient(log);
+            this.credentialsAvailable = !CIVariableHelper.IsPullRequest(log);
         }
 
         [Fact, Trait(Constants.Type, Constants.IntegrationTest)]

@@ -26,15 +26,13 @@ namespace WebService.Test.IntegrationTests
         // The tests should run when working locally and when merging branches.
         private readonly bool credentialsAvailable;
 
-        private readonly ITestOutputHelper log;
         private readonly HttpClient httpClient;
         private readonly string hostname;
 
         public DeviceSimulationIntegrationTest(ITestOutputHelper log)
         {
-            this.log = log;
-            this.httpClient = new HttpClient(this.log);
-            this.credentialsAvailable = !CIVariableHelper.IsPullRequest(this.log);
+            this.httpClient = new HttpClient(log);
+            this.credentialsAvailable = !CIVariableHelper.IsPullRequest(log);
             this.hostname = AssemblyInitialize.Current.WsHostname;
         }
 
