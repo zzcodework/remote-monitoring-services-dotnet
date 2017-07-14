@@ -1,7 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.IoTSolutions.IotHubManager.WebService;
 using System.Net;
 using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
@@ -10,43 +8,34 @@ using Xunit.Abstractions;
 
 namespace WebService.Test.IntegrationTests
 {
-    public class ServiceStatusTest : System.IDisposable
+    public class ServiceStatusTest
     {
         private readonly ITestOutputHelper log;
-        private readonly HttpClient httpClient;
-        private readonly string root;
-        private readonly IWebHost host;
+        private HttpClient httpClient;
+
+        // Pull Request don't have access to secret credentials, which are
+        // required to run tests interacting with Azure IoT Hub.
+        // The tests should run when working locally and when merging branches.
+        private readonly bool credentialsAvailable;
 
         public ServiceStatusTest(ITestOutputHelper log)
         {
             this.log = log;
             this.httpClient = new HttpClient(this.log);
-            root = WebServiceHost.GetBaseAddress();
-            host = new WebHostBuilder()
-                .UseUrls(root)
-                .UseKestrel()
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .Build();
-            host.Start();
+            credentialsAvailable = !CIVariableHelper.IsPullRequest(this.log);
         }
 
         [Fact, Trait(Constants.Type, Constants.IntegrationTest)]
         public void TheServiceIsHealthy()
         {
             var request = new HttpRequest();
-            request.SetUriFromString(root + "/v1/status");
+            request.SetUriFromString(AssemblyInitialize.Current.wsHostname + "/v1/status");
 
             // Act
             var response = this.httpClient.GetAsync(request).Result;
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        }
-
-        public void Dispose()
-        {
-            host.Dispose();
         }
     }
 }

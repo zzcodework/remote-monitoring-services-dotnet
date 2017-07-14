@@ -20,6 +20,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 
         /// <summary>Get a list of devices</summary>
         /// <returns>List of devices</returns>
+        [HttpGet]
         public async Task<DeviceListApiModel> Get()
         {
             return new DeviceListApiModel(await this.devices.GetListAsync());
@@ -28,6 +29,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <summary>Get one device</summary>
         /// <param name="id">Device Id</param>
         /// <returns>Device information</returns>
+        [HttpGet("{id}")]
         public async Task<DeviceRegistryApiModel> Get(string id)
         {
             return new DeviceRegistryApiModel(await this.devices.GetAsync(id));
@@ -36,7 +38,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <summary>Create one device</summary>
         /// <param name="device">Device information</param>
         /// <returns>Device information</returns>
-        public async Task<DeviceRegistryApiModel> Post(DeviceRegistryApiModel device)
+        [HttpPost]
+        public async Task<DeviceRegistryApiModel> Post([FromBody] DeviceRegistryApiModel device)
         {
             return new DeviceRegistryApiModel(await this.devices.CreateAsync(device.ToServiceModel()));
         }

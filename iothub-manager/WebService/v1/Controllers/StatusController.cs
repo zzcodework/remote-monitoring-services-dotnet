@@ -22,6 +22,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 
         /// <summary>Return the service status</summary>
         /// <returns>Status object</returns>
+        [HttpGet]
         public StatusApiModel Get()
         {
             return new StatusApiModel(true, "Alive and well");

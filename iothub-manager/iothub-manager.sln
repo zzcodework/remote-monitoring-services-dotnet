@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{CB
 		iothub-manager.sln.DotSettings = iothub-manager.sln.DotSettings
 		LICENSE = LICENSE
 		README.md = README.md
+		version = version
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{B8F0DF3A-380C-470D-AF31-077225B66A41}"
