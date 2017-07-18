@@ -83,7 +83,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 try
                 {
-                    result.Add(foo.Key, (JToken)foo.Value);
+                    result.Add(foo.Key, JToken.Parse(foo.Value.ToString()));
                 }
                 catch (Exception e)
                 {

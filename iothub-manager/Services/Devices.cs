@@ -39,22 +39,35 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         public async Task<IEnumerable<DeviceServiceModel>> GetListAsync()
         {
+            // normally we need deviceTwins for all devices to show device list
             var devices = await this.registry.Value.GetDevicesAsync(MaxGetList);
 
+            // WORKAROUND: when we have the query API supported, we can replace to use query API
+            var twinTasks = new List<Task<DeviceTwinServiceModel>>();
+            foreach (var item in devices)
+            {
+                twinTasks.Add(this.deviceTwins.GetAsync(item.Id));
+            }
+
+            await Task.WhenAll(twinTasks.ToArray());
+
             return devices.Select(azureDevice =>
-                new DeviceServiceModel(azureDevice, (Twin)null, this.ioTHubHostName.Value)).ToList();
+                new DeviceServiceModel(azureDevice, twinTasks.Select(t => t.Result).Single(t => t.DeviceId == azureDevice.Id), this.ioTHubHostName.Value)).ToList();
         }
 
         public async Task<DeviceServiceModel> GetAsync(string id)
         {
-            var remoteDevice = await this.registry.Value.GetDeviceAsync(id);
-            if (remoteDevice == null)
+            var device = this.registry.Value.GetDeviceAsync(id);
+            var twin = this.deviceTwins.GetAsync(id);
+
+            await Task.WhenAll(device, twin);
+
+            if (device.Result == null)
             {
                 throw new ResourceNotFoundException("The device doesn't exist.");
             }
 
-            return new DeviceServiceModel(
-                remoteDevice, await this.deviceTwins.GetAsync(id), this.ioTHubHostName.Value);
+            return new DeviceServiceModel(device.Result, twin.Result, this.ioTHubHostName.Value);
         }
 
         public async Task<DeviceServiceModel> CreateAsync(DeviceServiceModel device)
