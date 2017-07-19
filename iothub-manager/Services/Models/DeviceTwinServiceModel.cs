@@ -47,17 +47,16 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public Twin ToAzureModel()
         {
-            //TODO: to complete
-            var tags = new TwinCollection();
             var properties = new TwinProperties
             {
-                Desired = new TwinCollection()
+                Desired = DictionaryToTwinCollection(this.DesiredProperties),
+                Reported = DictionaryToTwinCollection(this.ReportedProperties),
             };
 
             return new Twin(this.DeviceId)
             {
                 ETag = this.Etag,
-                Tags = tags,
+                Tags = DictionaryToTwinCollection(this.Tags),
                 Properties = properties
             };
         }
@@ -79,16 +78,46 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
             if (x == null) return result;
 
-            foreach (KeyValuePair<string, object> foo in x)
+            foreach (KeyValuePair<string, object> twin in x)
             {
                 try
                 {
-                    result.Add(foo.Key, JToken.Parse(foo.Value.ToString()));
+                    if (twin.Value is JToken)
+                    {
+                        result.Add(twin.Key, (JToken)twin.Value);
+                    }
+                    else
+                    {
+                        result.Add(twin.Key, JToken.Parse(twin.Value.ToString()));
+                    }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     throw;
+                }
+            }
+
+            return result;
+        }
+
+        private static TwinCollection DictionaryToTwinCollection(Dictionary<string, JToken> x)
+        {
+            var result = new TwinCollection();
+
+            if (x != null)
+            {
+                foreach (KeyValuePair<string, JToken> item in x)
+                {
+                    try
+                    {
+                        result[item.Key] = item.Value;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
                 }
             }
 

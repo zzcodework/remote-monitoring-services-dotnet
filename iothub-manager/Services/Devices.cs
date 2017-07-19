@@ -14,51 +14,56 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
     public interface IDevices
     {
-        Task<IEnumerable<DeviceServiceModel>> GetListAsync();
+        Task<DeviceServiceListModel> GetListAsync(string continueousToken);
         Task<DeviceServiceModel> GetAsync(string id);
         Task<DeviceServiceModel> CreateAsync(DeviceServiceModel toServiceModel);
+        Task<DeviceServiceModel> CreateOrUpdateAsync(DeviceServiceModel toServiceModel);
+        Task DeleteAsync(string id);
     }
 
     public class Devices : IDevices
     {
         private const int MaxGetList = 1000;
-        private readonly IServicesConfig config;
-        private readonly IDeviceTwins deviceTwins;
 
-        // Use `Lazy` to avoid parsing the connection string until necessary
-        private readonly Lazy<RegistryManager> registry;
-        private readonly Lazy<string> ioTHubHostName;
+        private readonly RegistryManager registry;
+        private readonly string ioTHubHostName;
 
         public Devices(IServicesConfig config)
         {
-            this.config = config;
-            this.deviceTwins = new DeviceTwins(config);
-            this.registry = new Lazy<RegistryManager>(this.CreateRegistry);
-            this.ioTHubHostName = new Lazy<string>(this.GetIoTHubHostName);
+            if (config == null)
+            {
+                throw new ArgumentNullException("config");
+            }
+
+            // make sure the exception could throw earlier if format is not valid
+            this.registry = RegistryManager.CreateFromConnectionString(config.HubConnString);
+            this.ioTHubHostName = IotHubConnectionStringBuilder.Create(config.HubConnString).HostName;
         }
 
-        public async Task<IEnumerable<DeviceServiceModel>> GetListAsync()
+        public async Task<DeviceServiceListModel> GetListAsync(string continueousToken)
         {
             // normally we need deviceTwins for all devices to show device list
-            var devices = await this.registry.Value.GetDevicesAsync(MaxGetList);
+            var devices = await this.registry.GetDevicesAsync(MaxGetList);
 
             // WORKAROUND: when we have the query API supported, we can replace to use query API
-            var twinTasks = new List<Task<DeviceTwinServiceModel>>();
+            var twinTasks = new List<Task<Twin>>();
             foreach (var item in devices)
             {
-                twinTasks.Add(this.deviceTwins.GetAsync(item.Id));
+                twinTasks.Add(this.registry.GetTwinAsync(item.Id));
             }
 
             await Task.WhenAll(twinTasks.ToArray());
 
-            return devices.Select(azureDevice =>
-                new DeviceServiceModel(azureDevice, twinTasks.Select(t => t.Result).Single(t => t.DeviceId == azureDevice.Id), this.ioTHubHostName.Value)).ToList();
+            return new DeviceServiceListModel(devices.Select(azureDevice => 
+                                                new DeviceServiceModel(azureDevice, twinTasks.Select(t => t.Result).Single(t => t.DeviceId == azureDevice.Id), 
+                                                this.ioTHubHostName)), 
+                                               null);
         }
 
         public async Task<DeviceServiceModel> GetAsync(string id)
         {
-            var device = this.registry.Value.GetDeviceAsync(id);
-            var twin = this.deviceTwins.GetAsync(id);
+            var device = this.registry.GetDeviceAsync(id);
+            var twin = this.registry.GetTwinAsync(id);
 
             await Task.WhenAll(device, twin);
 
@@ -67,34 +72,56 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ResourceNotFoundException("The device doesn't exist.");
             }
 
-            return new DeviceServiceModel(device.Result, twin.Result, this.ioTHubHostName.Value);
+            return new DeviceServiceModel(device.Result, twin.Result, this.ioTHubHostName);
         }
 
         public async Task<DeviceServiceModel> CreateAsync(DeviceServiceModel device)
         {
-            var azureDevice = await this.registry.Value.AddDeviceAsync(device.ToAzureModel());
+            var azureDevice = await this.registry.AddDeviceAsync(device.ToAzureModel());
 
-            // TODO: do we need to fetch the twin and return it?
+            Twin azureTwin;
             if (device.Twin == null)
             {
-                return new DeviceServiceModel(azureDevice, (Twin)null, this.ioTHubHostName.Value);
+                azureTwin = await this.registry.GetTwinAsync(device.Id);
+            }
+            else
+            {
+                azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.Etag);
+            }
+            
+            return new DeviceServiceModel(azureDevice, azureTwin, this.ioTHubHostName);
+        }
+
+        /// <summary>
+        /// We only support update twin
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        public async Task<DeviceServiceModel> CreateOrUpdateAsync(DeviceServiceModel device)
+        {
+            // validate device module
+            var azureDevice = await this.registry.GetDeviceAsync(device.Id);
+            if( azureDevice == null)
+            {
+                azureDevice = await this.registry.AddDeviceAsync(device.ToAzureModel());
             }
 
-            // TODO: do we need to fetch the twin Etag first? - how will concurrency work?
-            var azureTwin = await this.registry.Value.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.Etag);
-            return new DeviceServiceModel(azureDevice, azureTwin, this.ioTHubHostName.Value);
+            Twin azureTwin;
+            if (device.Twin == null)
+            {
+                azureTwin = await this.registry.GetTwinAsync(device.Id);
+            }
+            else
+            {
+                azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.Etag);
+            }
+
+            return new DeviceServiceModel(azureDevice, azureTwin, this.ioTHubHostName);
         }
 
-        private RegistryManager CreateRegistry()
+        public async Task DeleteAsync(string id)
         {
-            // Note: this will cause an exception if the connection string
-            // is not available or badly formatted, e.g. during a test.
-            return RegistryManager.CreateFromConnectionString(this.config.HubConnString);
-        }
-
-        private string GetIoTHubHostName()
-        {
-            return IotHubConnectionStringBuilder.Create(this.config.HubConnString).HostName;
+            await this.registry.RemoveDeviceAsync(id);
         }
     }
 }

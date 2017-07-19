@@ -125,7 +125,7 @@ namespace WebService.Test.IntegrationTests
             public int C2DMessageCount { get; set; }
 
             [JsonProperty(PropertyName = "LastActivity")]
-            public DateTimeOffset LastActivity { get; set; }
+            public DateTime LastActivity { get; set; }
 
             [JsonProperty(PropertyName = "Connected")]
             public bool Connected { get; set; }
@@ -134,7 +134,7 @@ namespace WebService.Test.IntegrationTests
             public bool Enabled { get; set; }
 
             [JsonProperty(PropertyName = "LastStatusUpdated")]
-            public DateTimeOffset LastStatusUpdated { get; set; }
+            public DateTime LastStatusUpdated { get; set; }
 
             [JsonProperty(PropertyName = "IoTHubHostName")]
             public string IoTHubHostName { get; set; }
