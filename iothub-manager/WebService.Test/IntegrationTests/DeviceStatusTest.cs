@@ -8,6 +8,9 @@ using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
 using Xunit;
 using Xunit.Abstractions;
+using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace WebService.Test.IntegrationTests
 {
@@ -89,61 +92,191 @@ namespace WebService.Test.IntegrationTests
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
 
             var deviceId = "testDevice1";
-            var device = this.CreateDeviceIfNotExists(deviceId);            
+            var device = this.CreateDeviceIfNotExists(deviceId);
 
-            var newTagValue = System.Guid.NewGuid().ToString();
-
-            // update twin by adding/editing a tag
-            if (device.Twin.Tags.ContainsKey("newTag"))
+            try
             {
-                device.Twin.Tags["newTag"] = newTagValue;
+                var newTagValue = System.Guid.NewGuid().ToString();
+
+                // update twin by adding/editing a tag
+                if (device.Twin.Tags.ContainsKey("newTag"))
+                {
+                    device.Twin.Tags["newTag"] = newTagValue;
+                }
+                else
+                {
+                    device.Twin.Tags.Add("newTag", newTagValue);
+                }
+
+                var newConfig = new NewConfig
+                {
+                    TelemetryInterval = 10,
+                    TelemetryType = "Type1;Type2"
+                };
+
+                // update twin by adding config 
+                var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
+                if (device.Twin.DesiredProperties.ContainsKey("config"))
+                {
+                    device.Twin.DesiredProperties["config"] = configValue;
+                }
+                else
+                {
+                    device.Twin.DesiredProperties.Add("config", configValue);
+                }
+
+                var request = new HttpRequest();
+                request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices/{deviceId}");
+                request.SetContent(device);
+
+                var response = this.httpClient.PutAsync(request).Result;
+
+                device = JsonConvert.DeserializeObject<DeviceRegistryApiModel>(response.Content);
+                Assert.Equal(newTagValue, device.Twin.Tags["newTag"]);
+
+                // get device again
+                device = this.GetDevice(deviceId);
+                Assert.Equal(newTagValue, device.Twin.Tags["newTag"]);
+
+                var configInTwin = JsonConvert.DeserializeObject<NewConfig>(device.Twin.DesiredProperties["config"].ToString());
+                Assert.Equal(10, configInTwin.TelemetryInterval);
+
             }
-            else
+            finally
             {
-                device.Twin.Tags.Add("newTag", newTagValue);
+                // clean it up
+                this.DeleteDeviceIfExists(deviceId);
             }
-
-            var newConfig = new NewConfig
-            {
-                TelemetryInterval = 10,
-                TelemetryType = "Type1;Type2"
-            };
-
-            // update twin by adding config 
-            var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
-            if (device.Twin.DesiredProperties.ContainsKey("config"))
-            {
-                device.Twin.DesiredProperties["config"] = configValue;
-            }
-            else
-            {
-                device.Twin.DesiredProperties.Add("config", configValue);
-            }
-
-            var request = new HttpRequest();
-            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices/{deviceId}");
-            request.SetContent(device);
-
-            var response = this.httpClient.PutAsync(request).Result;
-
-            device = JsonConvert.DeserializeObject<DeviceRegistryApiModel>(response.Content);
-            Assert.Equal(newTagValue, device.Twin.Tags["newTag"]);
-
-            // get device again
-            device = this.GetDevice(deviceId);
-            Assert.Equal(newTagValue, device.Twin.Tags["newTag"]);
-
-            var configInTwin = JsonConvert.DeserializeObject<NewConfig>(device.Twin.DesiredProperties["config"].ToString());
-            Assert.Equal(10, configInTwin.TelemetryInterval);
-
-            // clean it up
-            this.DeleteDeviceIfExists(deviceId);
         }
 
         public class NewConfig
         {
             public int TelemetryInterval { get; set; }
             public string TelemetryType { get; set; }
+        }
+
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public void GetDeviceListTest()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var deviceId = "testDevice-getdeviceList";
+            var device = this.CreateDeviceIfNotExists(deviceId);
+
+            try
+            {
+                var request = new HttpRequest();
+                request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices");
+                var response = this.httpClient.GetAsync(request).Result;
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+                var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
+                Assert.True(deviceList.Items.Count >= 1);
+                Assert.True(deviceList.Items.Any(d => d.Id == deviceId));
+            }
+            finally
+            {
+                // clean it up
+                this.DeleteDeviceIfExists(deviceId);
+            }
+        }
+        
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public void GetDeviceListWithQueryTest()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var deviceId = "testDevice-getdeviceListWithReportedQuery";
+            var device = this.CreateDeviceIfNotExists(deviceId);
+
+            try
+            {
+                var newTagValue = $"mynewTag{DateTime.Now.Ticks}";
+
+                // update newTag/desired property
+                {
+                    if (device.Twin.Tags.ContainsKey("newTag"))
+                    {
+                        device.Twin.Tags["newTag"] = newTagValue;
+                    }
+                    else
+                    {
+                        device.Twin.Tags.Add("newTag", newTagValue);
+                    }
+
+                    var newConfig = new NewConfig
+                    {
+                        TelemetryInterval = 10
+                    };
+
+                    // update desired value
+                    var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
+                    if (device.Twin.DesiredProperties.ContainsKey("config"))
+                    {
+                        device.Twin.DesiredProperties["config"] = configValue;
+                    }
+                    else
+                    {
+                        device.Twin.DesiredProperties.Add("config", configValue);
+                    }
+
+                    var newReport = new NewConfig
+                    {
+                        TelemetryInterval = 15
+                    };
+
+                    var request = new HttpRequest();
+                    request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices/{deviceId}");
+                    request.SetContent(device);
+
+                    var response = this.httpClient.PutAsync(request).Result;
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                }
+
+                // verify
+                var queries = new List<string>();
+                queries.Add(WebUtility.UrlEncode($"tags.newTag = \"{newTagValue}\""));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval = 10"));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval > 9"));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval >= 10"));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval < 11"));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval <= 10"));
+                queries.Add(WebUtility.UrlEncode($"tags.newTag = \"{newTagValue}\" and desired.config.TelemetryInterval = 10"));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval = 10"));
+
+                foreach (var query in queries)
+                {
+                    var request = new HttpRequest();
+                    request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices?query={query}");
+                    var response = this.httpClient.GetAsync(request).Result;
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+                    var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
+                    Assert.True(deviceList.Items.Count >= 1, query);
+                    Assert.True(deviceList.Items.Any(d => d.Id == deviceId), query);
+                }
+
+                queries.Clear();
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval != 10"));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval < 9"));
+                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval > 10 and desired.config.TelemetryInterval = 10"));
+                foreach (var query in queries)
+                {
+                    var request = new HttpRequest();
+                    request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices?query={query}");
+                    var response = this.httpClient.GetAsync(request).Result;
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+                    var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
+                    Assert.True(!deviceList.Items.Any(d => d.Id == deviceId), query);
+                }
+
+            }
+            finally
+            {
+                // clean it up
+                this.DeleteDeviceIfExists(deviceId);
+            }
         }
 
         private DeviceRegistryApiModel GetDevice(string deviceId)

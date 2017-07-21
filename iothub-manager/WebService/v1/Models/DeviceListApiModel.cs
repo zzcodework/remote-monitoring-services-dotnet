@@ -19,6 +19,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         public List<DeviceRegistryApiModel> Items { get; set; }
 
+        public DeviceListApiModel()
+        {
+        }
+
         public DeviceListApiModel(DeviceServiceListModel devices)
         {
             this.Items = new List<DeviceRegistryApiModel>();

@@ -14,7 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
     {
         private readonly IDevices devices;
 
-        const string ContinousTokenName = "x-ms-continuation";
+        const string ContinuationTokenName = "x-ms-continuation";
 
         public DevicesController(IDevices devices)
         {
@@ -24,22 +24,22 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <summary>Get a list of devices</summary>
         /// <returns>List of devices</returns>
         [HttpGet]
-        public async Task<DeviceListApiModel> Get()
+        public async Task<DeviceListApiModel> GetDevicesAsync([FromQuery] string query)
         {
-            string continousToken = string.Empty;
-            if( Request.Headers.ContainsKey(ContinousTokenName))
+            string continuationToken = string.Empty;
+            if( Request.Headers.ContainsKey(ContinuationTokenName))
             {
-                continousToken = Request.Headers[ContinousTokenName].FirstOrDefault();
+                continuationToken = Request.Headers[ContinuationTokenName].FirstOrDefault();
             }
 
-            return new DeviceListApiModel(await this.devices.GetListAsync(continousToken));
+            return new DeviceListApiModel(await this.devices.GetListAsync(query, continuationToken));
         }
 
         /// <summary>Get one device</summary>
         /// <param name="id">Device Id</param>
         /// <returns>Device information</returns>
         [HttpGet("{id}")]
-        public async Task<DeviceRegistryApiModel> Get(string id)
+        public async Task<DeviceRegistryApiModel> GetDeviceAsync(string id)
         {
             return new DeviceRegistryApiModel(await this.devices.GetAsync(id));
         }
@@ -48,7 +48,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="device">Device information</param>
         /// <returns>Device information</returns>
         [HttpPost]
-        public async Task<DeviceRegistryApiModel> Post([FromBody] DeviceRegistryApiModel device)
+        public async Task<DeviceRegistryApiModel> PostAsync([FromBody] DeviceRegistryApiModel device)
         {
             return new DeviceRegistryApiModel(await this.devices.CreateAsync(device.ToServiceModel()));
         }
@@ -58,7 +58,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="device">Device information</param>
         /// <returns>Device information</returns>
         [HttpPut("{id}")]
-        public async Task<DeviceRegistryApiModel> Put(string id, [FromBody] DeviceRegistryApiModel device)
+        public async Task<DeviceRegistryApiModel> PutAsync(string id, [FromBody] DeviceRegistryApiModel device)
         {
             return new DeviceRegistryApiModel(await this.devices.CreateOrUpdateAsync(device.ToServiceModel()));
         }
@@ -66,7 +66,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <summary>Remove device</summary>
         /// <param name="id">Device Id</param>
         [HttpDelete("{id}")]
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             await this.devices.DeleteAsync(id);
         }

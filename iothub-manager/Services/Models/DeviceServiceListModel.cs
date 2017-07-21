@@ -10,9 +10,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public List<DeviceServiceModel> Items { get; set; }
 
-        public DeviceServiceListModel(IEnumerable<DeviceServiceModel> devices, string continueousToken = null)
+        public DeviceServiceListModel(IEnumerable<DeviceServiceModel> devices, string continuationToken = null)
         {
-            this.ContinuationToken = continueousToken;
+            this.ContinuationToken = continuationToken;
             this.Items = new List<DeviceServiceModel>(devices);            
         }
     }
