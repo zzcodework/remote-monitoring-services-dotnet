@@ -7,4 +7,7 @@
 ::
 
 :: The port where Device Simulation web service is listening
-SET PCS_IOTHUBMANAGER_WEBSERVICE_PORT = "9002"
+SETX PCS_IOTHUBMANAGER_WEBSERVICE_PORT "9002"
+
+:: see: Shared access policies => key name => Connection string
+SETX PCS_IOTHUB_CONN_STRING "..."
