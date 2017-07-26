@@ -16,6 +16,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public Dictionary<string, JToken> ReportedProperties { get; set; }
         public Dictionary<string, JToken> Tags { get; set; }
 
+        public DeviceTwinServiceModel()
+        {            
+        }
+
         public DeviceTwinServiceModel(
             string etag,
             string deviceId,

@@ -64,6 +64,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             // leaks, but not so good for the overall performance.
             // TODO: revisit when migrating to ASP.NET Core.
             builder.RegisterType<Services.Devices>().As<IDevices>().SingleInstance();
+            builder.RegisterType<Services.DeviceService>().As<IDeviceService>().SingleInstance();
+            builder.RegisterType<Services.Jobs>().As<IJobs>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)

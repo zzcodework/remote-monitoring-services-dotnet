@@ -15,7 +15,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public Dictionary<string, JToken> DesiredProperties { get; set; }
         public Dictionary<string, JToken> Tags { get; set; }
         public bool IsSimulated { get; set; }
-                
+
+        public DeviceTwinApiModel()
+        {
+            this.ReportedProperties = new Dictionary<string, JToken>();
+            this.DesiredProperties = new Dictionary<string, JToken>();
+            this.Tags = new Dictionary<string, JToken>();
+        }
+
         public DeviceTwinApiModel(string deviceId, DeviceTwinServiceModel deviceTwin)
         {
             if (deviceTwin != null)

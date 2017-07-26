@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
-using System.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
@@ -14,11 +14,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
     {
         private readonly IDevices devices;
 
+        private readonly IDeviceService deviceService;
         const string ContinuationTokenName = "x-ms-continuation";
 
-        public DevicesController(IDevices devices)
+
+        public DevicesController(IDevices devices, IDeviceService deviceService)
         {
             this.devices = devices;
+            this.deviceService = deviceService;
         }
 
         /// <summary>Get a list of devices</summary>
@@ -27,7 +30,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         public async Task<DeviceListApiModel> GetDevicesAsync([FromQuery] string query)
         {
             string continuationToken = string.Empty;
-            if( Request.Headers.ContainsKey(ContinuationTokenName))
+            if (Request.Headers.ContainsKey(ContinuationTokenName))
             {
                 continuationToken = Request.Headers[ContinuationTokenName].FirstOrDefault();
             }
@@ -69,6 +72,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         public async Task DeleteAsync(string id)
         {
             await this.devices.DeleteAsync(id);
+        }
+
+        /// <summary>
+        /// Interactively invokes a method on device 
+        /// </summary>
+        /// <param name="id">Device Id</param>
+        /// <param name="parameter">Device method parameters (passthrough to device)</param>
+        /// <returns></returns>
+        [HttpPost("{id}/methods")]
+        public async Task<MethodResultApiModel> InvokeDeviceMethodAsync(string id, [FromBody] MethodParameterApiModel parameter)
+        {
+            return new MethodResultApiModel(await this.deviceService.InvokeDeviceMethodAsync(id, parameter.ToServiceModel()));
         }
     }
 }
