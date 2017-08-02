@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net;
 using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
 using Xunit;
 using Xunit.Abstractions;
-using System.Linq;
-using System;
-using System.Collections.Generic;
 
 namespace WebService.Test.IntegrationTests
 {
@@ -180,7 +181,7 @@ namespace WebService.Test.IntegrationTests
                 this.DeleteDeviceIfExists(deviceId);
             }
         }
-        
+
         [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
         public void GetDeviceListWithQueryTest()
         {
@@ -270,7 +271,6 @@ namespace WebService.Test.IntegrationTests
                     var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
                     Assert.True(!deviceList.Items.Any(d => d.Id == deviceId), query);
                 }
-
             }
             finally
             {
@@ -279,13 +279,78 @@ namespace WebService.Test.IntegrationTests
             }
         }
 
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public async Task PostDeviceQueryTest()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var request = new HttpRequest();
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices/query");
+            request.SetContent("tags.Floor =\"10F\"");
+            var response = await this.httpClient.PostAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
+            Assert.NotNull(deviceList.Items);
+        }
+
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public async Task GetAllDevicesByClausesTest()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var request = new HttpRequest();
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices?query=[]");
+            var response = await this.httpClient.GetAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
+            Assert.NotNull(deviceList.Items);
+        }
+
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public async Task QueryDevicesByClausesTest()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var query = JsonConvert.SerializeObject(new object[]
+            {
+                new
+                {
+                    Key = "tags.Floor",
+                    Operator = "EQ",
+                    Value = "10F"
+                },
+                new
+                {
+                    Key = "reported.Device.Location.Latitude",
+                    Operator = "GE",
+                    Value = "30"
+                },
+                new
+                {
+                    Key = "desired.Config.TelemetryInterval",
+                    Operator = "GE",
+                    Value = 3
+                }
+            });
+
+            var request = new HttpRequest();
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices?query={query}");
+            var response = await this.httpClient.GetAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
+            Assert.NotNull(deviceList.Items);
+        }
+
         private DeviceRegistryApiModel GetDevice(string deviceId)
         {
             var request = new HttpRequest();
             request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices/{deviceId}");
             var response = this.httpClient.GetAsync(request).Result;
 
-            if(response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 return null;
             }
@@ -296,7 +361,7 @@ namespace WebService.Test.IntegrationTests
         private DeviceRegistryApiModel CreateDeviceIfNotExists(string deviceId)
         {
             var device = GetDevice(deviceId);
-            if( device != null)
+            if (device != null)
             {
                 return device;
             }

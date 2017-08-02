@@ -1,14 +1,16 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Devices;
+using Microsoft.Azure.Devices.Shared;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
@@ -40,35 +42,40 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             this.ioTHubHostName = IotHubConnectionStringBuilder.Create(config.HubConnString).HostName;
         }
 
+        /// <summary>
+        /// Query devices
+        /// </summary>
+        /// <param name="query">
+        /// Two types of query supported:
+        /// 1. Serialized Clause list in JSON. Each clause includes three parts: key, operator and value
+        /// 2. The "Where" clause of official IoTHub query string, except keyword "WHERE"
+        /// </param>
+        /// <param name="continuationToken">Continuation token. Not in use yet</param>
+        /// <returns>List of devices</returns>
         public async Task<DeviceServiceListModel> GetListAsync(string query, string continuationToken)
         {
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                // Try to translate clauses to query
+                query = QueryConditionTranslator.ToQueryString(query);
+            }
+
             // normally we need deviceTwins for all devices to show device list
             var devices = await this.registry.GetDevicesAsync(MaxGetList);
 
             #region WORKAROUND
-
             // WORKAROUND: when we have the query API supported, we can replace to use query API
-            var twinTasks = new List<Task<Twin>>();
-            foreach (var item in devices)
-            {
-                twinTasks.Add(this.registry.GetTwinAsync(item.Id));
-            }
-
-            await Task.WhenAll(twinTasks.ToArray());
-
-            // Workaround: filter by query
-            var twins = twinTasks.Select(t => t.Result);
+            var twins = await GetTwins(devices.Select(d => d.Id));
             if (!string.IsNullOrEmpty(query))
             {
-                twins = ApplyQuery(query, twinTasks.Select(t => t.Result));
+                twins = ApplyQuery(query, twins);
                 devices = devices.Where(d => twins.Any(t => t.DeviceId == d.Id));
-            } 
+            }
             #endregion
 
-            return new DeviceServiceListModel(devices.Select(azureDevice => 
-                                                new DeviceServiceModel(azureDevice, twins.Single(t => t.DeviceId == azureDevice.Id), 
-                                                this.ioTHubHostName)), 
-                                               null);
+            return new DeviceServiceListModel(devices.Select(azureDevice =>
+                new DeviceServiceModel(azureDevice, twins.Single(t => t.DeviceId == azureDevice.Id),
+                this.ioTHubHostName)));
         }
 
         public async Task<DeviceServiceModel> GetAsync(string id)
@@ -99,7 +106,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             {
                 azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.Etag);
             }
-            
+
             return new DeviceServiceModel(azureDevice, azureTwin, this.ioTHubHostName);
         }
 
@@ -112,7 +119,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         {
             // validate device module
             var azureDevice = await this.registry.GetDeviceAsync(device.Id);
-            if( azureDevice == null)
+            if (azureDevice == null)
             {
                 azureDevice = await this.registry.AddDeviceAsync(device.ToAzureModel());
             }
@@ -135,9 +142,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             await this.registry.RemoveDeviceAsync(id);
         }
 
-
+        // ToDo: remove workaround code once the SDK support is ready
         #region WORKAROUND
-
         /// <summary>
         /// Workaround before we have query in SDK
         ///     support "and" only.. case sensitive
@@ -197,6 +203,28 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             return twins;
+        }
+
+        private async Task<IEnumerable<Twin>> GetTwins(IEnumerable<string> deviceIds)
+        {
+            const int batchSize = 10;
+            const int batchIntervalInMilliseconds = 1000;
+
+            var twins = new List<Twin>();
+            while (deviceIds.Any())
+            {
+                var batch = deviceIds.Take(batchSize);
+                var tasks = batch.Select(id => this.registry.GetTwinAsync(id));
+                twins.AddRange(await Task.WhenAll(tasks));
+
+                deviceIds = deviceIds.Skip(batch.Count());
+
+                // Wait a moment to avoid throttling 
+                await Task.Delay(batchIntervalInMilliseconds);
+            }
+
+            // For some reason (throttling and so on), GetTwinAsync may returns null. Ignore null values here
+            return twins.Where(t => t != null);
         }
 
         private class Filter
@@ -369,7 +397,86 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 Reported,
                 Desired
             }
-        }  
+        }
         #endregion
     }
+
+    // ToDo: remove workaround code once the SDK support is ready
+    #region WORKAROUND for query "select count() from devices ...
+    static class TwinCollectionExtension
+    {
+        public static dynamic Get(this TwinCollection collection, string flatName)
+        {
+            if (collection == null || string.IsNullOrWhiteSpace(flatName))
+            {
+                throw new ArgumentNullException();
+            }
+
+            return Get(collection, flatName.Split('.'));
+        }
+
+        private static dynamic Get(this TwinCollection collection, IEnumerable<string> names)
+        {
+            var name = names.First();
+
+            // Pick node on current level
+            if (!collection.Contains(name))
+            {
+                // No desired node found. Return null as error
+                return null;
+            }
+
+            var child = collection[name];
+
+            if (names.Count() == 1)
+            {
+                // Current node is the target node, , return the value
+                return child;
+            }
+
+            if (child is TwinCollection)
+            {
+                // Current node is container, go to next level
+                return Get(child as TwinCollection, names.Skip(1));
+            }
+
+            if (child is JContainer)
+            {
+                // Current node is container, go to next level
+                return Get(child as JContainer, names.Skip(1));
+            }
+
+            // Currently, the container could only be TwinCollection or JContainer
+            return null;
+        }
+
+        private static dynamic Get(this JContainer container, IEnumerable<string> names)
+        {
+            var name = names.First();
+
+            // Pick node on current level
+            var child = container[name];
+            if (child == null)
+            {
+                // No desired node found. Return null as error
+                return null;
+            }
+
+            if (names.Count() == 1)
+            {
+                // Current node is the target node, return the value
+                return child;
+            }
+
+            if (child is JContainer)
+            {
+                // Current node is container, go to next level
+                return Get(child as JContainer, names.Skip(1));
+            }
+
+            // The next level of JContainer must be JContainer
+            return null;
+        }
+    }
+    #endregion
 }

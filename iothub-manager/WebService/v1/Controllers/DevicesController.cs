@@ -38,6 +38,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
             return new DeviceListApiModel(await this.devices.GetListAsync(query, continuationToken));
         }
 
+        [HttpPost("query")]
+        public async Task<DeviceListApiModel> QueryDevicesAsync([FromBody] string query)
+        {
+            string continuationToken = string.Empty;
+            if (Request.Headers.ContainsKey(ContinuationTokenName))
+            {
+                continuationToken = Request.Headers[ContinuationTokenName].FirstOrDefault();
+            }
+
+            return new DeviceListApiModel(await this.devices.GetListAsync(query, continuationToken));
+        }
+
         /// <summary>Get one device</summary>
         /// <param name="id">Device Id</param>
         /// <returns>Device information</returns>
