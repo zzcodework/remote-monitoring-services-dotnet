@@ -1,7 +1,7 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
 :: Note: use lowercase names for the Docker images
-SET DOCKER_IMAGE="azureiotpcs/iothubmanager-dotnet"
+SET DOCKER_IMAGE="azureiotpcs/iothub-manager-dotnet"
 
 :: strlen("\scripts\docker\") => 16
 SET APP_HOME=%~dp0
