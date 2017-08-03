@@ -49,7 +49,7 @@ Steps using Visual Studio 2017:
 1. Add a new environment variable with name
    `PCS_IOTHUBMANAGER_WEBSERVICE_PORT` and value `9002`.
 1. Add a new environment variable with name
-   `PCS_IOTHUB_CONN_STRING` with the connection string for your Azure IoT Hub.
+   `PCS_IOTHUB_CONNSTRING` with the connection string for your Azure IoT Hub.
 1. In the same section set the `App URL` to
    `http://localhost:9002/v1/status`
 1. Right click on the "WebService" project and "Set as StartUp Project".
@@ -68,7 +68,7 @@ Run and Debug with IntelliJ Rider
 1. Add a new environment variable with name
    `PCS_IOTHUBMANAGER_WEBSERVICE_PORT` and value `9002`.
 1. Add a new environment variable with name
-   `PCS_IOTHUB_CONN_STRING` with the connection string for your Azure IoT Hub.
+   `PCS_IOTHUB_CONNSTRING` with the connection string for your Azure IoT Hub.
 1. Save the settings and run the configuration just created, from the IDE
    toolbar.
 1. You should see the service bootstrap messages in IntelliJ Run window,

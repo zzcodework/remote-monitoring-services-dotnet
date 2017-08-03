@@ -61,7 +61,7 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
     docker run -it ^
         -p %PCS_IOTHUBMANAGER_WEBSERVICE_PORT%:%PCS_IOTHUBMANAGER_WEBSERVICE_PORT% ^
         -e PCS_IOTHUBMANAGER_WEBSERVICE_PORT=%PCS_IOTHUBMANAGER_WEBSERVICE_PORT% ^
-        -e PCS_IOTHUB_CONN_STRING=%PCS_IOTHUB_CONN_STRING% ^
+        -e PCS_IOTHUB_CONNSTRING=%PCS_IOTHUB_CONNSTRING% ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^

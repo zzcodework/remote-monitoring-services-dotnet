@@ -8,6 +8,6 @@ namespace WebService.Test.helpers.Http
 
         public bool AllowInsecureSSLServer { get; set; } = false;
 
-        public int Timeout { get; set; } = 30000;
+        public int Timeout { get; set; } = 300000;
     }
 }

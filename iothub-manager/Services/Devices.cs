@@ -73,9 +73,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
             #endregion
 
-            return new DeviceServiceListModel(devices.Select(azureDevice =>
-                new DeviceServiceModel(azureDevice, twins.Single(t => t.DeviceId == azureDevice.Id),
-                this.ioTHubHostName)));
+            return new DeviceServiceListModel(devices
+                .Select(azureDevice => new DeviceServiceModel(azureDevice, twins.SingleOrDefault(t => t.DeviceId == azureDevice.Id), this.ioTHubHostName))
+                .Where(model => model.Twin != null));
         }
 
         public async Task<DeviceServiceModel> GetAsync(string id)
