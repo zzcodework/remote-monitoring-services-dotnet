@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <LangVersion>6</LangVersion>
+    <AssemblyName>Microsoft.Azure.IoTSolutions.Auth.Services</AssemblyName>
+    <RootNamespace>Microsoft.Azure.IoTSolutions.Auth.Services</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+</Project>
