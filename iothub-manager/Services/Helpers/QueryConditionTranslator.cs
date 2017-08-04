@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Newtonsoft.Json;
+using System.Text;
+using System.IO;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 {
@@ -47,9 +49,21 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
                     throw new InvalidInputException();
                 }
 
-                // Reminder: string value will be surrounded by double quotation marks
-                return $"{c.Key} {op} {JsonConvert.SerializeObject(c.Value)}";
-            });
+                // Reminder: string value will be surrounded by single quotation marks
+                StringBuilder value = new StringBuilder();
+                using (StringWriter sw = new StringWriter(value))
+                {
+                    using (JsonTextWriter writer = new JsonTextWriter(sw))
+                    {
+                        writer.QuoteChar = '\'';
+
+                        JsonSerializer ser = new JsonSerializer();
+                        ser.Serialize(writer, c.Value);
+                    }
+                }
+
+                return $"{c.Key} {op} {value.ToString()}";
+            });            
 
             return string.Join(" and ", clauseStrings);
         }

@@ -236,14 +236,14 @@ namespace WebService.Test.IntegrationTests
 
                 // verify
                 var queries = new List<string>();
-                queries.Add(WebUtility.UrlEncode($"tags.newTag = \"{newTagValue}\""));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval = 10"));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval > 9"));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval >= 10"));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval < 11"));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval <= 10"));
-                queries.Add(WebUtility.UrlEncode($"tags.newTag = \"{newTagValue}\" and desired.config.TelemetryInterval = 10"));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval = 10"));
+                queries.Add(WebUtility.UrlEncode($"tags.newTag = '{newTagValue}'"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval = 10"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval > 9"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval >= 10"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval < 11"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval <= 10"));
+                queries.Add(WebUtility.UrlEncode($"tags.newTag = '{newTagValue}' and properties.desired.config.TelemetryInterval = 10"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval = 10"));
 
                 foreach (var query in queries)
                 {
@@ -253,14 +253,14 @@ namespace WebService.Test.IntegrationTests
                     Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
                     var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
-                    Assert.True(deviceList.Items.Count >= 1, query);
-                    Assert.True(deviceList.Items.Any(d => d.Id == deviceId), query);
+                    Assert.True(deviceList.Items.Count >= 1, WebUtility.UrlDecode(query));
+                    Assert.True(deviceList.Items.Any(d => d.Id == deviceId), WebUtility.UrlDecode(query));
                 }
 
                 queries.Clear();
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval != 10"));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval < 9"));
-                queries.Add(WebUtility.UrlEncode($"desired.config.TelemetryInterval > 10 and desired.config.TelemetryInterval = 10"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval != 10"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval < 9"));
+                queries.Add(WebUtility.UrlEncode($"properties.desired.config.TelemetryInterval > 10 and properties.desired.config.TelemetryInterval = 10"));
                 foreach (var query in queries)
                 {
                     var request = new HttpRequest();
@@ -269,7 +269,7 @@ namespace WebService.Test.IntegrationTests
                     Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
                     var deviceList = JsonConvert.DeserializeObject<DeviceListApiModel>(response.Content);
-                    Assert.True(!deviceList.Items.Any(d => d.Id == deviceId), query);
+                    Assert.True(!deviceList.Items.Any(d => d.Id == deviceId), WebUtility.UrlDecode(query));
                 }
             }
             finally
@@ -309,6 +309,17 @@ namespace WebService.Test.IntegrationTests
         }
 
         [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public async Task GetDevicesByBadQueryTest()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var request = new HttpRequest();
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices?query=abc");
+            var response = await this.httpClient.GetAsync(request);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
         public async Task QueryDevicesByClausesTest()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -323,13 +334,13 @@ namespace WebService.Test.IntegrationTests
                 },
                 new
                 {
-                    Key = "reported.Device.Location.Latitude",
+                    Key = "properties.reported.Device.Location.Latitude",
                     Operator = "GE",
                     Value = "30"
                 },
                 new
                 {
-                    Key = "desired.Config.TelemetryInterval",
+                    Key = "properties.desired.Config.TelemetryInterval",
                     Operator = "GE",
                     Value = 3
                 }

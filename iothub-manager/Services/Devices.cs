@@ -26,6 +26,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     public class Devices : IDevices
     {
         private const int MaxGetList = 1000;
+        private const string QueryPrefix = "SELECT * FROM devices";
 
         private readonly RegistryManager registry;
         private readonly string ioTHubHostName;
@@ -63,19 +64,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             // normally we need deviceTwins for all devices to show device list
             var devices = await this.registry.GetDevicesAsync(MaxGetList);
 
-            #region WORKAROUND
-            // WORKAROUND: when we have the query API supported, we can replace to use query API
-            var twins = await GetTwins(devices.Select(d => d.Id));
-            if (!string.IsNullOrEmpty(query))
-            {
-                twins = ApplyQuery(query, twins);
-                devices = devices.Where(d => twins.Any(t => t.DeviceId == d.Id));
-            }
-            #endregion
+            var twins = await this.GetTwinByQueryAsync(query, continuationToken, MaxGetList);
 
+            // since deviceAsync does not support continuationToken for now, we need to ignore those devices which does not shown in twins
             return new DeviceServiceListModel(devices
-                .Select(azureDevice => new DeviceServiceModel(azureDevice, twins.SingleOrDefault(t => t.DeviceId == azureDevice.Id), this.ioTHubHostName))
-                .Where(model => model.Twin != null));
+                .Where(d => twins.Result.Exists(t => d.Id == t.DeviceId))
+                .Select(azureDevice => new DeviceServiceModel(azureDevice, twins.Result.SingleOrDefault(t => t.DeviceId == azureDevice.Id), this.ioTHubHostName)),
+                twins.ContinuationToken);
+
         }
 
         public async Task<DeviceServiceModel> GetAsync(string id)
@@ -142,341 +138,45 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             await this.registry.RemoveDeviceAsync(id);
         }
 
-        // ToDo: remove workaround code once the SDK support is ready
-        #region WORKAROUND
         /// <summary>
-        /// Workaround before we have query in SDK
-        ///     support "and" only.. case sensitive
-        ///     support number/string only
-        /// Query example:
-        ///     tags.factory = "contoso"
-        ///     desired.config.telemetryInterval = 10
-        ///     properties.reported.config.sensorStatus = "normal"
+        /// Get twin result by query
         /// </summary>
-        /// <param name="query">The query for the devices</param>
-        /// <param name="twinList">The list of twin need to filter</param>
-        /// <returns>The list of twin matching the query</returns>
-        private IEnumerable<Twin> ApplyQuery(string query, IEnumerable<Twin> twinList)
+        /// <param name="query">The query without prefix</param>
+        /// <param name="continuationToken">The continuationToken</param>
+        /// <param name="nubmerOfResult">The max result</param>
+        /// <returns></returns>
+        private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(string query, string continuationToken, int nubmerOfResult)
         {
-            if (string.IsNullOrEmpty(query))
-            {
-                return twinList;
-            }
-
-            var filters = query.Split(new string[] { "and" }, StringSplitOptions.RemoveEmptyEntries);
-            var twins = new List<Twin>(twinList);
-            foreach (var filterString in filters)
-            {
-                var filter = new Filter(filterString);
-                List<Twin> filteredTwins = new List<Twin>();
-                foreach (var twin in twins)
-                {
-                    switch (filter.Target)
-                    {
-                        case Filter.FilterTarget.Tags:
-                            if (filter.Match(twin.Tags))
-                            {
-                                filteredTwins.Add(twin);
-                            }
-
-                            break;
-                        case Filter.FilterTarget.Reported:
-                            if (twin.Properties != null && filter.Match(twin.Properties.Reported))
-                            {
-                                filteredTwins.Add(twin);
-                            }
-
-                            break;
-                        case Filter.FilterTarget.Desired:
-                            if (twin.Properties != null && filter.Match(twin.Properties.Desired))
-                            {
-                                filteredTwins.Add(twin);
-                            }
-
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                twins = filteredTwins;
-            }
-
-            return twins;
-        }
-
-        private async Task<IEnumerable<Twin>> GetTwins(IEnumerable<string> deviceIds)
-        {
-            const int batchSize = 10;
-            const int batchIntervalInMilliseconds = 1000;
+            query = string.IsNullOrEmpty(query)? QueryPrefix : $"{QueryPrefix} where {query}";
 
             var twins = new List<Twin>();
-            while (deviceIds.Any())
+
+            var twinQuery = this.registry.CreateQuery(query);
+            
+            QueryOptions options = new QueryOptions();
+            options.ContinuationToken = continuationToken;
+
+            while (twinQuery.HasMoreResults && twins.Count < nubmerOfResult)
             {
-                var batch = deviceIds.Take(batchSize);
-                var tasks = batch.Select(id => this.registry.GetTwinAsync(id));
-                twins.AddRange(await Task.WhenAll(tasks));
-
-                deviceIds = deviceIds.Skip(batch.Count());
-
-                // Wait a moment to avoid throttling 
-                await Task.Delay(batchIntervalInMilliseconds);
+                var response = await twinQuery.GetNextAsTwinAsync(options);
+                options.ContinuationToken = response.ContinuationToken;
+                twins.AddRange(response);
             }
 
-            // For some reason (throttling and so on), GetTwinAsync may returns null. Ignore null values here
-            return twins.Where(t => t != null);
+            return new ResultWithContinuationToken<List<Twin>>(twins, options.ContinuationToken);
         }
 
-        private class Filter
+        private class ResultWithContinuationToken<T>
         {
-            private readonly string filterString;
-            private string[] keyLevels;
-            private bool isStringValue;
-            private string Value;
-            private FilterOperator Operator;
+            public T Result { get; private set; }
 
-            public Filter(string filterString)
+            public string ContinuationToken { get; private set; }
+
+            public ResultWithContinuationToken(T queryResult, string continuationToken)
             {
-                this.filterString = filterString;
-                this.Initiate();
+                this.Result = queryResult;
+                this.ContinuationToken = continuationToken;
             }
-
-            public FilterTarget Target { get; set; }
-
-            public bool Match(TwinCollection collection)
-            {
-                // only support four level
-                dynamic twinValue;
-
-                try
-                {
-                    switch (keyLevels.Length)
-                    {
-                        case 2:
-                            twinValue = collection[keyLevels[1]];
-                            break;
-                        case 3:
-                            twinValue = collection[keyLevels[1]][keyLevels[2]];
-                            break;
-                        case 4:
-                            twinValue = collection[keyLevels[1]][keyLevels[2]][keyLevels[3]];
-                            break;
-                        case 5:
-                            twinValue = collection[keyLevels[1]][keyLevels[2]][keyLevels[3]][keyLevels[4]];
-                            break;
-                        default:
-                            return false;
-                    }
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return false;
-                }
-
-                try
-                {
-                    switch (this.Operator)
-                    {
-                        case FilterOperator.Equal:
-                            return this.isStringValue ? twinValue == this.Value : twinValue == Double.Parse(this.Value);
-                        case FilterOperator.NotEqual:
-                            return this.isStringValue ? twinValue != this.Value : twinValue != Double.Parse(this.Value);
-                        case FilterOperator.Greater:
-                            return this.isStringValue ? twinValue > this.Value : twinValue > Double.Parse(this.Value);
-                        case FilterOperator.GreaterOrEqual:
-                            return this.isStringValue ? twinValue >= this.Value : twinValue >= Double.Parse(this.Value);
-                        case FilterOperator.Lower:
-                            return this.isStringValue ? twinValue < this.Value : twinValue < Double.Parse(this.Value);
-                        case FilterOperator.LowerOrEqual:
-                            return this.isStringValue ? twinValue <= this.Value : twinValue <= Double.Parse(this.Value);
-                        default:
-                            return false;
-                    }
-                }
-                catch (System.FormatException)
-                {
-                    return false;
-                }
-            }
-
-            private void Initiate()
-            {
-                if (this.filterString.Contains("!="))
-                {
-                    this.Operator = FilterOperator.NotEqual;
-                    this.SeparateParts("!=");
-                    return;
-                }
-
-                if (this.filterString.Contains(">="))
-                {
-                    this.Operator = FilterOperator.GreaterOrEqual;
-                    this.SeparateParts(">=");
-                    return;
-                }
-
-                if (this.filterString.Contains("<="))
-                {
-                    this.Operator = FilterOperator.LowerOrEqual;
-                    this.SeparateParts("<=");
-                    return;
-                }
-
-                if (this.filterString.Contains("="))
-                {
-                    this.Operator = FilterOperator.Equal;
-                    this.SeparateParts("=");
-                    return;
-                }
-
-                if (this.filterString.Contains(">"))
-                {
-                    this.Operator = FilterOperator.Greater;
-                    this.SeparateParts(">");
-                    return;
-                }
-
-                if (this.filterString.Contains("<"))
-                {
-                    this.Operator = FilterOperator.Lower;
-                    this.SeparateParts("<");
-                    return;
-                }
-            }
-
-            private void SeparateParts(string separator)
-            {
-                var parts = this.filterString.Split(new string[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length != 2)
-                {
-                    throw new ArgumentException("filterString");
-                }
-
-                // remove leading properties
-                if (parts[0].StartsWith("properties"))
-                {
-                    parts[0] = parts[0].Substring("properties".Length);
-                }
-
-                // seperate key/value
-                this.keyLevels = parts[0].Split('.').Select(p => p.Trim()).ToArray();
-                this.isStringValue = parts[1].Trim().StartsWith("\"");
-                this.Value = this.isStringValue ? parts[1].Trim().Trim('"') : parts[1].Trim();
-
-                if (this.keyLevels[0].StartsWith("tags"))
-                {
-                    this.Target = FilterTarget.Tags;
-                }
-                else if (this.keyLevels[0].StartsWith("desired"))
-                {
-                    this.Target = FilterTarget.Desired;
-                }
-                else if (this.keyLevels[0].StartsWith("reported"))
-                {
-                    this.Target = FilterTarget.Reported;
-                }
-                else
-                {
-                    throw new ArgumentException("filterString");
-                }
-            }
-
-            public enum FilterOperator
-            {
-                Equal,
-                NotEqual,
-                Greater,
-                GreaterOrEqual,
-                Lower,
-                LowerOrEqual
-            }
-
-            public enum FilterTarget
-            {
-                Tags,
-                Reported,
-                Desired
-            }
-        }
-        #endregion
-    }
-
-    // ToDo: remove workaround code once the SDK support is ready
-    #region WORKAROUND for query "select count() from devices ...
-    static class TwinCollectionExtension
-    {
-        public static dynamic Get(this TwinCollection collection, string flatName)
-        {
-            if (collection == null || string.IsNullOrWhiteSpace(flatName))
-            {
-                throw new ArgumentNullException();
-            }
-
-            return Get(collection, flatName.Split('.'));
-        }
-
-        private static dynamic Get(this TwinCollection collection, IEnumerable<string> names)
-        {
-            var name = names.First();
-
-            // Pick node on current level
-            if (!collection.Contains(name))
-            {
-                // No desired node found. Return null as error
-                return null;
-            }
-
-            var child = collection[name];
-
-            if (names.Count() == 1)
-            {
-                // Current node is the target node, , return the value
-                return child;
-            }
-
-            if (child is TwinCollection)
-            {
-                // Current node is container, go to next level
-                return Get(child as TwinCollection, names.Skip(1));
-            }
-
-            if (child is JContainer)
-            {
-                // Current node is container, go to next level
-                return Get(child as JContainer, names.Skip(1));
-            }
-
-            // Currently, the container could only be TwinCollection or JContainer
-            return null;
-        }
-
-        private static dynamic Get(this JContainer container, IEnumerable<string> names)
-        {
-            var name = names.First();
-
-            // Pick node on current level
-            var child = container[name];
-            if (child == null)
-            {
-                // No desired node found. Return null as error
-                return null;
-            }
-
-            if (names.Count() == 1)
-            {
-                // Current node is the target node, return the value
-                return child;
-            }
-
-            if (child is JContainer)
-            {
-                // Current node is container, go to next level
-                return Get(child as JContainer, names.Skip(1));
-            }
-
-            // The next level of JContainer must be JContainer
-            return null;
         }
     }
-    #endregion
 }
