@@ -21,6 +21,8 @@ compile() {
     check_dependency_dotnet
 
     cd $APP_HOME
+    ./scripts/env-vars-check
+
     header "Downloading dependencies..."
     dotnet restore
 
@@ -65,7 +67,6 @@ build_in_sandbox() {
     if [[ -z "$IS_WINDOWS" ]]; then
         check_dependency_docker
         docker run \
-        -e "PCS_IOTHUBMANAGER_WEBSERVICE_PORT=$PCS_IOTHUBMANAGER_WEBSERVICE_PORT" \
             -e "PCS_IOTHUB_CONNSTRING=$PCS_IOTHUB_CONNSTRING" \
             -v "$PCS_CACHE/sandbox/.config:/root/.config" \
             -v "$PCS_CACHE/sandbox/.dotnet:/root/.dotnet" \

@@ -11,14 +11,4 @@ services:
     ports:
       - "9002:9002"
     environment:
-      - PCS_IOTHUBMANAGER_WEBSERVICE_PORT
       - PCS_IOTHUB_CONNSTRING
-  devicesimulation:
-    image: azureiotpcs/iothub-manager-dotnet
-    depends_on:
-      - iothubmanager
-    ports:
-      - "9003:9003"
-    environment:
-      - PCS_DEVICESIMULATION_WEBSERVICE_PORT
-      - $PCS_IOTHUBMANAGER_WEBSERVICE_URL

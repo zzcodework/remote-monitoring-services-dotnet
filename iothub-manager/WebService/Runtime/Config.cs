@@ -32,6 +32,24 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
         {
             this.Port = configData.GetInt(PortKey);
 
+            var connstring = configData.GetString(IoTHubConnStrKey);
+            if (connstring.ToLowerInvariant().Contains("your azure iot hub"))
+            {
+                // In order to connect to Azure IoT Hub, the service requires a connection
+                // string. The value can be found in the Azure Portal. For more information see
+                // https://docs.microsoft.com/azure/iot-hub/iot-hub-csharp-csharp-getstarted
+                // to find the connection string value.
+                // The connection string can be stored in the 'appsettings.ini' configuration
+                // file, or in the PCS_IOTHUB_CONNSTRING environment variable. When
+                // working with VisualStudio, the environment variable can be set in the
+                // WebService project settings, under the "Debug" tab.
+                throw new Exception("The service configuration is incomplete. " +
+                                    "Please provide your Azure IoT Hub connection string. " +
+                                    "For more information, see the environment variables " +
+                                    "used in project properties and the 'iothub_connstring' " +
+                                    "value in the 'appsettings.ini' configuration file.");
+            }
+
             this.ServicesConfig = new ServicesConfig
             {
                 HubConnString = configData.GetString(IoTHubConnStrKey)

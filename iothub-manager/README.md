@@ -41,10 +41,8 @@ For Debugging:
 
 1. Set your PCS_IOTHUB_CONNSTRING system environment variable for your
    IoT Hub connection.
-2. Set your PCS_IOTHUBMANAGER_WEBSERVICE_PORT system environment variable
-   for the port to be used by the web service, for example 9002.
-3. Run F5 from VS.
-4. Hit the REST api for the web service using:
+2. Run F5 from VS.
+3. Hit the REST api for the web service using:
 	* http://127.0.0.1:9002/v1/status (checks status of the web service)
 	* http://127.0.0.1:9002/v1/devices (queries for all devices)
 	* http://127.0.0.1:9002/v1/devices/<yourindividualdevice> (queries for a
@@ -69,13 +67,10 @@ Configuration
 
 1. webservice\appsettings.ini allows configuring the microservice, like
    IoT Hub connection string and web service TCP port. By default, the
-   file references the two environment variables below:
+   file references the environment variable below:
    1. PCS_IOTHUB_CONNSTRING is a system environment variable and should contain
    your IoT Hub connection string. Create this environment variable before
    running the microservice.
-   2. PCS_IOTHUBMANAGER_WEBSERVICE_PORT is a system environment variable and
-   should contain the TCP port number where the web service listens for
-   requests.
 4. <todo - logging/monitoring>
 
 Other documents

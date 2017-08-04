@@ -47,6 +47,7 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
     mkdir %PCS_CACHE%\sandbox\.config > NUL 2>&1
     mkdir %PCS_CACHE%\sandbox\.dotnet > NUL 2>&1
     mkdir %PCS_CACHE%\sandbox\.nuget > NUL 2>&1
+    echo Note: caching build files in %PCS_CACHE%
 
     :: Start the sandbox and execute the compilation script
     docker run -it ^

@@ -87,7 +87,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         }
 
         /// <summary>
-        /// Interactively invokes a method on device 
+        /// Interactively invokes a method on device
         /// </summary>
         /// <param name="id">Device Id</param>
         /// <param name="parameter">Device method parameters (passthrough to device)</param>

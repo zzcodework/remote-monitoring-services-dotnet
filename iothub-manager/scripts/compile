@@ -27,6 +27,7 @@ setup_sandbox_cache() {
     mkdir -p $PCS_CACHE/sandbox/.config
     mkdir -p $PCS_CACHE/sandbox/.dotnet
     mkdir -p $PCS_CACHE/sandbox/.nuget
+    echo "Note: caching build files in $PCS_CACHE"
 }
 
 compile_in_sandbox() {
@@ -51,6 +52,7 @@ compile_in_sandbox() {
             azureiotpcs/code-builder-dotnet:1.0-dotnetcore /opt/scripts/compile
     else
         # Note 'winpty' is required to provide a TTY to Docker
+        echo "Launching cmd.exe /c winpty ..."
         cmd.exe /c "winpty .\scripts\compile.cmd" --in-sandbox
     fi
 }

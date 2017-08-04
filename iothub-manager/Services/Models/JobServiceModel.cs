@@ -70,8 +70,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                     this.Status = JobStatus.Unknown;
                     break;
             }
-            //this.Type = 
-            //this.Status = 
+            //this.Type =
+            //this.Status =
 
             if (jobResponse.CloudToDeviceMethod != null)
             {
@@ -92,7 +92,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             }
         }
 
- 
+
         public static Microsoft.Azure.Devices.JobType? ToJobTypeAzureModel(JobType? jobType)
         {
             if (!jobType.HasValue)
@@ -132,7 +132,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             }
         }
     }
-    
+
     /// <summary>
     /// refer to Microsoft.Azure.Devices.JobType
     /// </summary>

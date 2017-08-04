@@ -4,7 +4,6 @@
 # Run the service in the local environment:  ./scripts/run
 # Run the service inside a Docker container: ./scripts/run -s
 # Run the service inside a Docker container: ./scripts/run --in-sandbox
-# Run only the web service:                  ./scripts/run --webservice
 # Show how to use this script:               ./scripts/run -h
 # Show how to use this script:               ./scripts/run --help
 
@@ -24,14 +23,26 @@ help() {
     echo "Usage:"
     echo "  Run the service in the local environment:  ./scripts/run"
     echo "  Run the service inside a Docker container: ./scripts/run -s|--in-sandbox"
-    echo "  Run only the web service:                  ./scripts/run --webservice"
     echo "  Show how to use this script:               ./scripts/run -h|--help"
+}
+
+run() {
+    check_dependency_dotnet
+
+    cd $APP_HOME
+    ./scripts/env-vars-check
+
+    dotnet restore --verbosity=quiet
+
+    echo "Starting IoT Hub Manager..."
+    dotnet run --configuration $CONFIGURATION --project WebService/*.csproj
 }
 
 setup_sandbox_cache() {
     mkdir -p $PCS_CACHE/sandbox/.config
     mkdir -p $PCS_CACHE/sandbox/.dotnet
     mkdir -p $PCS_CACHE/sandbox/.nuget
+    echo "Note: caching build files in $PCS_CACHE"
 }
 
 run_in_sandbox() {
@@ -52,8 +63,7 @@ run_in_sandbox() {
         ./scripts/env-vars-check
 
         docker run -it \
-            -p $PCS_IOTHUBMANAGER_WEBSERVICE_PORT:$PCS_IOTHUBMANAGER_WEBSERVICE_PORT \
-            -e "PCS_IOTHUBMANAGER_WEBSERVICE_PORT=$PCS_IOTHUBMANAGER_WEBSERVICE_PORT" \
+            -p 9002:9002 \
             -e "PCS_IOTHUB_CONNSTRING=$PCS_IOTHUB_CONNSTRING" \
             -v "$PCS_CACHE/sandbox/.config:/root/.config" \
             -v "$PCS_CACHE/sandbox/.dotnet:/root/.dotnet" \
@@ -62,28 +72,9 @@ run_in_sandbox() {
             azureiotpcs/code-builder-dotnet:1.0-dotnetcore /opt/scripts/run
     else
         # Note 'winpty' is required to provide a TTY to Docker
+        echo "Launching cmd.exe /c winpty ..."
         cmd.exe /c "winpty .\scripts\run.cmd" --in-sandbox
     fi
-}
-
-prepare_for_run() {
-    check_dependency_dotnet
-    cd $APP_HOME
-
-    ./scripts/env-vars-check
-
-    dotnet restore --verbosity=quiet
-}
-
-run_all() {
-    echo "Starting web service..."
-    dotnet run --configuration $CONFIGURATION --project WebService/*.csproj && \
-        fg
-}
-
-run_webservice() {
-    echo "Starting web service..."
-    dotnet run --configuration $CONFIGURATION --project WebService/*.csproj
 }
 
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
@@ -93,13 +84,7 @@ fi
 if [[ "$1" == "--in-sandbox" || "$1" == "-s" ]]; then
     run_in_sandbox
 else
-    prepare_for_run
-    if [[ "$1" == "" ]]; then
-        run_all
-    fi
-    if [[ "$1" == "--webservice" ]]; then
-        run_webservice
-    fi
+    run
 fi
 
 set +e

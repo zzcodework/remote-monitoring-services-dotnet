@@ -61,7 +61,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
                 var result = await this.jobs.ScheduleTwinUpdateAsync(parameter.JobId, parameter.QueryCondition, parameter.UpdateTwin.ToServiceModel(), parameter.StartTimeUtc ?? DateTime.UtcNow, parameter.MaxExecutionTimeInSeconds);
                 return new JobApiModel(result);
             }
-            
+
             if(parameter.MethodParameter != null)
             {
                 var result = await this.jobs.ScheduleDeviceMethodAsync(parameter.JobId, parameter.QueryCondition, parameter.MethodParameter.ToServiceModel(), parameter.StartTimeUtc ?? DateTime.UtcNow, parameter.MaxExecutionTimeInSeconds);

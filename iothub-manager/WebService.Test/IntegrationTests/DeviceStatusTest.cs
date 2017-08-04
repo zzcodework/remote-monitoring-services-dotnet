@@ -115,7 +115,7 @@ namespace WebService.Test.IntegrationTests
                     TelemetryType = "Type1;Type2"
                 };
 
-                // update twin by adding config 
+                // update twin by adding config
                 var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
                 if (device.DesiredProperties.ContainsKey("config"))
                 {

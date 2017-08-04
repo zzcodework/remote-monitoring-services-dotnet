@@ -36,7 +36,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{B8F0
 		scripts\env-vars-check.cmd = scripts\env-vars-check.cmd
 		scripts\env-vars-setup = scripts\env-vars-setup
 		scripts\env-vars-setup.cmd = scripts\env-vars-setup.cmd
-		scripts\env-vars-setup.ps1 = scripts\env-vars-setup.ps1
 		scripts\run = scripts\run
 		scripts\run.cmd = scripts\run.cmd
 		scripts\travis = scripts\travis

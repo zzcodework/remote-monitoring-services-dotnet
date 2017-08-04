@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
-    public class MethodParameterApiModel 
+    public class MethodParameterApiModel
     {
         public string Name { get; set; }
 
