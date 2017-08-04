@@ -150,6 +150,45 @@ namespace WebService.Test.IntegrationTests
             }
         }
 
+
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public void UpdateTwinUsingMismatchEtagIsHealthy()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var deviceId = "testDevice1";
+            var device = this.CreateDeviceIfNotExists(deviceId);
+
+            try
+            {
+                var newTagValue = System.Guid.NewGuid().ToString();
+
+                device.Etag = device.Etag + "wrong";
+
+                // update twin by adding/editing a tag
+                if (device.Tags.ContainsKey("newTag"))
+                {
+                    device.Tags["newTag"] = newTagValue;
+                }
+                else
+                {
+                    device.Tags.Add("newTag", newTagValue);
+                }
+
+                var request = new HttpRequest();
+                request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices/{deviceId}");
+                request.SetContent(device);
+
+                var response = this.httpClient.PutAsync(request).Result;
+                Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+            }
+            finally
+            {
+                // clean it up
+                this.DeleteDeviceIfExists(deviceId);
+            }
+        }
+
         public class NewConfig
         {
             public int TelemetryInterval { get; set; }

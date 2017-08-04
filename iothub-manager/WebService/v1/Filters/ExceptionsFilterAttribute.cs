@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Exceptions;
 using Newtonsoft.Json;
+using Microsoft.Azure.Devices.Common.Exceptions;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
 {
@@ -45,6 +46,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
             else if (context.Exception is InvalidConfigurationException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.InternalServerError, context.Exception);
+            }
+            else if (context.Exception is PreconditionFailedException)
+            {
+                if (context.Exception.Message.Contains("ETag mismatch"))
+                {
+                    context.Result = this.GetResponse(HttpStatusCode.Conflict, context.Exception);
+                }
             }
             else if (context.Exception != null)
             {
