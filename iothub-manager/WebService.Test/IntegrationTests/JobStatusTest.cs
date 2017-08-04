@@ -44,7 +44,7 @@ namespace WebService.Test.IntegrationTests
 
             try
             {
-                var updateTwin = new DeviceTwinApiModel();
+                var updateTwin = new JobUpdateTwinApiModel();
                 updateTwin.Tags["testTag"] = newTagValue;
 
                 var jobId = "jobTest" + DateTime.Now.Ticks;
@@ -139,11 +139,9 @@ namespace WebService.Test.IntegrationTests
 
             if( tags != null)
             {
-                device.Twin = new DeviceTwinApiModel();
-
                 foreach (var tag in tags)
                 {
-                    device.Twin.Tags.Add(tag.Key, tag.Value);
+                    device.Tags.Add(tag.Key, tag.Value);
                 }
             }
 

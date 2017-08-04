@@ -63,12 +63,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
         }
 
-        public Device ToAzureModel()
+        public Device ToAzureModel(bool ignoreEtag = true)
         {
-            return new Device(this.Id)
+            var device = new Device(this.Id)
             {
-                ETag = this.Etag
+                ETag = ignoreEtag ? null : this.Etag
             };
+
+            return device;
         }
     }
 }

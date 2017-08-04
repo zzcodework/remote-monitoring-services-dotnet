@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
-    public class DeviceTwinApiModel
+    public class JobUpdateTwinApiModel
     {
         public string Etag { get; set; }
         public string DeviceId { get; set; }
@@ -16,14 +16,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public Dictionary<string, JToken> Tags { get; set; }
         public bool IsSimulated { get; set; }
 
-        public DeviceTwinApiModel()
+        public JobUpdateTwinApiModel()
         {
             this.ReportedProperties = new Dictionary<string, JToken>();
             this.DesiredProperties = new Dictionary<string, JToken>();
             this.Tags = new Dictionary<string, JToken>();
         }
 
-        public DeviceTwinApiModel(string deviceId, DeviceTwinServiceModel deviceTwin)
+        public JobUpdateTwinApiModel(string deviceId, DeviceTwinServiceModel deviceTwin)
         {
             if (deviceTwin != null)
             {

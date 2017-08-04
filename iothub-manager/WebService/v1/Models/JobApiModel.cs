@@ -25,7 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         public MethodParameterApiModel MethodParameter { get; set; }
 
-        public DeviceTwinApiModel UpdateTwin { get; set; }
+        public JobUpdateTwinApiModel UpdateTwin { get; set; }
 
         public string FailureReason { get; set; }
 
@@ -50,7 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 this.Type = serviceModel.Type;
                 this.Status = serviceModel.Status;
                 this.MethodParameter = new MethodParameterApiModel(serviceModel.MethodParameter);
-                this.UpdateTwin = new DeviceTwinApiModel(null, serviceModel.UpdateTwin);
+                this.UpdateTwin = new JobUpdateTwinApiModel(null, serviceModel.UpdateTwin);
                 this.FailureReason = serviceModel.FailureReason;
                 this.StatusMessage = serviceModel.StatusMessage;
                 this.ResultStatistics = serviceModel.ResultStatistics;

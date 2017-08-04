@@ -100,7 +100,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
             else
             {
-                azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.Etag);
+                azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), "*");
             }
 
             return new DeviceServiceModel(azureDevice, azureTwin, this.ioTHubHostName);

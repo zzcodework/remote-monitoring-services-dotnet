@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
@@ -44,8 +45,17 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             { "$twin_uri", "/" + Version.Path + "/devices/" + this.Id + "/twin" }
         };
 
-        [JsonProperty(PropertyName = "Twin", NullValueHandling = NullValueHandling.Ignore)]
-        public DeviceTwinApiModel Twin { get; set; }
+        [JsonProperty(PropertyName = "reportedProperties", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, JToken> ReportedProperties { get; set; }
+
+        [JsonProperty(PropertyName = "desiredProperties", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, JToken> DesiredProperties { get; set; }
+
+        [JsonProperty(PropertyName = "tags", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, JToken> Tags { get; set; }
+
+        [JsonProperty(PropertyName = "isSimulated", NullValueHandling = NullValueHandling.Ignore)]
+        public bool IsSimulated { get; set; }
 
         public DeviceRegistryApiModel()
         {
@@ -62,23 +72,75 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.Connected = device.Connected;
             this.Enabled = device.Enabled;
             this.LastStatusUpdated = device.LastStatusUpdated;
-            this.Twin = new DeviceTwinApiModel(device.Id,device.Twin);
             this.IoTHubHostName = device.IoTHubHostName;
             this.AuthPrimaryKey = device.AuthPrimaryKey;
+
+            if (device.Twin != null)
+            {
+                this.Etag = $"{this.Etag}|{device.Twin.Etag}";
+                this.DesiredProperties = device.Twin.DesiredProperties;
+                this.ReportedProperties = device.Twin.ReportedProperties;
+                this.Tags = device.Twin.Tags;
+                this.IsSimulated = device.Twin.IsSimulated;
+            }
+        }
+
+        internal string DeviceRegistryEtag
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.Etag))
+                {
+                    var etags = this.Etag.Split('|');
+                    if (etags.Length > 0)
+                    {
+                        return etags[0];
+                    }
+                }
+
+                return "*";
+            }
+        }
+
+        internal string TwinEtag
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.Etag))
+                {
+                    var etags = this.Etag.Split('|');
+                    if (etags.Length > 1)
+                    {
+                        return etags[1];
+                    }
+                }
+
+                return "*";
+            }
         }
 
         public DeviceServiceModel ToServiceModel()
         {
+            var twinModel = new DeviceTwinServiceModel
+            (
+                etag: this.TwinEtag,
+                deviceId: this.Id,
+                desiredProperties: this.DesiredProperties,
+                reportedProperties: this.ReportedProperties,
+                tags: this.Tags,
+                isSimulated: this.IsSimulated
+            );
+
             return new DeviceServiceModel
             (
-                etag: this.Etag,
+                etag: this.DeviceRegistryEtag,
                 id: this.Id,
                 c2DMessageCount: this.C2DMessageCount,
                 lastActivity: this.LastActivity,
                 connected: this.Connected,
                 enabled: this.Enabled,
                 lastStatusUpdated: this.LastStatusUpdated,
-                twin: this.Twin?.ToServiceModel(),
+                twin: twinModel,
                 ioTHubHostName: this.IoTHubHostName,
                 primaryKey: this.AuthPrimaryKey
             );

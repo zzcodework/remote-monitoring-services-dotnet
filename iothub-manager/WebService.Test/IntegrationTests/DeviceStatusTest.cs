@@ -100,13 +100,13 @@ namespace WebService.Test.IntegrationTests
                 var newTagValue = System.Guid.NewGuid().ToString();
 
                 // update twin by adding/editing a tag
-                if (device.Twin.Tags.ContainsKey("newTag"))
+                if (device.Tags.ContainsKey("newTag"))
                 {
-                    device.Twin.Tags["newTag"] = newTagValue;
+                    device.Tags["newTag"] = newTagValue;
                 }
                 else
                 {
-                    device.Twin.Tags.Add("newTag", newTagValue);
+                    device.Tags.Add("newTag", newTagValue);
                 }
 
                 var newConfig = new NewConfig
@@ -117,13 +117,13 @@ namespace WebService.Test.IntegrationTests
 
                 // update twin by adding config 
                 var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
-                if (device.Twin.DesiredProperties.ContainsKey("config"))
+                if (device.DesiredProperties.ContainsKey("config"))
                 {
-                    device.Twin.DesiredProperties["config"] = configValue;
+                    device.DesiredProperties["config"] = configValue;
                 }
                 else
                 {
-                    device.Twin.DesiredProperties.Add("config", configValue);
+                    device.DesiredProperties.Add("config", configValue);
                 }
 
                 var request = new HttpRequest();
@@ -133,13 +133,13 @@ namespace WebService.Test.IntegrationTests
                 var response = this.httpClient.PutAsync(request).Result;
 
                 device = JsonConvert.DeserializeObject<DeviceRegistryApiModel>(response.Content);
-                Assert.Equal(newTagValue, device.Twin.Tags["newTag"]);
+                Assert.Equal(newTagValue, device.Tags["newTag"]);
 
                 // get device again
                 device = this.GetDevice(deviceId);
-                Assert.Equal(newTagValue, device.Twin.Tags["newTag"]);
+                Assert.Equal(newTagValue, device.Tags["newTag"]);
 
-                var configInTwin = JsonConvert.DeserializeObject<NewConfig>(device.Twin.DesiredProperties["config"].ToString());
+                var configInTwin = JsonConvert.DeserializeObject<NewConfig>(device.DesiredProperties["config"].ToString());
                 Assert.Equal(10, configInTwin.TelemetryInterval);
 
             }
@@ -196,13 +196,13 @@ namespace WebService.Test.IntegrationTests
 
                 // update newTag/desired property
                 {
-                    if (device.Twin.Tags.ContainsKey("newTag"))
+                    if (device.Tags.ContainsKey("newTag"))
                     {
-                        device.Twin.Tags["newTag"] = newTagValue;
+                        device.Tags["newTag"] = newTagValue;
                     }
                     else
                     {
-                        device.Twin.Tags.Add("newTag", newTagValue);
+                        device.Tags.Add("newTag", newTagValue);
                     }
 
                     var newConfig = new NewConfig
@@ -212,13 +212,13 @@ namespace WebService.Test.IntegrationTests
 
                     // update desired value
                     var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
-                    if (device.Twin.DesiredProperties.ContainsKey("config"))
+                    if (device.DesiredProperties.ContainsKey("config"))
                     {
-                        device.Twin.DesiredProperties["config"] = configValue;
+                        device.DesiredProperties["config"] = configValue;
                     }
                     else
                     {
-                        device.Twin.DesiredProperties.Add("config", configValue);
+                        device.DesiredProperties.Add("config", configValue);
                     }
 
                     var newReport = new NewConfig
