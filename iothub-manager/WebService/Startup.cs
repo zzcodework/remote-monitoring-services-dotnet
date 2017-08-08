@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Linq;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
 {
@@ -53,14 +57,80 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            // Enable CORS with any header, method and origin
-            app.UseCors(build => build.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseCors(this.BuildCorsPolicy);
 
             app.UseMvc();
 
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+        }
+
+        private void BuildCorsPolicy(CorsPolicyBuilder builder)
+        {
+            var config = this.ApplicationContainer.Resolve<IConfig>();
+
+            // ToDo: replace Trace via ILogger aftre sync with template project
+            CorsWhitelistModel model;
+            try
+            {
+                model = JsonConvert.DeserializeObject<CorsWhitelistModel>(config.CorsWhitelist);
+                if (model == null)
+                {
+                    Console.WriteLine($"Invalid CORS whitelist, ignored: {config.CorsWhitelist}");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Invalid CORS whitelist, ignored: {config.CorsWhitelist}, {ex.Message}");
+                return;
+            }
+
+            if (model.Origins == null)
+            {
+                Console.WriteLine("No setting for CORS origin policy was found, ignore");
+            }
+            else if (model.Origins.Contains("*"))
+            {
+                Console.WriteLine("CORS policy allowed any origin");
+                builder.AllowAnyOrigin();
+            }
+            else
+            {
+                Console.WriteLine($"Add specified origins to CORS policy: [{string.Join(", ", model.Origins)}]");
+                builder.WithOrigins(model.Origins);
+            }
+
+            if (model.Origins == null)
+            {
+                Console.WriteLine("No setting for CORS method policy was found, ignore");
+            }
+            else if (model.Methods.Contains("*"))
+            {
+                Console.WriteLine("CORS policy allowed any method");
+                builder.AllowAnyMethod();
+            }
+            else
+            {
+                Console.WriteLine($"Add specified methods to CORS policy: [{string.Join(", ", model.Methods)}]");
+                builder.WithMethods(model.Methods);
+            }
+
+            if (model.Origins == null)
+            {
+                Console.WriteLine("No setting for CORS header policy was found, ignore");
+            }
+            else if (model.Headers.Contains("*"))
+            {
+                Console.WriteLine("CORS policy allowed any header");
+                builder.AllowAnyHeader();
+            }
+            else
+            {
+                Console.WriteLine($"Add specified headers to CORS policy: [{string.Join(", ", model.Headers)}]");
+                builder.WithHeaders(model.Headers);
+            }
         }
     }
 }
