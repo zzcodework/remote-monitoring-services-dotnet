@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System;
-using System.IO;
+using System.Linq;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
@@ -10,6 +9,9 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
     {
         /// <summary>Web service listening port</summary>
         int Port { get; }
+
+        /// <summary>CORS whitelist, in form { "origins": [], "methods": [], "headers": [] }</summary>
+        string CorsWhitelist { get; }
 
         /// <summary>Service layer configuration</summary>
         IServicesConfig ServicesConfig { get; }
@@ -20,9 +22,14 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
     {
         private const string ApplicationKey = "Auth:";
         private const string PortKey = ApplicationKey + "webservice_port";
+        private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
+        private const string AlgorithmsKey = ApplicationKey + "supported_signature_algorithms";
 
         /// <summary>Web service listening port</summary>
         public int Port { get; }
+
+        /// <summary>CORS whitelist, in form { "origins": [], "methods": [], "headers": [] }</summary>
+        public string CorsWhitelist { get; }
 
         /// <summary>Service layer configuration</summary>
         public IServicesConfig ServicesConfig { get; }
@@ -30,16 +37,16 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
         public Config(IConfigData configData)
         {
             this.Port = configData.GetInt(PortKey);
+            this.CorsWhitelist = configData.GetString(CorsWhitelistKey);
 
             this.ServicesConfig = new ServicesConfig
             {
+                Protocols = configData
+                    .GetSectionNames()
+                    .Where(s => s.StartsWith("Protocol"))
+                    .Select(key => new ProtocolConfig(configData.GetSection(key))),
+                SupportedSignatureAlgorithms = configData.GetString(AlgorithmsKey).Split(',')
             };
-        }
-
-        private static string MapRelativePath(string path)
-        {
-            if (path.StartsWith(".")) return AppContext.BaseDirectory + Path.DirectorySeparatorChar + path;
-            return path;
         }
     }
 }

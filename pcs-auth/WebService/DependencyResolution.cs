@@ -3,6 +3,7 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.Azure.IoTSolutions.Auth.Services;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime;
@@ -61,6 +62,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService
             // By default Autofac uses a request lifetime, creating new objects
             // for each request, which is good to reduce the risk of memory
             // leaks, but not so good for the overall performance.
+            builder.RegisterType<Protocols>().As<IProtocols>().SingleInstance();
+            builder.RegisterType<UserInformation>().As<IUserInformation>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)

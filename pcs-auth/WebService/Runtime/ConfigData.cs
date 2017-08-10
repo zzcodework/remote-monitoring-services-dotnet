@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Exceptions;
@@ -13,6 +14,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
     {
         string GetString(string key);
         int GetInt(string key);
+        IEnumerable<string> GetSectionNames();
+        IEnumerable<KeyValuePair<string, string>> GetSection(string key);
     }
 
     public class ConfigData : IConfigData
@@ -46,6 +49,19 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
             {
                 throw new InvalidConfigurationException($"Unable to load configuration value for '{key}'", e);
             }
+        }
+
+        public IEnumerable<string> GetSectionNames()
+        {
+            return this.configuration.GetChildren().Select(pair => pair.Key);
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> GetSection(string key)
+        {
+            return this.configuration
+                .GetSection(key)
+                .GetChildren()
+                .Select(pair => new KeyValuePair<string, string>(pair.Key, ReplaceEnvironmentVariables(pair.Value)));
         }
 
         private static string ReplaceEnvironmentVariables(string value)
