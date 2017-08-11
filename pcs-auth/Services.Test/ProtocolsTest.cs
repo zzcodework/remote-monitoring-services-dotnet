@@ -30,6 +30,8 @@ namespace Services.Test
                 rand.NextString(),
                 rand.NextString()
             };
+            var algorithmsA = rand.NextString();
+            var algorithmsB = rand.NextString();
 
             var config = new ServicesConfig
             {
@@ -43,18 +45,22 @@ namespace Services.Test
                         { "p1", parameters[1] },
                         { "p2", parameters[2] }
                     })
-                }
+                },
+                SupportedSignatureAlgorithms = new[] { algorithmsA, algorithmsB }
             };
 
             var protocols = new Protocols(config);
-            var models = protocols.GetAll();
+            var model = protocols.GetAll();
 
-            Assert.Equal(models.Count(), 1);
-            Assert.Equal(models.Single().Name, name);
-            Assert.Equal(models.Single().Type, type);
-            Assert.Equal(models.Single().Parameters["p0"], parameters[0]);
-            Assert.Equal(models.Single().Parameters["p1"], parameters[1]);
-            Assert.Equal(models.Single().Parameters["p2"], parameters[2]);
+            Assert.Equal(model.Items.Count(), 1);
+            Assert.Equal(model.Items.Single().Name, name);
+            Assert.Equal(model.Items.Single().Type, type);
+            Assert.Equal(model.Items.Single().Parameters["p0"], parameters[0]);
+            Assert.Equal(model.Items.Single().Parameters["p1"], parameters[1]);
+            Assert.Equal(model.Items.Single().Parameters["p2"], parameters[2]);
+            Assert.Equal(model.SupportedSignatureAlgorithms.Count(), 2);
+            Assert.True(model.SupportedSignatureAlgorithms.Contains(algorithmsA));
+            Assert.True(model.SupportedSignatureAlgorithms.Contains(algorithmsB));
         }
     }
 }

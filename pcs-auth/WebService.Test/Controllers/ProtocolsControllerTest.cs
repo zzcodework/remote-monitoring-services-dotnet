@@ -31,26 +31,32 @@ namespace WebService.Test.Controllers
             var protoalAType = rand.NextString();
             var protoalBName = rand.NextString();
             var protoalBType = rand.NextString();
+            var algorithmA = rand.NextString();
+            var algorithmB = rand.NextString();
 
-            var models = new[]
+            var model = new ProtocolListServiceModel
             {
-                new ProtocolServiceModel
+                Items = new[]
                 {
-                    Name = protoalAName,
-                    Type = protoalAType
+                    new ProtocolServiceModel
+                    {
+                        Name = protoalAName,
+                        Type = protoalAType
+                    },
+                    new ProtocolServiceModel
+                    {
+                        Name = protoalBName,
+                        Type = protoalBType
+                    },
                 },
-                new ProtocolServiceModel
-                {
-                    Name = protoalBName,
-                    Type = protoalBType
-                },
+                SupportedSignatureAlgorithms = new[] { algorithmA, algorithmB }
             };
 
             mockProtocols
                 .Setup(x => x.GetAll())
-                .Returns(models);
+                .Returns(model);
 
-            var model = controller.Get();
+            var result = controller.Get();
 
             this.mockProtocols
                 .Verify(x => x.GetAll(), Times.Once);
@@ -60,6 +66,9 @@ namespace WebService.Test.Controllers
             Assert.Equal(model.Items.First().Type, protoalAType);
             Assert.Equal(model.Items.Last().Name, protoalBName);
             Assert.Equal(model.Items.Last().Type, protoalBType);
+            Assert.Equal(result.SupportedSignatureAlgorithms.Count(), 2);
+            Assert.True(result.SupportedSignatureAlgorithms.Contains(algorithmA));
+            Assert.True(result.SupportedSignatureAlgorithms.Contains(algorithmB));
         }
     }
 }

@@ -11,12 +11,16 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Models
     {
         public IEnumerable<ProtocolApiModel> Items { get; }
 
+        public IEnumerable<string> SupportedSignatureAlgorithms { get; }
+
         [JsonProperty("$metadata")]
         public Dictionary<string, string> Metadata { get; }
 
-        public ProtocolListApiModel(IEnumerable<ProtocolServiceModel> models)
+        public ProtocolListApiModel(ProtocolListServiceModel model)
         {
-            Items = models.Select(m => new ProtocolApiModel(m));
+            Items = model.Items.Select(m => new ProtocolApiModel(m));
+
+            SupportedSignatureAlgorithms = model.SupportedSignatureAlgorithms;
 
             Metadata = new Dictionary<string, string>
             {

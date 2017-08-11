@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Models;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
@@ -9,19 +8,23 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
 {
     public class Protocols : IProtocols
     {
-        private readonly IEnumerable<ProtocolServiceModel> protocols;
+        private readonly ProtocolListServiceModel protocols;
 
         public Protocols(IServicesConfig config)
         {
-            protocols = config.Protocols.Select(p => new ProtocolServiceModel
+            protocols = new ProtocolListServiceModel
             {
-                Name = p.Name,
-                Type = p.Type,
-                Parameters = p.Parameters
-            });
+                Items = config.Protocols.Select(p => new ProtocolServiceModel
+                {
+                    Name = p.Name,
+                    Type = p.Type,
+                    Parameters = p.Parameters
+                }),
+                SupportedSignatureAlgorithms = config.SupportedSignatureAlgorithms
+            };
         }
 
-        public IEnumerable<ProtocolServiceModel> GetAll()
+        public ProtocolListServiceModel GetAll()
         {
             return protocols;
         }
