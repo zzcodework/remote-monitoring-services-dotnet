@@ -60,7 +60,9 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
 
     :: Start the sandbox and execute the build script
     docker run -it ^
-        -e "PCS_AUTH_WEBSERVICE_PORT=%PCS_AUTH_WEBSERVICE_PORT%" ^
+        -e "PCS_AUTH_AAD_GLOBAL_TENANTID=$PCS_AUTH_AAD_GLOBAL_TENANTID" ^
+        -e "PCS_AUTH_AAD_GLOBAL_CLIENTID=$PCS_AUTH_AAD_GLOBAL_CLIENTID" ^
+        -e "PCS_AUTH_AAD_GLOBAL_LOGINURI=$PCS_AUTH_AAD_GLOBAL_LOGINURI" ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^

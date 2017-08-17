@@ -11,4 +11,4 @@
 
 # The port where this project's web service is listening
 # See https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/wiki/Infrastructure
-export PCS_AUTH_WEBSERVICE_PORT="9021"
+export PCS_AUTH_WEBSERVICE_PORT="9001"

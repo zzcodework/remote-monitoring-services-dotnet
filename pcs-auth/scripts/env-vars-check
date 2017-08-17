@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ -z "$PCS_AUTH_WEBSERVICE_PORT" ]]; then
-    echo "Error: the PCS_AUTH_WEBSERVICE_PORT environment variable is not defined."
+if [[ -z "$PCS_AUTH_AAD_GLOBAL_TENANTID" ]]; then
+    echo "Error: the PCS_AUTH_AAD_GLOBAL_TENANTID environment variable is not defined."
     exit -1
 fi

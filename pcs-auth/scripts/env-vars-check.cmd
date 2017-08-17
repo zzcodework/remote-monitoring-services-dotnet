@@ -1,6 +1,6 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
-IF "%PCS_AUTH_WEBSERVICE_PORT%" == "" (
-    echo Error: the PCS_AUTH_WEBSERVICE_PORT environment variable is not defined.
+IF "%PCS_AUTH_AAD_GLOBAL_TENANTID%" == "" (
+    echo Error: the PCS_AUTH_AAD_GLOBAL_TENANTID environment variable is not defined.
     exit /B 1
 )
