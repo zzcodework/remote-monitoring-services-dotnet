@@ -46,6 +46,7 @@ setup_sandbox_cache() {
     mkdir -p $PCS_CACHE/sandbox/.config
     mkdir -p $PCS_CACHE/sandbox/.dotnet
     mkdir -p $PCS_CACHE/sandbox/.nuget
+    echo "Note: caching .NET files in $PCS_CACHE"
 }
 
 build_in_sandbox() {
@@ -53,8 +54,6 @@ build_in_sandbox() {
     setup_sandbox_cache
 
     cd $APP_HOME
-
-    echo "Note: caching .NET files in $PCS_CACHE"
 
     # On Windows this script should use docker.exe, in which case
     # the parameters syntax is different, e.g. volumes path
