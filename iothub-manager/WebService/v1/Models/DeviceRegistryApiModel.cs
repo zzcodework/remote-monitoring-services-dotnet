@@ -45,16 +45,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             { "$twin_uri", "/" + Version.Path + "/devices/" + this.Id + "/twin" }
         };
 
-        [JsonProperty(PropertyName = "reportedProperties", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, JToken> ReportedProperties { get; set; }
+        [JsonProperty(PropertyName = "Properties", NullValueHandling = NullValueHandling.Ignore)]
+        public TwinPropertiesModel Properties { get; set; }
 
-        [JsonProperty(PropertyName = "desiredProperties", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, JToken> DesiredProperties { get; set; }
-
-        [JsonProperty(PropertyName = "tags", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "Tags", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, JToken> Tags { get; set; }
 
-        [JsonProperty(PropertyName = "isSimulated", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "IsSimulated", NullValueHandling = NullValueHandling.Ignore)]
         public bool IsSimulated { get; set; }
 
         public DeviceRegistryApiModel()
@@ -78,8 +75,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             if (device.Twin != null)
             {
                 this.Etag = $"{this.Etag}|{device.Twin.Etag}";
-                this.DesiredProperties = device.Twin.DesiredProperties;
-                this.ReportedProperties = device.Twin.ReportedProperties;
+                this.Properties = new TwinPropertiesModel(device.Twin.DesiredProperties, device.Twin.ReportedProperties);
                 this.Tags = device.Twin.Tags;
                 this.IsSimulated = device.Twin.IsSimulated;
             }
@@ -125,8 +121,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             (
                 etag: this.TwinEtag,
                 deviceId: this.Id,
-                desiredProperties: this.DesiredProperties,
-                reportedProperties: this.ReportedProperties,
+                desiredProperties: this.Properties?.Desired,
+                reportedProperties: this.Properties?.Reported,
                 tags: this.Tags,
                 isSimulated: this.IsSimulated
             );

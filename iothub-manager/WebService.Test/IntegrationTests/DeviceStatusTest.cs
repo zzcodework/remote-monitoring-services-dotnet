@@ -117,13 +117,13 @@ namespace WebService.Test.IntegrationTests
 
                 // update twin by adding config
                 var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
-                if (device.DesiredProperties.ContainsKey("config"))
+                if (device.Properties.Desired.ContainsKey("config"))
                 {
-                    device.DesiredProperties["config"] = configValue;
+                    device.Properties.Desired["config"] = configValue;
                 }
                 else
                 {
-                    device.DesiredProperties.Add("config", configValue);
+                    device.Properties.Desired.Add("config", configValue);
                 }
 
                 var request = new HttpRequest();
@@ -139,7 +139,7 @@ namespace WebService.Test.IntegrationTests
                 device = this.GetDevice(deviceId);
                 Assert.Equal(newTagValue, device.Tags["newTag"]);
 
-                var configInTwin = JsonConvert.DeserializeObject<NewConfig>(device.DesiredProperties["config"].ToString());
+                var configInTwin = JsonConvert.DeserializeObject<NewConfig>(device.Properties.Desired["config"].ToString());
                 Assert.Equal(10, configInTwin.TelemetryInterval);
 
             }
@@ -251,13 +251,13 @@ namespace WebService.Test.IntegrationTests
 
                     // update desired value
                     var configValue = JToken.Parse(JsonConvert.SerializeObject(newConfig));
-                    if (device.DesiredProperties.ContainsKey("config"))
+                    if (device.Properties.Desired.ContainsKey("config"))
                     {
-                        device.DesiredProperties["config"] = configValue;
+                        device.Properties.Desired["config"] = configValue;
                     }
                     else
                     {
-                        device.DesiredProperties.Add("config", configValue);
+                        device.Properties.Desired.Add("config", configValue);
                     }
 
                     var newReport = new NewConfig
