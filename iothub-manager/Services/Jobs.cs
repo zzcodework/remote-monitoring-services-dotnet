@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 
@@ -19,7 +21,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
     public class Jobs : IJobs
     {
-        private readonly Azure.Devices.JobClient jobClient;
+        private Azure.Devices.JobClient jobClient;
 
         public Jobs(IServicesConfig config)
         {
@@ -28,7 +30,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException("config");
             }
 
-            this.jobClient = Azure.Devices.JobClient.CreateFromConnectionString(config.HubConnString);
+            IoTHubConnectionHelper.CreateUsingHubConnectionString(config.HubConnString, (conn) =>
+            {
+                this.jobClient = Azure.Devices.JobClient.CreateFromConnectionString(conn);
+            });
         }
 
         public async Task<IEnumerable<JobServiceModel>> GetJobsAsync(JobType? jobType, JobStatus? jobStatus, int? pageSize)

@@ -38,12 +38,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
                 context.Result = this.GetResponse(HttpStatusCode.Conflict, context.Exception);
             }
             else if (context.Exception is BadRequestException
-                     || context.Exception is ArgumentException   
+                     || context.Exception is ArgumentException
                      || context.Exception is InvalidInputException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.BadRequest, context.Exception);
             }
-            else if (context.Exception is InvalidConfigurationException)
+            else if (context.Exception != null
+                     && context.Exception.GetBaseException() is InvalidConfigurationException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.InternalServerError, context.Exception);
             }

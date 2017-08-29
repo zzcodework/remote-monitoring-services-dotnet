@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 using System;
@@ -15,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
     public class DeviceService : IDeviceService
     {
-        private readonly ServiceClient serviceClient;
+        private ServiceClient serviceClient;
 
         public DeviceService(IServicesConfig config)
         {
@@ -24,7 +26,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException("config");
             }
 
-            this.serviceClient = ServiceClient.CreateFromConnectionString(config.HubConnString);
+            IoTHubConnectionHelper.CreateUsingHubConnectionString(config.HubConnString, (conn) =>
+            {
+                this.serviceClient = ServiceClient.CreateFromConnectionString(conn);
+            });
         }
 
         public async Task<MethodResultServiceModel> InvokeDeviceMethodAsync(string deviceId, MethodParameterServiceModel parameter)

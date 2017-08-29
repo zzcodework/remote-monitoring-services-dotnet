@@ -28,8 +28,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private const int MaxGetList = 1000;
         private const string QueryPrefix = "SELECT * FROM devices";
 
-        private readonly RegistryManager registry;
-        private readonly string ioTHubHostName;
+        private RegistryManager registry;
+        private string ioTHubHostName;
 
         public Devices(IServicesConfig config)
         {
@@ -38,9 +38,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException("config");
             }
 
-            // make sure the exception could throw earlier if format is not valid
-            this.registry = RegistryManager.CreateFromConnectionString(config.HubConnString);
-            this.ioTHubHostName = IotHubConnectionStringBuilder.Create(config.HubConnString).HostName;
+            IoTHubConnectionHelper.CreateUsingHubConnectionString(config.HubConnString, (conn) =>
+            {
+                this.registry = RegistryManager.CreateFromConnectionString(conn);
+                this.ioTHubHostName = IotHubConnectionStringBuilder.Create(conn).HostName;
+            });
         }
 
         /// <summary>
