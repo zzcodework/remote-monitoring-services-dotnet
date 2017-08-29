@@ -46,7 +46,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         };
 
         [JsonProperty(PropertyName = "Properties", NullValueHandling = NullValueHandling.Ignore)]
-        public TwinPropertiesModel Properties { get; set; }
+        public TwinPropertiesApiModel Properties { get; set; }
 
         [JsonProperty(PropertyName = "Tags", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, JToken> Tags { get; set; }
@@ -75,7 +75,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             if (device.Twin != null)
             {
                 this.Etag = $"{this.Etag}|{device.Twin.Etag}";
-                this.Properties = new TwinPropertiesModel(device.Twin.DesiredProperties, device.Twin.ReportedProperties);
+                this.Properties = new TwinPropertiesApiModel(device.Twin.DesiredProperties, device.Twin.ReportedProperties);
                 this.Tags = device.Twin.Tags;
                 this.IsSimulated = device.Twin.IsSimulated;
             }
