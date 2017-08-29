@@ -12,6 +12,7 @@ using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
 using Xunit;
 using Xunit.Abstractions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 
 namespace WebService.Test.IntegrationTests
 {
@@ -65,7 +66,7 @@ namespace WebService.Test.IntegrationTests
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
 
-            var deviceId = "testDevice123";
+            var deviceId = "CreateDevice";
             this.DeleteDeviceIfExists(deviceId);
 
             // create device
@@ -85,6 +86,94 @@ namespace WebService.Test.IntegrationTests
 
             // clean it up
             this.DeleteDeviceIfExists(deviceId);
+        }
+
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public void CreateDeviceIsHealthy()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            // create using auto device id
+            {
+                var device = new DeviceRegistryApiModel();
+
+                var request = new HttpRequest();
+                request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices");
+                request.SetContent(device);
+
+                var response = this.httpClient.PostAsync(request).Result;
+                var azureDevice = JsonConvert.DeserializeObject<DeviceRegistryApiModel>(response.Content);
+
+                var deviceId = azureDevice.Id;
+                Assert.True(!string.IsNullOrEmpty(azureDevice.Id));
+                Assert.True(!string.IsNullOrEmpty(azureDevice.Authentication.PrimaryKey));
+                Assert.True(!string.IsNullOrEmpty(azureDevice.Authentication.SecondaryKey));
+                Assert.Equal(AuthenticationType.Sas, azureDevice.Authentication.AuthenticationType);
+
+                // clean it up
+                this.DeleteDeviceIfExists(deviceId);
+            }
+
+            // create with SaS keys
+            {
+                var device = new DeviceRegistryApiModel()
+                {
+                    Authentication = new AuthenticationMechanismApiModel()
+                    {
+                        PrimaryKey = "gcSE7TEHB/S5Y8QKsoRVdX9iDRd8eFCr8MjoNlmrukI=",
+                        SecondaryKey = "HLmp5CtxoA463nlUamXCBLc9x4WGJDXK+f3PlD+wsHg="
+                    }
+                };
+
+                var request = new HttpRequest();
+                request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices");
+                request.SetContent(device);
+
+                var response = this.httpClient.PostAsync(request).Result;
+                var azureDevice = JsonConvert.DeserializeObject<DeviceRegistryApiModel>(response.Content);
+
+                var deviceId = azureDevice.Id;
+                Assert.True(!string.IsNullOrEmpty(azureDevice.Id));
+                Assert.True(string.IsNullOrEmpty(azureDevice.Authentication.PrimaryThumbprint));
+                Assert.True(string.IsNullOrEmpty(azureDevice.Authentication.SecondaryThumbprint));
+                Assert.Equal(AuthenticationType.Sas, azureDevice.Authentication.AuthenticationType);
+                Assert.Equal(device.Authentication.PrimaryKey, azureDevice.Authentication.PrimaryKey);
+                Assert.Equal(device.Authentication.SecondaryKey, azureDevice.Authentication.SecondaryKey);
+
+                // clean it up
+                this.DeleteDeviceIfExists(deviceId);
+            }
+
+            // create with Certificate thumbprints
+            {
+                var device = new DeviceRegistryApiModel()
+                {
+                    Authentication = new AuthenticationMechanismApiModel()
+                    {
+                        AuthenticationType = AuthenticationType.SelfSigned,
+                        PrimaryThumbprint = "a909502dd82ae41433e6f83886b00d4277a32a7b",
+                        SecondaryThumbprint = "b909502dd82ae41433e6f83886b00d4277a32a7b"
+                    }
+                };
+
+                var request = new HttpRequest();
+                request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices");
+                request.SetContent(device);
+
+                var response = this.httpClient.PostAsync(request).Result;
+                var azureDevice = JsonConvert.DeserializeObject<DeviceRegistryApiModel>(response.Content);
+
+                var deviceId = azureDevice.Id;
+                Assert.True(!string.IsNullOrEmpty(azureDevice.Id));
+                Assert.True(string.IsNullOrEmpty(azureDevice.Authentication.PrimaryKey));
+                Assert.True(string.IsNullOrEmpty(azureDevice.Authentication.SecondaryKey));
+                Assert.Equal(AuthenticationType.SelfSigned, azureDevice.Authentication.AuthenticationType);
+                Assert.Equal(device.Authentication.PrimaryThumbprint, azureDevice.Authentication.PrimaryThumbprint);
+                Assert.Equal(device.Authentication.SecondaryThumbprint, azureDevice.Authentication.SecondaryThumbprint);
+
+                // clean it up
+                this.DeleteDeviceIfExists(deviceId);
+            }
         }
 
         [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]

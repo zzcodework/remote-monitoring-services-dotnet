@@ -91,6 +91,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         public async Task<DeviceServiceModel> CreateAsync(DeviceServiceModel device)
         {
+            // auto generate DeviceId, if missing
+            if (string.IsNullOrEmpty(device.Id))
+            {
+                device.Id = Guid.NewGuid().ToString();
+            }
+
             var azureDevice = await this.registry.AddDeviceAsync(device.ToAzureModel());
 
             Twin azureTwin;

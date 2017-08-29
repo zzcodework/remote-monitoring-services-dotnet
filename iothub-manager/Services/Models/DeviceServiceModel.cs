@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public DateTime LastStatusUpdated { get; set; }
         public DeviceTwinServiceModel Twin { get; set; }
         public string IoTHubHostName { get; set; }
-        public string AuthPrimaryKey { get; set; }
+        public AuthenticationMechanismServiceModel Authentication { get; set; }
 
         public DeviceServiceModel(
             string etag,
@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             bool enabled,
             DateTime lastStatusUpdated,
             DeviceTwinServiceModel twin,
-            string primaryKey,
+            AuthenticationMechanismServiceModel authentication,
             string ioTHubHostName)
         {
             this.Etag = etag;
@@ -40,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.LastStatusUpdated = lastStatusUpdated;
             this.Twin = twin;
             this.IoTHubHostName = ioTHubHostName;
-            this.AuthPrimaryKey = primaryKey;
+            this.Authentication = authentication;
         }
 
         public DeviceServiceModel(Device azureDevice, DeviceTwinServiceModel twin, string ioTHubHostName) :
@@ -54,7 +54,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 lastStatusUpdated: azureDevice.StatusUpdatedTime,
                 twin: twin,
                 ioTHubHostName: ioTHubHostName,
-                primaryKey: azureDevice.Authentication.SymmetricKey.PrimaryKey)
+                authentication: new AuthenticationMechanismServiceModel(azureDevice.Authentication) )
         {
         }
 
@@ -67,7 +67,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
             var device = new Device(this.Id)
             {
-                ETag = ignoreEtag ? null : this.Etag
+                ETag = ignoreEtag ? null : this.Etag,
+                Authentication = this.Authentication == null ? null : this.Authentication.ToAzureModel()
             };
 
             return device;

@@ -34,9 +34,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "IoTHubHostName")]
         public string IoTHubHostName { get; set; }
 
-        [JsonProperty(PropertyName = "AuthPrimaryKey")]
-        public string AuthPrimaryKey { get; set; }
-
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata => new Dictionary<string, string>
         {
@@ -54,6 +51,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "IsSimulated", NullValueHandling = NullValueHandling.Ignore)]
         public bool IsSimulated { get; set; }
 
+        [JsonProperty(PropertyName = "Authentication")]
+        public AuthenticationMechanismApiModel Authentication { get; set; }        
+
         public DeviceRegistryApiModel()
         {
         }
@@ -70,7 +70,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.Enabled = device.Enabled;
             this.LastStatusUpdated = device.LastStatusUpdated;
             this.IoTHubHostName = device.IoTHubHostName;
-            this.AuthPrimaryKey = device.AuthPrimaryKey;
+            this.Authentication = new AuthenticationMechanismApiModel(device.Authentication);
 
             if (device.Twin != null)
             {
@@ -138,7 +138,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 lastStatusUpdated: this.LastStatusUpdated,
                 twin: twinModel,
                 ioTHubHostName: this.IoTHubHostName,
-                primaryKey: this.AuthPrimaryKey
+                authentication: this.Authentication == null ? null: this.Authentication.ToServiceModel()
             );
         }
     }
