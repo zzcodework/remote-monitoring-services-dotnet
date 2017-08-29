@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
@@ -34,8 +34,15 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         public async Task<IEnumerable<JobServiceModel>> GetJobsAsync(JobType? jobType, JobStatus? jobStatus, int? pageSize)
         {
             var query = this.jobClient.CreateQuery(JobServiceModel.ToJobTypeAzureModel(jobType), JobServiceModel.ToJobStatusAzureModel(jobStatus), pageSize);
-            var result = await query.GetNextAsJobResponseAsync();
-            return result.Select(r => new JobServiceModel(r));
+
+            var results = new List<JobServiceModel>();
+            while (query.HasMoreResults)
+            {
+                var jobs = await query.GetNextAsJobResponseAsync();
+                results.AddRange(jobs.Select(r => new JobServiceModel(r)));
+            }
+
+            return results;
         }
 
         public async Task<JobServiceModel> GetJobsAsync(string jobId)
