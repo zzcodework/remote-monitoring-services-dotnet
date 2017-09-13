@@ -2,25 +2,30 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.Auth.Services;
+using Microsoft.Azure.IoTSolutions.Auth.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Controllers
 {
     [Route(Version.Path + "/[controller]"), TypeFilter(typeof(ExceptionsFilterAttribute))]
-    public class ProtocolsController : Controller
+    public class UsersController : Controller
     {
-        private readonly IProtocols protocols;
+        private readonly IUsers users;
 
-        public ProtocolsController(IProtocols protocols)
+        public UsersController(IUsers users)
         {
-            this.protocols = protocols;
+            this.users = users;
         }
 
-        [HttpGet]
-        public ProtocolListApiModel Get()
+        [HttpGet("{id}")]
+        public UserApiModel Get(string id)
         {
-            return new ProtocolListApiModel(protocols.GetAll());
+            var user = this.users.GetUserInfo(this.Request.GetCurrentUserClaims());
+
+            if (id != "current" && id != user.Id) return null;
+
+            return new UserApiModel(user);
         }
     }
 }

@@ -1,17 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Linq;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.Auth.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using ILogger = Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics.ILogger;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService
 {
@@ -37,10 +36,17 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService
         // Configure method below.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // Setup (not enabling yet) CORS
+            services.AddCors();
+
             // Add controllers as services so they'll be resolved.
             services.AddMvc().AddControllersAsServices();
 
+            // Prepare DI container
             this.ApplicationContainer = DependencyResolution.Setup(services);
+
+            // Print some useful information at bootstrap time
+            this.PrintBootstrapInfo(this.ApplicationContainer);
 
             // Create the IServiceProvider based on the container
             return new AutofacServiceProvider(this.ApplicationContainer);
@@ -52,11 +58,16 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService
             IApplicationBuilder app,
             IHostingEnvironment env,
             ILoggerFactory loggerFactory,
+            ICorsSetup corsSetup,
             IApplicationLifetime appLifetime)
         {
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
 
-            app.UseCors(this.BuildCorsPolicy);
+            app.UseMiddleware<AuthMiddleware>();
+
+            // Enable CORS - Must be before UseMvc
+            // see: https://docs.microsoft.com/en-us/aspnet/core/security/cors
+            corsSetup.useMiddleware(app);
 
             app.UseMvc();
 
@@ -65,71 +76,10 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
         }
 
-        private void BuildCorsPolicy(CorsPolicyBuilder builder)
+        private void PrintBootstrapInfo(IContainer container)
         {
-            var config = this.ApplicationContainer.Resolve<IConfig>();
-            var logger = this.ApplicationContainer.Resolve<Services.Diagnostics.ILogger>();
-
-            CorsWhitelistModel model;
-            try
-            {
-                model = JsonConvert.DeserializeObject<CorsWhitelistModel>(config.CorsWhitelist);
-                if (model == null)
-                {
-                    logger.Error("Invalid CORS whitelist. Ignored", () => new { config.CorsWhitelist });
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Invalid CORS whitelist. Ignored", () => new { config.CorsWhitelist, ex.Message });
-                return;
-            }
-
-            if (model.Origins == null)
-            {
-                logger.Info("No setting for CORS origin policy was found, ignore", () => { });
-            }
-            else if (model.Origins.Contains("*"))
-            {
-                logger.Info("CORS policy allowed any origin", () => { });
-                builder.AllowAnyOrigin();
-            }
-            else
-            {
-                logger.Info("Add specified origins to CORS policy", () => new { model.Origins });
-                builder.WithOrigins(model.Origins);
-            }
-
-            if (model.Origins == null)
-            {
-                logger.Info("No setting for CORS method policy was found, ignore", () => { });
-            }
-            else if (model.Methods.Contains("*"))
-            {
-                logger.Info("CORS policy allowed any method", () => { });
-                builder.AllowAnyMethod();
-            }
-            else
-            {
-                logger.Info("Add specified methods to CORS policy", () => new { model.Methods });
-                builder.WithMethods(model.Methods);
-            }
-
-            if (model.Origins == null)
-            {
-                logger.Info("No setting for CORS header policy was found, ignore", () => { });
-            }
-            else if (model.Headers.Contains("*"))
-            {
-                logger.Info("CORS policy allowed any header", () => { });
-                builder.AllowAnyHeader();
-            }
-            else
-            {
-                logger.Info("Add specified headers to CORS policy", () => new { model.Headers });
-                builder.WithHeaders(model.Headers);
-            }
+            var logger = container.Resolve<ILogger>();
+            logger.Info("Web service started", () => new { Uptime.ProcessId });
         }
     }
 }

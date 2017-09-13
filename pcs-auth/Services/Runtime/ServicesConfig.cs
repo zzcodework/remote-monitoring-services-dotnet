@@ -4,18 +4,17 @@ using System.Collections.Generic;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.Services.Runtime
 {
-
     public interface IServicesConfig
     {
-        IEnumerable<ProtocolConfig> Protocols { get; }
-
-        IEnumerable<string> SupportedSignatureAlgorithms { get; }
+        IEnumerable<string> JwtUserIdFrom { get; set; }
+        IEnumerable<string> JwtNameFrom { get; set; }
+        IEnumerable<string> JwtEmailFrom { get; set; }
     }
 
     public class ServicesConfig : IServicesConfig
     {
-        public IEnumerable<ProtocolConfig> Protocols { get; set; }
-
-        public IEnumerable<string> SupportedSignatureAlgorithms { get; set; }
+        public IEnumerable<string> JwtUserIdFrom { get; set; }
+        public IEnumerable<string> JwtNameFrom { get; set; }
+        public IEnumerable<string> JwtEmailFrom { get; set; }
     }
 }

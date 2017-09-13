@@ -37,15 +37,6 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics
         private readonly string processId;
         private readonly LogLevel loggingLevel;
 
-        // Save memory avoiding serializations that go too deep
-        private static readonly JsonSerializerSettings serializationSettings =
-            new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                PreserveReferencesHandling = PreserveReferencesHandling.None,
-                MaxDepth = 4
-            };
-
         public Logger(string processId, LogLevel loggingLevel)
         {
             this.processId = processId;
@@ -85,7 +76,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics
             if (this.loggingLevel > LogLevel.Debug) return;
 
             if (!string.IsNullOrEmpty(message)) message += ", ";
-            message += Serialize(context.Invoke());
+            message += Serialization.Serialize(context.Invoke());
 
             this.Write("DEBUG", context.GetMethodInfo(), message);
         }
@@ -95,7 +86,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics
             if (this.loggingLevel > LogLevel.Info) return;
 
             if (!string.IsNullOrEmpty(message)) message += ", ";
-            message += Serialize(context.Invoke());
+            message += Serialization.Serialize(context.Invoke());
 
             this.Write("INFO", context.GetMethodInfo(), message);
         }
@@ -105,7 +96,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics
             if (this.loggingLevel > LogLevel.Warn) return;
 
             if (!string.IsNullOrEmpty(message)) message += ", ";
-            message += Serialize(context.Invoke());
+            message += Serialization.Serialize(context.Invoke());
 
             this.Write("WARN", context.GetMethodInfo(), message);
         }
@@ -115,14 +106,9 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics
             if (this.loggingLevel > LogLevel.Error) return;
 
             if (!string.IsNullOrEmpty(message)) message += ", ";
-            message += Serialize(context.Invoke());
+            message += Serialization.Serialize(context.Invoke());
 
             this.Write("ERROR", context.GetMethodInfo(), message);
-        }
-
-        private static string Serialize(object o)
-        {
-            return JsonConvert.SerializeObject(o, serializationSettings);
         }
 
         /// <summary>

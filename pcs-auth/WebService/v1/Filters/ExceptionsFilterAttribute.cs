@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Exceptions;
-using Microsoft.Extensions.DependencyModel;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Filters
@@ -34,17 +33,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Filters
 
         public override void OnException(ExceptionContext context)
         {
-            if (context.Exception is ResourceNotFoundException)
-            {
-                context.Result = this.GetResponse(HttpStatusCode.NotFound, context.Exception);
-            }
-            else if (context.Exception is ConflictingResourceException
-                     || context.Exception is ResourceOutOfDateException)
-            {
-                context.Result = this.GetResponse(HttpStatusCode.Conflict, context.Exception);
-            }
-            else if (context.Exception is BadRequestException
-                     || context.Exception is InvalidInputException)
+            if (context.Exception is BadRequestException || context.Exception is InvalidInputException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.BadRequest, context.Exception);
             }

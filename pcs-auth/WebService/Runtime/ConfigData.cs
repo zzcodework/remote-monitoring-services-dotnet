@@ -12,8 +12,9 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
 {
     public interface IConfigData
     {
-        string GetString(string key);
-        int GetInt(string key);
+        string GetString(string key, string defaultValue = "");
+        bool GetBool(string key, bool defaultValue = false);
+        int GetInt(string key, int defaultValue = 0);
         IEnumerable<string> GetSectionNames();
         IEnumerable<KeyValuePair<string, string>> GetSection(string key);
     }
@@ -33,17 +34,30 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
             this.configuration = configurationBuilder.Build();
         }
 
-        public string GetString(string key)
+        public string GetString(string key, string defaultValue = "")
         {
-            var value = this.configuration.GetValue<string>(key);
+            var value = this.configuration.GetValue(key, defaultValue);
             return ReplaceEnvironmentVariables(value);
         }
 
-        public int GetInt(string key)
+        public bool GetBool(string key, bool defaultValue = false)
+        {
+            var value = this.configuration.GetValue(key, defaultValue.ToString()).ToLowerInvariant();
+
+            var knownTrue = new HashSet<string> {"true","t","yes","y","1","-1"};
+            var knownFalse = new HashSet<string> {"false","f","no","n","0"};
+
+            if (knownTrue.Contains(value)) return true;
+            if (knownFalse.Contains(value)) return false;
+
+            return defaultValue;
+        }
+
+        public int GetInt(string key, int defaultValue = 0)
         {
             try
             {
-                return Convert.ToInt32(this.GetString(key));
+                return Convert.ToInt32(this.GetString(key, defaultValue.ToString()));
             }
             catch (Exception e)
             {
@@ -72,7 +86,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
             // using the following pattern, e.g. ${VAR_NAME}
             const string pattern = @"\${(?'key'[a-zA-Z_][a-zA-Z0-9_]*)}";
             var keys = (from Match m
-                        in Regex.Matches(value, pattern)
+                            in Regex.Matches(value, pattern)
                         select m.Groups[1].Value).ToArray();
 
             foreach (DictionaryEntry x in Environment.GetEnvironmentVariables())

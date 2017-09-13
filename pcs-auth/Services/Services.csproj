@@ -6,6 +6,7 @@
     <RootNamespace>Microsoft.Azure.IoTSolutions.Auth.Services</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="2.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.4" />
   </ItemGroup>

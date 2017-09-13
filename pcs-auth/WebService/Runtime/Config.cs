@@ -1,51 +1,72 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System.Linq;
+using System;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Auth.WebService.Auth;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
 {
     public interface IConfig
     {
-        /// <summary>Web service listening port</summary>
+        /// Web service listening port
         int Port { get; }
 
-        /// <summary>CORS whitelist, in form { "origins": [], "methods": [], "headers": [] }</summary>
-        string CorsWhitelist { get; }
-
-        /// <summary>Service layer configuration</summary>
+        // Service layer configuration
         IServicesConfig ServicesConfig { get; }
+
+        // Client authentication and authorization configuration
+        IClientAuthConfig ClientAuthConfig { get; }
     }
 
     /// <summary>Web service configuration</summary>
     public class Config : IConfig
     {
-        private const string ApplicationKey = "Auth:";
-        private const string PortKey = ApplicationKey + "webservice_port";
-        private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
-        private const string AlgorithmsKey = ApplicationKey + "supported_signature_algorithms";
+        private const string APPLICATION_KEY = "Auth:";
+        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
+        private const string JWT_USER_ID_FROM_KEY = APPLICATION_KEY + "extract_userid_from";
+        private const string JWT_NAME_FROM_KEY = APPLICATION_KEY + "extract_name_from";
+        private const string JWT_EMAIL_FROM_KEY = APPLICATION_KEY + "extract_email_from";
 
-        /// <summary>Web service listening port</summary>
+        private const string CLIENT_AUTH_KEY = "ClientAuth:";
+        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
+        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
+        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
+
+        private const string JWT_KEY = "ClientAuth:JWT:";
+        private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
+        private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
+        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+
         public int Port { get; }
-
-        /// <summary>CORS whitelist, in form { "origins": [], "methods": [], "headers": [] }</summary>
-        public string CorsWhitelist { get; }
-
-        /// <summary>Service layer configuration</summary>
         public IServicesConfig ServicesConfig { get; }
+        public IClientAuthConfig ClientAuthConfig { get; }
 
         public Config(IConfigData configData)
         {
-            this.Port = configData.GetInt(PortKey);
-            this.CorsWhitelist = configData.GetString(CorsWhitelistKey);
+            this.Port = configData.GetInt(PORT_KEY);
 
             this.ServicesConfig = new ServicesConfig
             {
-                Protocols = configData
-                    .GetSectionNames()
-                    .Where(s => s.StartsWith("Protocol"))
-                    .Select(key => new ProtocolConfig(configData.GetSection(key))),
-                SupportedSignatureAlgorithms = configData.GetString(AlgorithmsKey).Split(',')
+                JwtUserIdFrom = configData.GetString(JWT_USER_ID_FROM_KEY, "email").Split(','),
+                JwtNameFrom = configData.GetString(JWT_NAME_FROM_KEY, "email").Split(','),
+                JwtEmailFrom = configData.GetString(JWT_EMAIL_FROM_KEY, "email").Split(',')
+            };
+
+            this.ClientAuthConfig = new ClientAuthConfig
+            {
+                // By default CORS is disabled
+                CorsWhitelist = configData.GetString(CORS_WHITELIST_KEY, string.Empty),
+                // By default Auth is required
+                AuthRequired = configData.GetBool(AUTH_REQUIRED_KEY, true),
+                // By default auth type is JWT
+                AuthType = configData.GetString(AUTH_TYPE_KEY, "JWT"),
+                // By default the only trusted algorithms are RS256, RS384, RS512
+                JwtAllowedAlgos = configData.GetString(JWT_ALGOS_KEY, "RS256,RS384,RS512").Split(','),
+                JwtIssuer = configData.GetString(JWT_ISSUER_KEY),
+                JwtAudience = configData.GetString(JWT_AUDIENCE_KEY),
+                // By default the allowed clock skew is 2 minutes
+                JwtClockSkew = TimeSpan.FromSeconds(configData.GetInt(JWT_CLOCK_SKEW_KEY, 120)),
             };
         }
     }
