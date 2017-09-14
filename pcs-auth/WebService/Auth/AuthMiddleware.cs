@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -32,7 +31,19 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
     /// </summary>
     public class AuthMiddleware
     {
-        private const string HEADER_PREFIX = "Bearer ";
+        // The authorization header carries a bearer token, with this prefix
+        private const string AUTH_HEADER_PREFIX = "Bearer ";
+
+        // Usual authorization header, carrying the bearer token
+        private const string AUTH_HEADER = "Authorization";
+
+        // User requests are marked with this header by the reverse proxy
+        // TODO ~devis: this is a temporary solution for public previe only
+        // TODO ~devis: remove this approach and use the service to service authentication
+        // https://github.com/Azure/pcs-auth-dotnet/issues/18
+        // https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/issues/11
+        private const string EXT_RESOURCES_HEADER = "X-Source";
+
         private const string ERROR401 = @"{""Error"":""Authentication required""}";
 
         private readonly RequestDelegate requestDelegate;
@@ -55,10 +66,21 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
             this.log = log;
             this.authRequired = config.AuthRequired;
 
+            // This will show in development mode, or in case auth is turned off
             if (!this.authRequired)
             {
-                this.log.Warn("AUTHENTICATION IS DISABLED!", () => { });
+                this.log.Warn("### AUTHENTICATION IS DISABLED! ###", () => { });
+                this.log.Warn("### AUTHENTICATION IS DISABLED! ###", () => { });
+                this.log.Warn("### AUTHENTICATION IS DISABLED! ###", () => { });
             }
+
+            // TODO ~devis: this is a temporary solution for public previe only
+            // TODO ~devis: remove this approach and use the service to service authentication
+            // https://github.com/Azure/pcs-auth-dotnet/issues/18
+            // https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/issues/11
+            this.log.Warn("### Service to service authentication is not available in public preview ###", () => { });
+            this.log.Warn("### Service to service authentication is not available in public preview ###", () => { });
+            this.log.Warn("### Service to service authentication is not available in public preview ###", () => { });
 
             this.tokenValidationParams = new TokenValidationParameters
             {
@@ -86,18 +108,31 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
             var header = string.Empty;
             var token = string.Empty;
 
-            if (context.Request.Headers.ContainsKey("Authorization"))
+            if (!context.Request.Headers.ContainsKey(EXT_RESOURCES_HEADER))
             {
-                header = context.Request.Headers["Authorization"].SingleOrDefault();
+                // This is a service to service request running in the private
+                // network, so we skip the auth required for user requests
+                // Note: this is a temporary solution for public preview
+                // https://github.com/Azure/pcs-auth-dotnet/issues/18
+                // https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/issues/11
+
+                // Call the next delegate/middleware in the pipeline
+                this.log.Debug("Skipping auth for service to service request", () => { });
+                return this.requestDelegate(context);
+            }
+
+            if (context.Request.Headers.ContainsKey(AUTH_HEADER))
+            {
+                header = context.Request.Headers[AUTH_HEADER].SingleOrDefault();
             }
             else
             {
                 this.log.Error("Authorization header not found", () => { });
             }
 
-            if (header.StartsWith(HEADER_PREFIX))
+            if (header.StartsWith(AUTH_HEADER_PREFIX))
             {
-                token = header.Substring(HEADER_PREFIX.Length).Trim();
+                token = header.Substring(AUTH_HEADER_PREFIX.Length).Trim();
             }
             else
             {
