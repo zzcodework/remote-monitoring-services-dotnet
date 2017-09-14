@@ -1,5 +1,7 @@
 :: Prepare the environment variables used by the application.
 
-:: The port where this project's web service is listening
-:: See https://github.com/Azure/azure-iot-pcs-team/wiki/Architecture-draft
-SETX PCS_AUTH_WEBSERVICE_PORT "9001"
+:: The OpenId tokens issuer URL, e.g. https://sts.windows.net/12000000-3400-5600-0000-780000000000/
+SETX PCS_AUTH_ISSUER "{enter the token issuer URL here}"
+
+:: The intended audience of the tokens, e.g. your Client Id
+SETX PCS_AUTH_AUDIENCE "{enter the tokens audience here}"

@@ -13,7 +13,6 @@ ProjectSection(SolutionItems) = preProject
 	CONTRIBUTING.md = CONTRIBUTING.md
 	LICENSE = LICENSE
 	README.md = README.md
-	DEVELOPMENT.md = DEVELOPMENT.md
 	pcs-auth.sln.DotSettings = pcs-auth.sln.DotSettings
 	version = version
 EndProjectSection
@@ -62,7 +61,6 @@ ProjectSection(SolutionItems) = preProject
 	scripts\docker\run.cmd = scripts\docker\run.cmd
 	scripts\docker\publish = scripts\docker\publish
 	scripts\docker\publish.cmd = scripts\docker\publish.cmd
-	scripts\docker\docker-compose.yml = scripts\docker\docker-compose.yml
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8BAA54A8-9C80-4446-83DD-CEBBC7B7BCD2}"

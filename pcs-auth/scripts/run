@@ -52,17 +52,14 @@ run_in_sandbox() {
 
         ./scripts/env-vars-check
 
-        # Note: the ports used must be exposed by `code-builder-dotnet`
-        #       see https://hub.docker.com/r/azureiotpcs/code-builder-dotnet
         # Some settings are used to connect to an external dependency,
-        # e.g. Azure IoT Hub and IoT Hub Manager API.
+        # e.g. Azure Active Directory.
         # Depending on which settings and which dependencies are needed,
         # edit the list of variables.
         docker run -it \
             -p 9001:9001 \
-            -e "PCS_AUTH_AAD_GLOBAL_TENANTID=$PCS_AUTH_AAD_GLOBAL_TENANTID" \
-            -e "PCS_AUTH_AAD_GLOBAL_CLIENTID=$PCS_AUTH_AAD_GLOBAL_CLIENTID" \
-            -e "PCS_AUTH_AAD_GLOBAL_LOGINURI=$PCS_AUTH_AAD_GLOBAL_LOGINURI" \
+            -e "PCS_AUTH_ISSUER=$PCS_AUTH_ISSUER" \
+            -e "PCS_AUTH_AUDIENCE=$PCS_AUTH_AUDIENCE" \
             -v "$PCS_CACHE/sandbox/.config:/root/.config" \
             -v "$PCS_CACHE/sandbox/.dotnet:/root/.dotnet" \
             -v "$PCS_CACHE/sandbox/.nuget:/root/.nuget" \
