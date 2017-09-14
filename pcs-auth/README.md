@@ -131,7 +131,7 @@ Troubleshooting
 Feedback
 ==========
 
-Please enter issues, bugs, or suggestions as GitHub Issues here: 
+Please enter issues, bugs, or suggestions as GitHub Issues here:
 https://github.com/Azure/pcs-auth-dotnet/issues.
 
 
