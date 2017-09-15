@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
@@ -22,8 +22,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     public class Jobs : IJobs
     {
         private Azure.Devices.JobClient jobClient;
+        private readonly IConfigService configService;
 
-        public Jobs(IServicesConfig config)
+        public Jobs(
+            IServicesConfig config,
+            IConfigService configService)
         {
             if (config == null)
             {
@@ -34,6 +37,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             {
                 this.jobClient = Azure.Devices.JobClient.CreateFromConnectionString(conn);
             });
+
+            this.configService = configService;
         }
 
         public async Task<IEnumerable<JobServiceModel>> GetJobsAsync(JobType? jobType, JobStatus? jobStatus, int? pageSize)
@@ -59,6 +64,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         public async Task<JobServiceModel> ScheduleTwinUpdateAsync(string jobId, string queryCondition, DeviceTwinServiceModel twin, DateTime startTimeUtc, long maxExecutionTimeInSeconds)
         {
             var result = await this.jobClient.ScheduleTwinUpdateAsync(jobId, queryCondition, twin.ToAzureModel(), startTimeUtc, maxExecutionTimeInSeconds);
+
+            // Update the deviceGroupFilter cache, no need to wait
+            var unused = configService.UpdateDeviceGroupFiltersAsync(twin);
+
             return new JobServiceModel(result);
         }
 

@@ -48,8 +48,9 @@ Steps using Visual Studio 2017:
    select `Properties` and go to the `Debug` section.
 1. Add a new environment variable with name
    `PCS_IOTHUBMANAGER_WEBSERVICE_PORT` and value `9002`.
-1. Add a new environment variable with name
+1. Add new environment variables with names below:
    `PCS_IOTHUB_CONNSTRING` with the connection string for your Azure IoT Hub.
+   `PCS_UICONFIG_WEBSERVICE_URL` with the url of the config service.
 1. In the same section set the `App URL` to
    `http://localhost:9002/v1/status`
 1. Right click on the "WebService" project and "Set as StartUp Project".

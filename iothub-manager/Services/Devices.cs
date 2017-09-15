@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
@@ -31,7 +31,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private RegistryManager registry;
         private string ioTHubHostName;
 
-        public Devices(IServicesConfig config)
+        private readonly IConfigService configService;
+
+        public Devices(
+            IServicesConfig config,
+            IConfigService configService)
         {
             if (config == null)
             {
@@ -43,6 +47,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 this.registry = RegistryManager.CreateFromConnectionString(conn);
                 this.ioTHubHostName = IotHubConnectionStringBuilder.Create(conn).HostName;
             });
+
+            this.configService = configService;
         }
 
         /// <summary>
@@ -136,6 +142,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             else
             {
                 azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.Etag);
+
+                // Update the deviceGroupFilter cache, no need to wait
+                var unused = configService.UpdateDeviceGroupFiltersAsync(device.Twin);
             }
 
             return new DeviceServiceModel(azureDevice, azureTwin, this.ioTHubHostName);
@@ -155,12 +164,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         /// <returns></returns>
         private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(string query, string continuationToken, int nubmerOfResult)
         {
-            query = string.IsNullOrEmpty(query)? QueryPrefix : $"{QueryPrefix} where {query}";
+            query = string.IsNullOrEmpty(query) ? QueryPrefix : $"{QueryPrefix} where {query}";
 
             var twins = new List<Twin>();
 
             var twinQuery = this.registry.CreateQuery(query);
-            
+
             QueryOptions options = new QueryOptions();
             options.ContinuationToken = continuationToken;
 

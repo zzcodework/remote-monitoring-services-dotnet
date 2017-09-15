@@ -8,3 +8,5 @@
 
 :: see: Shared access policies => key name => Connection string
 SETX PCS_IOTHUB_CONNSTRING "..."
+
+SETX PCS_UICONFIG_WEBSERVICE_URL "..."

@@ -26,6 +26,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
         private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
         private const string IoTHubConnStrKey = ApplicationKey + "iothub_connstring";
 
+        private const string ConfigServiceKey = "config:";
+        private string ConfigServiceUriKey = ConfigServiceKey + "webservice_url";
+
         /// <summary>Web service listening port</summary>
         public int Port { get; }
 
@@ -60,7 +63,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
-                HubConnString = configData.GetString(IoTHubConnStrKey)
+                HubConnString = configData.GetString(IoTHubConnStrKey),
+                ConfigServiceUri = configData.GetString(ConfigServiceUriKey)
             };
         }
 
