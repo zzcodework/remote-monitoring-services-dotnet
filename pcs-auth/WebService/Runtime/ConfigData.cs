@@ -44,8 +44,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
         {
             var value = this.configuration.GetValue(key, defaultValue.ToString()).ToLowerInvariant();
 
-            var knownTrue = new HashSet<string> {"true","t","yes","y","1","-1"};
-            var knownFalse = new HashSet<string> {"false","f","no","n","0"};
+            var knownTrue = new HashSet<string> { "true", "t", "yes", "y", "1", "-1" };
+            var knownFalse = new HashSet<string> { "false", "f", "no", "n", "0" };
 
             if (knownTrue.Contains(value)) return true;
             if (knownFalse.Contains(value)) return false;

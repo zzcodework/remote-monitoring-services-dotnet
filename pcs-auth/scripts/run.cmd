@@ -61,8 +61,8 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
     :: Start the sandbox and run the service
     docker run -it ^
         -p 9001:9001 ^
-        -e "PCS_AUTH_ISSUER=$PCS_AUTH_ISSUER" ^
-        -e "PCS_AUTH_AUDIENCE=$PCS_AUTH_AUDIENCE" ^
+        -e PCS_AUTH_ISSUER=%PCS_AUTH_ISSUER% ^
+        -e PCS_AUTH_AUDIENCE=%PCS_AUTH_AUDIENCE% ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^
