@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 
-namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
+namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
 {
     class CorsWhitelistModel
     {

@@ -24,8 +24,8 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 :: Depending on which settings and which dependencies are needed, edit the list of variables
 echo Starting Auth ...
 docker run -it -p 9001:9001 ^
-    -e "PCS_AUTH_ISSUER=$PCS_AUTH_ISSUER" \
-    -e "PCS_AUTH_AUDIENCE=$PCS_AUTH_AUDIENCE" \
+    -e PCS_AUTH_ISSUER=%PCS_AUTH_ISSUER% ^
+    -e PCS_AUTH_AUDIENCE=%PCS_AUTH_AUDIENCE% ^
     %DOCKER_IMAGE%:%APP_VERSION%
 
 :: - - - - - - - - - - - - - -

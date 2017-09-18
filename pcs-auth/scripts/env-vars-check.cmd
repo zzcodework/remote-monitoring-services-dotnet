@@ -9,3 +9,5 @@ IF "%PCS_AUTH_AUDIENCE%" == "" (
     echo Error: the PCS_AUTH_AUDIENCE environment variable is not defined.
     exit /B 1
 )
+
+endlocal

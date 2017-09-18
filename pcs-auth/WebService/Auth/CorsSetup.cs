@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
 {
