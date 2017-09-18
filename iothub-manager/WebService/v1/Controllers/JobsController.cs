@@ -1,18 +1,18 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
-    [Route(Version.Path + "/[controller]"), ExceptionsFilter]
+    [Route(Version.PATH + "/[controller]"), ExceptionsFilter]
     public class JobsController : Controller
     {
         private readonly IJobs jobs;
@@ -54,7 +54,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="parameter"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<JobApiModel> ScheduleAsync([FromBody]JobApiModel parameter)
+        public async Task<JobApiModel> ScheduleAsync([FromBody] JobApiModel parameter)
         {
             if (parameter.UpdateTwin != null)
             {
@@ -62,7 +62,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
                 return new JobApiModel(result);
             }
 
-            if(parameter.MethodParameter != null)
+            if (parameter.MethodParameter != null)
             {
                 var result = await this.jobs.ScheduleDeviceMethodAsync(parameter.JobId, parameter.QueryCondition, parameter.MethodParameter.ToServiceModel(), parameter.StartTimeUtc ?? DateTime.UtcNow, parameter.MaxExecutionTimeInSeconds);
                 return new JobApiModel(result);

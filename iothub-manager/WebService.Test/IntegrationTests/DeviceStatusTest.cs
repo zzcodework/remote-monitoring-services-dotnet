@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,7 +13,6 @@ using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
 using Xunit;
 using Xunit.Abstractions;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 
 namespace WebService.Test.IntegrationTests
 {
@@ -186,7 +186,7 @@ namespace WebService.Test.IntegrationTests
 
             try
             {
-                var newTagValue = System.Guid.NewGuid().ToString();
+                var newTagValue = Guid.NewGuid().ToString();
 
                 // update twin by adding/editing a tag
                 if (device.Tags.ContainsKey("newTag"))
@@ -230,7 +230,6 @@ namespace WebService.Test.IntegrationTests
 
                 var configInTwin = JsonConvert.DeserializeObject<NewConfig>(device.Properties.Desired["config"].ToString());
                 Assert.Equal(10, configInTwin.TelemetryInterval);
-
             }
             finally
             {
@@ -238,7 +237,6 @@ namespace WebService.Test.IntegrationTests
                 this.DeleteDeviceIfExists(deviceId);
             }
         }
-
 
         [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
         public void UpdateTwinUsingMismatchEtagIsHealthy()
@@ -250,7 +248,7 @@ namespace WebService.Test.IntegrationTests
 
             try
             {
-                var newTagValue = System.Guid.NewGuid().ToString();
+                var newTagValue = Guid.NewGuid().ToString();
 
                 device.Etag = device.Etag + "wrong";
 
@@ -499,7 +497,7 @@ namespace WebService.Test.IntegrationTests
 
         private DeviceRegistryApiModel CreateDeviceIfNotExists(string deviceId)
         {
-            var device = GetDevice(deviceId);
+            var device = this.GetDevice(deviceId);
             if (device != null)
             {
                 return device;
@@ -522,7 +520,7 @@ namespace WebService.Test.IntegrationTests
 
         private void DeleteDeviceIfExists(string deviceId)
         {
-            var device = GetDevice(deviceId);
+            var device = this.GetDevice(deviceId);
             if (device != null)
             {
                 var request = new HttpRequest();

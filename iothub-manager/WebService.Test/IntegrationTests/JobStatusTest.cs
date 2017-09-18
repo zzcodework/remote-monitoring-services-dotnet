@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
-using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
+using Newtonsoft.Json;
 using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
 using Xunit;
@@ -106,9 +106,7 @@ namespace WebService.Test.IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             jobs = JsonConvert.DeserializeObject<IEnumerable<JobApiModel>>(response.Content);
             Assert.True(jobs.Count() >= 0);
-
         }
-
 
         private DeviceRegistryApiModel GetDevice(string deviceId)
         {
@@ -116,7 +114,7 @@ namespace WebService.Test.IntegrationTests
             request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/devices/{deviceId}");
             var response = this.httpClient.GetAsync(request).Result;
 
-            if(response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 return null;
             }
@@ -124,10 +122,10 @@ namespace WebService.Test.IntegrationTests
             return JsonConvert.DeserializeObject<DeviceRegistryApiModel>(response.Content);
         }
 
-        private DeviceRegistryApiModel CreateDeviceIfNotExists(string deviceId, Dictionary<string,string> tags = null)
+        private DeviceRegistryApiModel CreateDeviceIfNotExists(string deviceId, Dictionary<string, string> tags = null)
         {
-            var device = GetDevice(deviceId);
-            if( device != null)
+            var device = this.GetDevice(deviceId);
+            if (device != null)
             {
                 return device;
             }
@@ -137,7 +135,7 @@ namespace WebService.Test.IntegrationTests
                 Id = deviceId,
             };
 
-            if( tags != null)
+            if (tags != null)
             {
                 foreach (var tag in tags)
                 {
@@ -157,7 +155,7 @@ namespace WebService.Test.IntegrationTests
 
         private void DeleteDeviceIfExists(string deviceId)
         {
-            var device = GetDevice(deviceId);
+            var device = this.GetDevice(deviceId);
             if (device != null)
             {
                 var request = new HttpRequest();

@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.Devices;
-using Newtonsoft.Json;
 using System;
+using Microsoft.Azure.Devices;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
@@ -52,41 +51,41 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             switch (this.AuthenticationType)
             {
                 case AuthenticationType.Sas:
+                {
+                    auth.SymmetricKey = new SymmetricKey()
                     {
-                        auth.SymmetricKey = new SymmetricKey()
-                        {
-                            PrimaryKey = this.PrimaryKey,
-                            SecondaryKey = this.SecondaryKey
-                        };
+                        PrimaryKey = this.PrimaryKey,
+                        SecondaryKey = this.SecondaryKey
+                    };
 
-                        auth.Type = Azure.Devices.AuthenticationType.Sas;
+                    auth.Type = Azure.Devices.AuthenticationType.Sas;
 
-                        break;
-                    }
+                    break;
+                }
                 case AuthenticationType.SelfSigned:
+                {
+                    auth.X509Thumbprint = new X509Thumbprint()
                     {
-                        auth.X509Thumbprint = new X509Thumbprint()
-                        {
-                            PrimaryThumbprint = this.PrimaryThumbprint,
-                            SecondaryThumbprint = this.SecondaryThumbprint
-                        };
+                        PrimaryThumbprint = this.PrimaryThumbprint,
+                        SecondaryThumbprint = this.SecondaryThumbprint
+                    };
 
-                        auth.Type = Azure.Devices.AuthenticationType.SelfSigned;
+                    auth.Type = Azure.Devices.AuthenticationType.SelfSigned;
 
-                        break;
-                    }
+                    break;
+                }
                 case AuthenticationType.CertificateAuthority:
+                {
+                    auth.X509Thumbprint = new X509Thumbprint()
                     {
-                        auth.X509Thumbprint = new X509Thumbprint()
-                        {
-                            PrimaryThumbprint = this.PrimaryThumbprint,
-                            SecondaryThumbprint = this.SecondaryThumbprint
-                        };
+                        PrimaryThumbprint = this.PrimaryThumbprint,
+                        SecondaryThumbprint = this.SecondaryThumbprint
+                    };
 
-                        auth.Type = Azure.Devices.AuthenticationType.CertificateAuthority;
+                    auth.Type = Azure.Devices.AuthenticationType.CertificateAuthority;
 
-                        break;
-                    }
+                    break;
+                }
                 default:
                     throw new ArgumentException("Not supported authentcation type");
             }
@@ -101,10 +100,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         // Summary:
         //     Shared Access Key
         Sas = 0,
+
         //
         // Summary:
         //     Self-signed certificate
         SelfSigned = 1,
+
         //
         // Summary:
         //     Certificate Authority

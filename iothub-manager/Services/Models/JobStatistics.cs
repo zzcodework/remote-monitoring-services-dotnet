@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using Microsoft.Azure.Devices;
+
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
     /// <summary>
@@ -11,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
         }
 
-        public JobStatistics(Azure.Devices.DeviceJobStatistics azureModel)
+        public JobStatistics(DeviceJobStatistics azureModel)
         {
             this.DeviceCount = azureModel.DeviceCount;
             this.FailedCount = azureModel.FailedCount;

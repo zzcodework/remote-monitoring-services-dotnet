@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using Microsoft.Azure.Devices;
+
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
     public class JobServiceModel
@@ -35,7 +37,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
         }
 
-        public JobServiceModel(Microsoft.Azure.Devices.JobResponse jobResponse)
+        public JobServiceModel(JobResponse jobResponse)
         {
             this.JobId = jobResponse.JobId;
             this.QueryCondition = jobResponse.QueryCondition;
@@ -48,7 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 case Azure.Devices.JobType.ScheduleDeviceMethod:
                 case Azure.Devices.JobType.ScheduleUpdateTwin:
-                    this.Type = (JobType)jobResponse.Type;
+                    this.Type = (JobType) jobResponse.Type;
                     break;
                 default:
                     this.Type = JobType.Unknown;
@@ -64,7 +66,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 case Azure.Devices.JobStatus.Cancelled:
                 case Azure.Devices.JobStatus.Scheduled:
                 case Azure.Devices.JobStatus.Queued:
-                    this.Status = (JobStatus)jobResponse.Status;
+                    this.Status = (JobStatus) jobResponse.Status;
                     break;
                 default:
                     this.Status = JobStatus.Unknown;
@@ -92,8 +94,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             }
         }
 
-
-        public static Microsoft.Azure.Devices.JobType? ToJobTypeAzureModel(JobType? jobType)
+        public static Azure.Devices.JobType? ToJobTypeAzureModel(JobType? jobType)
         {
             if (!jobType.HasValue)
             {
@@ -104,15 +105,15 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 case JobType.ScheduleDeviceMethod:
                 case JobType.ScheduleUpdateTwin:
-                    return (Microsoft.Azure.Devices.JobType)jobType.Value;
+                    return (Azure.Devices.JobType) jobType.Value;
                 default:
-                    return (Microsoft.Azure.Devices.JobType)JobType.Unknown;
+                    return (Azure.Devices.JobType) JobType.Unknown;
             }
         }
 
-        public static Microsoft.Azure.Devices.JobStatus? ToJobStatusAzureModel(JobStatus? jobStatus)
+        public static Azure.Devices.JobStatus? ToJobStatusAzureModel(JobStatus? jobStatus)
         {
-            if(!jobStatus.HasValue)
+            if (!jobStatus.HasValue)
             {
                 return null;
             }
@@ -126,7 +127,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 case JobStatus.Cancelled:
                 case JobStatus.Scheduled:
                 case JobStatus.Queued:
-                    return (Microsoft.Azure.Devices.JobStatus)jobStatus.Value;
+                    return (Azure.Devices.JobStatus) jobStatus.Value;
                 default:
                     return Azure.Devices.JobStatus.Unknown;
             }
@@ -157,5 +158,4 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         Scheduled = 6,
         Queued = 7
     }
-
 }

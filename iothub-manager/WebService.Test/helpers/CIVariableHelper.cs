@@ -7,13 +7,14 @@ namespace WebService.Test.helpers
 {
     public class CIVariableHelper
     {
+        const string CI_VARIABLE = "TRAVIS_PULL_REQUEST";
+
         public static bool IsPullRequest(ITestOutputHelper log)
         {
-            const string CIVariable = "TRAVIS_PULL_REQUEST";
             try
             {
                 var env = Environment.GetEnvironmentVariable("TRAVIS_PULL_REQUEST").ToLowerInvariant();
-                log.WriteLine(CIVariable + " = " + env);
+                log.WriteLine(CI_VARIABLE + " = " + env);
                 return env != "false";
             }
             catch (Exception)

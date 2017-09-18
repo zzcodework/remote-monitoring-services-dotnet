@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using System;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 {

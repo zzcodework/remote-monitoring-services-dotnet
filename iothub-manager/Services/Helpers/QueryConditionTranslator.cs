@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Newtonsoft.Json;
-using System.Text;
-using System.IO;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 {
@@ -63,7 +63,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
                 }
 
                 return $"{c.Key} {op} {value.ToString()}";
-            });            
+            });
 
             return string.Join(" and ", clauseStrings);
         }

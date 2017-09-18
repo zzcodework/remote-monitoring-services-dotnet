@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.Devices;
 using System;
+using Microsoft.Azure.Devices;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
@@ -16,7 +16,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public string JsonPayload { get; set; }
 
         public MethodParameterServiceModel()
-        { }
+        {
+        }
 
         public MethodParameterServiceModel(CloudToDeviceMethod azureModel)
         {
@@ -28,7 +29,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public CloudToDeviceMethod ToAzureModel()
         {
-            var method = new CloudToDeviceMethod(Name);
+            var method = new CloudToDeviceMethod(this.Name);
             if (this.ResponseTimeout.HasValue)
             {
                 method.ResponseTimeout = this.ResponseTimeout.Value;

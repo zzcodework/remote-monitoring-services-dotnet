@@ -88,7 +88,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 {
                     if (twin.Value is JToken)
                     {
-                        result.Add(twin.Key, (JToken)twin.Value);
+                        result.Add(twin.Key, (JToken) twin.Value);
                     }
                     else
                     {

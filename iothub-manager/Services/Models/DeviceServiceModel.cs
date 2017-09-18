@@ -54,7 +54,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 lastStatusUpdated: azureDevice.StatusUpdatedTime,
                 twin: twin,
                 ioTHubHostName: ioTHubHostName,
-                authentication: new AuthenticationMechanismServiceModel(azureDevice.Authentication) )
+                authentication: new AuthenticationMechanismServiceModel(azureDevice.Authentication))
         {
         }
 

@@ -9,14 +9,13 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
-    [Route(Version.Path + "/[controller]"), ExceptionsFilter]
+    [Route(Version.PATH + "/[controller]"), ExceptionsFilter]
     public class DevicesController : Controller
     {
+        const string CONTINUATION_TOKEN_NAME = "x-ms-continuation";
+
         private readonly IDevices devices;
-
         private readonly IDeviceService deviceService;
-        const string ContinuationTokenName = "x-ms-continuation";
-
 
         public DevicesController(IDevices devices, IDeviceService deviceService)
         {
@@ -30,9 +29,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         public async Task<DeviceListApiModel> GetDevicesAsync([FromQuery] string query)
         {
             string continuationToken = string.Empty;
-            if (Request.Headers.ContainsKey(ContinuationTokenName))
+            if (this.Request.Headers.ContainsKey(CONTINUATION_TOKEN_NAME))
             {
-                continuationToken = Request.Headers[ContinuationTokenName].FirstOrDefault();
+                continuationToken = this.Request.Headers[CONTINUATION_TOKEN_NAME].FirstOrDefault();
             }
 
             return new DeviceListApiModel(await this.devices.GetListAsync(query, continuationToken));
@@ -42,9 +41,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         public async Task<DeviceListApiModel> QueryDevicesAsync([FromBody] string query)
         {
             string continuationToken = string.Empty;
-            if (Request.Headers.ContainsKey(ContinuationTokenName))
+            if (this.Request.Headers.ContainsKey(CONTINUATION_TOKEN_NAME))
             {
-                continuationToken = Request.Headers[ContinuationTokenName].FirstOrDefault();
+                continuationToken = this.Request.Headers[CONTINUATION_TOKEN_NAME].FirstOrDefault();
             }
 
             return new DeviceListApiModel(await this.devices.GetListAsync(query, continuationToken));

@@ -7,7 +7,7 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
-    [Route(Version.Path + "/[controller]"), ExceptionsFilter]
+    [Route(Version.PATH + "/[controller]"), ExceptionsFilter]
     public class StatusController : Controller
     {
         private readonly IDevices devices;

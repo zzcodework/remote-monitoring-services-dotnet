@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Azure.Devices.Common.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Exceptions;
 using Newtonsoft.Json;
-using Microsoft.Azure.Devices.Common.Exceptions;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
 {
@@ -105,7 +105,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
             }
 
             var result = new ObjectResult(error);
-            result.StatusCode = (int)code;
+            result.StatusCode = (int) code;
             result.Formatters.Add(new JsonOutputFormatter(new JsonSerializerSettings(), ArrayPool<char>.Shared));
 
             return result;

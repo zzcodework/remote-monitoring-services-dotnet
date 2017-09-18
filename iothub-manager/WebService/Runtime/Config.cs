@@ -21,13 +21,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
     /// <summary>Web service configuration</summary>
     public class Config : IConfig
     {
-        private const string ApplicationKey = "iothubmanager:";
-        private const string PortKey = ApplicationKey + "webservice_port";
-        private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
-        private const string IoTHubConnStrKey = ApplicationKey + "iothub_connstring";
+        private const string APPLICATION_KEY = "iothubmanager:";
+        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
+        private const string CORS_WHITELIST_KEY = APPLICATION_KEY + "cors_whitelist";
+        private const string IO_T_HUB_CONN_STR_KEY = APPLICATION_KEY + "iothub_connstring";
 
-        private const string ConfigServiceKey = "config:";
-        private string ConfigServiceUriKey = ConfigServiceKey + "webservice_url";
+        private const string CONFIG_SERVICE_KEY = "config:";
+        private const string CONFIG_SERVICE_URI_KEY = CONFIG_SERVICE_KEY + "webservice_url";
 
         /// <summary>Web service listening port</summary>
         public int Port { get; }
@@ -40,10 +40,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 
         public Config(IConfigData configData)
         {
-            this.Port = configData.GetInt(PortKey);
-            this.CorsWhitelist = configData.GetString(CorsWhitelistKey);
+            this.Port = configData.GetInt(PORT_KEY);
+            this.CorsWhitelist = configData.GetString(CORS_WHITELIST_KEY);
 
-            var connstring = configData.GetString(IoTHubConnStrKey);
+            var connstring = configData.GetString(IO_T_HUB_CONN_STR_KEY);
             if (connstring.ToLowerInvariant().Contains("your azure iot hub"))
             {
                 // In order to connect to Azure IoT Hub, the service requires a connection
@@ -63,8 +63,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
-                HubConnString = configData.GetString(IoTHubConnStrKey),
-                ConfigServiceUri = configData.GetString(ConfigServiceUriKey)
+                HubConnString = configData.GetString(IO_T_HUB_CONN_STR_KEY),
+                ConfigServiceUri = configData.GetString(CONFIG_SERVICE_URI_KEY)
             };
         }
 

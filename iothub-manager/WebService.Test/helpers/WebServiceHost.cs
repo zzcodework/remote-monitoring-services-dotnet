@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Threading;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.IoTSolutions.IotHubManager.WebService;
 
 namespace WebService.Test.helpers
 {

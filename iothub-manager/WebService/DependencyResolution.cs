@@ -8,7 +8,6 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
 using Microsoft.Extensions.DependencyInjection;
-using Config = Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime.Config;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
 {
@@ -70,15 +69,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             // leaks, but not so good for the overall performance.
             // TODO: revisit when migrating to ASP.NET Core.
             builder.RegisterType<Services.Devices>().As<IDevices>().SingleInstance();
-            builder.RegisterType<Services.DeviceService>().As<IDeviceService>().SingleInstance();
-            builder.RegisterType<Services.Jobs>().As<IJobs>().SingleInstance();
+            builder.RegisterType<DeviceService>().As<IDeviceService>().SingleInstance();
+            builder.RegisterType<Jobs>().As<IJobs>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)
         {
             Factory.RegisterContainer(container);
         }
-
 
         //// <summary>
         /// Provide factory pattern for dependencies that are instantiated
@@ -116,5 +114,4 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             }
         }
     }
-
 }

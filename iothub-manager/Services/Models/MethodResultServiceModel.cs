@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using Microsoft.Azure.Devices;
-using System;
+
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
     public class MethodResultServiceModel

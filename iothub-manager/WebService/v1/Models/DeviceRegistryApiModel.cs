@@ -37,9 +37,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata => new Dictionary<string, string>
         {
-            { "$type", "Device;" + Version.Number },
-            { "$uri", "/" + Version.Path + "/devices/" + this.Id },
-            { "$twin_uri", "/" + Version.Path + "/devices/" + this.Id + "/twin" }
+            { "$type", "Device;" + Version.NUMBER },
+            { "$uri", "/" + Version.PATH + "/devices/" + this.Id },
+            { "$twin_uri", "/" + Version.PATH + "/devices/" + this.Id + "/twin" }
         };
 
         [JsonProperty(PropertyName = "Properties", NullValueHandling = NullValueHandling.Ignore)]
@@ -52,7 +52,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public bool IsSimulated { get; set; }
 
         [JsonProperty(PropertyName = "Authentication")]
-        public AuthenticationMechanismApiModel Authentication { get; set; }        
+        public AuthenticationMechanismApiModel Authentication { get; set; }
 
         public DeviceRegistryApiModel()
         {
@@ -138,7 +138,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 lastStatusUpdated: this.LastStatusUpdated,
                 twin: twinModel,
                 ioTHubHostName: this.IoTHubHostName,
-                authentication: this.Authentication == null ? null: this.Authentication.ToServiceModel()
+                authentication: this.Authentication == null ? null : this.Authentication.ToServiceModel()
             );
         }
     }

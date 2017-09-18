@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
+using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
-using System;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
@@ -26,10 +25,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException("config");
             }
 
-            IoTHubConnectionHelper.CreateUsingHubConnectionString(config.HubConnString, (conn) =>
-            {
-                this.serviceClient = ServiceClient.CreateFromConnectionString(conn);
-            });
+            IoTHubConnectionHelper.CreateUsingHubConnectionString(
+                config.HubConnString,
+                conn => { this.serviceClient = ServiceClient.CreateFromConnectionString(conn); });
         }
 
         public async Task<MethodResultServiceModel> InvokeDeviceMethodAsync(string deviceId, MethodParameterServiceModel parameter)

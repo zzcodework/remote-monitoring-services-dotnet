@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Extensions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
@@ -23,7 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
             IServicesConfig config,
             IHttpClientWrapper httpClient)
         {
-            url = config.ConfigServiceUri + "/v1/devicegroupfilters";
+            this.url = config.ConfigServiceUri + "/v1/devicegroupfilters";
             this.httpClient = httpClient;
         }
 
@@ -43,7 +45,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
                 model.Reported = new HashSet<string>(reportedRoot.GetAllLeavesPath());
             }
 
-            await httpClient.PostAsync(url, "DeviceGroupFilters", model);
+            await this.httpClient.PostAsync(this.url, "DeviceGroupFilters", model);
         }
     }
 }
