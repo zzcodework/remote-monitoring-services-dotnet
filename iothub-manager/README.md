@@ -40,7 +40,7 @@ For Unit Tests:
 For Debugging:
 
 1. Set your PCS_IOTHUB_CONNSTRING system environment variable for your
-   IoT Hub connection, and PCS_UICONFIG_WEBSERVICE_URL for the URL of the
+   IoT Hub connection, and PCS_CONFIG_WEBSERVICE_URL for the URL of the
    config service.
 2. Run F5 from VS.
 3. Hit the REST api for the web service using:

@@ -11,4 +11,4 @@
 # see: Shared access policies => key name => Connection string
 export PCS_IOTHUB_CONNSTRING="..."
 
-export PCS_UICONFIG_WEBSERVICE_URL="..."
+export PCS_CONFIG_WEBSERVICE_URL="..."

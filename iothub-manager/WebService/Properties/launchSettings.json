@@ -22,7 +22,7 @@
       "launchUrl": "http://localhost:9002/v1/status",
       "environmentVariables": {
         "PCS_IOTHUB_CONNSTRING": "HostName={Your Azure IoT Hub hostname};SharedAccessKeyName=iothubowner;SharedAccessKey={SECRET KEY}",
-        "PCS_UICONFIG_WEBSERVICE_URL": "..."
+        "PCS_CONFIG_WEBSERVICE_URL": "..."
       },
       "applicationUrl": "http://localhost:9002/v1/status"
     }

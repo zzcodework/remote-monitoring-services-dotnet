@@ -12,4 +12,4 @@ services:
       - "9002:9002"
     environment:
       - PCS_IOTHUB_CONNSTRING
-      - PCS_UICONFIG_WEBSERVICE_URL
+      - PCS_CONFIG_WEBSERVICE_URL
