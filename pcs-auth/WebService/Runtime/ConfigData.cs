@@ -42,7 +42,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
 
         public bool GetBool(string key, bool defaultValue = false)
         {
-            var value = this.configuration.GetValue(key, defaultValue.ToString()).ToLowerInvariant();
+            var value = this.GetString(key, defaultValue.ToString()).ToLowerInvariant();
 
             var knownTrue = new HashSet<string> { "true", "t", "yes", "y", "1", "-1" };
             var knownFalse = new HashSet<string> { "false", "f", "no", "n", "0" };
