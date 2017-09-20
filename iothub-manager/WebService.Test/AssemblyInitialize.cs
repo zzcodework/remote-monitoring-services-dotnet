@@ -44,7 +44,7 @@ namespace WebService.Test
         {
             GC.SuppressFinalize(this);
 
-            this.host.Dispose();
+            this.host?.Dispose();
         }
     }
 }

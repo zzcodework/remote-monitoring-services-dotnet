@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.IO;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 {
@@ -11,11 +11,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
         /// <summary>Web service listening port</summary>
         int Port { get; }
 
-        /// <summary>CORS whitelist, in form { 'origins': [], 'methods': [], 'headers': [] }</summary>
-        string CorsWhitelist { get; }
-
         /// <summary>Service layer configuration</summary>
         IServicesConfig ServicesConfig { get; }
+
+        // Client authentication and authorization configuration
+        IClientAuthConfig ClientAuthConfig { get; }
     }
 
     /// <summary>Web service configuration</summary>
@@ -23,27 +23,31 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
     {
         private const string APPLICATION_KEY = "iothubmanager:";
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
-        private const string CORS_WHITELIST_KEY = APPLICATION_KEY + "cors_whitelist";
-        private const string IO_T_HUB_CONN_STR_KEY = APPLICATION_KEY + "iothub_connstring";
+        private const string IOT_HUB_CONNSTRING_KEY = APPLICATION_KEY + "iothub_connstring";
 
         private const string CONFIG_SERVICE_KEY = "config:";
         private const string CONFIG_SERVICE_URI_KEY = CONFIG_SERVICE_KEY + "webservice_url";
 
-        /// <summary>Web service listening port</summary>
+        private const string CLIENT_AUTH_KEY = "ClientAuth:";
+        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
+        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
+        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
+
+        private const string JWT_KEY = "ClientAuth:JWT:";
+        private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
+        private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
+        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+
         public int Port { get; }
-
-        /// <summary>CORS whitelist, in form { 'origins': [], 'methods': [], 'headers': [] }</summary>
-        public string CorsWhitelist { get; }
-
-        /// <summary>Service layer configuration</summary>
         public IServicesConfig ServicesConfig { get; }
+        public IClientAuthConfig ClientAuthConfig { get; }
 
         public Config(IConfigData configData)
         {
             this.Port = configData.GetInt(PORT_KEY);
-            this.CorsWhitelist = configData.GetString(CORS_WHITELIST_KEY);
 
-            var connstring = configData.GetString(IO_T_HUB_CONN_STR_KEY);
+            var connstring = configData.GetString(IOT_HUB_CONNSTRING_KEY);
             if (connstring.ToLowerInvariant().Contains("your azure iot hub"))
             {
                 // In order to connect to Azure IoT Hub, the service requires a connection
@@ -63,15 +67,25 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
-                HubConnString = configData.GetString(IO_T_HUB_CONN_STR_KEY),
+                HubConnString = configData.GetString(IOT_HUB_CONNSTRING_KEY),
                 ConfigServiceUri = configData.GetString(CONFIG_SERVICE_URI_KEY)
             };
-        }
 
-        private static string MapRelativePath(string path)
-        {
-            if (path.StartsWith(".")) return AppContext.BaseDirectory + Path.DirectorySeparatorChar + path;
-            return path;
+            this.ClientAuthConfig = new ClientAuthConfig
+            {
+                // By default CORS is disabled
+                CorsWhitelist = configData.GetString(CORS_WHITELIST_KEY, string.Empty),
+                // By default Auth is required
+                AuthRequired = configData.GetBool(AUTH_REQUIRED_KEY, true),
+                // By default auth type is JWT
+                AuthType = configData.GetString(AUTH_TYPE_KEY, "JWT"),
+                // By default the only trusted algorithms are RS256, RS384, RS512
+                JwtAllowedAlgos = configData.GetString(JWT_ALGOS_KEY, "RS256,RS384,RS512").Split(','),
+                JwtIssuer = configData.GetString(JWT_ISSUER_KEY),
+                JwtAudience = configData.GetString(JWT_AUDIENCE_KEY),
+                // By default the allowed clock skew is 2 minutes
+                JwtClockSkew = TimeSpan.FromSeconds(configData.GetInt(JWT_CLOCK_SKEW_KEY, 120)),
+            };
         }
     }
 }

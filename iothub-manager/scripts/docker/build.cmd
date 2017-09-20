@@ -1,7 +1,7 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
 :: Note: use lowercase names for the Docker images
-SET DOCKER_IMAGE="azureiotpcs/iothub-manager-dotnet"
+SET DOCKER_IMAGE=azureiotpcs/iothub-manager-dotnet
 
 :: Debug|Release
 SET CONFIGURATION=Release
@@ -14,35 +14,49 @@ cd %APP_HOME%
 :: The version is stored in a file, to avoid hardcoding it in multiple places
 set /P APP_VERSION=<%APP_HOME%/version
 
+
+:: Whether to update the "latest" tag of the Docker image
+    SET BUILD_LATEST="no"
+    echo Building version %APP_VERSION% - %DOCKER_IMAGE%:%APP_VERSION%
+    SET /p RESPONSE="Do you want to update the 'latest' version too? [y/N] "
+    IF "%RESPONSE%" == "y" (SET BUILD_LATEST="yes")
+    IF "%RESPONSE%" == "Y" (SET BUILD_LATEST="yes")
+
 :: Check dependencies
-dotnet --version > NUL 2>&1
-IF %ERRORLEVEL% NEQ 0 GOTO MISSING_DOTNET
-docker version > NUL 2>&1
-IF %ERRORLEVEL% NEQ 0 GOTO MISSING_DOCKER
+    dotnet --version > NUL 2>&1
+    IF %ERRORLEVEL% NEQ 0 GOTO MISSING_DOTNET
+    docker version > NUL 2>&1
+    IF %ERRORLEVEL% NEQ 0 GOTO MISSING_DOCKER
 
 :: Restore packages and build the application
-call dotnet restore
-IF %ERRORLEVEL% NEQ 0 GOTO FAIL
-call dotnet build --configuration %CONFIGURATION%
-IF %ERRORLEVEL% NEQ 0 GOTO FAIL
+    call dotnet restore
+    IF %ERRORLEVEL% NEQ 0 GOTO FAIL
+    call dotnet build --configuration %CONFIGURATION%
+    IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 :: Build the container image
-rmdir /s /q out\docker
-rmdir /s /q WebService\bin\Docker
-
-mkdir out\docker\webservice
-
-dotnet publish WebService      --configuration %CONFIGURATION% --output bin\Docker
-
-xcopy /s WebService\bin\Docker\*       out\docker\webservice\
-
-copy scripts\docker\.dockerignore               out\docker\
-copy scripts\docker\Dockerfile                  out\docker\
-copy scripts\docker\content\run.sh              out\docker\
-
-cd out\docker\
-docker build --tag %DOCKER_IMAGE%:%APP_VERSION% --squash --compress --label "Tags=azure,iot,pcs,simulation,.NET" .
-IF %ERRORLEVEL% NEQ 0 GOTO FAIL
+    rmdir /s /q out\docker
+    rmdir /s /q WebService\bin\Docker
+    
+    mkdir out\docker\webservice
+    
+    dotnet publish WebService      --configuration %CONFIGURATION% --output bin\Docker
+    
+    xcopy /s WebService\bin\Docker\*       out\docker\webservice\
+    
+    copy scripts\docker\.dockerignore               out\docker\
+    copy scripts\docker\Dockerfile                  out\docker\
+    copy scripts\docker\content\run.sh              out\docker\
+    
+    cd out\docker\
+    
+    if %BUILD_LATEST% == "no" (
+        docker build --tag %DOCKER_IMAGE%:%APP_VERSION% --squash --compress --label "Tags=Azure,IoT,solutions,IoT Hub,.NET" .
+    ) else (
+        docker build --tag %DOCKER_IMAGE%:%APP_VERSION% --tag %DOCKER_IMAGE%:latest --squash --compress --label "Tags=Azure,IoT,solutions,IoT Hub,.NET" .
+    )
+    
+    IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 :: - - - - - - - - - - - - - -
 goto :END
