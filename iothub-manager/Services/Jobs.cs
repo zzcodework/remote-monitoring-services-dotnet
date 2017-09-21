@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Extensions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
@@ -17,7 +18,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     public interface IJobs
     {
         Task<IEnumerable<JobServiceModel>> GetJobsAsync(
-            JobType? jobType, JobStatus? jobStatus, int? pageSize);
+            JobType? jobType,
+            JobStatus? jobStatus,
+            int? pageSize,
+            string queryFrom,
+            string queryTo);
 
         Task<JobServiceModel> GetJobsAsync(string jobId);
 
@@ -58,8 +63,15 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         }
 
         public async Task<IEnumerable<JobServiceModel>> GetJobsAsync(
-            JobType? jobType, JobStatus? jobStatus, int? pageSize)
+            JobType? jobType,
+            JobStatus? jobStatus,
+            int? pageSize,
+            string queryFrom,
+            string queryTo)
         {
+            var from = DateTimeOffsetExtension.Parse(queryFrom, DateTimeOffset.MinValue);
+            var to = DateTimeOffsetExtension.Parse(queryTo, DateTimeOffset.MaxValue);
+
             var query = this.jobClient.CreateQuery(
                 JobServiceModel.ToJobTypeAzureModel(jobType),
                 JobServiceModel.ToJobStatusAzureModel(jobStatus),
@@ -69,7 +81,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             while (query.HasMoreResults)
             {
                 var jobs = await query.GetNextAsJobResponseAsync();
-                results.AddRange(jobs.Select(r => new JobServiceModel(r)));
+                results.AddRange(jobs
+                    .Where(j => j.CreatedTimeUtc >= from && j.CreatedTimeUtc <= to)
+                    .Select(r => new JobServiceModel(r)));
             }
 
             return results;

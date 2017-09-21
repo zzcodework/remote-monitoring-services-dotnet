@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 using Newtonsoft.Json;
@@ -106,6 +107,27 @@ namespace WebService.Test.IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             jobs = JsonConvert.DeserializeObject<IEnumerable<JobApiModel>>(response.Content);
             Assert.True(jobs.Count() >= 0);
+        }
+
+        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        public async Task GetJobWithTimeBoundIsHealthy()
+        {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
+            var request = new HttpRequest();
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + "/v1/jobs?from=NOW-P30D");
+            var response = await this.httpClient.GetAsync(request);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var jobsInLastMonth = JsonConvert.DeserializeObject<IEnumerable<JobApiModel>>(response.Content).ToList();
+
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + "/v1/jobs?from=NOW-P5D&to=NOW-P1D");
+            response = await this.httpClient.GetAsync(request);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var jobsInLastFourDays = JsonConvert.DeserializeObject<IEnumerable<JobApiModel>>(response.Content).ToList();
+
+            Assert.True(jobsInLastFourDays.Count < jobsInLastMonth.Count);
         }
 
         private DeviceRegistryApiModel GetDevice(string deviceId)

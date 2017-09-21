@@ -28,11 +28,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="jobType">The type of job</param>
         /// <param name="jobStatus">The status of job</param>
         /// <param name="pageSize">The page size</param>
+        /// <param name="from">Optional. The begin time of interesting period</param>
+        /// <param name="to">Optional. The end time of interesting period</param>
         /// <returns>The list of jobs</returns>
         [HttpGet]
-        public async Task<IEnumerable<JobApiModel>> GetAsync([FromQuery] JobType? jobType, [FromQuery] JobStatus? jobStatus, [FromQuery] int? pageSize)
+        public async Task<IEnumerable<JobApiModel>> GetAsync(
+            [FromQuery] JobType? jobType,
+            [FromQuery] JobStatus? jobStatus,
+            [FromQuery] int? pageSize,
+            [FromQuery] string from,
+            [FromQuery] string to)
         {
-            var result = await this.jobs.GetJobsAsync(jobType, jobStatus, pageSize);
+            var result = await this.jobs.GetJobsAsync(jobType, jobStatus, pageSize, from, to);
             return result.Select(r => new JobApiModel(r));
         }
 
