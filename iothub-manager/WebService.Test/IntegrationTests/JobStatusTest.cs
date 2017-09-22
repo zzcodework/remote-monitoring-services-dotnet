@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebService.Test.helpers;
 using WebService.Test.helpers.Http;
 using Xunit;
@@ -17,6 +18,7 @@ namespace WebService.Test.IntegrationTests
 {
     public class JobStatusTest
     {
+        private readonly ITestOutputHelper log;
         private readonly HttpClient httpClient;
 
         // Pull Request don't have access to secret credentials, which are
@@ -26,16 +28,17 @@ namespace WebService.Test.IntegrationTests
 
         public JobStatusTest(ITestOutputHelper log)
         {
+            this.log = log;
             this.httpClient = new HttpClient(log);
             this.credentialsAvailable = !CIVariableHelper.IsPullRequest(log);
         }
 
         [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
-        public void ScheduleJobIsHealthy()
+        public async Task ScheduleJobIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
 
-            var deviceId = "testDevice1";
+            var deviceId = "scheduleJobTestDevice1";
             var oldTagValue = "oldTagValue";
             var newTagValue = "newTagValue";
 
@@ -52,9 +55,9 @@ namespace WebService.Test.IntegrationTests
                 var jobApi = new JobApiModel()
                 {
                     JobId = jobId,
-                    QueryCondition = $"tags.testTag = '{oldTagValue}'",
+                    QueryCondition = $"deviceId = '{deviceId}'",
                     UpdateTwin = updateTwin,
-                    MaxExecutionTimeInSeconds = 0
+                    MaxExecutionTimeInSeconds = 30
                 };
 
                 var request = new HttpRequest();
@@ -68,8 +71,9 @@ namespace WebService.Test.IntegrationTests
                 Assert.Equal(jobId, job.JobId);
                 Assert.Equal(JobStatus.Queued, job.Status);
                 Assert.Equal(JobType.ScheduleUpdateTwin, job.Type);
+                await WaitForJobAsync(job.JobId);
 
-                //query job
+                // query job
                 request = new HttpRequest();
                 request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/jobs/{jobId}");
                 response = this.httpClient.GetAsync(request).Result;
@@ -78,6 +82,18 @@ namespace WebService.Test.IntegrationTests
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 job = JsonConvert.DeserializeObject<JobApiModel>(response.Content);
                 Assert.Equal(jobId, job.JobId);
+
+                // query job with device details
+                request = new HttpRequest();
+                request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/jobs/{jobId}?includeDeviceDetails=true");
+                response = this.httpClient.GetAsync(request).Result;
+
+                // Assert
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                job = JsonConvert.DeserializeObject<JobApiModel>(response.Content);
+                Assert.Equal(job.Status, JobStatus.Completed);
+                Assert.Equal(job.Devices.Single().DeviceId, deviceId);
+                Assert.True(job.Devices.All(j => j.Status == DeviceJobStatus.Completed));
             }
             finally
             {
@@ -159,6 +175,7 @@ namespace WebService.Test.IntegrationTests
 
             if (tags != null)
             {
+                device.Tags = new Dictionary<string, JToken>();
                 foreach (var tag in tags)
                 {
                     device.Tags.Add(tag.Key, tag.Value);
@@ -186,6 +203,36 @@ namespace WebService.Test.IntegrationTests
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
+        }
+
+        private async Task<JobStatus> WaitForJobAsync(string jobId)
+        {
+            JobStatus status = JobStatus.Unknown;
+
+            foreach (var loop in Enumerable.Range(0, 10))
+            {
+                status = await GetJobStatusAsync(jobId);
+                if (status == JobStatus.Failed || status == JobStatus.Cancelled || status == JobStatus.Completed)
+                {
+                    log.WriteLine($"Job {jobId} status = {status}");
+                    break;
+                }
+
+                log.WriteLine($"Waiting for job {jobId}, loop {loop}");
+                await Task.Delay(TimeSpan.FromSeconds(15));
+            }
+
+            return status;
+        }
+
+        private async Task<JobStatus> GetJobStatusAsync(string jobId)
+        {
+            var request = new HttpRequest();
+            request.SetUriFromString(AssemblyInitialize.Current.WsHostname + $"/v1/jobs/{jobId}");
+            var response = await this.httpClient.GetAsync(request);
+
+            var job = JsonConvert.DeserializeObject<JobApiModel>(response.Content);
+            return job.Status;
         }
     }
 }

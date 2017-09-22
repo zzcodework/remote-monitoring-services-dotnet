@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Azure.Devices;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
@@ -33,11 +35,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public JobStatistics ResultStatistics { get; set; }
 
+        public IEnumerable<DeviceJobServiceModel> Devices { get; }
+
         public JobServiceModel()
         {
         }
 
-        public JobServiceModel(JobResponse jobResponse)
+        public JobServiceModel(JobResponse jobResponse, IEnumerable<DeviceJob> deviceJobs = null)
         {
             this.JobId = jobResponse.JobId;
             this.QueryCondition = jobResponse.QueryCondition;
@@ -50,7 +54,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 case Azure.Devices.JobType.ScheduleDeviceMethod:
                 case Azure.Devices.JobType.ScheduleUpdateTwin:
-                    this.Type = (JobType) jobResponse.Type;
+                    this.Type = (JobType)jobResponse.Type;
                     break;
                 default:
                     this.Type = JobType.Unknown;
@@ -66,14 +70,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 case Azure.Devices.JobStatus.Cancelled:
                 case Azure.Devices.JobStatus.Scheduled:
                 case Azure.Devices.JobStatus.Queued:
-                    this.Status = (JobStatus) jobResponse.Status;
+                    this.Status = (JobStatus)jobResponse.Status;
                     break;
                 default:
                     this.Status = JobStatus.Unknown;
                     break;
             }
-            //this.Type =
-            //this.Status =
 
             if (jobResponse.CloudToDeviceMethod != null)
             {
@@ -92,6 +94,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 this.ResultStatistics = new JobStatistics(jobResponse.DeviceJobStatistics);
             }
+
+            this.Devices = deviceJobs?.Select(j => new DeviceJobServiceModel(j));
         }
 
         public static Azure.Devices.JobType? ToJobTypeAzureModel(JobType? jobType)
@@ -105,9 +109,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 case JobType.ScheduleDeviceMethod:
                 case JobType.ScheduleUpdateTwin:
-                    return (Azure.Devices.JobType) jobType.Value;
+                    return (Azure.Devices.JobType)jobType.Value;
                 default:
-                    return (Azure.Devices.JobType) JobType.Unknown;
+                    return (Azure.Devices.JobType)JobType.Unknown;
             }
         }
 
@@ -127,7 +131,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 case JobStatus.Cancelled:
                 case JobStatus.Scheduled:
                 case JobStatus.Queued:
-                    return (Azure.Devices.JobStatus) jobStatus.Value;
+                    return (Azure.Devices.JobStatus)jobStatus.Value;
                 default:
                     return Azure.Devices.JobStatus.Unknown;
             }

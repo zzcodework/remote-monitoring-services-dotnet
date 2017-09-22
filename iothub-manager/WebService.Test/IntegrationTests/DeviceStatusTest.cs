@@ -181,7 +181,7 @@ namespace WebService.Test.IntegrationTests
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
 
-            var deviceId = "testDevice1";
+            var deviceId = "updateTwinTestDevice1";
             var device = this.CreateDeviceIfNotExists(deviceId);
 
             try
@@ -243,7 +243,7 @@ namespace WebService.Test.IntegrationTests
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
 
-            var deviceId = "testDevice1";
+            var deviceId = "updateTwinTestDevice2";
             var device = this.CreateDeviceIfNotExists(deviceId);
 
             try

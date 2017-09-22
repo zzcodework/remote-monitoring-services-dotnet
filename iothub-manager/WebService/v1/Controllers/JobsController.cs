@@ -47,11 +47,16 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// Get job status by jobId
         /// </summary>
         /// <param name="jobId">The jobId</param>
+        /// <param name="includeDeviceDetails">`true` for request per-device details</param>
+        /// <param name="deviceJobStatus">The interesting device job status. `null` means no restrict</param>
         /// <returns>The job object</returns>
         [HttpGet("{jobId}")]
-        public async Task<JobApiModel> GetJobAsync(string jobId)
+        public async Task<JobApiModel> GetJobAsync(
+            string jobId,
+            [FromQuery]bool? includeDeviceDetails,
+            [FromQuery]DeviceJobStatus? deviceJobStatus)
         {
-            var result = await this.jobs.GetJobsAsync(jobId);
+            var result = await this.jobs.GetJobsAsync(jobId, includeDeviceDetails, deviceJobStatus);
             return new JobApiModel(result);
         }
 

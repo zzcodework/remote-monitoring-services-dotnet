@@ -10,6 +10,7 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
+using DeviceJobStatus = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.DeviceJobStatus;
 using JobStatus = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.JobStatus;
 using JobType = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.JobType;
 
@@ -24,7 +25,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             string queryFrom,
             string queryTo);
 
-        Task<JobServiceModel> GetJobsAsync(string jobId);
+        Task<JobServiceModel> GetJobsAsync(
+            string jobId,
+            bool? includeDeviceDetails,
+            DeviceJobStatus? deviceJobStatus);
 
         Task<JobServiceModel> ScheduleDeviceMethodAsync(
             string jobId,
@@ -44,7 +48,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     public class Jobs : IJobs
     {
         private JobClient jobClient;
+        private RegistryManager registryManager;
         private readonly IConfigService configService;
+
+        private const string DeviceDetailsQueryFormat = "select * from devices.jobs where devices.jobs.jobId = '{0}'";
+        private const string DeviceDetailsQuerywithStatusFormat = "select * from devices.jobs where devices.jobs.jobId = '{0}' and devices.jobs.status = '{1}'";
 
         public Jobs(
             IServicesConfig config,
@@ -58,6 +66,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             IoTHubConnectionHelper.CreateUsingHubConnectionString(
                 config.HubConnString,
                 conn => { this.jobClient = JobClient.CreateFromConnectionString(conn); });
+
+            IoTHubConnectionHelper.CreateUsingHubConnectionString(
+                config.HubConnString,
+                conn => { this.registryManager = RegistryManager.CreateFromConnectionString(conn); });
 
             this.configService = configService;
         }
@@ -89,10 +101,31 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             return results;
         }
 
-        public async Task<JobServiceModel> GetJobsAsync(string jobId)
+        public async Task<JobServiceModel> GetJobsAsync(
+            string jobId,
+            bool? includeDeviceDetails,
+            DeviceJobStatus? deviceJobStatus)
         {
             var result = await this.jobClient.GetJobAsync(jobId);
-            return new JobServiceModel(result);
+
+            if (!includeDeviceDetails.HasValue || !includeDeviceDetails.Value)
+            {
+                return new JobServiceModel(result);
+            }
+
+            var queryString = deviceJobStatus.HasValue ?
+                string.Format(DeviceDetailsQuerywithStatusFormat, jobId, deviceJobStatus) :
+                string.Format(DeviceDetailsQueryFormat, jobId);
+
+            var query = this.registryManager.CreateQuery(queryString);
+
+            var deviceJobs = new List<DeviceJob>();
+            while (query.HasMoreResults)
+            {
+                deviceJobs.AddRange(await query.GetNextAsDeviceJobAsync());
+            }
+
+            return new JobServiceModel(result, deviceJobs);
         }
 
         public async Task<JobServiceModel> ScheduleTwinUpdateAsync(

@@ -1,7 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
@@ -33,6 +36,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         public JobStatistics ResultStatistics { get; set; }
 
+        [JsonProperty(PropertyName = "Devices", NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<DeviceJobApiModel> Devices { get; set; }
+
         public JobApiModel()
         {
         }
@@ -54,6 +60,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 this.FailureReason = serviceModel.FailureReason;
                 this.StatusMessage = serviceModel.StatusMessage;
                 this.ResultStatistics = serviceModel.ResultStatistics;
+                this.Devices = serviceModel.Devices?.Select(j => new DeviceJobApiModel(j));
             }
         }
 
