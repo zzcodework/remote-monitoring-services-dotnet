@@ -30,7 +30,7 @@ namespace WebService.Test.IntegrationTests
             this.credentialsAvailable = !CIVariableHelper.IsPullRequest(log);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void ScheduleJobIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -85,7 +85,7 @@ namespace WebService.Test.IntegrationTests
             }
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void GetJobsIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -109,7 +109,7 @@ namespace WebService.Test.IntegrationTests
             Assert.True(jobs.Count() >= 0);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public async Task GetJobWithTimeBoundIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");

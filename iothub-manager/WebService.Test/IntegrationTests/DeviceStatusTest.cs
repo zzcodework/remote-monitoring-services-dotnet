@@ -31,7 +31,7 @@ namespace WebService.Test.IntegrationTests
             this.credentialsAvailable = !CIVariableHelper.IsPullRequest(log);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void GetDeviceIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -46,7 +46,7 @@ namespace WebService.Test.IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void GetDeviceByIdIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -61,7 +61,7 @@ namespace WebService.Test.IntegrationTests
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void CreateDeleteDeviceIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -88,7 +88,7 @@ namespace WebService.Test.IntegrationTests
             this.DeleteDeviceIfExists(deviceId);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void CreateDeviceIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -176,7 +176,7 @@ namespace WebService.Test.IntegrationTests
             }
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void UpdateTwinIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -238,7 +238,7 @@ namespace WebService.Test.IntegrationTests
             }
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void UpdateTwinUsingMismatchEtagIsHealthy()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -282,7 +282,7 @@ namespace WebService.Test.IntegrationTests
             public string TelemetryType { get; set; }
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void GetDeviceListTest()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -308,7 +308,7 @@ namespace WebService.Test.IntegrationTests
             }
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void GetDeviceListWithQueryTest()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -405,7 +405,7 @@ namespace WebService.Test.IntegrationTests
             }
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public async Task PostDeviceQueryTest()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -420,7 +420,7 @@ namespace WebService.Test.IntegrationTests
             Assert.NotNull(deviceList.Items);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public async Task GetAllDevicesByClausesTest()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -434,7 +434,7 @@ namespace WebService.Test.IntegrationTests
             Assert.NotNull(deviceList.Items);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public async Task GetDevicesByBadQueryTest()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
@@ -445,7 +445,7 @@ namespace WebService.Test.IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public async Task QueryDevicesByClausesTest()
         {
             Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");

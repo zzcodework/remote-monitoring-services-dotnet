@@ -23,7 +23,7 @@ namespace WebService.Test.IntegrationTests
             this.credentialsAvailable = !CIVariableHelper.IsPullRequest(log);
         }
 
-        [Fact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [Fact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void TheServiceIsHealthy()
         {
             var request = new HttpRequest();

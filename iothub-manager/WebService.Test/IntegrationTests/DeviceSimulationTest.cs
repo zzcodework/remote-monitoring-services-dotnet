@@ -40,7 +40,7 @@ namespace WebService.Test.IntegrationTests
         /// IMPORTANT: the test should not be modified without considering
         /// the impact on other microservices.
         /// </summary>
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void MissingDevice()
         {
             Skip.IfNot(this.credentialsAvailable, "Credentials not available for Pull Requests");
@@ -59,7 +59,7 @@ namespace WebService.Test.IntegrationTests
         /// IMPORTANT: the test should not be modified without considering
         /// the impact on other microservices.
         /// </summary>
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void CreateDevice()
         {
             Skip.IfNot(this.credentialsAvailable, "Credentials not available for Pull Requests");
@@ -84,7 +84,7 @@ namespace WebService.Test.IntegrationTests
         /// IMPORTANT: the test should not be modified without considering
         /// the impact on other microservices.
         /// </summary>
-        [SkippableFact, Trait(Constants.Type, Constants.IntegrationTest)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void CreateAndGetDevice()
         {
             Skip.IfNot(this.credentialsAvailable, "Credentials not available for Pull Requests");
