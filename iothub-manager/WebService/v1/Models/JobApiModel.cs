@@ -12,28 +12,38 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
     {
         public string JobId { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string QueryCondition { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? CreatedTimeUtc { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? StartTimeUtc { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? EndTimeUtc { get; set; }
 
-        public long MaxExecutionTimeInSeconds { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public long? MaxExecutionTimeInSeconds { get; set; }
 
         public JobType Type { get; set; }
 
         public JobStatus Status { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public MethodParameterApiModel MethodParameter { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public JobUpdateTwinApiModel UpdateTwin { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string FailureReason { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string StatusMessage { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public JobStatistics ResultStatistics { get; set; }
 
         [JsonProperty(PropertyName = "Devices", NullValueHandling = NullValueHandling.Ignore)]
@@ -55,33 +65,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 this.MaxExecutionTimeInSeconds = serviceModel.MaxExecutionTimeInSeconds;
                 this.Type = serviceModel.Type;
                 this.Status = serviceModel.Status;
-                this.MethodParameter = new MethodParameterApiModel(serviceModel.MethodParameter);
-                this.UpdateTwin = new JobUpdateTwinApiModel(null, serviceModel.UpdateTwin);
+                this.MethodParameter = serviceModel.MethodParameter == null ? null : new MethodParameterApiModel(serviceModel.MethodParameter);
+                this.UpdateTwin = serviceModel.UpdateTwin == null ? null : new JobUpdateTwinApiModel(null, serviceModel.UpdateTwin);
                 this.FailureReason = serviceModel.FailureReason;
                 this.StatusMessage = serviceModel.StatusMessage;
                 this.ResultStatistics = serviceModel.ResultStatistics;
                 this.Devices = serviceModel.Devices?.Select(j => new DeviceJobApiModel(j));
             }
-        }
-
-        public JobServiceModel ToServiceModel()
-        {
-            return new JobServiceModel()
-            {
-                JobId = this.JobId,
-                QueryCondition = this.QueryCondition,
-                CreatedTimeUtc = this.CreatedTimeUtc,
-                StartTimeUtc = this.StartTimeUtc,
-                EndTimeUtc = this.EndTimeUtc,
-                MaxExecutionTimeInSeconds = this.MaxExecutionTimeInSeconds,
-                Type = this.Type,
-                Status = this.Status,
-                MethodParameter = this.MethodParameter.ToServiceModel(),
-                UpdateTwin = this.UpdateTwin.ToServiceModel(),
-                FailureReason = this.FailureReason,
-                StatusMessage = this.StatusMessage,
-                ResultStatistics = this.ResultStatistics
-            };
         }
     }
 }
