@@ -1,20 +1,22 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService
 {
-    /// <summary>Application entry point</summary>
-    public class Program
+    public static class Program
     {
+        // Application entry point
         public static void Main(string[] args)
         {
-            IConfig config = new Config(new ConfigData());
+            IConfig config = new Config(new ConfigData(new Logger(Uptime.ProcessId, LogLevel.Info)));
 
             /*
-            Kestrel is a cross-platform HTTP server based on libuv, a
-            cross-platform asynchronous I/O library.
+            Kestrel is a cross-platform HTTP server based on libuv,
+            a cross-platform asynchronous I/O library.
             https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers
             */
             var host = new WebHostBuilder()

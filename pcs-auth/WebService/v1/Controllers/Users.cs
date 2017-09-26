@@ -8,7 +8,7 @@ using Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Controllers
 {
-    [Route(Version.Path + "/[controller]"), TypeFilter(typeof(ExceptionsFilterAttribute))]
+    [Route(Version.PATH + "/[controller]"), TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class UsersController : Controller
     {
         private readonly IUsers users;

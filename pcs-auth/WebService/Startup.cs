@@ -63,11 +63,12 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService
         {
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
 
+            // Check for Authorization header before dispatching requests
             app.UseMiddleware<AuthMiddleware>();
 
             // Enable CORS - Must be before UseMvc
             // see: https://docs.microsoft.com/en-us/aspnet/core/security/cors
-            corsSetup.useMiddleware(app);
+            corsSetup.UseMiddleware(app);
 
             app.UseMvc();
 
@@ -78,8 +79,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService
 
         private void PrintBootstrapInfo(IContainer container)
         {
-            var logger = container.Resolve<ILogger>();
-            logger.Info("Web service started", () => new { Uptime.ProcessId });
+            var log = container.Resolve<ILogger>();
+            log.Info("Web service started", () => new { Uptime.ProcessId });
         }
     }
 }

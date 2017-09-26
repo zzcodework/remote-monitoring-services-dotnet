@@ -6,8 +6,6 @@ using System.Security.Claims;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Models;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.Services
 {

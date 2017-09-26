@@ -38,7 +38,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
         private const string AUTH_HEADER = "Authorization";
 
         // User requests are marked with this header by the reverse proxy
-        // TODO ~devis: this is a temporary solution for public previe only
+        // TODO ~devis: this is a temporary solution for public preview only
         // TODO ~devis: remove this approach and use the service to service authentication
         // https://github.com/Azure/pcs-auth-dotnet/issues/18
         // https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/issues/11
@@ -73,8 +73,19 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
                 this.log.Warn("### AUTHENTICATION IS DISABLED! ###", () => { });
                 this.log.Warn("### AUTHENTICATION IS DISABLED! ###", () => { });
             }
+            else
+            {
+                this.log.Info("Auth config", () => new
+                {
+                    this.config.AuthType,
+                    this.config.JwtIssuer,
+                    this.config.JwtAudience,
+                    this.config.JwtAllowedAlgos,
+                    this.config.JwtClockSkew
+                });
+            }
 
-            // TODO ~devis: this is a temporary solution for public previe only
+            // TODO ~devis: this is a temporary solution for public preview only
             // TODO ~devis: remove this approach and use the service to service authentication
             // https://github.com/Azure/pcs-auth-dotnet/issues/18
             // https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/issues/11
@@ -121,6 +132,13 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
                 return this.requestDelegate(context);
             }
 
+            if (!this.authRequired)
+            {
+                // Call the next delegate/middleware in the pipeline
+                this.log.Debug("Skipping auth (auth disabled)", () => { });
+                return this.requestDelegate(context);
+            }
+
             if (context.Request.Headers.ContainsKey(AUTH_HEADER))
             {
                 header = context.Request.Headers[AUTH_HEADER].SingleOrDefault();
@@ -130,7 +148,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
                 this.log.Error("Authorization header not found", () => { });
             }
 
-            if (header.StartsWith(AUTH_HEADER_PREFIX))
+            if (header != null && header.StartsWith(AUTH_HEADER_PREFIX))
             {
                 token = header.Substring(AUTH_HEADER_PREFIX.Length).Trim();
             }
