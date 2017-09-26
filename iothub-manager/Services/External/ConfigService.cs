@@ -25,7 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
             IServicesConfig config,
             IHttpClientWrapper httpClient)
         {
-            this.url = config.ConfigServiceUri + "/v1/devicegroupfilters";
+            this.url = $"{config.ConfigServiceUri}/devicegroupfilters";
             this.httpClient = httpClient;
         }
 

@@ -250,7 +250,12 @@ namespace WebService.Test.IntegrationTests
             {
                 var newTagValue = Guid.NewGuid().ToString();
 
-                device.Etag = device.Etag + "wrong";
+                // Build a mismatch ETag
+                var parts = device.Etag.Split('|');
+                var twinETagBytes = Convert.FromBase64String(parts[1]);
+                twinETagBytes[0] = (byte)(twinETagBytes[0] ^ 0xff);
+                parts[1] = Convert.ToBase64String(twinETagBytes);
+                device.Etag = string.Join("|", parts);
 
                 // update twin by adding/editing a tag
                 if (device.Tags.ContainsKey("newTag"))
