@@ -51,8 +51,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private RegistryManager registryManager;
         private readonly IConfigService configService;
 
-        private const string DeviceDetailsQueryFormat = "select * from devices.jobs where devices.jobs.jobId = '{0}'";
-        private const string DeviceDetailsQuerywithStatusFormat = "select * from devices.jobs where devices.jobs.jobId = '{0}' and devices.jobs.status = '{1}'";
+        private const string DEVICE_DETAILS_QUERY_FORMAT = "select * from devices.jobs where devices.jobs.jobId = '{0}'";
+        private const string DEVICE_DETAILS_QUERYWITH_STATUS_FORMAT = "select * from devices.jobs where devices.jobs.jobId = '{0}' and devices.jobs.status = '{1}'";
 
         public Jobs(
             IServicesConfig config,
@@ -64,11 +64,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             IoTHubConnectionHelper.CreateUsingHubConnectionString(
-                config.HubConnString,
+                config.IoTHubConnString,
                 conn => { this.jobClient = JobClient.CreateFromConnectionString(conn); });
 
             IoTHubConnectionHelper.CreateUsingHubConnectionString(
-                config.HubConnString,
+                config.IoTHubConnString,
                 conn => { this.registryManager = RegistryManager.CreateFromConnectionString(conn); });
 
             this.configService = configService;
@@ -114,8 +114,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             var queryString = deviceJobStatus.HasValue ?
-                string.Format(DeviceDetailsQuerywithStatusFormat, jobId, deviceJobStatus) :
-                string.Format(DeviceDetailsQueryFormat, jobId);
+                string.Format(DEVICE_DETAILS_QUERYWITH_STATUS_FORMAT, jobId, deviceJobStatus) :
+                string.Format(DEVICE_DETAILS_QUERY_FORMAT, jobId);
 
             var query = this.registryManager.CreateQuery(queryString);
 

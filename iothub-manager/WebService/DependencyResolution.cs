@@ -15,8 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
     {
         /// <summary>
         /// Autofac configuration. Find more information here:
-        /// http://docs.autofac.org/en/latest/integration/owin.html
-        /// http://autofac.readthedocs.io/en/latest/register/scanning.html
+        /// @see http://docs.autofac.org/en/latest/integration/aspnetcore.html
         /// </summary>
         public static IContainer Setup(IServiceCollection services)
         {
@@ -37,6 +36,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
         /// Autowire interfaces to classes from all the assemblies, to avoid
         /// manual configuration. Note that autowiring works only for interfaces
         /// with just one implementation.
+        /// @see http://autofac.readthedocs.io/en/latest/register/scanning.html
         /// </summary>
         private static void AutowireAssemblies(ContainerBuilder builder)
         {
@@ -64,15 +64,15 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             var logger = new Logger(Uptime.ProcessId, LogLevel.Debug);
             builder.RegisterInstance(logger).As<ILogger>().SingleInstance();
 
+            // Auth and CORS setup
+            Auth.Startup.SetupDependencies(builder, config);
+
             // By default Autofac uses a request lifetime, creating new objects
             // for each request, which is good to reduce the risk of memory
             // leaks, but not so good for the overall performance.
             builder.RegisterType<Services.Devices>().As<IDevices>().SingleInstance();
             builder.RegisterType<DeviceService>().As<IDeviceService>().SingleInstance();
             builder.RegisterType<Jobs>().As<IJobs>().SingleInstance();
-
-            // Auth and CORS setup
-            Auth.Startup.SetupDependencies(builder, config);
         }
 
         private static void RegisterFactory(IContainer container)
@@ -80,11 +80,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             Factory.RegisterContainer(container);
         }
 
-        //// <summary>
+        /// <summary>
         /// Provide factory pattern for dependencies that are instantiated
         /// multiple times during the application lifetime.
         /// How to use:
-        ///
+        /// <code>
         /// class MyClass : IMyClass {
         ///     public MyClass(DependencyInjection.IFactory factory) {
         ///         this.factory = factory;
@@ -95,6 +95,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
         ///         var instance3 = this.factory.Resolve<ISomething>();
         ///     }
         /// }
+        /// </code>
         /// </summary>
         public interface IFactory
         {

@@ -71,7 +71,7 @@ namespace WebService.Test.IntegrationTests
                 Assert.Equal(jobId, job.JobId);
                 Assert.Equal(JobStatus.Queued, job.Status);
                 Assert.Equal(JobType.ScheduleUpdateTwin, job.Type);
-                await WaitForJobAsync(job.JobId);
+                await this.WaitForJobAsync(job.JobId);
 
                 // query job
                 request = new HttpRequest();
@@ -211,14 +211,14 @@ namespace WebService.Test.IntegrationTests
 
             foreach (var loop in Enumerable.Range(0, 10))
             {
-                status = await GetJobStatusAsync(jobId);
+                status = await this.GetJobStatusAsync(jobId);
                 if (status == JobStatus.Failed || status == JobStatus.Cancelled || status == JobStatus.Completed)
                 {
-                    log.WriteLine($"Job {jobId} status = {status}");
+                    this.log.WriteLine($"Job {jobId} status = {status}");
                     break;
                 }
 
-                log.WriteLine($"Waiting for job {jobId}, loop {loop}");
+                this.log.WriteLine($"Waiting for job {jobId}, loop {loop}");
                 await Task.Delay(TimeSpan.FromSeconds(15));
             }
 

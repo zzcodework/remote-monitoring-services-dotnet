@@ -42,7 +42,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException("config");
             }
 
-            IoTHubConnectionHelper.CreateUsingHubConnectionString(config.HubConnString, (conn) =>
+            IoTHubConnectionHelper.CreateUsingHubConnectionString(config.IoTHubConnString, (conn) =>
             {
                 this.registry = RegistryManager.CreateFromConnectionString(conn);
                 this.ioTHubHostName = IotHubConnectionStringBuilder.Create(conn).HostName;

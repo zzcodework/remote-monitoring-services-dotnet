@@ -26,7 +26,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             IoTHubConnectionHelper.CreateUsingHubConnectionString(
-                config.HubConnString,
+                config.IoTHubConnString,
                 conn => { this.serviceClient = ServiceClient.CreateFromConnectionString(conn); });
         }
 

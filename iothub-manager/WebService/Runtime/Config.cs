@@ -8,10 +8,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 {
     public interface IConfig
     {
-        /// <summary>Web service listening port</summary>
+        // Web service listening port
         int Port { get; }
 
-        /// <summary>Service layer configuration</summary>
+        // Service layer configuration
         IServicesConfig ServicesConfig { get; }
 
         // Client authentication and authorization configuration
@@ -21,19 +21,19 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
     /// <summary>Web service configuration</summary>
     public class Config : IConfig
     {
-        private const string APPLICATION_KEY = "iothubmanager:";
+        private const string APPLICATION_KEY = "IothubManagerService:";
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
-        private const string IOT_HUB_CONNSTRING_KEY = APPLICATION_KEY + "iothub_connstring";
+        private const string IOTHUB_CONNSTRING_KEY = APPLICATION_KEY + "iothub_connstring";
 
-        private const string CONFIG_SERVICE_KEY = "config:";
+        private const string CONFIG_SERVICE_KEY = "ConfigService:";
         private const string CONFIG_SERVICE_URI_KEY = CONFIG_SERVICE_KEY + "webservice_url";
 
-        private const string CLIENT_AUTH_KEY = "ClientAuth:";
+        private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
         private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
         private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
 
-        private const string JWT_KEY = "ClientAuth:JWT:";
+        private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
         private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
         private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
@@ -47,7 +47,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
         {
             this.Port = configData.GetInt(PORT_KEY);
 
-            var connstring = configData.GetString(IOT_HUB_CONNSTRING_KEY);
+            var connstring = configData.GetString(IOTHUB_CONNSTRING_KEY);
             if (connstring.ToLowerInvariant().Contains("your azure iot hub"))
             {
                 // In order to connect to Azure IoT Hub, the service requires a connection
@@ -67,7 +67,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
-                HubConnString = configData.GetString(IOT_HUB_CONNSTRING_KEY),
+                IoTHubConnString = configData.GetString(IOTHUB_CONNSTRING_KEY),
                 ConfigServiceUri = configData.GetString(CONFIG_SERVICE_URI_KEY)
             };
 

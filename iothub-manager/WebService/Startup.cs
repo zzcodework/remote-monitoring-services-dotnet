@@ -22,6 +22,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
         // Initialized in `ConfigureServices`
         public IContainer ApplicationContainer { get; private set; }
 
+        // Invoked by `Program.cs`
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -62,6 +63,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
         {
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
 
+            // Check for Authorization header before dispatching requests
             app.UseMiddleware<AuthMiddleware>();
 
             // Enable CORS - Must be before UseMvc
