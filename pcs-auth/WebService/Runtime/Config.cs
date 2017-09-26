@@ -8,7 +8,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
 {
     public interface IConfig
     {
-        /// Web service listening port
+        // Web service listening port
         int Port { get; }
 
         // Service layer configuration
@@ -21,18 +21,18 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
     /// <summary>Web service configuration</summary>
     public class Config : IConfig
     {
-        private const string APPLICATION_KEY = "Auth:";
+        private const string APPLICATION_KEY = "AuthService:";
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
         private const string JWT_USER_ID_FROM_KEY = APPLICATION_KEY + "extract_userid_from";
         private const string JWT_NAME_FROM_KEY = APPLICATION_KEY + "extract_name_from";
         private const string JWT_EMAIL_FROM_KEY = APPLICATION_KEY + "extract_email_from";
 
-        private const string CLIENT_AUTH_KEY = "ClientAuth:";
+        private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
         private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
         private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
 
-        private const string JWT_KEY = "ClientAuth:JWT:";
+        private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
         private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
         private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
@@ -63,8 +63,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
                 AuthType = configData.GetString(AUTH_TYPE_KEY, "JWT"),
                 // By default the only trusted algorithms are RS256, RS384, RS512
                 JwtAllowedAlgos = configData.GetString(JWT_ALGOS_KEY, "RS256,RS384,RS512").Split(','),
-                JwtIssuer = configData.GetString(JWT_ISSUER_KEY),
-                JwtAudience = configData.GetString(JWT_AUDIENCE_KEY),
+                JwtIssuer = configData.GetString(JWT_ISSUER_KEY, String.Empty),
+                JwtAudience = configData.GetString(JWT_AUDIENCE_KEY, String.Empty),
                 // By default the allowed clock skew is 2 minutes
                 JwtClockSkew = TimeSpan.FromSeconds(configData.GetInt(JWT_CLOCK_SKEW_KEY, 120)),
             };
