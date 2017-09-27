@@ -83,6 +83,26 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
                     this.config.JwtAllowedAlgos,
                     this.config.JwtClockSkew
                 });
+
+                this.tokenValidationParams = new TokenValidationParameters
+                {
+                    // Validate the token signature
+                    RequireSignedTokens = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKeys = this.GetSigningKeys(),
+
+                    // Validate the token issuer
+                    ValidateIssuer = true,
+                    ValidIssuer = this.config.JwtIssuer,
+
+                    // Validate the token audience
+                    ValidateAudience = true,
+                    ValidAudience = this.config.JwtAudience,
+
+                    // Validate token lifetime
+                    ValidateLifetime = true,
+                    ClockSkew = this.config.JwtClockSkew
+                };
             }
 
             // TODO ~devis: this is a temporary solution for public preview only
@@ -92,26 +112,6 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
             this.log.Warn("### Service to service authentication is not available in public preview ###", () => { });
             this.log.Warn("### Service to service authentication is not available in public preview ###", () => { });
             this.log.Warn("### Service to service authentication is not available in public preview ###", () => { });
-
-            this.tokenValidationParams = new TokenValidationParameters
-            {
-                // Validate the token signature
-                RequireSignedTokens = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKeys = this.GetSigningKeys(),
-
-                // Validate the token issuer
-                ValidateIssuer = true,
-                ValidIssuer = this.config.JwtIssuer,
-
-                // Validate the token audience
-                ValidateAudience = true,
-                ValidAudience = this.config.JwtAudience,
-
-                // Validate token lifetime
-                ValidateLifetime = true,
-                ClockSkew = this.config.JwtClockSkew
-            };
         }
 
         public Task Invoke(HttpContext context)
