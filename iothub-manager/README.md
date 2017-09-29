@@ -88,5 +88,5 @@ Other documents
 [build-url]: https://travis-ci.org/Azure/iothub-manager-dotnet
 [issues-badge]: https://img.shields.io/github/issues/azure/iothub-manager-dotnet.svg
 [issues-url]: https://github.com/Azure/iothub-manager-dotnet/issues
-[gitter-badge]: https://img.shields.io/gitter/room/azure/iot-pcs.js.svg
-[gitter-url]: https://gitter.im/azure/iot-pcs
+[gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg
+[gitter-url]: https://gitter.im/azure/iot-solutions
