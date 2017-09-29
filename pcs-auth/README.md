@@ -142,8 +142,9 @@ https://github.com/Azure/pcs-auth-dotnet/issues.
 [build-url]: https://travis-ci.org/Azure/pcs-auth-dotnet
 [issues-badge]: https://img.shields.io/github/issues/azure/pcs-auth-dotnet.svg
 [issues-url]: https://github.com/azure/pcs-auth-dotnet/issues
-[gitter-badge]: https://img.shields.io/gitter/room/azure/iot-pcs.js.svg
-[gitter-url]: https://gitter.im/azure/iot-pcs
+[gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg
+[gitter-url]: https://gitter.im/azure/iot-solutions
+
 [aad-url]: https://azure.microsoft.com/services/active-directory
 [aad-register-app]: https://docs.microsoft.com/azure/active-directory/develop/active-directory-integrating-applications
 [docker-install-url]: https://docs.docker.com/engine/installation/
