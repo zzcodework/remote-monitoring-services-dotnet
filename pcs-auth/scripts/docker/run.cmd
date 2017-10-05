@@ -8,9 +8,6 @@ SET APP_HOME=%~dp0
 SET APP_HOME=%APP_HOME:~0,-16%
 cd %APP_HOME%
 
-:: The version is stored in a file, to avoid hardcoding it in multiple places
-set /P APP_VERSION=<%APP_HOME%/version
-
 :: Check dependencies
 docker version > NUL 2>&1
 IF %ERRORLEVEL% NEQ 0 GOTO MISSING_DOCKER
@@ -20,13 +17,11 @@ call .\scripts\env-vars-check.cmd
 IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 :: Start the application
-:: Some settings are used to connect to an external dependency, e.g. Azure Active Directory
-:: Depending on which settings and which dependencies are needed, edit the list of variables
 echo Starting Auth ...
 docker run -it -p 9001:9001 ^
-    -e PCS_AUTH_ISSUER=%PCS_AUTH_ISSUER% ^
-    -e PCS_AUTH_AUDIENCE=%PCS_AUTH_AUDIENCE% ^
-    %DOCKER_IMAGE%:%APP_VERSION%
+    -e PCS_AUTH_ISSUER ^
+    -e PCS_AUTH_AUDIENCE ^
+    %DOCKER_IMAGE%:testing
 
 :: - - - - - - - - - - - - - -
 goto :END
