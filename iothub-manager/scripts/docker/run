@@ -1,14 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 
 # Note: use lowercase names for the Docker images
 DOCKER_IMAGE="azureiotpcs/iothub-manager-dotnet"
 
-set -e
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && cd .. && pwd )/"
 source "$APP_HOME/scripts/.functions.sh"
-
-# The version is stored in a file, to avoid hardcoding it in multiple places
-APP_VERSION=$(cat "$APP_HOME/version")
 
 run_container() {
     check_dependency_docker
@@ -17,13 +13,11 @@ run_container() {
 
 	echo "Starting IoT Hub Manager ..."
 	docker run -it -p 9002:9002 \
-        -e "PCS_IOTHUB_CONNSTRING=$PCS_IOTHUB_CONNSTRING" \
-        -e "PCS_CONFIG_WEBSERVICE_URL=$PCS_CONFIG_WEBSERVICE_URL" \
-        -e "PCS_AUTH_ISSUER=$PCS_AUTH_ISSUER" \
-        -e "PCS_AUTH_AUDIENCE=$PCS_AUTH_AUDIENCE" \
-        "$DOCKER_IMAGE:$APP_VERSION"
+        -e PCS_IOTHUB_CONNSTRING \
+        -e PCS_CONFIG_WEBSERVICE_URL \
+        -e PCS_AUTH_ISSUER \
+        -e PCS_AUTH_AUDIENCE \
+        "$DOCKER_IMAGE:testing"
 }
 
 run_container
-
-set +e
