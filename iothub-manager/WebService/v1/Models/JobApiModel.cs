@@ -10,40 +10,43 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
     public class JobApiModel
     {
+        [JsonProperty("JobId")]
         public string JobId { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "QueryCondition", NullValueHandling = NullValueHandling.Ignore)]
         public string QueryCondition { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "CreatedTimeUtc", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? CreatedTimeUtc { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "StartTimeUtc", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? StartTimeUtc { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "EndTimeUtc", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? EndTimeUtc { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "MaxExecutionTimeInSeconds", NullValueHandling = NullValueHandling.Ignore)]
         public long? MaxExecutionTimeInSeconds { get; set; }
 
+        [JsonProperty(PropertyName = "Type")]
         public JobType Type { get; set; }
 
+        [JsonProperty(PropertyName = "Status")]
         public JobStatus Status { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "MethodParameter", NullValueHandling = NullValueHandling.Ignore)]
         public MethodParameterApiModel MethodParameter { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "UpdateTwin", NullValueHandling = NullValueHandling.Ignore)]
         public JobUpdateTwinApiModel UpdateTwin { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "FailureReason", NullValueHandling = NullValueHandling.Ignore)]
         public string FailureReason { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "StatusMessage", NullValueHandling = NullValueHandling.Ignore)]
         public string StatusMessage { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "ResultStatistics", NullValueHandling = NullValueHandling.Ignore)]
         public JobStatistics ResultStatistics { get; set; }
 
         [JsonProperty(PropertyName = "Devices", NullValueHandling = NullValueHandling.Ignore)]

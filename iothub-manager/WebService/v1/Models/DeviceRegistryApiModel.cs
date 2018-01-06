@@ -10,8 +10,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
     public class DeviceRegistryApiModel
     {
-        [JsonProperty(PropertyName = "Etag")]
-        public string Etag { get; set; }
+        [JsonProperty(PropertyName = "ETag")]
+        public string ETag { get; set; }
 
         [JsonProperty(PropertyName = "Id")]
         public string Id { get; set; }
@@ -63,7 +63,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             if (device == null) return;
 
             this.Id = device.Id;
-            this.Etag = device.Etag;
+            this.ETag = device.Etag;
             this.C2DMessageCount = device.C2DMessageCount;
             this.LastActivity = device.LastActivity;
             this.Connected = device.Connected;
@@ -74,7 +74,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
             if (device.Twin != null)
             {
-                this.Etag = $"{this.Etag}|{device.Twin.Etag}";
+                this.ETag = $"{this.ETag}|{device.Twin.ETag}";
                 this.Properties = new TwinPropertiesApiModel(device.Twin.DesiredProperties, device.Twin.ReportedProperties);
                 this.Tags = device.Twin.Tags;
                 this.IsSimulated = device.Twin.IsSimulated;
@@ -85,9 +85,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         {
             get
             {
-                if (!string.IsNullOrEmpty(this.Etag))
+                if (!string.IsNullOrEmpty(this.ETag))
                 {
-                    var etags = this.Etag.Split('|');
+                    var etags = this.ETag.Split('|');
                     if (etags.Length > 0)
                     {
                         return etags[0];
@@ -102,9 +102,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         {
             get
             {
-                if (!string.IsNullOrEmpty(this.Etag))
+                if (!string.IsNullOrEmpty(this.ETag))
                 {
-                    var etags = this.Etag.Split('|');
+                    var etags = this.ETag.Split('|');
                     if (etags.Length > 1)
                     {
                         return etags[1];

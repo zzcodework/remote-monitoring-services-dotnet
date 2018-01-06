@@ -2,17 +2,22 @@
 
 using System;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
     public class MethodParameterApiModel
     {
+        [JsonProperty(PropertyName = "Name")]
         public string Name { get; set; }
 
+        [JsonProperty(PropertyName = "ResponseTimeout", NullValueHandling = NullValueHandling.Ignore)]
         public TimeSpan? ResponseTimeout { get; set; }
 
+        [JsonProperty(PropertyName = "ConnectionTimeout", NullValueHandling = NullValueHandling.Ignore)]
         public TimeSpan? ConnectionTimeout { get; set; }
 
+        [JsonProperty(PropertyName = "JsonPayload")]
         public string JsonPayload { get; set; }
 
         public MethodParameterApiModel()

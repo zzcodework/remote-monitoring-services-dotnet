@@ -9,7 +9,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
     public class DeviceTwinServiceModel
     {
-        public string Etag { get; set; }
+        public string ETag { get; set; }
         public string DeviceId { get; set; }
         public bool IsSimulated { get; set; }
         public Dictionary<string, JToken> DesiredProperties { get; set; }
@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             Dictionary<string, JToken> tags,
             bool isSimulated)
         {
-            this.Etag = etag;
+            this.ETag = etag;
             this.DeviceId = deviceId;
             this.DesiredProperties = desiredProperties;
             this.ReportedProperties = reportedProperties;
@@ -40,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
             if (twin != null)
             {
-                this.Etag = twin.ETag;
+                this.ETag = twin.ETag;
                 this.DeviceId = twin.DeviceId;
                 this.Tags = TwinCollectionToDictionary(twin.Tags);
                 this.DesiredProperties = TwinCollectionToDictionary(twin.Properties.Desired);
@@ -59,7 +59,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
             return new Twin(this.DeviceId)
             {
-                ETag = this.Etag,
+                ETag = this.ETag,
                 Tags = DictionaryToTwinCollection(this.Tags),
                 Properties = properties
             };

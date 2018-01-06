@@ -15,8 +15,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             { "$uri", "/" + Version.PATH + "/devices" }
         };
 
+        [JsonProperty(PropertyName = "ContinuationToken")]
         public string ContinuationToken { get; set; }
 
+        [JsonProperty(PropertyName = "Items")]
         public List<DeviceRegistryApiModel> Items { get; set; }
 
         public DeviceListApiModel()

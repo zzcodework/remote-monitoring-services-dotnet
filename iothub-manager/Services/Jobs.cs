@@ -113,8 +113,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 return new JobServiceModel(result);
             }
 
+            // Device job query by status of 'Completed' or 'Cancelled' will fail with InternalServerError
+            // https://github.com/Azure/azure-iot-sdk-csharp/issues/257
             var queryString = deviceJobStatus.HasValue ?
-                string.Format(DEVICE_DETAILS_QUERYWITH_STATUS_FORMAT, jobId, deviceJobStatus) :
+                string.Format(DEVICE_DETAILS_QUERYWITH_STATUS_FORMAT, jobId, deviceJobStatus.Value.ToString().ToLower()):
                 string.Format(DEVICE_DETAILS_QUERY_FORMAT, jobId);
 
             var query = this.registryManager.CreateQuery(queryString);
