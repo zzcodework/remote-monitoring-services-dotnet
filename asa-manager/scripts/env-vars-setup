@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Copyright (c) Microsoft. All rights reserved.
+
+#  Prepare the environment variables used by the application.
+#
+
+# Endpoint to reach the storage adapter
+export PCS_STORAGEADAPTER_WEBSERVICE_URL="http://127.0.0.1:9022/v1"

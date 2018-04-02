@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Copyright (c) Microsoft. All rights reserved.
+
+if [[ -z "$PCS_STORAGEADAPTER_WEBSERVICE_URL" ]]; then
+    echo "Error: the PCS_STORAGEADAPTER_WEBSERVICE_URL environment variable is not defined."
+    exit 1
+fi
