@@ -6,7 +6,6 @@
 :: Run the service in the local environment:  scripts\run
 :: Run the service inside a Docker container: scripts\run -s
 :: Run the service inside a Docker container: scripts\run --in-sandbox
-:: Run the storage dependency:                scripts\run --storage
 :: Show how to use this script:               scripts\run -h
 :: Show how to use this script:               scripts\run --help
 
@@ -24,7 +23,6 @@ IF "%1"=="/?" GOTO :Help
 IF "%1"=="--help" GOTO :Help
 IF "%1"=="-s" GOTO :RunInSandbox
 IF "%1"=="--in-sandbox" GOTO :RunInSandbox
-IF "%1"=="--storage" GOTO :RunStorageAdapter
 GOTO :Run
 
 
@@ -33,7 +31,6 @@ GOTO :Run
     echo "Usage:"
     echo "  Run the service in the local environment:  ./scripts/run"
     echo "  Run the service inside a Docker container: ./scripts/run -s | --in-sandbox"
-    echo "  Run the storage dependency:                ./scripts/run --storage"
     echo "  Show how to use this script:               ./scripts/run -h | --help"
 
     goto :END
@@ -83,8 +80,10 @@ GOTO :Run
 
     :: Start the sandbox and run the application
     docker run -it ^
-        -p 9006:9006 ^
-        -e PCS_STORAGEADAPTER_WEBSERVICE_URL ^
+        -p 9024:9024 ^
+        -e PCS_TELEMETRY_WEBSERVICE_URL ^
+        -e PCS_CONFIG_WEBSERVICE_URL ^
+        -e PCS_IOTHUBMANAGER_WEBSERVICE_URL ^
         -e PCS_AUTH_REQUIRED ^
         -e PCS_CORS_WHITELIST ^
         -e PCS_AUTH_ISSUER ^
@@ -95,21 +94,6 @@ GOTO :Run
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^
         -v %APP_HOME%:/opt/code ^
         azureiotpcs/code-builder-dotnet:1.0-dotnetcore /opt/code/scripts/run
-
-    :: Error 125 typically triggers in Windows if the drive is not shared
-    IF %ERRORLEVEL% EQU 125 GOTO DOCKER_SHARE
-    IF %ERRORLEVEL% NEQ 0 GOTO FAIL
-
-    goto :END
-
-
-:RunStorageAdapter
-
-    echo Starting storage adapter...
-
-    docker run -it -p 9022:9022 ^
-            -e PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING ^
-            azureiotpcs/pcs-storage-adapter-dotnet:testing
 
     :: Error 125 typically triggers in Windows if the drive is not shared
     IF %ERRORLEVEL% EQU 125 GOTO DOCKER_SHARE

@@ -20,8 +20,10 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 :: Start the application
 echo Starting ASA manager ...
-docker run -it -p 9006:9006 ^
-    -e PCS_STORAGEADAPTER_WEBSERVICE_URL ^
+docker run -it -p 9024:9024 ^
+    -e PCS_TELEMETRY_WEBSERVICE_URL ^
+    -e PCS_CONFIG_WEBSERVICE_URL ^
+    -e PCS_IOTHUBMANAGER_WEBSERVICE_URL ^
     %DOCKER_IMAGE%:testing
 
 :: - - - - - - - - - - - - - -

@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 # Copyright (c) Microsoft. All rights reserved.
 
-if [[ -z "$PCS_STORAGEADAPTER_WEBSERVICE_URL" ]]; then
-    echo "Error: the PCS_STORAGEADAPTER_WEBSERVICE_URL environment variable is not defined."
+if [[ -z "PCS_TELEMETRY_WEBSERVICE_URL" ]]; then
+    echo "Error: the PCS_TELEMETRY_WEBSERVICE_URL environment variable is not defined."
+    exit 1
+fi
+
+if [[ -z "PCS_CONFIG_WEBSERVICE_URL" ]]; then
+    echo "Error: the PCS_CONFIG_WEBSERVICE_URL environment variable is not defined."
+    exit 1
+fi
+
+if [[ -z "PCS_IOTHUBMANAGER_WEBSERVICE_URL" ]]; then
+    echo "Error: the PCS_IOTHUBMANAGER_WEBSERVICE_URL environment variable is not defined."
     exit 1
 fi

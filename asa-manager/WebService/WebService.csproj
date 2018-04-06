@@ -8,8 +8,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
-    <ApplicationURL>http://localhost:9006</ApplicationURL>
-    <LaunchUrl>http://localhost:9006/v1/status</LaunchUrl>
+    <ApplicationURL>http://localhost:9024</ApplicationURL>
+    <LaunchUrl>http://localhost:9024/v1/status</LaunchUrl>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="appsettings.ini">

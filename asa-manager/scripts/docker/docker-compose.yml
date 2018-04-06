@@ -26,6 +26,20 @@ services:
     environment:
     - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
 
+  iothubmanager:
+    image: azureiotpcs/iothub-manager-dotnet:testing
+    ports:
+      - "9002:9002"
+    environment:
+      # Add IoT Hub connection string here
+      # See https://ms.portal.azure.com/#create/Microsoft.IotHub
+      - PCS_IOTHUB_CONNSTRING
+      - PCS_AUTH_ISSUER
+      - PCS_AUTH_AUDIENCE
+      - PCS_APPLICATION_SECRET
+      # TODO: the dependency on config is temporary
+      - PCS_CONFIG_WEBSERVICE_URL=http://config:9005/v1
+
   telemetry:
     image: azureiotpcs/telemetry-dotnet:testing
     depends_on:
@@ -44,5 +58,9 @@ services:
       - config
       - telemetry
     ports:
-      - "9006:9006"
+      - "9024:9024"
+    environment:
+      - PCS_TELEMETRY_WEBSERVICE_URL=http://telemetry:9004/v1
+      - PCS_CONFIG_WEBSERVICE_URL=http://config:9005/v1
+      - PCS_IOTHUBMANAGER_WEBSERVICE_URL=http://iothubmanager:9002/v1
     

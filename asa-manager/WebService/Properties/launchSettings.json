@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:9006/",
+      "applicationUrl": "http://localhost:9024/",
       "sslPort": 0
     }
   },
@@ -11,19 +11,23 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:9006/v1/status",
+      "launchUrl": "http://localhost:9024/v1/status",
       "environmentVariables": {
-        "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1"
+        "PCS_TELEMETRY_WEBSERVICE_URL": "http://localhost:9004/v1",
+        "PCS_CONFIG_WEBSERVICE_URL": "http://localhost:9005/v1",
+        "PCS_IOTHUBMANAGER_WEBSERVICE_URL": "http://localhost:9002/v1"
       }
     },
     "WebService": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:9006/v1/status",
+      "launchUrl": "http://localhost:9024/v1/status",
       "environmentVariables": {
-        "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1"
+        "PCS_TELEMETRY_WEBSERVICE_URL": "http://localhost:9004/v1",
+        "PCS_CONFIG_WEBSERVICE_URL": "http://localhost:9005/v1",
+        "PCS_IOTHUBMANAGER_WEBSERVICE_URL": "http://localhost:9002/v1"
       },
-      "applicationUrl": "http://localhost:9006/v1/status"
+      "applicationUrl": "http://localhost:9024/v1/status"
     }
   }
 }
