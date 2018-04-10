@@ -5,9 +5,8 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.IoTSolutions.AsaManager.AsaConfigAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent;
-using Microsoft.Azure.IoTSolutions.AsaManager.WebService;
+using Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
 {
     public class Startup
     {
-        private IAsaConfigAgent asaConfigAgent;
+        private ITelemetryRulesAgent telemetryRulesAgent;
         private IDeviceGroupsAgent deviceGroupsAgent;
 
         // Initialized in `Startup`
@@ -96,8 +95,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
                 CheckAdditionalContent = false
             };
 
-            this.asaConfigAgent = this.ApplicationContainer.Resolve<IAsaConfigAgent>();
-            this.asaConfigAgent.RunAsync();
+            this.telemetryRulesAgent = this.ApplicationContainer.Resolve<ITelemetryRulesAgent>();
+            this.telemetryRulesAgent.RunAsync();
 
             this.deviceGroupsAgent = this.ApplicationContainer.Resolve<IDeviceGroupsAgent>();
             this.deviceGroupsAgent.RunAsync();
@@ -105,7 +104,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
 
         private void StopAgent()
         {
-            this.asaConfigAgent.Stop();
+            this.telemetryRulesAgent.Stop();
             this.deviceGroupsAgent.Stop();
         }
 

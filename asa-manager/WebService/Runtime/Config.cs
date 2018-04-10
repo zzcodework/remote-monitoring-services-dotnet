@@ -51,6 +51,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
 
+        private const string RULES_KEY = "DeviceTelemetryService:";
+        private const string RULES_WEBSERVICE_URL_KEY = RULES_KEY + "webservice_url";
+        private const string RULES_WEBSERVICE_TIMEOUT_KEY = RULES_KEY + "webservice_timeout";
+
         public int Port { get; }
         public ILoggingConfig LoggingConfig { get; set; }
         public IClientAuthConfig ClientAuthConfig { get; }
@@ -115,6 +119,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         {
             return new ServicesConfig
             {
+                RulesWebServiceUrl = configData.GetString(RULES_WEBSERVICE_URL_KEY),
+                RulesWebServiceTimeout = configData.GetInt(RULES_WEBSERVICE_TIMEOUT_KEY)
             };
         }
     }

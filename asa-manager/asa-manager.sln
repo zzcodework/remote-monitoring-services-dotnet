@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebService", "WebService\We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebService.Test", "WebService.Test\WebService.Test.csproj", "{9DFE22E7-03DD-4F30-BCC1-33F69BA15192}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsaConfigAgent", "AsaConfigAgent\AsaConfigAgent.csproj", "{93EBB353-A0B6-440F-BD34-17240C4F421B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryRulesAgent", "TelemetryRulesAgent\TelemetryRulesAgent.csproj", "{93EBB353-A0B6-440F-BD34-17240C4F421B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsaConfigAgent.Test", "AsaConfigAgent.Test\AsaConfigAgent.Test.csproj", "{DFE737E7-9FAA-4B08-A2B5-37F2E858FFAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryRulesAgent.Test", "TelemetryRulesAgent.Test\TelemetryRulesAgent.Test.csproj", "{DFE737E7-9FAA-4B08-A2B5-37F2E858FFAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceGroupsAgent", "DeviceGroupsAgent\DeviceGroupsAgent.csproj", "{29684FE5-E12B-4ADC-894B-88C76EDD30DD}"
 EndProject

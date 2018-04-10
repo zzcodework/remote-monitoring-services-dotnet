@@ -3,10 +3,10 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.Azure.IoTSolutions.AsaManager.AsaConfigAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -49,7 +49,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
             // Auto-wire AsaConfigAgent.DLL
-            assembly = typeof(IAsaConfigAgent).GetTypeInfo().Assembly;
+            assembly = typeof(ITelemetryRulesAgent).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
             // Auto-wire DeviceGroupsAgent.DLL
@@ -78,7 +78,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             builder.RegisterInstance(logger).As<ILogger>().SingleInstance();
 
             // Auth and CORS setup
-            Microsoft.Azure.IoTSolutions.AsaManager.WebService.Auth.Startup.SetupDependencies(builder, config);
+            Auth.Startup.SetupDependencies(builder, config);
 
             // By default the DI container create new objects when injecting
             // dependencies. To improve performance we reuse some instances,
