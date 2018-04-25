@@ -20,3 +20,6 @@ export PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX="..."
 
 # Event Hub where device notifications are stored
 export PCS_EVENTHUB_CONNSTRING="..."
+
+# Azure CosmosDb SQL connection string, storage used for telemetry and alarms
+export PCS_TELEMETRY_DOCUMENTDB_CONNSTRING="AccountEndpoint=https://....documents.azure.com:443/;AccountKey=...;"

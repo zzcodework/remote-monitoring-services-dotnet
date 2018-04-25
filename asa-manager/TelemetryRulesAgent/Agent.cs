@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Concurrency;
@@ -10,13 +11,12 @@ using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
 {
-    public interface ITelemetryRulesAgent
+    public interface IAgent
     {
-        Task RunAsync();
-        void Stop();
+        Task RunAsync(CancellationToken runState);
     }
 
-    public class Agent : ITelemetryRulesAgent
+    public class Agent : IAgent
     {
         // Check if rules have been modified every 10 seconds
         // (not too frequently, but frequently enough to provide a good UX)
@@ -26,7 +26,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
         private readonly IRules rulesService;
         private readonly IAsaRulesConfig asaRulesConfigService;
         private readonly IThreadWrapper thread;
-        private bool running;
         private IList<Rule> rules;
         private bool updateRequired;
 
@@ -40,7 +39,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
             this.asaRulesConfigService = asaRulesConfigService;
             this.thread = thread;
             this.log = logger;
-            this.running = true;
             this.updateRequired = false;
             this.rules = new List<Rule>();
         }
@@ -50,23 +48,17 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
         /// When the rules change, invoke the service responsible for exporting
         /// them to ASA.
         /// </summary>
-        public async Task RunAsync()
+        public async Task RunAsync(CancellationToken runState)
         {
             this.log.Info("ASA Job Configuration Agent running", () => { });
-            this.running = true;
 
-            while (this.running)
+            while (!runState.IsCancellationRequested)
             {
                 await this.CheckIfRulesHaveChangedAsync();
                 await this.UpdateAsaIfNeededAsync();
 
                 this.thread.Sleep(CHECK_INTERVAL_MSECS);
             }
-        }
-
-        public void Stop()
-        {
-            this.running = false;
         }
 
         private async Task UpdateAsaIfNeededAsync()

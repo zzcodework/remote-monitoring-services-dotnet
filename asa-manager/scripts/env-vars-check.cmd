@@ -36,6 +36,9 @@ IF "%PCS_EVENTHUB_CONNSTRING%" == "" (
     exit /B 1
 )
 
-
+IF "%PCS_TELEMETRY_DOCUMENTDB_CONNSTRING%" == "" (
+    echo Error: the PCS_TELEMETRY_DOCUMENTDB_CONNSTRING environment variable is not defined.
+    exit /B 1
+)
 
 endlocal

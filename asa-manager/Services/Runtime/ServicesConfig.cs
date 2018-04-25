@@ -2,6 +2,12 @@
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
 {
+    // Types of storage where ASA writes messages and alarms
+    public enum AsaOutputStorageType
+    {
+        CosmosDbSql = 1
+    }
+
     public interface IServicesConfig
     {
         string RulesWebServiceUrl { get; set; }
@@ -10,6 +16,18 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         int ConfigServiceTimeout { get; set; }
         string IotHubManagerServiceUrl { get; set; }
         int IotHubManagerServiceTimeout { get; set; }
+
+        // Type of storage where ASA write messages. Only value currently supported is "CosmosDbSql"
+        AsaOutputStorageType MessagesStorageType { get; set; }
+
+        // CosmosDb configuration for the table containing messages
+        CosmosDbTableConfiguration MessagesCosmosDbConfig { get; set; }
+
+        // Type of storage where ASA write alarms. Only value currently supported is "CosmosDbSql"
+        AsaOutputStorageType AlarmsStorageType { get; set; }
+
+        // CosmosDb configuration for the table containing alarms
+        CosmosDbTableConfiguration AlarmsCosmosDbConfig { get; set; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -20,5 +38,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         public int ConfigServiceTimeout { get; set; }
         public string IotHubManagerServiceUrl { get; set; }
         public int IotHubManagerServiceTimeout { get; set; }
+        public AsaOutputStorageType MessagesStorageType { get; set; }
+        public CosmosDbTableConfiguration MessagesCosmosDbConfig { get; set; }
+        public AsaOutputStorageType AlarmsStorageType { get; set; }
+        public CosmosDbTableConfiguration AlarmsCosmosDbConfig { get; set; }
     }
 }

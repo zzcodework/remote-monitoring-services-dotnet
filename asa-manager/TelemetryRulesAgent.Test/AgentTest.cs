@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using AsaConfigAgent.Test.helpers;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Concurrency;
@@ -19,11 +20,14 @@ namespace TelemetryRulesAgent.Test
         // Protection against never ending tests, stop them and fail after 10 secs
         private const int TEST_TIMEOUT = 10;
 
+        private readonly Agent target;
         private readonly Mock<IRules> rulesService;
         private readonly Mock<IAsaRulesConfig> asaRulesConfigService;
         private readonly Mock<IThreadWrapper> thread;
         private readonly Mock<ILogger> logger;
-        private readonly Agent target;
+
+        private CancellationTokenSource agentsRunState;
+        private CancellationToken runState;
 
         public AgentTest(ITestOutputHelper log)
         {
@@ -31,6 +35,8 @@ namespace TelemetryRulesAgent.Test
             this.asaRulesConfigService = new Mock<IAsaRulesConfig>();
             this.thread = new Mock<IThreadWrapper>();
             this.logger = new Mock<ILogger>();
+            this.agentsRunState = new CancellationTokenSource();
+            this.runState = this.agentsRunState.Token;
 
             this.target = new Agent(
                 this.rulesService.Object,
@@ -48,7 +54,7 @@ namespace TelemetryRulesAgent.Test
             this.StopAgentAfterNLoops(loops);
 
             // Act
-            this.target.RunAsync().Wait(TimeSpan.FromSeconds(TEST_TIMEOUT));
+            this.target.RunAsync(this.runState).Wait(TimeSpan.FromSeconds(TEST_TIMEOUT));
 
             // Assert
             this.thread.Verify(
@@ -70,7 +76,7 @@ namespace TelemetryRulesAgent.Test
             this.StopAgentAfterNLoops(2);
 
             // Act
-            this.target.RunAsync().Wait(TimeSpan.FromSeconds(TEST_TIMEOUT));
+            this.target.RunAsync(this.runState).Wait(TimeSpan.FromSeconds(TEST_TIMEOUT));
 
             // Assert
             this.asaRulesConfigService.Verify(
@@ -82,7 +88,7 @@ namespace TelemetryRulesAgent.Test
             this.StopAgentAfterNLoops(1);
 
             // Act
-            this.target.RunAsync().Wait(TimeSpan.FromSeconds(TEST_TIMEOUT));
+            this.target.RunAsync(this.runState).Wait(TimeSpan.FromSeconds(TEST_TIMEOUT));
 
             // Assert
             this.asaRulesConfigService.Verify(
@@ -133,11 +139,15 @@ namespace TelemetryRulesAgent.Test
 
         private void StopAgentAfterNLoops(int n)
         {
+            // A new cancellation token is required every time
+            this.agentsRunState = new CancellationTokenSource();
+            this.runState = this.agentsRunState.Token;
+
             this.thread
                 .Setup(x => x.Sleep(It.IsAny<int>()))
                 .Callback(() =>
                 {
-                    if (--n <= 0) this.target.Stop();
+                    if (--n <= 0) this.agentsRunState.Cancel();
                 });
         }
     }

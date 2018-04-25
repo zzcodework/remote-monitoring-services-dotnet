@@ -6,10 +6,9 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
-using Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -51,20 +50,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             assembly = typeof(IServicesConfig).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
-            // Auto-wire DeviceGroups.DLL
-            assembly = typeof(IDeviceGroupsConfig).GetTypeInfo().Assembly;
-            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
-
-            // Auto-wire DeviceGroups.DLL
-            assembly = typeof(IBlobStorageConfig).GetTypeInfo().Assembly;
-            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
-
-            // Auto-wire AsaConfigAgent.DLL
-            assembly = typeof(ITelemetryRulesAgent).GetTypeInfo().Assembly;
+            // Auto-wire SetupAgent.DLL
+            assembly = typeof(SetupAgent.IAgent).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
             // Auto-wire DeviceGroupsAgent.DLL
-            assembly = typeof(IDeviceGroupsAgent).GetTypeInfo().Assembly;
+            assembly = typeof(DeviceGroupsAgent.IAgent).GetTypeInfo().Assembly;
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+
+            // Auto-wire TelemetryRulesAgent.DLL
+            assembly = typeof(TelemetryRulesAgent.IAgent).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
         }
 

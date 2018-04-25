@@ -1,26 +1,27 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Threading;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent;
-using Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ILogger = Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics.ILogger;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
 {
     public class Startup
     {
-        private ITelemetryRulesAgent telemetryRulesAgent;
-        private IDeviceGroupsAgent deviceGroupsAgent;
+        private readonly CancellationTokenSource agentsRunState;
+
+        private SetupAgent.IAgent setupAgent;
+        private DeviceGroupsAgent.IAgent deviceGroupsAgent;
+        private TelemetryRulesAgent.IAgent telemetryRulesAgent;
 
         // Initialized in `Startup`
         public IConfigurationRoot Configuration { get; }
@@ -35,6 +36,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
                 .SetBasePath(env.ContentRootPath)
                 .AddIniFile("appsettings.ini", optional: false, reloadOnChange: true);
             this.Configuration = builder.Build();
+            this.agentsRunState = new CancellationTokenSource();
         }
 
         // This is where you register dependencies, add services to the
@@ -80,7 +82,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
 
             // Start agent threads
             appLifetime.ApplicationStarted.Register(this.StartAgents);
-            appLifetime.ApplicationStopping.Register(this.StopAgent);
+            appLifetime.ApplicationStopping.Register(this.StopAgents);
 
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
@@ -95,22 +97,24 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
                 CheckAdditionalContent = false
             };
 
-            this.telemetryRulesAgent = this.ApplicationContainer.Resolve<ITelemetryRulesAgent>();
-            this.telemetryRulesAgent.RunAsync();
+            this.setupAgent = this.ApplicationContainer.Resolve<SetupAgent.IAgent>();
+            this.setupAgent.RunAsync(this.agentsRunState.Token);
 
-            this.deviceGroupsAgent = this.ApplicationContainer.Resolve<IDeviceGroupsAgent>();
-            this.deviceGroupsAgent.RunAsync();
+            this.telemetryRulesAgent = this.ApplicationContainer.Resolve<TelemetryRulesAgent.IAgent>();
+            this.telemetryRulesAgent.RunAsync(this.agentsRunState.Token);
+
+            this.deviceGroupsAgent = this.ApplicationContainer.Resolve<DeviceGroupsAgent.IAgent>();
+            this.deviceGroupsAgent.RunAsync(this.agentsRunState.Token);
         }
 
-        private void StopAgent()
+        private void StopAgents()
         {
-            this.telemetryRulesAgent.Stop();
-            this.deviceGroupsAgent.Stop();
+            this.agentsRunState.Cancel();
         }
 
         private void PrintBootstrapInfo(IContainer container)
         {
-            var log = container.Resolve<ILogger>();
+            var log = container.Resolve<Services.Diagnostics.ILogger>();
             var config = container.Resolve<IConfig>();
             log.Warn("Service started", () => new { Uptime.ProcessId, LogLevel = config.LoggingConfig.LogLevel.ToString() });
 

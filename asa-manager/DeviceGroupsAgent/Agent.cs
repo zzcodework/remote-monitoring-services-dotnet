@@ -8,13 +8,12 @@ using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
 {
-    public interface IDeviceGroupsAgent
+    public interface IAgent
     {
-        Task RunAsync();
-        void Stop();
+        Task RunAsync(CancellationToken runState);
     }
 
-    public class GroupsAgent : IDeviceGroupsAgent
+    public class Agent : IAgent
     {
         // ASA cannot have new reference data more than once per minute
         private const int CHECK_INTERVAL_MSECS = 60000;
@@ -22,24 +21,22 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
         private readonly ILogger log;
         private readonly IDeviceGroupsWriter deviceGroupsWriter;
         private readonly IDeviceGroupsClient deviceGroupsClient;
-        private bool running;
 
-        public GroupsAgent(
+        public Agent(
             IDeviceGroupsWriter deviceGroupsWriter,
             IDeviceGroupsClient deviceGroupsClient,
             ILogger logger)
         {
             this.log = logger;
-            this.running = true;
             this.deviceGroupsWriter = deviceGroupsWriter;
             this.deviceGroupsClient = deviceGroupsClient;
         }
 
-        public async Task RunAsync()
+        public async Task RunAsync(CancellationToken runState)
         {
             this.log.Info("Device Groups Agent running", () => { });
 
-            while (this.running)
+            while (!runState.IsCancellationRequested)
             {
                 try
                 {
@@ -54,11 +51,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
 
                 Thread.Sleep(CHECK_INTERVAL_MSECS);
             }
-        }
-
-        public void Stop()
-        {
-            this.running = false;
         }
     }
 }

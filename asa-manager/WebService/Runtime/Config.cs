@@ -24,6 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
 
         // Client authentication and authorization configuration
         IClientAuthConfig ClientAuthConfig { get; }
+
         IDeviceGroupsConfig DeviceGroupsConfig { get; }
         IBlobStorageConfig BlobStorageConfig { get; }
     }
@@ -78,6 +79,23 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string STORAGE_DEVICE_GROUPS_FILE_NAME = BLOB_STORAGE_KEY + "device_groups_file_name";
         private const string STORAGE_DATE_FORMAT = BLOB_STORAGE_KEY + "reference_data_date_format";
         private const string STORAGE_TIME_FORMAT = BLOB_STORAGE_KEY + "reference_data_time_format";
+
+        private const string MESSAGES_KEY = "DeviceTelemetryService:Messages:";
+        private const string MESSAGES_STORAGE_TYPE_KEY = MESSAGES_KEY + "storageType";
+
+        private const string ALARMS_KEY = "DeviceTelemetryService:Alarms:";
+        private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "storageType";
+
+        // Values common to all the tables (messages and alarms)
+        private const string COSMOSDBSQL_CONNSTRING_KEY = "cosmosdbsql_connstring";
+        private const string COSMOSDBSQL_DATABASE_KEY = "cosmosdbsql_database";
+        private const string COSMOSDBSQL_CONSISTENCY_KEY = "cosmosdbsql_consistency_level";
+        private const string COSMOSDBSQL_COLLECTION_KEY = "cosmosdbsql_collection";
+        private const string COSMOSDBSQL_RUS_KEY = "cosmosdbsql_RUs";
+
+        // Simple keys used internally in this class, these don't appear in the config file
+        private const string MESSAGES = "messages";
+        private const string ALARMS = "alarms";
 
         public int Port { get; }
         public ILoggingConfig LoggingConfig { get; set; }
@@ -145,6 +163,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
 
         private static IServicesConfig GetServicesConfig(IConfigData configData)
         {
+            var messagesStorageType = GetStorageType(configData, MESSAGES);
+            var alarmsStorageType = GetStorageType(configData, ALARMS);
+
             return new ServicesConfig
             {
                 RulesWebServiceUrl = configData.GetString(RULES_WEBSERVICE_URL_KEY),
@@ -152,7 +173,11 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
                 ConfigServiceUrl = configData.GetString(CONFIG_WEBSERVICE_URL_KEY),
                 ConfigServiceTimeout = configData.GetInt(CONFIG_WEBSERVICE_TIMEOUT_KEY),
                 IotHubManagerServiceUrl = configData.GetString(IOTHUB_MANAGER_WEBSERVICE_URL_KEY),
-                IotHubManagerServiceTimeout = configData.GetInt(IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY)
+                IotHubManagerServiceTimeout = configData.GetInt(IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY),
+                MessagesStorageType = messagesStorageType,
+                MessagesCosmosDbConfig = GetAsaOutputStorageConfig(configData, MESSAGES, messagesStorageType),
+                AlarmsStorageType = alarmsStorageType,
+                AlarmsCosmosDbConfig = GetAsaOutputStorageConfig(configData, ALARMS, alarmsStorageType)
             };
         }
 
@@ -177,6 +202,87 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
                 DateFormat = configData.GetString(STORAGE_DATE_FORMAT),
                 TimeFormat = configData.GetString(STORAGE_TIME_FORMAT)
             };
+        }
+
+        /// <summary>Detect the table type. The allowed values are defined by AsaOutputStorageType enum</summary>
+        private static AsaOutputStorageType GetStorageType(IConfigData configData, string tableName)
+        {
+            AsaOutputStorageType result;
+
+            switch (tableName)
+            {
+                case MESSAGES:
+                    if (!Enum.TryParse(configData.GetString(MESSAGES_STORAGE_TYPE_KEY), true, out result))
+                    {
+                        result = AsaOutputStorageType.CosmosDbSql;
+                    }
+
+                    break;
+
+                case ALARMS:
+                    if (!Enum.TryParse(configData.GetString(ALARMS_STORAGE_TYPE_KEY), true, out result))
+                    {
+                        result = AsaOutputStorageType.CosmosDbSql;
+                    }
+
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException($"Unknown table name `{tableName}`");
+            }
+
+            return result;
+        }
+
+        /// <summary>Read storage configuration, depending on the storage type</summary>
+        /// <param name="configData">Raw configuration data</param>
+        /// <param name="tableName">Name of the table</param>
+        /// <param name="storageType">Type of storage, e.g. CosmosDbSql</param>
+        private static CosmosDbTableConfiguration GetAsaOutputStorageConfig(
+            IConfigData configData,
+            string tableName,
+            AsaOutputStorageType storageType)
+        {
+            CosmosDbTableConfiguration result = null;
+            string prefix;
+
+            // All tables have the same configuration block, with a different prefix
+            switch (tableName)
+            {
+                case MESSAGES:
+                    prefix = MESSAGES_KEY;
+                    break;
+                case ALARMS:
+                    prefix = ALARMS_KEY;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("Unknown table " + tableName);
+            }
+
+            // If the table is on CosmosDb, read the configuration parameters
+            if (storageType == AsaOutputStorageType.CosmosDbSql)
+            {
+                var consistency = configData.GetString(prefix + COSMOSDBSQL_CONSISTENCY_KEY);
+                if (!Enum.TryParse<ConsistencyLevel>(consistency, true, out var consistencyLevel))
+                {
+                    consistencyLevel = ConsistencyLevel.Eventual;
+                }
+
+                return new CosmosDbTableConfiguration
+                {
+                    Api = CosmosDbApi.Sql,
+                    ConnectionString = configData.GetString(prefix + COSMOSDBSQL_CONNSTRING_KEY),
+                    Database = configData.GetString(prefix + COSMOSDBSQL_DATABASE_KEY),
+                    Collection = configData.GetString(prefix + COSMOSDBSQL_COLLECTION_KEY),
+                    ConsistencyLevel = consistencyLevel,
+                    RUs = configData.GetInt(prefix + COSMOSDBSQL_RUS_KEY),
+                };
+            }
+
+            // If another storage type is added, add a similar block here,
+            // and change the output type to allow multiple types. Not needed now.
+
+            return null;
         }
     }
 }

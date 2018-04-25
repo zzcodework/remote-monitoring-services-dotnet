@@ -86,6 +86,10 @@ EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceGroupsAgent.Test", "DeviceGroupsAgent.Test\DeviceGroupsAgent.Test.csproj", "{D0421290-F21F-48D0-B878-96038CFD9706}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupAgent", "SetupAgent\SetupAgent.csproj", "{FE5C17E3-E8FC-4406-8F21-FF3F8EDC71E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupAgent.Test", "SetupAgent.Test\SetupAgent.Test.csproj", "{6919EA34-A32F-40A7-BB8F-888A9DD6B3F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +130,14 @@ Global
 		{D0421290-F21F-48D0-B878-96038CFD9706}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0421290-F21F-48D0-B878-96038CFD9706}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0421290-F21F-48D0-B878-96038CFD9706}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE5C17E3-E8FC-4406-8F21-FF3F8EDC71E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE5C17E3-E8FC-4406-8F21-FF3F8EDC71E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE5C17E3-E8FC-4406-8F21-FF3F8EDC71E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE5C17E3-E8FC-4406-8F21-FF3F8EDC71E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6919EA34-A32F-40A7-BB8F-888A9DD6B3F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6919EA34-A32F-40A7-BB8F-888A9DD6B3F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6919EA34-A32F-40A7-BB8F-888A9DD6B3F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6919EA34-A32F-40A7-BB8F-888A9DD6B3F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
