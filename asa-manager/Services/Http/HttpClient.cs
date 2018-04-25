@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Exceptions;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Http
 {
@@ -23,6 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Http
         Task<IHttpResponse> HeadAsync(IHttpRequest request);
 
         Task<IHttpResponse> OptionsAsync(IHttpRequest request);
+        Task<T> GetJsonAsync<T>(string uri, string description, bool acceptNotFound = false);
     }
 
     public class HttpClient : IHttpClient
@@ -67,6 +70,52 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Http
         public async Task<IHttpResponse> OptionsAsync(IHttpRequest request)
         {
             return await this.SendAsync(request, HttpMethod.Options);
+        }
+
+        public async Task<T> GetJsonAsync<T>(
+            string uri,
+            string description,
+            bool acceptNotFound = false)
+        {
+            var request = new HttpRequest();
+            request.SetUriFromString(uri);
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("Cache-Control", "no-cache");
+            request.Headers.Add("User-Agent", "ASA Manager");
+
+            IHttpResponse response;
+
+            try
+            {
+                response = await this.GetAsync(request);
+            }
+            catch (Exception e)
+            {
+                // TODO: Add retry for known HHTP errors
+                this.log.Error("Request failed", () => new { uri, e });
+                throw new ExternalDependencyException($"Failed to load {description}");
+            }
+
+            if (response.StatusCode == HttpStatusCode.NotFound && acceptNotFound)
+            {
+                return default(T);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                this.log.Error("Request failed", () => new { uri, response.StatusCode, response.Content });
+                throw new ExternalDependencyException($"Unable to load {description}");
+            }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(response.Content);
+            }
+            catch (Exception e)
+            {
+                this.log.Error($"Could not parse result from {uri}: {e.Message}", () => { });
+                throw new ExternalDependencyException($"Could not parse result from {uri}");
+            }
         }
 
         private async Task<IHttpResponse> SendAsync(IHttpRequest request, HttpMethod httpMethod)

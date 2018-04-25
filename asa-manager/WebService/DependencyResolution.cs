@@ -4,7 +4,10 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent;
+using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime;
@@ -48,6 +51,14 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             assembly = typeof(IServicesConfig).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
+            // Auto-wire DeviceGroups.DLL
+            assembly = typeof(IDeviceGroupsConfig).GetTypeInfo().Assembly;
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+
+            // Auto-wire DeviceGroups.DLL
+            assembly = typeof(IBlobStorageConfig).GetTypeInfo().Assembly;
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+
             // Auto-wire AsaConfigAgent.DLL
             assembly = typeof(ITelemetryRulesAgent).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
@@ -72,6 +83,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             // prepare the instance here.
             builder.RegisterInstance(config.LoggingConfig).As<ILoggingConfig>().SingleInstance();
             builder.RegisterInstance(config.ServicesConfig).As<IServicesConfig>().SingleInstance();
+            builder.RegisterInstance(config.DeviceGroupsConfig).As<IDeviceGroupsConfig>().SingleInstance();
+            builder.RegisterInstance(config.BlobStorageConfig).As<IBlobStorageConfig>().SingleInstance();
 
             // Instantiate only one logger
             var logger = new Logger(Uptime.ProcessId, config.LoggingConfig);
@@ -85,6 +98,14 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             // for example to reuse IoT Hub connections, as opposed to creating
             // a new connection every time.
             //builder.RegisterType<Foo>().As<IFoo>().SingleInstance();
+            ICloudStorageWrapper cloudStorageWrapper = new CloudStoragWrapper();
+            IBlobStorageHelper blobStorageHelper = new BlobStorageHelper(config.BlobStorageConfig, cloudStorageWrapper, logger);
+            IFileWrapper fileWrapper = new FileWrapper();
+            IDeviceGroupsWriter deviceGroupsWriter = new DeviceGroupsWriter(config.BlobStorageConfig, blobStorageHelper, fileWrapper, logger);
+            builder.RegisterInstance(deviceGroupsWriter).As<IDeviceGroupsWriter>().SingleInstance();
+            IHttpClient httpClient = new HttpClient(logger);
+            IDevicesClient devicesClient = new DevicesClient(httpClient, config.ServicesConfig, logger);
+            builder.RegisterInstance(devicesClient).As<IDevicesClient>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)

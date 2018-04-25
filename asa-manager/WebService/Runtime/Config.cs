@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Auth;
@@ -23,6 +24,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
 
         // Client authentication and authorization configuration
         IClientAuthConfig ClientAuthConfig { get; }
+        IDeviceGroupsConfig DeviceGroupsConfig { get; }
+        IBlobStorageConfig BlobStorageConfig { get; }
     }
 
     public class Config : IConfig
@@ -55,10 +58,33 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string RULES_WEBSERVICE_URL_KEY = RULES_KEY + "webservice_url";
         private const string RULES_WEBSERVICE_TIMEOUT_KEY = RULES_KEY + "webservice_timeout";
 
+        private const string CONFIG_KEY = "PCSConfigurationService:";
+        private const string CONFIG_WEBSERVICE_URL_KEY = CONFIG_KEY + "webservice_url";
+        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = CONFIG_KEY + "webservice_timeout";
+
+        private const string IOTHUB_MANAGER_KEY = "IoTHubManagerService:";
+        private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webservice_url";
+        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webservice_timeout";
+
+        private const string DEVICE_GROUPS_KEY = APPLICATION_KEY + "DeviceGroups:";
+        private const string EVENTHUB_CONNECTION_KEY = DEVICE_GROUPS_KEY + "eventhub_connection_string";
+
+        private const string BLOB_STORAGE_KEY = APPLICATION_KEY + "BlobStorage:";
+        private const string STORAGE_REFERENCE_DATA_CONTAINER_KEY = BLOB_STORAGE_KEY + "reference_data_container";
+        private const string STORAGE_EVENTHUB_CONTAINER_KEY = BLOB_STORAGE_KEY + "eventhub_container";
+        private const string STORAGE_ACCOUNT_NAME_KEY = BLOB_STORAGE_KEY + "account_name";
+        private const string STORAGE_ACCOUNT_KEY_KEY = BLOB_STORAGE_KEY + "account_key";
+        private const string STORAGE_ACCOUNT_ENDPOINT_KEY = BLOB_STORAGE_KEY + "account_endpoint";
+        private const string STORAGE_DEVICE_GROUPS_FILE_NAME = BLOB_STORAGE_KEY + "device_groups_file_name";
+        private const string STORAGE_DATE_FORMAT = BLOB_STORAGE_KEY + "reference_data_date_format";
+        private const string STORAGE_TIME_FORMAT = BLOB_STORAGE_KEY + "reference_data_time_format";
+
         public int Port { get; }
         public ILoggingConfig LoggingConfig { get; set; }
         public IClientAuthConfig ClientAuthConfig { get; }
         public IServicesConfig ServicesConfig { get; }
+        public IDeviceGroupsConfig DeviceGroupsConfig { get; }
+        public IBlobStorageConfig BlobStorageConfig { get; }
 
         public Config(IConfigData configData)
         {
@@ -66,6 +92,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             this.LoggingConfig = GetLogConfig(configData);
             this.ServicesConfig = GetServicesConfig(configData);
             this.ClientAuthConfig = GetClientAuthConfig(configData);
+            this.DeviceGroupsConfig = GetDeviceGroupsConfig(configData);
+            this.BlobStorageConfig = GetBlobStorageConfig(configData);
         }
 
         private static ILoggingConfig GetLogConfig(IConfigData configData)
@@ -120,7 +148,34 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             return new ServicesConfig
             {
                 RulesWebServiceUrl = configData.GetString(RULES_WEBSERVICE_URL_KEY),
-                RulesWebServiceTimeout = configData.GetInt(RULES_WEBSERVICE_TIMEOUT_KEY)
+                RulesWebServiceTimeout = configData.GetInt(RULES_WEBSERVICE_TIMEOUT_KEY),
+                ConfigServiceUrl = configData.GetString(CONFIG_WEBSERVICE_URL_KEY),
+                ConfigServiceTimeout = configData.GetInt(CONFIG_WEBSERVICE_TIMEOUT_KEY),
+                IotHubManagerServiceUrl = configData.GetString(IOTHUB_MANAGER_WEBSERVICE_URL_KEY),
+                IotHubManagerServiceTimeout = configData.GetInt(IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY)
+            };
+        }
+
+        private static IDeviceGroupsConfig GetDeviceGroupsConfig(IConfigData configData)
+        {
+            return new DeviceGroupsConfig
+            {
+                EventHubConnectionString = configData.GetString(EVENTHUB_CONNECTION_KEY)
+            };
+        }
+
+        private static IBlobStorageConfig GetBlobStorageConfig(IConfigData configData)
+        {
+            return new BlobStorageConfig
+            {
+                ReferenceDataContainer = configData.GetString(STORAGE_REFERENCE_DATA_CONTAINER_KEY),
+                EventHubContainer = configData.GetString(STORAGE_EVENTHUB_CONTAINER_KEY),
+                AccountKey = configData.GetString(STORAGE_ACCOUNT_KEY_KEY),
+                AccountName = configData.GetString(STORAGE_ACCOUNT_NAME_KEY),
+                EndpointSuffix = configData.GetString(STORAGE_ACCOUNT_ENDPOINT_KEY),
+                DeviceGroupsFileName = configData.GetString(STORAGE_DEVICE_GROUPS_FILE_NAME),
+                DateFormat = configData.GetString(STORAGE_DATE_FORMAT),
+                TimeFormat = configData.GetString(STORAGE_TIME_FORMAT)
             };
         }
     }

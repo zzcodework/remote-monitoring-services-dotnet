@@ -15,3 +15,23 @@ if [[ -z "PCS_IOTHUBMANAGER_WEBSERVICE_URL" ]]; then
     echo "Error: the PCS_IOTHUBMANAGER_WEBSERVICE_URL environment variable is not defined."
     exit 1
 fi
+
+if [[ -z "PCS_ASA_DATA_AZUREBLOB_ACCOUNT" ]]; then
+    echo "Error: the PCS_ASA_DATA_AZUREBLOB_ACCOUNT environment variable is not defined."
+    exit 1
+fi
+
+if [[ -z "PCS_ASA_DATA_AZUREBLOB_KEY" ]]; then
+    echo "Error: the PCS_ASA_DATA_AZUREBLOB_KEY environment variable is not defined."
+    exit 1
+fi
+
+if [[ -z "PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX" ]]; then
+    echo "Error: the PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX environment variable is not defined."
+    exit 1
+fi
+
+if [[ -z "PCS_EVENTHUB_CONNSTRING" ]]; then
+    echo "Error: the PCS_EVENTHUB_CONNSTRING environment variable is not defined."
+    exit 1
+fi
