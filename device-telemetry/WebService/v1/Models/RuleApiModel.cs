@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -42,6 +43,14 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
         [JsonProperty(PropertyName = "Conditions")]
         public List<ConditionApiModel> Conditions { get; set; } = new List<ConditionApiModel>();
 
+        // Possible values -["average", "instant"]
+        [JsonProperty(PropertyName = "Calculation")]
+        public string Calculation { get; set; } = string.Empty;
+
+        // Possible values -["00:01:00", "00:05:00", "00:10:00"]
+        [JsonProperty(PropertyName = "TimePeriod")]
+        public TimeSpan TimePeriod { get; set; } = new TimeSpan();
+
         [JsonProperty(PropertyName = "$metadata", Order = 1000)]
         public IDictionary<string, string> Metadata => new Dictionary<string, string>
         {
@@ -63,7 +72,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                 this.Enabled = rule.Enabled;
                 this.Description = rule.Description;
                 this.GroupId = rule.GroupId;
-                this.Severity = rule.Severity;
+                this.Severity = rule.Severity.ToString();
+                this.Calculation = rule.Calculation.ToString();
+                this.TimePeriod = rule.TimePeriod;
 
                 foreach (Condition condition in rule.Conditions)
                 {
@@ -79,6 +90,16 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
             {
                 conditions.Add(condition.ToServiceModel());
             }
+            
+            if (!Enum.TryParse<CalculationType>(this.Calculation, true, out CalculationType calculation))
+            {
+                throw new InvalidInputException("The value of 'Calculation' is not valid");
+            }
+            
+            if (!Enum.TryParse<SeverityType>(this.Severity, true, out SeverityType severity))
+            {
+                throw new InvalidInputException("The value of 'Severity' is not valid");
+            }
 
             return new Rule()
             {
@@ -90,7 +111,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                 Enabled = this.Enabled,
                 Description = this.Description,
                 GroupId = this.GroupId,
-                Severity = this.Severity,
+                Severity = severity,
+                Calculation = calculation,
+                TimePeriod = this.TimePeriod,
                 Conditions = conditions
             };
         }

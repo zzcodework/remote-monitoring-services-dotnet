@@ -41,7 +41,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                         alarm.MessageTime,
                         new AlarmRuleApiModel(
                             alarm.Rule.Id,
-                            alarm.Rule.Severity,
+                            alarm.Rule.Severity.ToString(),
                             alarm.Rule.Description)));
                 }
             }

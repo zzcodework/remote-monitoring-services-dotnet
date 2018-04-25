@@ -26,6 +26,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Helpers
                     'Description':{'required':true,'type':['string']},
                     'GroupId':{'required':true,'type':['string']},
                     'Severity':{'required':true,'type':['string']},
+                    'Calculation':{'required':true,'type':['string']},
+                    'TimePeriod':{'required':true,'type':['string']},
                     'Conditions':
                     {
                         'required':true,
