@@ -24,23 +24,23 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
 
         private readonly ILogger log;
         private readonly IRules rulesService;
-        private readonly IAsaRulesConfig asaRulesConfigService;
+        private readonly IRulesWriter rulesWriter;
         private readonly IThreadWrapper thread;
-        private IList<Rule> rules;
+        private IList<RuleApiModel> rules;
         private bool updateRequired;
 
         public Agent(
             IRules rulesService,
-            IAsaRulesConfig asaRulesConfigService,
+            IRulesWriter rulesWriter,
             IThreadWrapper thread,
             ILogger logger)
         {
             this.rulesService = rulesService;
-            this.asaRulesConfigService = asaRulesConfigService;
+            this.rulesWriter = rulesWriter;
             this.thread = thread;
             this.log = logger;
             this.updateRequired = false;
-            this.rules = new List<Rule>();
+            this.rules = new List<RuleApiModel>();
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
             {
                 try
                 {
-                    await this.asaRulesConfigService.UpdateConfigurationAsync(this.rules);
+                    await this.rulesWriter.ExportRulesToAsaAsync(this.rules, DateTimeOffset.UtcNow);
                     this.updateRequired = false;
                 }
                 catch (Exception e)
@@ -98,8 +98,11 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
             var newRules = await this.rulesService.GetActiveRulesSortedByIdAsync();
             if (this.rulesService.RulesAreEquivalent(newRules, this.rules))
             {
+                this.log.Debug("The old and new list of rules are equivalent, no change detected", () => { });
                 return false;
             }
+
+            this.log.Debug("The old and new list of rules are different", () => { });
 
             this.rules = newRules;
             return true;

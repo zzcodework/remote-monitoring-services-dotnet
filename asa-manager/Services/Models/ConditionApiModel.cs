@@ -4,7 +4,8 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
 {
-    public class Condition
+    // See https://github.com/Azure/device-telemetry-dotnet/blob/master/WebService/v1/Models/ConditionApiModel.cs
+    public class ConditionApiModel
     {
         [JsonProperty("Field")]
         public string Field { get; set; }
@@ -17,7 +18,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Condition x)) return false;
+            if (!(obj is ConditionApiModel x)) return false;
 
             return string.Equals(this.Field, x.Field)
                    && string.Equals(this.Operator, x.Operator)

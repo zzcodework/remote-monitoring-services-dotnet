@@ -22,7 +22,7 @@ namespace TelemetryRulesAgent.Test
 
         private readonly Agent target;
         private readonly Mock<IRules> rulesService;
-        private readonly Mock<IAsaRulesConfig> asaRulesConfigService;
+        private readonly Mock<IRulesWriter> asaRulesConfigService;
         private readonly Mock<IThreadWrapper> thread;
         private readonly Mock<ILogger> logger;
 
@@ -32,7 +32,7 @@ namespace TelemetryRulesAgent.Test
         public AgentTest(ITestOutputHelper log)
         {
             this.rulesService = new Mock<IRules>();
-            this.asaRulesConfigService = new Mock<IAsaRulesConfig>();
+            this.asaRulesConfigService = new Mock<IRulesWriter>();
             this.thread = new Mock<IThreadWrapper>();
             this.logger = new Mock<ILogger>();
             this.agentsRunState = new CancellationTokenSource();
@@ -64,7 +64,7 @@ namespace TelemetryRulesAgent.Test
                 x => x.GetActiveRulesSortedByIdAsync(),
                 Times.Exactly(loops));
             this.asaRulesConfigService.Verify(
-                x => x.UpdateConfigurationAsync(It.IsAny<IList<Rule>>()),
+                x => x.ExportRulesToAsaAsync(It.IsAny<IList<RuleApiModel>>(), It.IsAny<DateTimeOffset>()),
                 Times.Never);
         }
 
@@ -80,7 +80,7 @@ namespace TelemetryRulesAgent.Test
 
             // Assert
             this.asaRulesConfigService.Verify(
-                x => x.UpdateConfigurationAsync(It.IsAny<IList<Rule>>()),
+                x => x.ExportRulesToAsaAsync(It.IsAny<IList<RuleApiModel>>(), It.IsAny<DateTimeOffset>()),
                 Times.Never);
 
             // Arrange
@@ -92,21 +92,21 @@ namespace TelemetryRulesAgent.Test
 
             // Assert
             this.asaRulesConfigService.Verify(
-                x => x.UpdateConfigurationAsync(It.IsAny<IList<Rule>>()),
+                x => x.ExportRulesToAsaAsync(It.IsAny<IList<RuleApiModel>>(), It.IsAny<DateTimeOffset>()),
                 Times.Once);
         }
 
         private void RulesHaveNotChanged()
         {
             this.rulesService.Setup(
-                    x => x.RulesAreEquivalent(It.IsAny<IList<Rule>>(), It.IsAny<IList<Rule>>()))
+                    x => x.RulesAreEquivalent(It.IsAny<IList<RuleApiModel>>(), It.IsAny<IList<RuleApiModel>>()))
                 .Returns(true);
         }
 
         private void RulesHaveChanged()
         {
             this.rulesService.Setup(
-                    x => x.RulesAreEquivalent(It.IsAny<IList<Rule>>(), It.IsAny<IList<Rule>>()))
+                    x => x.RulesAreEquivalent(It.IsAny<IList<RuleApiModel>>(), It.IsAny<IList<RuleApiModel>>()))
                 .Returns(false);
         }
 
@@ -114,22 +114,22 @@ namespace TelemetryRulesAgent.Test
         {
             this.rulesService.Setup(
                     x => x.GetActiveRulesSortedByIdAsync())
-                .ReturnsAsync(new List<Rule>());
+                .ReturnsAsync(new List<RuleApiModel>());
 
             // Make sure that 2 empty lists are considered equivalent
             this.rulesService.Setup(
                     x => x.RulesAreEquivalent(
-                        It.Is<IList<Rule>>(l => l.Count == 0),
-                        It.Is<IList<Rule>>(l => l.Count == 0)))
+                        It.Is<IList<RuleApiModel>>(l => l.Count == 0),
+                        It.Is<IList<RuleApiModel>>(l => l.Count == 0)))
                 .Returns(true);
         }
 
         private void ThereAreNRules(int i)
         {
-            var list = new List<Rule>();
+            var list = new List<RuleApiModel>();
             for (int j = 0; j < i; j++)
             {
-                list.Add(new Rule());
+                list.Add(new RuleApiModel());
             }
 
             this.rulesService.Setup(

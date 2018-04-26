@@ -37,7 +37,7 @@ namespace Services.Test
             // Arrange
             var response = new HttpResponse(
                 HttpStatusCode.OK,
-                "[" +
+                "{'Items': [" +
                 "{'Id':'C4','Enabled':true}," +
                 "{'Id':'Z2','Enabled':false}," +
                 "{'Id':'B6','Enabled':false}," +
@@ -45,7 +45,7 @@ namespace Services.Test
                 "{'Id':'B1','Enabled':false}," +
                 "{'Id':'B4','Enabled':true}," +
                 "{'Id':'44','Enabled':false}" +
-                "]",
+                "]}",
                 null);
             this.httpClient.Setup(
                     x => x.GetAsync(It.IsAny<HttpRequest>()))
@@ -66,12 +66,12 @@ namespace Services.Test
             // Arrange
             var response = new HttpResponse(
                 HttpStatusCode.OK,
-                "[" +
+                "{'Items': [" +
                 "{'Id':'C4','Enabled':true}," +
                 "{'Id':'Z2','Enabled':true}," +
                 "{'Id':'B6','Enabled':true}," +
                 "{'Id':'B4','Enabled':true}" +
-                "]",
+                "]}",
                 null);
             this.httpClient.Setup(
                     x => x.GetAsync(It.IsAny<HttpRequest>()))
@@ -92,29 +92,29 @@ namespace Services.Test
         public void ItComparesListOfRules()
         {
             // Arrange: two empty lists
-            var list1 = new List<Rule>();
-            var list2 = new List<Rule>();
+            var list1 = new List<RuleApiModel>();
+            var list2 = new List<RuleApiModel>();
 
             // Assert
             Assert.True(this.target.RulesAreEquivalent(list1, list2));
 
             // Arrange: two equivalent non empty lists
-            list1 = new List<Rule> { new Rule { Id = "1ab" } };
-            list2 = new List<Rule> { new Rule { Id = "1ab" } };
+            list1 = new List<RuleApiModel> { new RuleApiModel { Id = "1ab" } };
+            list2 = new List<RuleApiModel> { new RuleApiModel { Id = "1ab" } };
 
             // Assert
             Assert.True(this.target.RulesAreEquivalent(list1, list2));
 
             // Arrange: two lists of different size
-            list1 = new List<Rule> { new Rule { Id = "2bc" }, new Rule { Id = "1ab" } };
-            list2 = new List<Rule> { new Rule { Id = "2bc" } };
+            list1 = new List<RuleApiModel> { new RuleApiModel { Id = "2bc" }, new RuleApiModel { Id = "1ab" } };
+            list2 = new List<RuleApiModel> { new RuleApiModel { Id = "2bc" } };
 
             // Assert
             Assert.False(this.target.RulesAreEquivalent(list1, list2));
 
             // Arrange: two different lists
-            list1 = new List<Rule> { new Rule { Id = "1ab" }, new Rule { Id = "1bc" } };
-            list2 = new List<Rule> { new Rule { Id = "2bc" }, new Rule { Id = "3ab" } };
+            list1 = new List<RuleApiModel> { new RuleApiModel { Id = "1ab" }, new RuleApiModel { Id = "1bc" } };
+            list2 = new List<RuleApiModel> { new RuleApiModel { Id = "2bc" }, new RuleApiModel { Id = "3ab" } };
 
             // Assert
             Assert.False(this.target.RulesAreEquivalent(list1, list2));

@@ -15,10 +15,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
     public interface IRules
     {
         // Fetch all the rules from the telemetry service
-        Task<IList<Rule>> GetActiveRulesSortedByIdAsync();
+        Task<IList<RuleApiModel>> GetActiveRulesSortedByIdAsync();
 
         // Compare two list of rules
-        bool RulesAreEquivalent(IList<Rule> newRules, IList<Rule> rules);
+        bool RulesAreEquivalent(IList<RuleApiModel> newRules, IList<RuleApiModel> rules);
     }
 
     public class Rules : IRules
@@ -39,7 +39,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             this.rulesWebServiceTimeout = config.RulesWebServiceTimeout;
         }
 
-        public async Task<IList<Rule>> GetActiveRulesSortedByIdAsync()
+        public async Task<IList<RuleApiModel>> GetActiveRulesSortedByIdAsync()
         {
             var request = new HttpRequest();
             request.SetUriFromString(this.rulesWebServiceUrl);
@@ -56,13 +56,17 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
                 throw new ExternalDependencyException($"Failed to retrieve the list of rules");
             }
 
-            var list = JsonConvert.DeserializeObject<IEnumerable<Rule>>(response.Content);
+            this.log.Debug("List of rules retrieved", () => new { response.Content });
 
             // return only active rules, sorted by ID to facilitate comparison
-            return list.Where(x => x.Enabled).OrderBy(x => x.Id).ToList();
+            var list = JsonConvert.DeserializeObject<RuleListApiModel>(response.Content);
+            var activeRules = list.Items.Where(x => x.Enabled).OrderBy(x => x.Id).ToList();
+            this.log.Debug("List of rules deserialized", () => new { ActiveCount = activeRules.Count, TotalCount = list.Items.Count() });
+
+            return activeRules;
         }
 
-        public bool RulesAreEquivalent(IList<Rule> a, IList<Rule> b)
+        public bool RulesAreEquivalent(IList<RuleApiModel> a, IList<RuleApiModel> b)
         {
             if (a.Count != b.Count) return false;
 

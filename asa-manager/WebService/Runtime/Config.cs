@@ -55,18 +55,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
 
-        private const string RULES_KEY = "DeviceTelemetryService:";
-        private const string RULES_WEBSERVICE_URL_KEY = RULES_KEY + "webservice_url";
-        private const string RULES_WEBSERVICE_TIMEOUT_KEY = RULES_KEY + "webservice_timeout";
-
-        private const string CONFIG_KEY = "PCSConfigurationService:";
-        private const string CONFIG_WEBSERVICE_URL_KEY = CONFIG_KEY + "webservice_url";
-        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = CONFIG_KEY + "webservice_timeout";
-
-        private const string IOTHUB_MANAGER_KEY = "IoTHubManagerService:";
-        private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webservice_url";
-        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webservice_timeout";
-
         private const string DEVICE_GROUPS_KEY = APPLICATION_KEY + "DeviceGroups:";
         private const string EVENTHUB_CONNECTION_KEY = DEVICE_GROUPS_KEY + "eventhub_connection_string";
 
@@ -76,15 +64,29 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string STORAGE_ACCOUNT_NAME_KEY = BLOB_STORAGE_KEY + "account_name";
         private const string STORAGE_ACCOUNT_KEY_KEY = BLOB_STORAGE_KEY + "account_key";
         private const string STORAGE_ACCOUNT_ENDPOINT_KEY = BLOB_STORAGE_KEY + "account_endpoint";
-        private const string STORAGE_DEVICE_GROUPS_FILE_NAME = BLOB_STORAGE_KEY + "device_groups_file_name";
+        private const string STORAGE_DEVICE_GROUPS_FILE_NAME = BLOB_STORAGE_KEY + "reference_data_device_groups_file_name";
+        private const string STORAGE_RULES_FILE_NAME = BLOB_STORAGE_KEY + "reference_data_rules_file_name";
         private const string STORAGE_DATE_FORMAT = BLOB_STORAGE_KEY + "reference_data_date_format";
         private const string STORAGE_TIME_FORMAT = BLOB_STORAGE_KEY + "reference_data_time_format";
+        private const string STORAGE_ACCOUNT_ENDPOINT_DEFAULT = "core.windows.net";
 
-        private const string MESSAGES_KEY = "DeviceTelemetryService:Messages:";
+        private const string MESSAGES_KEY = APPLICATION_KEY + "MessagesStorage:";
         private const string MESSAGES_STORAGE_TYPE_KEY = MESSAGES_KEY + "storageType";
 
-        private const string ALARMS_KEY = "DeviceTelemetryService:Alarms:";
+        private const string ALARMS_KEY = APPLICATION_KEY + "AlarmsStorage:";
         private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "storageType";
+
+        private const string RULES_KEY = "DeviceTelemetryRulesService:";
+        private const string RULES_WEBSERVICE_URL_KEY = RULES_KEY + "webservice_url";
+        private const string RULES_WEBSERVICE_TIMEOUT_KEY = RULES_KEY + "webservice_timeout_msecs";
+
+        private const string CONFIG_KEY = "PCSConfigurationService:";
+        private const string CONFIG_WEBSERVICE_URL_KEY = CONFIG_KEY + "webservice_url";
+        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = CONFIG_KEY + "webservice_timeout_msecs";
+
+        private const string IOTHUB_MANAGER_KEY = "IoTHubManagerService:";
+        private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webservice_url";
+        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webservice_timeout_msecs";
 
         // Values common to all the tables (messages and alarms)
         private const string COSMOSDBSQL_CONNSTRING_KEY = "cosmosdbsql_connstring";
@@ -197,10 +199,11 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
                 EventHubContainer = configData.GetString(STORAGE_EVENTHUB_CONTAINER_KEY),
                 AccountKey = configData.GetString(STORAGE_ACCOUNT_KEY_KEY),
                 AccountName = configData.GetString(STORAGE_ACCOUNT_NAME_KEY),
-                EndpointSuffix = configData.GetString(STORAGE_ACCOUNT_ENDPOINT_KEY),
-                DeviceGroupsFileName = configData.GetString(STORAGE_DEVICE_GROUPS_FILE_NAME),
-                DateFormat = configData.GetString(STORAGE_DATE_FORMAT),
-                TimeFormat = configData.GetString(STORAGE_TIME_FORMAT)
+                EndpointSuffix = configData.GetString(STORAGE_ACCOUNT_ENDPOINT_KEY, STORAGE_ACCOUNT_ENDPOINT_DEFAULT),
+                ReferenceDataDeviceGroupsFileName = configData.GetString(STORAGE_DEVICE_GROUPS_FILE_NAME),
+                ReferenceDataRulesFileName = configData.GetString(STORAGE_RULES_FILE_NAME),
+                ReferenceDataDateFormat = configData.GetString(STORAGE_DATE_FORMAT),
+                ReferenceDataTimeFormat = configData.GetString(STORAGE_TIME_FORMAT)
             };
         }
 
@@ -243,7 +246,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             string tableName,
             AsaOutputStorageType storageType)
         {
-            CosmosDbTableConfiguration result = null;
             string prefix;
 
             // All tables have the same configuration block, with a different prefix

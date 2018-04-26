@@ -47,14 +47,14 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             Dictionary<string, IEnumerable<string>> deviceGroupMapping,
             DateTimeOffset timestamp)
         {
-            string dateTimeFormatString = $"{this.blobStorageConfig.DateFormat}/{this.blobStorageConfig.TimeFormat}";
+            string dateTimeFormatString = $"{this.blobStorageConfig.ReferenceDataDateFormat}/{this.blobStorageConfig.ReferenceDataTimeFormat}";
             string formattedDate = timestamp.ToString(dateTimeFormatString);
             string tempFileName = this.fileWrapper.GetTempFileName();
             try
             {
                 this.WriteMappingToTemporaryFile(tempFileName, deviceGroupMapping);
 
-                string blobName = $"{formattedDate}/{this.blobStorageConfig.DeviceGroupsFileName}";
+                string blobName = $"{formattedDate}/{this.blobStorageConfig.ReferenceDataDeviceGroupsFileName}";
 
                 await this.blobStorageHelper.WriteBlobFromFileAsync(blobName, tempFileName);
             }

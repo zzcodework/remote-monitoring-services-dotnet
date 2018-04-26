@@ -6,11 +6,12 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
 {
-    public class Rule
+    // see https://github.com/Azure/device-telemetry-dotnet/blob/master/WebService/v1/Models/RuleApiModel.cs
+    public class RuleApiModel
     {
-        public Rule()
+        public RuleApiModel()
         {
-            this.Conditions = new List<Condition>();
+            this.Conditions = new List<ConditionApiModel>();
         }
 
         [JsonProperty("Id")]
@@ -32,11 +33,17 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         public string Severity { get; set; }
 
         [JsonProperty("Conditions")]
-        public IList<Condition> Conditions { get; set; }
+        public IList<ConditionApiModel> Conditions { get; set; }
+
+        [JsonProperty("Calculation")]
+        public string Calculation { get; set; }
+
+        [JsonProperty("TimePeriod")]
+        public string TimePeriod { get; set; }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Rule x)) return false;
+            if (!(obj is RuleApiModel x)) return false;
 
             var count = this.Conditions.Count();
             var conditionsMatch = x.Conditions.Count() == count;
@@ -47,10 +54,11 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                                   && this.Conditions[count].Equals(x.Conditions[count]);
             }
 
-            // Compare everything except the description
+            // Compare everything
             return conditionsMatch
                    && string.Equals(this.Id, x.Id)
                    && string.Equals(this.Name, x.Name)
+                   && string.Equals(this.Description, x.Description)
                    && this.Enabled == x.Enabled
                    && string.Equals(this.GroupId, x.GroupId)
                    && string.Equals(this.Severity, x.Severity);
@@ -64,6 +72,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             {
                 var hashCode = (this.Id != null ? this.Id.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Name != null ? this.Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.Description != null ? this.Description.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ this.Enabled.GetHashCode();
                 hashCode = (hashCode * 397) ^ (this.GroupId != null ? this.GroupId.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Severity != null ? this.Severity.GetHashCode() : 0);

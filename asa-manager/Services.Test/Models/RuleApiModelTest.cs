@@ -9,25 +9,14 @@ using Xunit;
 
 namespace Services.Test.Models
 {
-    public class RuleTest
+    public class RuleApiModelTest
     {
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public void EmptyInstancesAreEqual()
         {
             // Arrange
-            var x = new Rule();
-            var y = new Rule();
-
-            // Assert
-            Assert.True(x.Equals(y));
-        }
-
-        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void RulesDescriptionDoesntAffectEquality()
-        {
-            // Arrange
-            var x = new Rule { Description = "one" };
-            var y = new Rule { Description = "two" };
+            var x = new RuleApiModel();
+            var y = new RuleApiModel();
 
             // Assert
             Assert.True(x.Equals(y));
@@ -37,7 +26,7 @@ namespace Services.Test.Models
         public void NonEmptyInstancesWithSameDataAreEqual()
         {
             // Arrange: rule without conditions
-            var x = new Rule
+            var x = new RuleApiModel
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -45,7 +34,7 @@ namespace Services.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Conditions = new List<Condition>()
+                Conditions = new List<ConditionApiModel>()
             };
             var y = Clone(x);
 
@@ -53,7 +42,7 @@ namespace Services.Test.Models
             Assert.True(x.Equals(y));
 
             // Arrange: rule with conditions
-            x = new Rule
+            x = new RuleApiModel
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -61,10 +50,10 @@ namespace Services.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Conditions = new List<Condition>
+                Conditions = new List<ConditionApiModel>
                 {
-                    new Condition { Field = "temp", Operator = ">=", Value = "75" },
-                    new Condition { Field = "hum", Operator = "gt", Value = "50" },
+                    new ConditionApiModel { Field = "temp", Operator = ">=", Value = "75" },
+                    new ConditionApiModel { Field = "hum", Operator = "gt", Value = "50" },
                 }
             };
             y = Clone(x);
@@ -77,7 +66,7 @@ namespace Services.Test.Models
         public void InstancesWithDifferentDataAreDifferent()
         {
             // Arrange
-            var x = new Rule
+            var x = new RuleApiModel
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = Guid.NewGuid().ToString(),
@@ -85,7 +74,7 @@ namespace Services.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Conditions = new List<Condition>()
+                Conditions = new List<ConditionApiModel>()
             };
             var y1 = Clone(x);
             var y2 = Clone(x);
@@ -111,20 +100,20 @@ namespace Services.Test.Models
         public void InstancesWithDifferentConditionsAreDifferent()
         {
             // Arrange: different number of conditions
-            var x = new Rule
+            var x = new RuleApiModel
             {
-                Conditions = new List<Condition>()
+                Conditions = new List<ConditionApiModel>()
             };
             var y = Clone(x);
-            y.Conditions.Add(new Condition());
+            y.Conditions.Add(new ConditionApiModel());
 
             // Assert
             Assert.False(x.Equals(y));
 
             // Arrange: different field
-            x.Conditions = new List<Condition>
+            x.Conditions = new List<ConditionApiModel>
             {
-                new Condition { Field = "x", Operator = ">=", Value = "5" }
+                new ConditionApiModel { Field = "x", Operator = ">=", Value = "5" }
             };
             y = Clone(x);
             y.Conditions[0].Field = "y";

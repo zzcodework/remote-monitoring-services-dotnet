@@ -37,9 +37,9 @@ namespace DeviceGroupsAgent.Test
         public DeviceGroupsTests()
         {
             this.blobStorageConfig = new Mock<IBlobStorageConfig>();
-            this.blobStorageConfig.Setup(x => x.DateFormat).Returns(DATE_FORMAT);
-            this.blobStorageConfig.Setup(x => x.TimeFormat).Returns(TIME_FORMAT);
-            this.blobStorageConfig.Setup(x => x.DeviceGroupsFileName).Returns(FILE_NAME);
+            this.blobStorageConfig.Setup(x => x.ReferenceDataDateFormat).Returns(DATE_FORMAT);
+            this.blobStorageConfig.Setup(x => x.ReferenceDataTimeFormat).Returns(TIME_FORMAT);
+            this.blobStorageConfig.Setup(x => x.ReferenceDataDeviceGroupsFileName).Returns(FILE_NAME);
             this.blobStorageConfig.Setup(x => x.AccountName).Returns(ACCOUNT_NAME);
             this.blobStorageConfig.Setup(x => x.AccountKey).Returns(ACCOUNT_KEY);
             this.blobStorageConfig.Setup(x => x.EndpointSuffix).Returns(ENDPOINT_SUFFIX);

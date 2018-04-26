@@ -11,6 +11,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
         StreamWriter GetStreamWriter(string fileName);
         void Delete(string fileName);
         bool Exists(string fileName);
+        void WriteAllText(string fileName, string content);
     }
 
     public class FileWrapper : IFileWrapper
@@ -38,6 +39,11 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
         public bool Exists(string fileName)
         {
             return File.Exists(fileName);
+        }
+
+        public void WriteAllText(string fileName, string content)
+        {
+            File.WriteAllText(fileName, content);
         }
     }
 }
