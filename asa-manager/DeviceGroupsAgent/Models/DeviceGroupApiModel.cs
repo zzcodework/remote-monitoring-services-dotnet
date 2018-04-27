@@ -15,5 +15,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Models
 
         [JsonProperty("Conditions")]
         public IEnumerable<DeviceGroupConditionApiModel> Conditions { get; set; }
+        
+        [JsonProperty("ETag")]
+        public string ETag { get; set; }
     }
 }

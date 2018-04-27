@@ -61,6 +61,7 @@ run_in_sandbox() {
             -e PCS_ASA_DATA_AZUREBLOB_KEY \
             -e PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX \
             -e PCS_EVENTHUB_CONNSTRING \
+            -e PCS_EVENTHUB_NAME \
             -e PCS_AUTH_REQUIRED \
             -e PCS_CORS_WHITELIST \
             -e PCS_AUTH_ISSUER \

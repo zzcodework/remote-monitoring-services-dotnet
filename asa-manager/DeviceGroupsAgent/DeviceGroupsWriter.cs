@@ -11,7 +11,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
 {
     public interface IDeviceGroupsWriter
     {
-        Task ExportMapToReferenceData(
+        Task ExportMapToReferenceDataAsync(
             Dictionary<string, IEnumerable<string>> deviceGroupMapping,
             DateTimeOffset timestamp);
     }
@@ -43,7 +43,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
          * ...
          * to the blob storage container and file path defined in the blob storage configuration.
          */
-        public async Task ExportMapToReferenceData(
+        public async Task ExportMapToReferenceDataAsync(
             Dictionary<string, IEnumerable<string>> deviceGroupMapping,
             DateTimeOffset timestamp)
         {

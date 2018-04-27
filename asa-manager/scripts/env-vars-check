@@ -40,3 +40,8 @@ if [[ -z "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING" ]]; then
     echo "Error: the PCS_TELEMETRY_DOCUMENTDB_CONNSTRING environment variable is not defined."
     exit 1
 fi
+
+if [[ -z "PCS_EVENTHUB_NAME" ]]; then
+    echo "Error: the PCS_EVENTHUB_NAME environment variable is not defined."
+    exit 1
+fi

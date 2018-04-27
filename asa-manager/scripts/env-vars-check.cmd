@@ -31,6 +31,7 @@ IF "%PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX%" == "" (
     echo Error: the PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX environment variable is not defined.
     exit /B 1
 )
+
 IF "%PCS_EVENTHUB_CONNSTRING%" == "" (
     echo Error: the PCS_EVENTHUB_CONNSTRING environment variable is not defined.
     exit /B 1
@@ -38,6 +39,11 @@ IF "%PCS_EVENTHUB_CONNSTRING%" == "" (
 
 IF "%PCS_TELEMETRY_DOCUMENTDB_CONNSTRING%" == "" (
     echo Error: the PCS_TELEMETRY_DOCUMENTDB_CONNSTRING environment variable is not defined.
+    exit /B 1
+)
+
+IF "%PCS_EVENTHUB_NAME%" == "" (
+    echo Error: the PCS_EVENTHUB_NAME environment variable is not defined.
     exit /B 1
 )
 

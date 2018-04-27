@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Auth;
@@ -25,7 +24,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         // Client authentication and authorization configuration
         IClientAuthConfig ClientAuthConfig { get; }
 
-        IDeviceGroupsConfig DeviceGroupsConfig { get; }
         IBlobStorageConfig BlobStorageConfig { get; }
     }
 
@@ -55,8 +53,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
 
-        private const string DEVICE_GROUPS_KEY = APPLICATION_KEY + "DeviceGroups:";
-        private const string EVENTHUB_CONNECTION_KEY = DEVICE_GROUPS_KEY + "eventhub_connection_string";
+        private const string EVENTHUB_KEY = APPLICATION_KEY + "EventHub:";
+        private const string EVENTHUB_CONNECTION_KEY = EVENTHUB_KEY + "connection_string";
+        private const string EVENTHUB_NAME = EVENTHUB_KEY + "name";
+        private const string EVENTHUB_CHECKPOINT_INTERVAL_MS = EVENTHUB_KEY + "checkpoint_interval_ms";
 
         private const string BLOB_STORAGE_KEY = APPLICATION_KEY + "BlobStorage:";
         private const string STORAGE_REFERENCE_DATA_CONTAINER_KEY = BLOB_STORAGE_KEY + "reference_data_container";
@@ -87,6 +87,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string IOTHUB_MANAGER_KEY = "IoTHubManagerService:";
         private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webservice_url";
         private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webservice_timeout_msecs";
+        private const string IOTHUB_MANAGER_RETRY_COUNT = IOTHUB_MANAGER_KEY + "retry_count";
+        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = IOTHUB_MANAGER_KEY + "initial_retry_interval_ms";
+        private const string IOTHUB_MANAGER_RETRY_INCREASE_FACTOR = IOTHUB_MANAGER_KEY + "retry_increase_factor";
 
         // Values common to all the tables (messages and alarms)
         private const string COSMOSDBSQL_CONNSTRING_KEY = "cosmosdbsql_connstring";
@@ -103,7 +106,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         public ILoggingConfig LoggingConfig { get; set; }
         public IClientAuthConfig ClientAuthConfig { get; }
         public IServicesConfig ServicesConfig { get; }
-        public IDeviceGroupsConfig DeviceGroupsConfig { get; }
         public IBlobStorageConfig BlobStorageConfig { get; }
 
         public Config(IConfigData configData)
@@ -112,7 +114,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             this.LoggingConfig = GetLogConfig(configData);
             this.ServicesConfig = GetServicesConfig(configData);
             this.ClientAuthConfig = GetClientAuthConfig(configData);
-            this.DeviceGroupsConfig = GetDeviceGroupsConfig(configData);
             this.BlobStorageConfig = GetBlobStorageConfig(configData);
         }
 
@@ -176,18 +177,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
                 ConfigServiceTimeout = configData.GetInt(CONFIG_WEBSERVICE_TIMEOUT_KEY),
                 IotHubManagerServiceUrl = configData.GetString(IOTHUB_MANAGER_WEBSERVICE_URL_KEY),
                 IotHubManagerServiceTimeout = configData.GetInt(IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY),
+                IotHubManagerRetryCount = configData.GetInt(IOTHUB_MANAGER_RETRY_COUNT),
+                InitialIotHubManagerRetryIntervalMs = configData.GetInt(IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS),
+                IotHubManagerRetryIntervalIncreaseFactor = configData.GetInt(IOTHUB_MANAGER_RETRY_INCREASE_FACTOR),
                 MessagesStorageType = messagesStorageType,
                 MessagesCosmosDbConfig = GetAsaOutputStorageConfig(configData, MESSAGES, messagesStorageType),
                 AlarmsStorageType = alarmsStorageType,
-                AlarmsCosmosDbConfig = GetAsaOutputStorageConfig(configData, ALARMS, alarmsStorageType)
-            };
-        }
-
-        private static IDeviceGroupsConfig GetDeviceGroupsConfig(IConfigData configData)
-        {
-            return new DeviceGroupsConfig
-            {
-                EventHubConnectionString = configData.GetString(EVENTHUB_CONNECTION_KEY)
+                AlarmsCosmosDbConfig = GetAsaOutputStorageConfig(configData, ALARMS, alarmsStorageType),
+                EventHubConnectionString = configData.GetString(EVENTHUB_CONNECTION_KEY),
+                EventHubName = configData.GetString(EVENTHUB_NAME),
+                EventHubCheckpointTimeMs = configData.GetInt(EVENTHUB_CHECKPOINT_INTERVAL_MS)
             };
         }
 

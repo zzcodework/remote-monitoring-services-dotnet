@@ -3,9 +3,11 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.Azure.EventHubs.Processor;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent;
-using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Runtime;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Concurrency;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.EventHub;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage;
@@ -50,6 +52,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             assembly = typeof(IServicesConfig).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
+            // Auto-wire BlobStorage.DLL
+            assembly = typeof(IBlobStorageConfig).GetTypeInfo().Assembly;
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+
             // Auto-wire SetupAgent.DLL
             assembly = typeof(SetupAgent.IAgent).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
@@ -78,12 +84,14 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             // prepare the instance here.
             builder.RegisterInstance(config.LoggingConfig).As<ILoggingConfig>().SingleInstance();
             builder.RegisterInstance(config.ServicesConfig).As<IServicesConfig>().SingleInstance();
-            builder.RegisterInstance(config.DeviceGroupsConfig).As<IDeviceGroupsConfig>().SingleInstance();
             builder.RegisterInstance(config.BlobStorageConfig).As<IBlobStorageConfig>().SingleInstance();
 
             // Instantiate only one logger
             var logger = new Logger(Uptime.ProcessId, config.LoggingConfig);
             builder.RegisterInstance(logger).As<ILogger>().SingleInstance();
+
+            var threadWrapper = new ThreadWrapper();
+            builder.RegisterInstance(threadWrapper).As<IThreadWrapper>().SingleInstance();
 
             // Auth and CORS setup
             Auth.Startup.SetupDependencies(builder, config);
@@ -96,11 +104,28 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             ICloudStorageWrapper cloudStorageWrapper = new CloudStoragWrapper();
             IBlobStorageHelper blobStorageHelper = new BlobStorageHelper(config.BlobStorageConfig, cloudStorageWrapper, logger);
             IFileWrapper fileWrapper = new FileWrapper();
+
             IDeviceGroupsWriter deviceGroupsWriter = new DeviceGroupsWriter(config.BlobStorageConfig, blobStorageHelper, fileWrapper, logger);
             builder.RegisterInstance(deviceGroupsWriter).As<IDeviceGroupsWriter>().SingleInstance();
+
             IHttpClient httpClient = new HttpClient(logger);
             IDevicesClient devicesClient = new DevicesClient(httpClient, config.ServicesConfig, logger);
             builder.RegisterInstance(devicesClient).As<IDevicesClient>().SingleInstance();
+            IDeviceGroupsClient deviceGroupsClient = new DeviceGroupsClient(
+                httpClient,
+                devicesClient,
+                config.ServicesConfig,
+                logger,
+                threadWrapper);
+            builder.RegisterInstance(deviceGroupsClient).As<IDeviceGroupsClient>().SingleInstance();
+
+            // Event Hub Classes
+            IEventProcessorHostWrapper eventProcessorHostWrapper = new EventProcessorHostWrapper();
+            builder.RegisterInstance(eventProcessorHostWrapper).As<IEventProcessorHostWrapper>().SingleInstance();
+            IEventHubStatus eventHubStatus = new EventHubStatus();
+            builder.RegisterInstance(eventHubStatus).As<IEventHubStatus>().SingleInstance();
+            IEventProcessorFactory eventProcessorFactory = new DeviceEventProcessorFactory(eventHubStatus, config.ServicesConfig, logger);
+            builder.RegisterInstance(eventProcessorFactory).As<IEventProcessorFactory>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)

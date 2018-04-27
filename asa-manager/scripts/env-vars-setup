@@ -23,3 +23,4 @@ export PCS_EVENTHUB_CONNSTRING="..."
 
 # Azure CosmosDb SQL connection string, storage used for telemetry and alarms
 export PCS_TELEMETRY_DOCUMENTDB_CONNSTRING="AccountEndpoint=https://....documents.azure.com:443/;AccountKey=...;"
+export PCS_EVENTHUB_NAME="..."

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Models;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Concurrency;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
@@ -22,18 +23,23 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
         private readonly ILogger logger;
         private readonly IHttpClient httpClient;
         private readonly IDevicesClient devices;
+        private readonly IServicesConfig servicesConfig;
         private readonly string baseUrl;
+        private readonly IThreadWrapper thread;
 
         public DeviceGroupsClient(
             IHttpClient httpClient,
             IDevicesClient devices,
-            IServicesConfig config,
-            ILogger logger)
+            IServicesConfig servicesConfig,
+            ILogger logger,
+            IThreadWrapper thread)
         {
             this.logger = logger;
             this.httpClient = httpClient;
             this.devices = devices;
-            this.baseUrl = $"{config.ConfigServiceUrl}/devicegroups";
+            this.baseUrl = $"{servicesConfig.ConfigServiceUrl}/devicegroups";
+            this.servicesConfig = servicesConfig;
+            this.thread = thread;
         }
 
         /**
@@ -72,26 +78,45 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
         }
 
         /**
-         * Given a device group definition, returns the list of device ids in the group
+         * Given a device group definition, returns the list of device ids in the group.
+         * Will retry up to MAX_RETRY_COUNT if there is a failure, doubling the sleep time
+         * on each retry.
          */
         private async Task<IEnumerable<string>> GetDevicesAsync(DeviceGroupApiModel group)
         {
-            try
+            int retryCount = 0;
+            Exception innerException = null;
+            int retryPause = this.servicesConfig.InitialIotHubManagerRetryIntervalMs;
+
+            while (retryCount < this.servicesConfig.IotHubManagerRetryCount)
             {
-                if (@group?.Conditions == null)
+                if (retryCount > 0)
                 {
-                    this.logger.Error("Device group definitions or conditions were null", () => new { });
-                    return new string[] { };
+                    this.thread.Sleep(retryPause);
+                    retryPause *= this.servicesConfig.IotHubManagerRetryIntervalIncreaseFactor;
                 }
 
-                var list = await this.devices.GetListAsync(group.Conditions);
-                return list;
+                try
+                {
+                    if (@group?.Conditions == null)
+                    {
+                        this.logger.Error("Device group definitions or conditions were null", () => new { });
+                        return new string[] { };
+                    }
+
+                    return await this.devices.GetListAsync(group.Conditions);
+                }
+                catch (Exception e)
+                {
+                    retryCount++;
+                    string errorMessage = $"Failed to get list of devices. {this.servicesConfig.IotHubManagerRetryCount - retryCount} retries remaining.";
+                    this.logger.Warn(errorMessage, () => new { e });
+                    innerException = e;
+                }
             }
-            catch (Exception e)
-            {
-                this.logger.Error("Failed to get list of devices", () => new { e });
-                throw new ExternalDependencyException("Unable to get list of devices", e);
-            }
+
+            this.logger.Error("Failed to get list of devices after retrying", () => new { innerException, this.servicesConfig.IotHubManagerRetryCount });
+            throw new ExternalDependencyException("Unable to get list of devices", innerException);
         }
     }
 }

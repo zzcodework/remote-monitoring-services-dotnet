@@ -19,6 +19,7 @@ SETX PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX "..."
 
 :: Event Hub where device notifications are stored
 SETX PCS_EVENTHUB_CONNSTRING "..."
+SETX PCS_EVENTHUB_NAME "..."
 
 :: Azure CosmosDb SQL connection string, storage used for telemetry and alarms
 SETX PCS_TELEMETRY_DOCUMENTDB_CONNSTRING "AccountEndpoint=https://....documents.azure.com:443/;AccountKey=...;"
