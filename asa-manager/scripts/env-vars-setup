@@ -19,8 +19,12 @@ export PCS_ASA_DATA_AZUREBLOB_KEY="..."
 export PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX="..."
 
 # Event Hub where device notifications are stored
-export PCS_EVENTHUB_CONNSTRING="..."
+# IotHub needs to be set up to send device twin and lifecycle messages to this event hub, see below links
+# https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-device-twins
+# https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-identity-registry
+export PCS_EVENTHUB_CONNSTRING="Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=..."
+# Name of event hub where device notifications are stored
+export PCS_EVENTHUB_NAME="..."
 
 # Azure CosmosDb SQL connection string, storage used for telemetry and alarms
 export PCS_TELEMETRY_DOCUMENTDB_CONNSTRING="AccountEndpoint=https://....documents.azure.com:443/;AccountKey=...;"
-export PCS_EVENTHUB_NAME="..."

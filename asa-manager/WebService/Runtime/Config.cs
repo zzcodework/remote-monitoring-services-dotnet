@@ -56,7 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string EVENTHUB_KEY = APPLICATION_KEY + "EventHub:";
         private const string EVENTHUB_CONNECTION_KEY = EVENTHUB_KEY + "connection_string";
         private const string EVENTHUB_NAME = EVENTHUB_KEY + "name";
-        private const string EVENTHUB_CHECKPOINT_INTERVAL_MS = EVENTHUB_KEY + "checkpoint_interval_ms";
+        private const string EVENTHUB_CHECKPOINT_INTERVAL_MS = EVENTHUB_KEY + "checkpoint_interval_msecs";
 
         private const string BLOB_STORAGE_KEY = APPLICATION_KEY + "BlobStorage:";
         private const string STORAGE_REFERENCE_DATA_CONTAINER_KEY = BLOB_STORAGE_KEY + "reference_data_container";
@@ -88,7 +88,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webservice_url";
         private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webservice_timeout_msecs";
         private const string IOTHUB_MANAGER_RETRY_COUNT = IOTHUB_MANAGER_KEY + "retry_count";
-        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = IOTHUB_MANAGER_KEY + "initial_retry_interval_ms";
+        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = IOTHUB_MANAGER_KEY + "initial_retry_interval_msecs";
         private const string IOTHUB_MANAGER_RETRY_INCREASE_FACTOR = IOTHUB_MANAGER_KEY + "retry_increase_factor";
 
         // Values common to all the tables (messages and alarms)

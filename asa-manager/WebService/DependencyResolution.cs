@@ -91,7 +91,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             builder.RegisterInstance(logger).As<ILogger>().SingleInstance();
 
             var threadWrapper = new ThreadWrapper();
-            builder.RegisterInstance(threadWrapper).As<IThreadWrapper>().SingleInstance();
 
             // Auth and CORS setup
             Auth.Startup.SetupDependencies(builder, config);
