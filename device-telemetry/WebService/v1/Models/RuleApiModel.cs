@@ -49,7 +49,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
 
         // Possible values -["00:01:00", "00:05:00", "00:10:00"]
         [JsonProperty(PropertyName = "TimePeriod")]
-        public TimeSpan TimePeriod { get; set; } = new TimeSpan();
+        public string TimePeriod { get; set; } = "00:00:00";
 
         [JsonProperty(PropertyName = "$metadata", Order = 1000)]
         public IDictionary<string, string> Metadata => new Dictionary<string, string>
@@ -74,7 +74,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                 this.GroupId = rule.GroupId;
                 this.Severity = rule.Severity.ToString();
                 this.Calculation = rule.Calculation.ToString();
-                this.TimePeriod = rule.TimePeriod;
+                this.TimePeriod = rule.TimePeriod.ToString();
 
                 foreach (Condition condition in rule.Conditions)
                 {
@@ -90,15 +90,21 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
             {
                 conditions.Add(condition.ToServiceModel());
             }
-            
+
             if (!Enum.TryParse<CalculationType>(this.Calculation, true, out CalculationType calculation))
             {
                 throw new InvalidInputException("The value of 'Calculation' is not valid");
             }
-            
+
             if (!Enum.TryParse<SeverityType>(this.Severity, true, out SeverityType severity))
             {
                 throw new InvalidInputException("The value of 'Severity' is not valid");
+            }
+
+            string timeStr = !string.IsNullOrEmpty(this.TimePeriod) ? this.TimePeriod : "00:00:00";
+            if (!TimeSpan.TryParse(timeStr, out TimeSpan timePeriod) || (calculation == CalculationType.Average && string.IsNullOrEmpty(this.TimePeriod)))
+            {
+                throw new InvalidInputException("The value of 'TimePeriod' is not valid");
             }
 
             return new Rule()
@@ -113,7 +119,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                 GroupId = this.GroupId,
                 Severity = severity,
                 Calculation = calculation,
-                TimePeriod = this.TimePeriod,
+                TimePeriod = timePeriod,
                 Conditions = conditions
             };
         }
