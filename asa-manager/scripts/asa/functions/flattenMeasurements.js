@@ -29,7 +29,7 @@ function main(record) {
     };
 
     record.measurements.forEach(function (item) {
-        if (item.measurementvalue) {
+        if (item.hasOwnProperty('measurementvalue')) {
             flatRecord[item.measurementname] = item.measurementvalue;
         }
         else {
