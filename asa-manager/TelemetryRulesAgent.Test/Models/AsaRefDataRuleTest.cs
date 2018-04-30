@@ -22,12 +22,13 @@ namespace TelemetryRulesAgent.Test.Models
         private const string SOURCE_MIN_AGGREGATOR = "min";
         private const string SOURCE_MAX_AGGREGATOR = "max";
         private const string SOURCE_COUNT_AGGREGATOR = "count";
-        private const string SOURCE_1MIN_AGGREGATION = "00:01:00";
-        private const string SOURCE_5MINS_AGGREGATION = "00:05:00";
-        private const string SOURCE_10MINS_AGGREGATION = "00:10:00";
-        private const string SOURCE_20MINS_AGGREGATION = "00:20:00";
-        private const string SOURCE_30MINS_AGGREGATION = "00:30:00";
-        private const string SOURCE_1HOUR_AGGREGATION = "01:00:00";
+        private const long MILLISECONDS_PER_SECOND = 1000;
+        private const long SOURCE_1MIN_AGGREGATION = 60 * MILLISECONDS_PER_SECOND;
+        private const long SOURCE_5MINS_AGGREGATION = 300 * MILLISECONDS_PER_SECOND;
+        private const long SOURCE_10MINS_AGGREGATION = 600 * MILLISECONDS_PER_SECOND;
+        private const long SOURCE_20MINS_AGGREGATION = 1200 * MILLISECONDS_PER_SECOND;
+        private const long SOURCE_30MINS_AGGREGATION = 1800 * MILLISECONDS_PER_SECOND;
+        private const long SOURCE_1HOUR_AGGREGATION = 3600 * MILLISECONDS_PER_SECOND;
 
         // Used to tell ASA TSQL which aggregation to use
         private const string ASA_AGGREGATION_NONE = "instant";
@@ -129,7 +130,7 @@ namespace TelemetryRulesAgent.Test.Models
         [InlineData(SOURCE_20MINS_AGGREGATION, ASA_AGGREGATION_WINDOW_TUMBLING_20MINS)]
         [InlineData(SOURCE_30MINS_AGGREGATION, ASA_AGGREGATION_WINDOW_TUMBLING_30MINS)]
         [InlineData(SOURCE_1HOUR_AGGREGATION, ASA_AGGREGATION_WINDOW_TUMBLING_1HOUR)]
-        public void JSONSerializationOfOneRuleWithoutConditionsWithTimeWindowIsCorrect(string sourceAggr, string asaAggr)
+        public void JSONSerializationOfOneRuleWithoutConditionsWithTimeWindowIsCorrect(long sourceAggr, string asaAggr)
         {
             // Arrange
             var rule = new RuleApiModel

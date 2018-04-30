@@ -39,7 +39,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         public string Calculation { get; set; }
 
         [JsonProperty("TimePeriod")]
-        public string TimePeriod { get; set; }
+        public long TimePeriod { get; set; }
 
         public override bool Equals(object obj)
         {

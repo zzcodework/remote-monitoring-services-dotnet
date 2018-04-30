@@ -28,15 +28,15 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
         // to the corresponding ASA constant. Some extra values added
         // in case we want to add more options.
         // See https://github.com/Azure/device-telemetry-dotnet/blob/master/Services/Models/Rule.cs
-        private static readonly Dictionary<string, string> timePeriodMap =
-            new Dictionary<string, string>
+        private static readonly Dictionary<long, string> timePeriodMap =
+            new Dictionary<long, string>
             {
-                { "00:01:00", ASA_AGGREGATION_WINDOW_TUMBLING_1MIN },
-                { "00:05:00", ASA_AGGREGATION_WINDOW_TUMBLING_5MINS },
-                { "00:10:00", ASA_AGGREGATION_WINDOW_TUMBLING_10MINS },
-                { "00:20:00", ASA_AGGREGATION_WINDOW_TUMBLING_20MINS },
-                { "00:30:00", ASA_AGGREGATION_WINDOW_TUMBLING_30MINS },
-                { "01:00:00", ASA_AGGREGATION_WINDOW_TUMBLING_1HOUR },
+                {   60000, ASA_AGGREGATION_WINDOW_TUMBLING_1MIN },
+                {  300000, ASA_AGGREGATION_WINDOW_TUMBLING_5MINS },
+                {  600000, ASA_AGGREGATION_WINDOW_TUMBLING_10MINS },
+                { 1200000, ASA_AGGREGATION_WINDOW_TUMBLING_20MINS },
+                { 1800000, ASA_AGGREGATION_WINDOW_TUMBLING_30MINS },
+                { 3600000, ASA_AGGREGATION_WINDOW_TUMBLING_1HOUR },
             };
 
         private const string ASA_INSTANT_VALUE = "";
@@ -150,7 +150,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
             }
         }
 
-        private static string GetAggregationWindowValue(string calculation, string timePeriod)
+        private static string GetAggregationWindowValue(string calculation, long timePeriod)
         {
             if (string.IsNullOrEmpty(calculation))
             {
@@ -163,7 +163,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
             }
 
             // Do not remove. This would be a bug, to be detected at development time.
-            if (timePeriod == null || !timePeriodMap.ContainsKey(timePeriod))
+            if (!timePeriodMap.ContainsKey(timePeriod))
             {
                 throw new ApplicationException("Unknown time period: " + timePeriod);
             }
