@@ -26,8 +26,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models
         public SeverityType Severity { get; set; } = new SeverityType();
         [JsonConverter(typeof(StringEnumConverter))]
         public CalculationType Calculation { get; set; } = new CalculationType();
-        // Possible values -["00:01:00", "00:05:00", "00:10:00"]
-        public TimeSpan TimePeriod { get; set; } = new TimeSpan();
+        // Possible values -[60000, 300000, 600000] in milliseconds
+        public long TimePeriod { get; set; } = 0;
         public IList<Condition> Conditions { get; set; } = new List<Condition>();
 
         public Rule() { }
