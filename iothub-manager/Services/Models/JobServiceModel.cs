@@ -47,7 +47,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.QueryCondition = jobResponse.QueryCondition;
             this.CreatedTimeUtc = jobResponse.CreatedTimeUtc;
             this.StartTimeUtc = jobResponse.StartTimeUtc;
-            this.EndTimeUtc = jobResponse.EndTimeUtc;
             this.MaxExecutionTimeInSeconds = jobResponse.MaxExecutionTimeInSeconds;
 
             switch (jobResponse.Type)
@@ -63,13 +62,19 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
             switch (jobResponse.Status)
             {
-                case Azure.Devices.JobStatus.Enqueued:
-                case Azure.Devices.JobStatus.Running:
                 case Azure.Devices.JobStatus.Completed:
                 case Azure.Devices.JobStatus.Failed:
                 case Azure.Devices.JobStatus.Cancelled:
-                case Azure.Devices.JobStatus.Scheduled:
+                    // If job is complete return end time
+                    this.EndTimeUtc = jobResponse.EndTimeUtc;
+                    this.Status = (JobStatus)jobResponse.Status;
+                    break;
+                case Azure.Devices.JobStatus.Enqueued:
                 case Azure.Devices.JobStatus.Queued:
+                case Azure.Devices.JobStatus.Running:
+                case Azure.Devices.JobStatus.Scheduled:
+                    // IoT Hub will return a date of 12/30/9999 if job hasn't completed yet
+                    this.EndTimeUtc = null;
                     this.Status = (JobStatus)jobResponse.Status;
                     break;
                 default:
