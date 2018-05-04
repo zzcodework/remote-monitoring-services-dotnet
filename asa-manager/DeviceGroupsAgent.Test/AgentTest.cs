@@ -110,13 +110,14 @@ namespace DeviceGroupsAgent.Test
 
         /**
          * Test basic event hub functionality of DeviceGroupsAgent.
-         * Verify data will be written on start, and when EventHubStatus.HasSeenChanges returns true
+         * Verify data will be written on start, and when EventHubStatus.HasSeenChanges returns true,
+         * and the "minute" after event hub has seen changes
          */
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public void VerifyNewDataWrittenWhenEventHubStatusChanges()
         {
             // Arrange
-            this.StopAgentAfterNLoops(3);
+            this.StopAgentAfterNLoops(4);
             this.SetupDeviceGroupsClientMock();
             this.SetupSequenceForEventHubStatusMock();
 
@@ -124,10 +125,10 @@ namespace DeviceGroupsAgent.Test
             this.deviceGroupsAgent.RunAsync(this.runState).Wait(TEST_TIMEOUT_MS);
 
             // Assert
-            this.VerifyEndToEndResults(3, 2);
+            this.VerifyEndToEndResults(4, 3);
             this.deviceGroupsClientMock.Verify(d => d.GetGroupToDevicesMappingAsync(
                 this.deviceGroupListApiModel),
-                Times.Exactly(2));
+                Times.Exactly(3));
         }
 
         // Set up device group client to return dummy device group list that will not change
@@ -157,13 +158,30 @@ namespace DeviceGroupsAgent.Test
 
         /**
          * Sets up sequence for EventHubStatus.HasSeenChanges
-         * that will alternate between false and true
+         * that will alternate between false and true, per iteration
+         * (EventHubStatus.HasSeenChanges is called multiple times per iteration,
+         * see comments for line numbers
          */
         private void SetupSequenceForEventHubStatusMock()
         {
             this.eventHubStatusMock.SetupSequence(x => x.SeenChanges)
+                // Agent.cs:73
                 .Returns(false)
+                // Agent.cs:94
+                .Returns(false)
+                // Agent.cs:96
+                .Returns(false)
+                // Agent.cs:94
                 .Returns(true)
+                // Agent.cs:96
+                .Returns(true)
+                // Agent.cs:94
+                .Returns(false)
+                // Agent.cs:96
+                .Returns(false)
+                // Agent.cs:94
+                .Returns(false)
+                // Agent.cs:96
                 .Returns(false);
         }
 

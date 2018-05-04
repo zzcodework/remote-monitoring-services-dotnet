@@ -66,6 +66,12 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             // ensure will do initial write even if there are no device group definitions
             bool forceWrite = true;
 
+            // IotHub has some latency between reporting a device is created/updated and when
+            // the API returns the updates. This flag will tell the service to write
+            // again a minute after changes have been seen,
+            // to ensures if there are updates they are not missed.
+            bool previousEventHubSeenChanges = this.eventHubStatus.SeenChanges;
+
             if (!runState.IsCancellationRequested)
             {
                 try
@@ -85,9 +91,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
                     // check device groups
                     DeviceGroupListApiModel deviceGroupList = await this.deviceGroupsClient.GetDeviceGroupsAsync();
                     bool deviceGroupsChanged = this.DidDeviceGroupDefinitionsChange(deviceGroupList);
-
-                    if (forceWrite || deviceGroupsChanged || this.eventHubStatus.SeenChanges)
+                    if (forceWrite || deviceGroupsChanged || this.eventHubStatus.SeenChanges || previousEventHubSeenChanges)
                     {
+                        previousEventHubSeenChanges = this.eventHubStatus.SeenChanges;
+
                         // set status before update so if message is received during update, will update again in a minute
                         this.eventHubStatus.SeenChanges = false;
 
