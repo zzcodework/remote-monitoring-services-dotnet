@@ -68,6 +68,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             var device = new Device(this.Id)
             {
                 ETag = ignoreEtag ? null : this.Etag,
+                Status = Enabled ? DeviceStatus.Enabled : DeviceStatus.Disabled,
                 Authentication = this.Authentication == null ? null : this.Authentication.ToAzureModel()
             };
 
