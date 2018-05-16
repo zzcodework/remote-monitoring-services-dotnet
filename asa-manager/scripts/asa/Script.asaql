@@ -177,7 +177,7 @@ CombineInstantMeasurementsAndRules as
         R.Severity as __severity,
         R.__rulefilterjs as __rulefilterjs
     FROM
-        FlatInstantMeasurements FI
+        FlatInstantMeasurements FI PARTITION BY __partitionid
         JOIN Rules R ON FI.__ruleid = R.Id
 ),
 -- Apply rule filters on instant measurements
