@@ -9,6 +9,9 @@ WITH TelemetryAndRules AS
         T.EventEnqueuedUtcTime as __receivedtime,
         R.Id as __ruleid,
         R.AggregationWindow,
+        R.Description as __description,
+        R.Severity as __severity,
+        R.__rulefilterjs as __rulefilterjs,
         Fields.ArrayValue as MeasurementName,
         GetRecordPropertyValue(T, Fields.ArrayValue) as MeasurementValue
     FROM
@@ -23,6 +26,9 @@ AggregateMultipleWindows AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.MeasurementName,
         AVG(TR.MeasurementValue),
         MAX(TR.MeasurementValue),
@@ -37,6 +43,9 @@ AggregateMultipleWindows AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.MeasurementName,
         TumblingWindow(minute, 1)
 
@@ -46,6 +55,9 @@ AggregateMultipleWindows AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.MeasurementName,
         AVG(TR.MeasurementValue),
         MAX(TR.MeasurementValue),
@@ -60,6 +72,9 @@ AggregateMultipleWindows AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.MeasurementName,
         TumblingWindow(minute, 5)
 
@@ -69,6 +84,9 @@ AggregateMultipleWindows AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.MeasurementName,
         AVG(TR.MeasurementValue),
         MAX(TR.MeasurementValue),
@@ -83,6 +101,9 @@ AggregateMultipleWindows AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.MeasurementName,
         TumblingWindow(minute, 10)
 ),
@@ -92,6 +113,9 @@ GroupAggregatedMeasurements AS (
         AM.__deviceid,
         AM.__ruleid,
         AM.__partitionid,
+        AM.__description,
+        AM.__severity,
+        AM.__rulefilterjs,
         AM.__lastReceivedTime,
         Collect() AS Measurements
     FROM
@@ -100,6 +124,9 @@ GroupAggregatedMeasurements AS (
         AM.__deviceid,
         AM.__ruleid,
         AM.__partitionid,
+        AM.__description,
+        AM.__severity,
+        AM.__rulefilterjs,
         AM.__lastReceivedTime,
         System.Timestamp
 ),
@@ -108,33 +135,22 @@ FlatAggregatedMeasurements AS (
     SELECT
         GA.__deviceid,
         GA.__ruleid,
+        GA.__description,
+        GA.__severity,
+        GA.__rulefilterjs,
         GA.__lastReceivedTime,
         udf.flattenMeasurements(GA) AS __aggregates
     FROM
         GroupAggregatedMeasurements GA PARTITION BY __partitionid
 ),
--- Combine aggregated measurements with rule filters
-CombineAggregatedMeasurementsAndRules AS (
-    SELECT
-        FA.__deviceid,
-        FA.__ruleid,
-        FA.__aggregates,
-        FA.__lastReceivedTime,
-        R.Description as __description,
-        R.Severity as __severity,
-        R.__rulefilterjs as __rulefilterjs
-    FROM
-        FlatAggregatedMeasurements FA PARTITION BY __partitionid
-        JOIN Rules R ON FA.__ruleid = R.Id
-),
 -- Apply rule filters on aggregated measurements
 ApplyAggregatedRuleFilters AS
 (
     SELECT
-        CMR.*
+        FAM.*
     FROM
-        CombineAggregatedMeasurementsAndRules CMR PARTITION BY __partitionid
-    WHERE TRY_CAST(udf.applyRuleFilter(CMR) AS bigint) = 1
+        FlatAggregatedMeasurements FAM PARTITION BY __partitionid
+    WHERE TRY_CAST(udf.applyRuleFilter(FAM) AS bigint) = 1
 ),
 -- Group instant measurements
 GroupInstantMeasurements AS (
@@ -142,6 +158,9 @@ GroupInstantMeasurements AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.__receivedTime,
         Collect() AS Measurements
     FROM
@@ -152,6 +171,9 @@ GroupInstantMeasurements AS (
         TR.__deviceid,
         TR.__ruleid,
         TR.__partitionid,
+        TR.__description,
+        TR.__severity,
+        TR.__rulefilterjs,
         TR.__receivedTime,
         System.Timestamp
 ),
@@ -160,34 +182,23 @@ FlatInstantMeasurements AS (
     SELECT
         GI.__deviceid,
         GI.__ruleid,
+        GI.__description,
+        GI.__severity,
+        GI.__rulefilterjs,
         GI.__receivedTime,
         udf.flattenMeasurements(GI) AS __aggregates
     FROM
         GroupInstantMeasurements GI PARTITION BY __partitionid
 ),
--- Combine instant measurements with rule filters
-CombineInstantMeasurementsAndRules as
-(
-    SELECT
-        FI.__deviceid,
-        FI.__ruleid,
-        FI.__receivedtime,
-        FI.__aggregates,
-        R.Description as __description,
-        R.Severity as __severity,
-        R.__rulefilterjs as __rulefilterjs
-    FROM
-        FlatInstantMeasurements FI PARTITION BY __partitionid
-        JOIN Rules R ON FI.__ruleid = R.Id
-),
+
 -- Apply rule filters on instant measurements
 ApplyInstantRuleFilters as
 (
     SELECT
-        CI.*
+        FI.*
     FROM
-        CombineInstantMeasurementsAndRules CI PARTITION BY __partitionid
-    WHERE TRY_CAST(udf.applyRuleFilter(CI) AS bigint) = 1
+        FlatInstantMeasurements FI PARTITION BY __partitionid
+    WHERE TRY_CAST(udf.applyRuleFilter(FI) AS bigint) = 1
 ),
 -- Combine all aggregated and instant alarms
 CombineAlarms as
