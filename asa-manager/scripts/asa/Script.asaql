@@ -5,13 +5,10 @@ WITH TelemetryAndRules AS
 (
     SELECT
         T.IotHub.ConnectionDeviceId as __deviceid,
-        T.PartitionId as __partitionid,
+        T.PartitionId,
         T.EventEnqueuedUtcTime as __receivedtime,
         R.Id as __ruleid,
         R.AggregationWindow,
-        R.Description as __description,
-        R.Severity as __severity,
-        R.__rulefilterjs as __rulefilterjs,
         Fields.ArrayValue as MeasurementName,
         GetRecordPropertyValue(T, Fields.ArrayValue) as MeasurementValue
     FROM
@@ -25,10 +22,7 @@ AggregateMultipleWindows AS (
     SELECT
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.MeasurementName,
         AVG(TR.MeasurementValue),
         MAX(TR.MeasurementValue),
@@ -36,16 +30,13 @@ AggregateMultipleWindows AS (
         COUNT(TR.MeasurementValue),
         MAX(DATEDIFF(millisecond, '1970-01-01T00:00:00Z', TR.__receivedtime)) as __lastReceivedTime
     FROM
-        TelemetryAndRules TR PARTITION BY __partitionid
+        TelemetryAndRules TR PARTITION BY PartitionId
     WHERE
         TR.AggregationWindow = 'tumblingwindow1minutes'
     GROUP BY
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.MeasurementName,
         TumblingWindow(minute, 1)
 
@@ -54,10 +45,7 @@ AggregateMultipleWindows AS (
     SELECT
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.MeasurementName,
         AVG(TR.MeasurementValue),
         MAX(TR.MeasurementValue),
@@ -65,16 +53,13 @@ AggregateMultipleWindows AS (
         COUNT(TR.MeasurementValue),
         MAX(DATEDIFF(millisecond, '1970-01-01T00:00:00Z', TR.__receivedtime)) as __lastReceivedTime
     FROM
-        TelemetryAndRules TR PARTITION BY __partitionid
+        TelemetryAndRules TR PARTITION BY PartitionId
     WHERE
         TR.AggregationWindow = 'tumblingwindow5minutes'
     GROUP BY
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.MeasurementName,
         TumblingWindow(minute, 5)
 
@@ -83,10 +68,7 @@ AggregateMultipleWindows AS (
     SELECT
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.MeasurementName,
         AVG(TR.MeasurementValue),
         MAX(TR.MeasurementValue),
@@ -94,16 +76,13 @@ AggregateMultipleWindows AS (
         COUNT(TR.MeasurementValue),
         MAX(DATEDIFF(millisecond, '1970-01-01T00:00:00Z', TR.__receivedtime)) as __lastReceivedTime
     FROM
-        TelemetryAndRules TR PARTITION BY __partitionid
+        TelemetryAndRules TR PARTITION BY PartitionId
     WHERE
         TR.AggregationWindow = 'tumblingwindow10minutes'
     GROUP BY
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.MeasurementName,
         TumblingWindow(minute, 10)
 ),
@@ -112,21 +91,15 @@ GroupAggregatedMeasurements AS (
     SELECT
         AM.__deviceid,
         AM.__ruleid,
-        AM.__partitionid,
-        AM.__description,
-        AM.__severity,
-        AM.__rulefilterjs,
+        AM.PartitionId,
         AM.__lastReceivedTime,
         Collect() AS Measurements
     FROM
-        AggregateMultipleWindows AM PARTITION BY __partitionid
+        AggregateMultipleWindows AM PARTITION BY PartitionId
     GROUP BY
         AM.__deviceid,
         AM.__ruleid,
-        AM.__partitionid,
-        AM.__description,
-        AM.__severity,
-        AM.__rulefilterjs,
+        AM.PartitionId,
         AM.__lastReceivedTime,
         System.Timestamp
 ),
@@ -135,45 +108,50 @@ FlatAggregatedMeasurements AS (
     SELECT
         GA.__deviceid,
         GA.__ruleid,
-        GA.__description,
-        GA.__severity,
-        GA.__rulefilterjs,
         GA.__lastReceivedTime,
         udf.flattenMeasurements(GA) AS __aggregates
     FROM
-        GroupAggregatedMeasurements GA PARTITION BY __partitionid
+        GroupAggregatedMeasurements GA PARTITION BY PartitionId
+),
+-- Combine aggregated measurements with rule filters
+CombineAggregatedMeasurementsAndRules AS (
+    SELECT
+        FA.__deviceid,
+        FA.__ruleid,
+        FA.__aggregates,
+        FA.__lastReceivedTime,
+        R.Description as __description,
+        R.Severity as __severity,
+        R.__rulefilterjs as __rulefilterjs
+    FROM
+        FlatAggregatedMeasurements FA PARTITION BY PartitionId
+        JOIN Rules R ON FA.__ruleid = R.Id
 ),
 -- Apply rule filters on aggregated measurements
 ApplyAggregatedRuleFilters AS
 (
     SELECT
-        FAM.*
+        CMR.*
     FROM
-        FlatAggregatedMeasurements FAM PARTITION BY __partitionid
-    WHERE TRY_CAST(udf.applyRuleFilter(FAM) AS bigint) = 1
+        CombineAggregatedMeasurementsAndRules CMR PARTITION BY PartitionId
+    WHERE TRY_CAST(udf.applyRuleFilter(CMR) AS bigint) = 1
 ),
 -- Group instant measurements
 GroupInstantMeasurements AS (
     SELECT
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.__receivedTime,
         Collect() AS Measurements
     FROM
-        TelemetryAndRules TR PARTITION BY __partitionid
+        TelemetryAndRules TR PARTITION BY PartitionId
     WHERE
         TR.AggregationWindow = 'instant'
     GROUP BY
         TR.__deviceid,
         TR.__ruleid,
-        TR.__partitionid,
-        TR.__description,
-        TR.__severity,
-        TR.__rulefilterjs,
+        TR.PartitionId,
         TR.__receivedTime,
         System.Timestamp
 ),
@@ -182,23 +160,34 @@ FlatInstantMeasurements AS (
     SELECT
         GI.__deviceid,
         GI.__ruleid,
-        GI.__description,
-        GI.__severity,
-        GI.__rulefilterjs,
         GI.__receivedTime,
         udf.flattenMeasurements(GI) AS __aggregates
     FROM
-        GroupInstantMeasurements GI PARTITION BY __partitionid
+        GroupInstantMeasurements GI PARTITION BY PartitionId
 ),
-
+-- Combine instant measurements with rule filters
+CombineInstantMeasurementsAndRules as
+(
+    SELECT
+        FI.__deviceid,
+        FI.__ruleid,
+        FI.__receivedtime,
+        FI.__aggregates,
+        R.Description as __description,
+        R.Severity as __severity,
+        R.__rulefilterjs as __rulefilterjs
+    FROM
+        FlatInstantMeasurements FI PARTITION BY PartitionId
+        JOIN Rules R ON FI.__ruleid = R.Id
+),
 -- Apply rule filters on instant measurements
 ApplyInstantRuleFilters as
 (
     SELECT
-        FI.*
+        CI.*
     FROM
-        FlatInstantMeasurements FI PARTITION BY __partitionid
-    WHERE TRY_CAST(udf.applyRuleFilter(FI) AS bigint) = 1
+        CombineInstantMeasurementsAndRules CI PARTITION BY PartitionId
+    WHERE TRY_CAST(udf.applyRuleFilter(CI) AS bigint) = 1
 ),
 -- Combine all aggregated and instant alarms
 CombineAlarms as
@@ -217,7 +206,7 @@ CombineAlarms as
         AA.__aggregates,
         AA.__lastReceivedTime as [device.msg.received]
     FROM
-        ApplyAggregatedRuleFilters AA PARTITION BY __partitionid
+        ApplyAggregatedRuleFilters AA PARTITION BY PartitionId
 
     UNION
 
@@ -235,7 +224,7 @@ CombineAlarms as
         AI.__aggregates,
         DATEDIFF(millisecond, '1970-01-01T00:00:00Z', AI.__receivedTime) as [device.msg.received]
     FROM
-        ApplyInstantRuleFilters AI PARTITION BY __partitionid
+        ApplyInstantRuleFilters AI PARTITION BY PartitionId
 )
 
 -- Output alarm events
@@ -244,7 +233,7 @@ SELECT
 INTO
     Alarms
 FROM
-    CombineAlarms CA PARTITION BY __partitionid
+    CombineAlarms CA PARTITION BY PartitionId
 
 -- Output origin telemetry messages
 SELECT
