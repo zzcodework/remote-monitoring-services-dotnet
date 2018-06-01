@@ -187,6 +187,26 @@ namespace DeviceGroupsAgent.Test
         }
 
         /**
+         * Verify DeviceGroupsClient.GetGrouptoDevicesMappingAsync will not include
+         * an empty device group in the device group mapping
+         */
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void VerifyGetGroupToDeviceMappingEmptyList()
+        {
+            // Arrange
+            this.SetUpDevicesClientMockEmptyList();
+
+            // Act
+            Dictionary<string, IEnumerable<string>> mapping =
+                this.deviceGroupsClient.GetGroupToDevicesMappingAsync(TestHelperFunctions.CreateDeviceGroupListApiModel("etag", GROUP_ID)).Result;
+
+            // Assert
+            Assert.Empty(mapping.Keys);
+
+            TestHelperFunctions.VerifyWarningsLogged(this.logMock, 0);
+            TestHelperFunctions.VerifyErrorsLogged(this.logMock, 0);
+        }
+        /**
          * Verify DeviceGroupsClient.GetGrouptoDevicesMappingAsync will retry
          * devices query on exception, and succeed if there are fewer than 5 exceptions
          */
@@ -272,6 +292,14 @@ namespace DeviceGroupsAgent.Test
             this.devicesClientMock
                 .Setup(x => x.GetListAsync(It.IsAny<IEnumerable<DeviceGroupConditionApiModel>>()))
                 .Returns(Task.FromResult(this.GetDeviceList()));
+        }
+
+        private void SetUpDevicesClientMockEmptyList()
+        {
+            IEnumerable<string> result = new List<string>();
+            this.devicesClientMock
+                .Setup(x => x.GetListAsync(It.IsAny<IEnumerable<DeviceGroupConditionApiModel>>()))
+                .Returns(Task.FromResult(result));
         }
 
         /**

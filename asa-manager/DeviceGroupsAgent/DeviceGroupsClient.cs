@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent.Models;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Concurrency;
@@ -51,11 +52,17 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             var groupToDeviceMapping = new Dictionary<string, IEnumerable<string>>();
             if (deviceGroupList?.Items != null)
             {
-                // TODO: Add retry if this call fails
-                // https://github.com/Azure/asa-manager-dotnet/issues/7
                 foreach (DeviceGroupApiModel group in deviceGroupList.Items)
                 {
-                    groupToDeviceMapping.Add(group.Id, await this.GetDevicesAsync(group));
+                    // TODO: await these calls after starting all of them instead of individually
+                    // https://github.com/Azure/asa-manager-dotnet/issues/22
+                    var deviceList = (await this.GetDevicesAsync(group)).ToList();
+
+                    // If device group has no devices in it, do not add to dictionary
+                    if (deviceList.Count > 0)
+                    {
+                        groupToDeviceMapping.Add(group.Id, deviceList);
+                    }
                 }
             }
             return groupToDeviceMapping;
