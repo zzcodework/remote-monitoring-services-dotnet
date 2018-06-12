@@ -23,9 +23,11 @@ namespace WebService.Test.IntegrationTests
             this.credentialsAvailable = !CIVariableHelper.IsPullRequest(log);
         }
 
-        [Fact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
+        [SkippableFact, Trait(Constants.TYPE, Constants.INTEGRATION_TEST)]
         public void TheServiceIsHealthy()
         {
+            Skip.IfNot(this.credentialsAvailable, "Skipping this test for Travis pull request as credentials are not available");
+
             var request = new HttpRequest();
             request.SetUriFromString(AssemblyInitialize.Current.WsHostname + "/v1/status");
 
