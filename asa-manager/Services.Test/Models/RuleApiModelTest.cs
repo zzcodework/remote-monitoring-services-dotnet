@@ -34,7 +34,8 @@ namespace Services.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Conditions = new List<ConditionApiModel>()
+                Conditions = new List<ConditionApiModel>(),
+                Deleted = false
             };
             var y = Clone(x);
 
@@ -74,19 +75,22 @@ namespace Services.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Conditions = new List<ConditionApiModel>()
+                Conditions = new List<ConditionApiModel>(),
+                Deleted = false
             };
             var y1 = Clone(x);
             var y2 = Clone(x);
             var y3 = Clone(x);
             var y4 = Clone(x);
             var y5 = Clone(x);
+            var y6 = Clone(x);
 
             y1.Id += "x";
             y2.Name += "x";
             y3.Enabled = !y3.Enabled;
             y4.GroupId += "x";
             y5.Severity += "x";
+            y6.Deleted = !y6.Deleted;
 
             // Assert
             Assert.False(x.Equals(y1));

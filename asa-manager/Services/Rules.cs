@@ -60,7 +60,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
 
             // return only active rules, sorted by ID to facilitate comparison
             var list = JsonConvert.DeserializeObject<RuleListApiModel>(response.Content);
-            var activeRules = list.Items.Where(x => x.Enabled).OrderBy(x => x.Id).ToList();
+            var activeRules = list.Items.Where(x => x.Enabled && !x.Deleted).OrderBy(x => x.Id).ToList();
             this.log.Debug("List of rules deserialized", () => new { ActiveCount = activeRules.Count, TotalCount = list.Items.Count() });
 
             return activeRules;

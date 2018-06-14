@@ -125,7 +125,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
 
         public AsaRefDataRule(RuleApiModel rule) : this()
         {
-            if (!rule.Enabled) return;
+            if (!rule.Enabled || rule.Deleted) return;
 
             this.Id = rule.Id;
             this.Name = rule.Name;

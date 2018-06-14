@@ -44,7 +44,9 @@ namespace Services.Test
                 "{'Id':'B7','Enabled':false}," +
                 "{'Id':'B1','Enabled':false}," +
                 "{'Id':'B4','Enabled':true}," +
-                "{'Id':'44','Enabled':false}" +
+                "{'Id':'44','Enabled':false}," +
+                "{'Id':'54','Enabled':true,'Deleted':true}," +
+                "{'Id':'74','Enabled':false,'Deleted':true}" +
                 "]}",
                 null);
             this.httpClient.Setup(
