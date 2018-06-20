@@ -7,19 +7,24 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Extensions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
+
+    public delegate Task<DevicePropertyServiceModel> DevicePropertyDelegate(DevicePropertyServiceModel model);
     public interface IDevices
     {
         Task<DeviceServiceListModel> GetListAsync(string query, string continuationToken);
+        Task<DeviceTwinName> GetDeviceTwinNamesAsync();
         Task<DeviceServiceModel> GetAsync(string id);
         Task<DeviceServiceModel> CreateAsync(DeviceServiceModel toServiceModel);
-        Task<DeviceServiceModel> CreateOrUpdateAsync(DeviceServiceModel toServiceModel);
+        Task<DeviceServiceModel> CreateOrUpdateAsync(DeviceServiceModel toServiceModel, DevicePropertyDelegate devicePropertyDelegate);
         Task DeleteAsync(string id);
     }
 
@@ -31,11 +36,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private RegistryManager registry;
         private string ioTHubHostName;
 
-        private readonly IConfigService configService;
-
         public Devices(
-            IServicesConfig config,
-            IConfigService configService)
+            IServicesConfig config)
         {
             if (config == null)
             {
@@ -47,8 +49,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 this.registry = RegistryManager.CreateFromConnectionString(conn);
                 this.ioTHubHostName = IotHubConnectionStringBuilder.Create(conn).HostName;
             });
-
-            this.configService = configService;
         }
 
         /// <summary>
@@ -79,6 +79,17 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                     .Where(d => twins.Result.Exists(t => d.Id == t.DeviceId))
                     .Select(azureDevice => new DeviceServiceModel(azureDevice, twins.Result.SingleOrDefault(t => t.DeviceId == azureDevice.Id), this.ioTHubHostName)),
                 twins.ContinuationToken);
+        }
+
+        /// <summary>
+        /// Query devices
+        /// </summary>
+        /// <returns>DeviceTwinName</returns>
+        public async Task<DeviceTwinName> GetDeviceTwinNamesAsync()
+        {
+            var content = await this.GetListAsync(string.Empty, string.Empty);
+
+            return content.GetDeviceTwinNames();
         }
 
         public async Task<DeviceServiceModel> GetAsync(string id)
@@ -123,8 +134,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         /// We only support update twin
         /// </summary>
         /// <param name="device"></param>
+        /// <param name="devicePropertyDelegate"></param>
         /// <returns></returns>
-        public async Task<DeviceServiceModel> CreateOrUpdateAsync(DeviceServiceModel device)
+        public async Task<DeviceServiceModel> CreateOrUpdateAsync(DeviceServiceModel device, DevicePropertyDelegate devicePropertyDelegate)
         {
             // validate device module
             var azureDevice = await this.registry.GetDeviceAsync(device.Id);
@@ -143,7 +155,20 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 azureTwin = await this.registry.UpdateTwinAsync(device.Id, device.Twin.ToAzureModel(), device.Twin.ETag);
 
                 // Update the deviceGroupFilter cache, no need to wait
-                var unused = this.configService.UpdateDeviceGroupFiltersAsync(device.Twin);
+                var model = new DevicePropertyServiceModel();
+
+                var tagRoot = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(device.Twin.Tags)) as JToken;
+                if (tagRoot != null)
+                {
+                    model.Tags = new HashSet<string>(tagRoot.GetAllLeavesPath());
+                }
+
+                var reportedRoot = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(device.Twin.ReportedProperties)) as JToken;
+                if (reportedRoot != null)
+                {
+                    model.Reported = new HashSet<string>(reportedRoot.GetAllLeavesPath());
+                }
+                var unused = devicePropertyDelegate(model);
             }
 
             return new DeviceServiceModel(azureDevice, azureTwin, this.ioTHubHostName);

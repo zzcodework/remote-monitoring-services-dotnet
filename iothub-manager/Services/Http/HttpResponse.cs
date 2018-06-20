@@ -2,7 +2,9 @@
 
 using System.Net;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Services.Test")]
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Http
 {
     public interface IHttpResponse
@@ -11,11 +13,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Http
         HttpResponseHeaders Headers { get; }
         string Content { get; }
         bool IsRetriableError { get; }
+        bool IsSuccessStatusCode { get; }
     }
 
     public class HttpResponse : IHttpResponse
     {
         private const int TOO_MANY_REQUESTS = 429;
+
+        public bool IsSuccessStatusCode { get; internal set; }
 
         public HttpResponse()
         {
@@ -37,6 +42,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Http
 
         public bool IsRetriableError => this.StatusCode == HttpStatusCode.NotFound ||
                                         this.StatusCode == HttpStatusCode.RequestTimeout ||
-                                        (int) this.StatusCode == TOO_MANY_REQUESTS;
+                                        (int)this.StatusCode == TOO_MANY_REQUESTS;
     }
 }

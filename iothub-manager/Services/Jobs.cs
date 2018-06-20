@@ -13,6 +13,8 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 using DeviceJobStatus = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.DeviceJobStatus;
 using JobStatus = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.JobStatus;
 using JobType = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.JobType;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
@@ -49,19 +51,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     {
         private JobClient jobClient;
         private RegistryManager registryManager;
-        private readonly IConfigService configService;
+        private IDeviceProperties deviceProperties;
 
         private const string DEVICE_DETAILS_QUERY_FORMAT = "select * from devices.jobs where devices.jobs.jobId = '{0}'";
         private const string DEVICE_DETAILS_QUERYWITH_STATUS_FORMAT = "select * from devices.jobs where devices.jobs.jobId = '{0}' and devices.jobs.status = '{1}'";
 
-        public Jobs(
-            IServicesConfig config,
-            IConfigService configService)
+        public Jobs(IServicesConfig config, IDeviceProperties deviceProperties)
         {
             if (config == null)
             {
                 throw new ArgumentNullException("config");
             }
+            this.deviceProperties = deviceProperties;
 
             IoTHubConnectionHelper.CreateUsingHubConnectionString(
                 config.IoTHubConnString,
@@ -70,8 +71,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             IoTHubConnectionHelper.CreateUsingHubConnectionString(
                 config.IoTHubConnString,
                 conn => { this.registryManager = RegistryManager.CreateFromConnectionString(conn); });
-
-            this.configService = configService;
         }
 
         public async Task<IEnumerable<JobServiceModel>> GetJobsAsync(
@@ -116,7 +115,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             // Device job query by status of 'Completed' or 'Cancelled' will fail with InternalServerError
             // https://github.com/Azure/azure-iot-sdk-csharp/issues/257
             var queryString = deviceJobStatus.HasValue ?
-                string.Format(DEVICE_DETAILS_QUERYWITH_STATUS_FORMAT, jobId, deviceJobStatus.Value.ToString().ToLower()):
+                string.Format(DEVICE_DETAILS_QUERYWITH_STATUS_FORMAT, jobId, deviceJobStatus.Value.ToString().ToLower()) :
                 string.Format(DEVICE_DETAILS_QUERY_FORMAT, jobId);
 
             var query = this.registryManager.CreateQuery(queryString);
@@ -144,8 +143,21 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 startTimeUtc.DateTime,
                 maxExecutionTimeInSeconds);
 
-            // Update the deviceGroupFilter cache, no need to wait
-            var unused = this.configService.UpdateDeviceGroupFiltersAsync(twin);
+            // Update the deviceProperties cache, no need to wait
+            var model = new DevicePropertyServiceModel();
+
+            var tagRoot = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(twin.Tags)) as JToken;
+            if (tagRoot != null)
+            {
+                model.Tags = new HashSet<string>(tagRoot.GetAllLeavesPath());
+            }
+
+            var reportedRoot = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(twin.ReportedProperties)) as JToken;
+            if (reportedRoot != null)
+            {
+                model.Reported = new HashSet<string>(reportedRoot.GetAllLeavesPath());
+            }
+            var unused = deviceProperties.UpdateListAsync(model);
 
             return new JobServiceModel(result);
         }

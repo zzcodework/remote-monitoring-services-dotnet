@@ -5,6 +5,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,6 +74,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             builder.RegisterType<Services.Devices>().As<IDevices>().SingleInstance();
             builder.RegisterType<DeviceService>().As<IDeviceService>().SingleInstance();
             builder.RegisterType<Jobs>().As<IJobs>().SingleInstance();
+            builder.RegisterType<StorageAdapterClient>().As<IStorageAdapterClient>().SingleInstance();
+            builder.RegisterType<DeviceProperties>().As<IDeviceProperties>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)

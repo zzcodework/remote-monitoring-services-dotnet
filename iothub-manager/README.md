@@ -52,11 +52,11 @@ for [Deploy the Azure services](https://docs.microsoft.com/azure/iot-suite/iot-s
 
 ### 2. Setup Dependencies
 
-This service depends on the [Config microservice](https://github.com/Azure/pcs-config-dotnet). Run the config service using the the instructions in the Config service [README.md](https://github.com/Azure/pcs-config-dotnet/blob/master/README.md).
+This service depends on the [Storage Adapter microservice](https://github.com/Azure/pcs-storage-adapter-dotnet). Run the Storage Adapter microservice using the the instructions in the Storage Adapter service [README.md](https://github.com/Azure/pcs-storage-adapter-dotnet/blob/master/README.md).
 
-* [Config microservice](https://github.com/Azure/pcs-config-dotnet)
+* [Storage Adapter microservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
 
-> Note: you can also use a [deployed endpoint][deploy-rm] with [Authentication disabled][disable-auth] (e.g. https://{your-resource-group}.azurewebsites.net/config/v1)
+> Note: you can also use a [deployed endpoint][deploy-rm] with [Authentication disabled][disable-auth] (e.g. https://{your-resource-group}.azurewebsites.net/storageadapter/v1)
 
 ### 3. Environment variables required to run the service
 In order to run the service, some environment variables need to be created
@@ -66,8 +66,8 @@ more information. More information on environment variables
 
 * `PCS_IOTHUB_CONNSTRING` = {your Azure IoT Hub connection string from [Deploy Azure Services](#deploy-azure-services)}
     *  More information on where to find your IoT Hub connection string [here].[iothub-connstring-blog].
-* `PCS_CONFIG_WEBSERVICE_URL` = http://localhost:9005/v1
-    * The url for the [Config microservice](https://github.com/Azure/pcs-config-dotnet) from [Setup Dependencies](#setup-dependencies)
+* `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
+    * The url for the [Storage Adapter service](https://github.com/Azure/pcs-storage-adapter-dotnet) from [Setup Dependencies](#setup-dependencies)
 
 ## Running the service with Visual Studio
 1. Make sure the [Prerequisites](#prerequisites) are set up.
@@ -82,7 +82,7 @@ more information. More information on environment variables
    environment variables to the Debug settings. In Windows
    you can also set these [in your system][windows-envvars-howto-url].
    1. `PCS_IOTHUB_CONNSTRING` = {your Azure IoT Hub connection string}
-   1. `PCS_CONFIG_WEBSERVICE_URL` = {config service endpoint}
+   1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = {storage adapter service endpoint}
 1. In Visual Studio, start the WebService project
 1. Using an HTTP client like [Postman][postman-url],
    use the [RESTful API][project-wiki] to test out the service.
@@ -92,7 +92,7 @@ more information. More information on environment variables
 1. Make sure the [Prerequisites](#prerequisites) are set up.
 1. Set the following environment variables in your system. More information on environment variables [here](#configuration-and-environment-variables).
     1. `PCS_IOTHUB_CONNSTRING` = {your Azure IoT Hub connection string}
-    1. `PCS_CONFIG_WEBSERVICE_URL` = {config service endpoint}
+    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = {storage adapter service endpoint}
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
 
 * `build`: compile all the projects and run the tests.

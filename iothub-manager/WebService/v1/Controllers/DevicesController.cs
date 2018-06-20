@@ -15,10 +15,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         const string CONTINUATION_TOKEN_NAME = "x-ms-continuation";
 
         private readonly IDevices devices;
+        private readonly IDeviceProperties deviceProperties;
         private readonly IDeviceService deviceService;
 
-        public DevicesController(IDevices devices, IDeviceService deviceService)
+        public DevicesController(IDevices devices, IDeviceService deviceService, IDeviceProperties deviceProperties)
         {
+            this.deviceProperties = deviceProperties;
             this.devices = devices;
             this.deviceService = deviceService;
         }
@@ -74,7 +76,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         [HttpPut("{id}")]
         public async Task<DeviceRegistryApiModel> PutAsync(string id, [FromBody] DeviceRegistryApiModel device)
         {
-            return new DeviceRegistryApiModel(await this.devices.CreateOrUpdateAsync(device.ToServiceModel()));
+            DevicePropertyDelegate updateListDelegate = new DevicePropertyDelegate(this.deviceProperties.UpdateListAsync);
+            return new DeviceRegistryApiModel(await this.devices.CreateOrUpdateAsync(device.ToServiceModel(), updateListDelegate));
         }
 
         /// <summary>Remove device</summary>

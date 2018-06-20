@@ -91,7 +91,7 @@ namespace WebService.Test.IntegrationTests
                 // Assert
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 job = JsonConvert.DeserializeObject<JobApiModel>(response.Content);
-                Assert.Equal(job.Status, JobStatus.Completed);
+                Assert.Equal(JobStatus.Completed, job.Status);
                 Assert.Equal(job.Devices.Single().DeviceId, deviceId);
                 Assert.True(job.Devices.All(j => j.Status == DeviceJobStatus.Completed));
             }

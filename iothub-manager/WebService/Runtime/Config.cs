@@ -24,9 +24,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
         private const string APPLICATION_KEY = "IothubManagerService:";
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
         private const string IOTHUB_CONNSTRING_KEY = APPLICATION_KEY + "iothub_connstring";
+        private const string DEVICE_PROPERTIES_KEY = APPLICATION_KEY + "DevicePropertiesCache:"; 
+        private const string DEVICE_PROPERTIES_WHITELIST_KEY = DEVICE_PROPERTIES_KEY + "whitelist";
+        private const string DEVICE_PROPERTIES_TTL_KEY = DEVICE_PROPERTIES_KEY + "TTL";
+        private const string DEVICE_PROPERTIES_REBUILD_TIMEOUT_KEY = DEVICE_PROPERTIES_KEY + "rebuild_timeout";
 
-        private const string CONFIG_SERVICE_KEY = "ConfigService:";
-        private const string CONFIG_SERVICE_URI_KEY = CONFIG_SERVICE_KEY + "webservice_url";
+        private const string STORAGE_ADAPTER_KEY = "StorageAdapterService:";
+        private const string STORAGE_ADAPTER_URL_KEY = STORAGE_ADAPTER_KEY + "webservice_url";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
@@ -68,7 +72,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
             this.ServicesConfig = new ServicesConfig
             {
                 IoTHubConnString = configData.GetString(IOTHUB_CONNSTRING_KEY),
-                ConfigServiceUri = configData.GetString(CONFIG_SERVICE_URI_KEY)
+                DevicePropertiesWhiteList = configData.GetString(DEVICE_PROPERTIES_WHITELIST_KEY),
+                DevicePropertiesTTL = configData.GetInt(DEVICE_PROPERTIES_TTL_KEY),
+                DevicePropertiesRebuildTimeout = configData.GetInt(DEVICE_PROPERTIES_REBUILD_TIMEOUT_KEY),
+                StorageAdapterApiUrl = configData.GetString(STORAGE_ADAPTER_URL_KEY),
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

@@ -81,11 +81,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "iothub", "iothub", "{5282A5
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{06A10CA3-99F0-411A-B649-7E1EDF5A06E8}"
-ProjectSection(SolutionItems) = preProject
-	.github\CODEOWNERS = .github\CODEOWNERS
-	.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
-	.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		.github\CODEOWNERS = .github\CODEOWNERS
+		.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
+		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EAD5B7FB-8ACD-402F-97A4-5B87CDE6DD82}"
+	ProjectSection(SolutionItems) = preProject
+		docs\API_SPECS_DEVICE_PROPERTIES.md = docs\API_SPECS_DEVICE_PROPERTIES.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,5 +125,9 @@ Global
 		{585F4D53-2816-4B8C-9150-139F6D7DBD09} = {4D5636DA-6246-4F6E-A903-B3184767EFBF}
 		{5282A591-2402-424E-9013-976A652AE5AC} = {B8F0DF3A-380C-470D-AF31-077225B66A41}
 		{06A10CA3-99F0-411A-B649-7E1EDF5A06E8} = {CBCD98A4-ABDE-4937-B03A-33582B737466}
+		{EAD5B7FB-8ACD-402F-97A4-5B87CDE6DD82} = {CBCD98A4-ABDE-4937-B03A-33582B737466}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D44EB2FD-F930-491E-881C-01C7F44919E4}
 	EndGlobalSection
 EndGlobal
