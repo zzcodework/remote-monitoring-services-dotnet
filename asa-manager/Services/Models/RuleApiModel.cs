@@ -41,6 +41,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         [JsonProperty("TimePeriod")]
         public long TimePeriod { get; set; }
 
+        [JsonProperty(PropertyName = "Actions")]
+        public List<ActionApiModel> Actions { get; set; } = new List<ActionApiModel>();
+
         public override bool Equals(object obj)
         {
             if (!(obj is RuleApiModel x)) return false;
@@ -54,8 +57,19 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                                   && this.Conditions[count].Equals(x.Conditions[count]);
             }
 
+            // Compare ActionList.
+            count = this.Actions.Count();
+            var actionsMatch = count == x.Actions.Count();
+
+            while (actionsMatch && --count >= 0)
+            {
+                actionsMatch = actionsMatch
+                                  && this.Actions[count].Equals(x.Actions[count]);
+            }
+
             // Compare everything
             return conditionsMatch
+                   && actionsMatch
                    && string.Equals(this.Id, x.Id)
                    && string.Equals(this.Name, x.Name)
                    && string.Equals(this.Description, x.Description)
@@ -77,6 +91,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                 hashCode = (hashCode * 397) ^ (this.GroupId != null ? this.GroupId.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Severity != null ? this.Severity.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Conditions != null ? this.Conditions.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.Actions != null ? this.Actions.GetHashCode() : 0);
                 return hashCode;
             }
         }

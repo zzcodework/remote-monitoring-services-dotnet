@@ -85,12 +85,21 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
         // Internal data structure needed to serialize the model to JSON
         private readonly List<Condition> conditions;
 
+        private readonly List<ActionItem> actions;
+
         private struct Condition
         {
             internal string Calculation { get; set; }
             internal string Field { get; set; }
             internal string Operator { get; set; }
             internal string Value { get; set; }
+        }
+
+        private struct ActionItem
+        {
+            internal string ActionType { get; set; }
+            internal IDictionary<string, object> Parameters { get; set; }
+
         }
 
         [JsonProperty("Id")]
@@ -113,6 +122,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
 
         [JsonProperty("Fields")]
         public List<string> Fields { get; set; }
+
+        [JsonProperty("Actions")]
+        public IDictionary<string, object> Actions { get; set; }
 
         [JsonProperty("__rulefilterjs")]
         public string RuleFilterJs => this.ConditionsToJavascript();
@@ -147,6 +159,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
                 };
                 this.conditions.Add(condition);
                 this.Fields.Add(c.Field);
+            }
+
+            this.actions = new List<ActionItem>();
+            foreach(var a in rule.Actions)
+            {
+                var action = new ActionItem()
+                {
+                    ActionType = a.ActionType,
+                    Parameters = a.Parameters
+                };
             }
         }
 
