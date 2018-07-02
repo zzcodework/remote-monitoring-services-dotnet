@@ -50,5 +50,14 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             // Update dictionary comparison.
             return true;
         }
+
+        public string getParameters()
+        {
+            if (this.Parameters["Email"] != null)
+            {
+                this.Parameters["Email"] = ((Newtonsoft.Json.Linq.JArray)this.Parameters["Email"]).ToObject<string[]>();
+            }
+            return JsonConvert.SerializeObject(this.Parameters, Formatting.None);
+        }
     }
 }

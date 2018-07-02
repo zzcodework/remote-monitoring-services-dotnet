@@ -12,6 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         public RuleApiModel()
         {
             this.Conditions = new List<ConditionApiModel>();
+            this.Actions = new List<ActionApiModel>();
         }
 
         [JsonProperty("Id")]
@@ -42,7 +43,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         public long TimePeriod { get; set; }
 
         [JsonProperty(PropertyName = "Actions")]
-        public List<ActionApiModel> Actions { get; set; } = new List<ActionApiModel>();
+        public List<ActionApiModel> Actions { get; set; }
 
         public override bool Equals(object obj)
         {
