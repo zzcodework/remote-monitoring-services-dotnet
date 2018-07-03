@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Newtonsoft.Json;
 
