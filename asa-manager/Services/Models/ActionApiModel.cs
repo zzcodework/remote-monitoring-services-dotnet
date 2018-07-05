@@ -33,7 +33,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                 obj = (ActionApiModel)obj;
             }
             return this.ActionType.Equals(((ActionApiModel)obj).ActionType)
-                && this.Parameters.Count == ((ActionApiModel)obj).Parameters.Count
                 && this.IsEqualDictionary(((ActionApiModel)obj).Parameters);
 
         }
@@ -47,7 +46,17 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
 
         private bool IsEqualDictionary(IDictionary<string, object> comapreDictionary)
         {
-            // Update dictionary comparison.
+            if ((comapreDictionary == null) || (this.Parameters == null) || (this.Parameters.Count != comapreDictionary.Count)) return false;
+            
+            foreach(var key in this.Parameters.Keys)
+            {
+                if (!comapreDictionary.ContainsKey(key)) return false;
+            }
+
+            foreach(var key in this.Parameters.Keys)
+            {
+                if (!comapreDictionary[key].Equals(this.Parameters[key])) return false;
+            }
             return true;
         }
 

@@ -13,7 +13,6 @@ _dev/
 .cache/**
 target/**
 .travis
-.vscode
 
 
 ### MacOS

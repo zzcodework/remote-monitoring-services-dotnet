@@ -45,6 +45,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         [JsonProperty(PropertyName = "Actions")]
         public List<ActionApiModel> Actions { get; set; }
 
+        [JsonProperty("Deleted")]
+        public bool Deleted { get; set; }
+
         public override bool Equals(object obj)
         {
             if (!(obj is RuleApiModel x)) return false;
@@ -76,7 +79,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                    && string.Equals(this.Description, x.Description)
                    && this.Enabled == x.Enabled
                    && string.Equals(this.GroupId, x.GroupId)
-                   && string.Equals(this.Severity, x.Severity);
+                   && string.Equals(this.Severity, x.Severity)
+                   && this.Deleted == x.Deleted;
         }
 
         /// <summary>Method required when implementing a custom equality logic [CS0659]</summary>
