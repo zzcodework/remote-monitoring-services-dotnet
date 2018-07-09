@@ -380,7 +380,7 @@ namespace TelemetryRulesAgent.Test.Models
                 Parameters = new Dictionary<string, object>()
                 {
                     {"Template", "This is a new email" },
-                    {"Email", new List<string>(){"agupta.aayush8484@gmail.com", "azureTest@gmail.com"} }
+                    {"Email", new List<string>(){"azureTest2@gmail.com", "azureTest@gmail.com"} }
                 }
             };
         }

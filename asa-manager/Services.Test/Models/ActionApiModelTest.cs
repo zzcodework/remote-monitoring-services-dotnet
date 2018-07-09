@@ -1,10 +1,11 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Xunit;
-using Services.Test.helpers;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Newtonsoft.Json;
+using Services.Test.helpers;
+using Xunit;
 
 namespace Services.Test.Models
 {
