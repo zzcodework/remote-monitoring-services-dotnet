@@ -49,22 +49,37 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             return hashCode;
         }
 
+        // Checks if both the dictionaries have the same keys and values.
+        // For a dictionary[key] => list, does a comaprison of all the elements of the list, regardless of order. 
         private bool IsEqualDictionary(IDictionary<string, object> compareDictionary)
+        /*
+         Possible cases: 
+         1. Both null.
+         2. One is null.
+         3. Different number of key value pairs.
+         4. Same key, different value of type string.
+         5. Same key, different value of type list.
+         6. Same key, same value in different order for list.
+         7. Same key, same value in same order.
+         8. Same key, one is string, one is list.
+         */
         {
-            if ((compareDictionary == null) && (this.Parameters == null)) return true;
-            if ((compareDictionary == null) || (this.Parameters == null) || (this.Parameters.Count != compareDictionary.Count)) return false;
-            
+            if (this.Parameters.Count != compareDictionary.Count) return false;
+
             foreach(var key in this.Parameters.Keys)
             {
-                if (!compareDictionary.ContainsKey(key))
+                if (!compareDictionary.ContainsKey(key) || 
+                    !IsSameType(this.Parameters[key], compareDictionary[key]))
                 {
                     return false;
                 }
-                else if ((compareDictionary[key] is IList<string>) && (this.Parameters[key] is IList<string>) && !IsListEqual((List<string>)this.Parameters[key], (List<string>)compareDictionary[key]))
+                else if (this.Parameters[key] is IList<string> && 
+                    !IsListEqual((List<string>)this.Parameters[key], (List<string>)compareDictionary[key]))
                 {
                     return false;
                 }
-                else if (!(compareDictionary[key] is IList<string>) && !compareDictionary[key].Equals(this.Parameters[key]))
+                else if (!(this.Parameters[key] is IList<string>) && 
+                    !compareDictionary[key].Equals(this.Parameters[key]))
                 {
                     return false;
                 }
@@ -75,6 +90,15 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         private static bool IsListEqual(List<string> list1, List<string> list2)
         {
             return list1.Count == list2.Count && !list1.Except(list2).Any();
+        }
+
+        private static bool IsSameType(object a, object b)
+        {
+            // Checks if two objects are of same type, in the same inheritance tree, or one is implemented by the other. 
+            var type1 = a.GetType();
+            var type2 = b.GetType();
+            if (type1.IsAssignableFrom(type2) || type2.IsAssignableFrom(type1)) return true;
+            return false;
         }
     }
 

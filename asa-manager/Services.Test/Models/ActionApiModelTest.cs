@@ -78,6 +78,7 @@ namespace Services.Test.Models
             Assert.False(x.Equals(y1));
             Assert.False(x.Equals(y2));
             Assert.False(x.Equals(y3));
+            Assert.False(x.Equals(null));
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -113,6 +114,36 @@ namespace Services.Test.Models
             // Arrange: different template
             y = Clone(x);
             y.Parameters["Template"] = "Changing template";
+
+            // Assert
+            Assert.False(x.Equals(y));
+
+            // Arrange: Same list of email different order.
+            x.Parameters = new Dictionary<string, object>()
+                {
+                    {"Template", "Sample Template" },
+                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
+                };
+            y.Parameters = new Dictionary<string, object>()
+                {
+                    {"Template", "Sample Template" },
+                    {"Email", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
+                };
+
+            // Assert
+            Assert.True(x.Equals(y));
+
+            // Arrange: Different list of email, same length
+            x.Parameters = new Dictionary<string, object>()
+                {
+                    {"Template", "Sample Template" },
+                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
+                };
+            y.Parameters = new Dictionary<string, object>()
+                {
+                    {"Template", "Sample Template" },
+                    {"Email", new List<string>() {"anotherEmail1@gmail.com", "anotherEmail2@gmail.com"} }
+                };
 
             // Assert
             Assert.False(x.Equals(y));
