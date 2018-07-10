@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,11 +16,13 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         // Parameters dictionary is case-insensitive.
         [JsonProperty(PropertyName = "Parameters")]
         [JsonConverter(typeof(ParametersDictionaryConverter))]
-        public IDictionary<String, Object> Parameters { get; set; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        public IDictionary<string, Object> Parameters { get; set; }
 
-        public ActionApiModel() { }
+        public ActionApiModel() {
+            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        }
 
-        public ActionApiModel(string action, Dictionary<String, Object> parameters)
+        public ActionApiModel(string action, Dictionary<string, Object> parameters)
         {
             this.ActionType = action;
             this.Parameters = parameters;
@@ -46,33 +49,32 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             return hashCode;
         }
 
-        private bool IsEqualDictionary(IDictionary<string, object> comapreDictionary)
+        private bool IsEqualDictionary(IDictionary<string, object> compareDictionary)
         {
-            if ((comapreDictionary == null) || (this.Parameters == null) || (this.Parameters.Count != comapreDictionary.Count)) return false;
+            if ((compareDictionary == null) && (this.Parameters == null)) return true;
+            if ((compareDictionary == null) || (this.Parameters == null) || (this.Parameters.Count != compareDictionary.Count)) return false;
             
             foreach(var key in this.Parameters.Keys)
             {
-                if (!comapreDictionary.ContainsKey(key)) return false;
+                if (!compareDictionary.ContainsKey(key))
+                {
+                    return false;
+                }
+                else if ((compareDictionary[key] is IList<string>) && (this.Parameters[key] is IList<string>) && !IsListEqual((List<string>)this.Parameters[key], (List<string>)compareDictionary[key]))
+                {
+                    return false;
+                }
+                else if (!(compareDictionary[key] is IList<string>) && !compareDictionary[key].Equals(this.Parameters[key]))
+                {
+                    return false;
+                }
             }
-
-            foreach(var key in this.Parameters.Keys)
-            {
-                if ( key != "Email" && (!comapreDictionary[key].Equals(this.Parameters[key]))) return false;
-            }
-            // Compare Email list.
-            if (this.Parameters.ContainsKey("Email") && !IsListEqual((List<string>)this.Parameters["Email"], (List<string>)comapreDictionary["Email"])) return false;
             return true;
         }
 
         private static bool IsListEqual(List<string> list1, List<string> list2)
         {
-            int listLength = list1.Count;
-            bool listMatch = listLength == list2.Count;
-            while (listMatch && --listLength >= 0)
-            {
-                listMatch = listMatch && list1[listLength] == list2[listLength];
-            }
-            return listMatch;
+            return list1.Count == list2.Count && !list1.Except(list2).Any();
         }
     }
 
