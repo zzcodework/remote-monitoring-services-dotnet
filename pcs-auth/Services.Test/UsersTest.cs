@@ -20,6 +20,7 @@ namespace Services.Test
         private readonly Mock<IPolicies> policiesMock;
         private readonly IUsers users;
         private const string ADMIN_ROLE_KEY = "Admin";
+        private const string OPERATOR_ROLE_KEY = "Operator";
         private const string READONLY_ROLE_KEY = "ReadOnly";
         private const string ID_KEY = "oid";
         private const string NAME_KEY = "name";
@@ -63,6 +64,28 @@ namespace Services.Test
             {
                 Assert.Contains(action, result.AllowedActions);
             }
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void GetAllowedActionsForRoles_ReturnsValues()
+        {
+            // Arrange
+            var adminPolicy = this.GetAdminPolicy();
+            var operatorPolicy = this.GetOperatorPolicy();
+            var readOnlyPolicy = this.GetReadOnlyPolicy();
+            this.policiesMock.Setup(x => x.GetByRole(ADMIN_ROLE_KEY)).Returns(adminPolicy);
+            this.policiesMock.Setup(x => x.GetByRole(OPERATOR_ROLE_KEY)).Returns(operatorPolicy);
+            this.policiesMock.Setup(x => x.GetByRole(READONLY_ROLE_KEY)).Returns(readOnlyPolicy);
+
+            // Act
+            var adminActions = this.users.GetAllowedActions(new List<string> { ADMIN_ROLE_KEY, OPERATOR_ROLE_KEY });
+            var operatorActions = this.users.GetAllowedActions(new List<string> { OPERATOR_ROLE_KEY, READONLY_ROLE_KEY });
+            var readonlyActions = this.users.GetAllowedActions(new List<string> { READONLY_ROLE_KEY });
+
+            // Assert
+            Assert.Equal(adminPolicy.AllowedActions, adminActions);
+            Assert.Equal(operatorPolicy.AllowedActions, operatorActions);
+            Assert.Empty(readonlyActions);
         }
 
         private List<Claim> GetClaimWithUserInfo()
@@ -120,6 +143,29 @@ namespace Services.Test
                 AllowedActions = allowedActions,
                 Id = "a400a00b-f67c-42b7-ba9a-f73d8c67e433",
                 Role = ADMIN_ROLE_KEY
+            };
+        }
+
+        private Policy GetOperatorPolicy()
+        {
+            var allowedActions = new List<string>()
+            {
+                "UpdateAlarms",
+                "CreateDevices",
+                "UpdateDevices",
+                "CreateDeviceGroups",
+                "UpdateDeviceGroups",
+                "CreateRules",
+                "UpdateRules",
+                "CreateJobs",
+                "UpdateSimManagement"
+            };
+
+            return new Policy()
+            {
+                AllowedActions = allowedActions,
+                Id = "d607a063-f67c-42b7-ba9a-f73d8c67e433",
+                Role = OPERATOR_ROLE_KEY
             };
         }
 
