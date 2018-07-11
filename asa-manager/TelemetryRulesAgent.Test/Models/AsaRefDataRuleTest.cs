@@ -372,7 +372,7 @@ namespace TelemetryRulesAgent.Test.Models
             Assert.Equal(expectedJSON, json);
         }
 
-    public static ActionApiModel GetSampleActionData()
+        public static ActionApiModel GetSampleActionData()
         {
             return new ActionApiModel()
             {

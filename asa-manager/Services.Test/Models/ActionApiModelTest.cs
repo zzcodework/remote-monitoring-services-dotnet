@@ -25,7 +25,7 @@ namespace Services.Test.Models
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public void NonEmptyInstancesWithSameDataAreEqual()
         {
-            // Arrange: rule without parameters
+            // Arrange: action without parameters
             var x = new ActionApiModel()
             {
                 ActionType = Guid.NewGuid().ToString()
@@ -36,7 +36,7 @@ namespace Services.Test.Models
             // Assert
             Assert.True(x.Equals(y));
 
-            // Arrange: rule with conditions
+            // Arrange: action with parameters
             x = new ActionApiModel()
             {
                 ActionType = Guid.NewGuid().ToString(),
@@ -82,7 +82,7 @@ namespace Services.Test.Models
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InstancesWithDifferentParametersAreDifferent()
+        public void InstancesWithDifferentKeysAreDifferent()
         {
             // Arrange: different number of key-value pairs in Parameters.
             var x = new ActionApiModel()
@@ -93,45 +93,52 @@ namespace Services.Test.Models
                     {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
                 }
             };
+
             var y = Clone(x);
             y.Parameters.Add("Key1", "Value1");
 
             // Assert
             Assert.False(x.Equals(y));
+        }
 
-            // Arrange: different Email
-            x.Parameters = new Dictionary<string, object>()
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void InstancesWithDifferentKayValuesAreDifferent()
+        {
+            // Arrange: different template
+            var x = new ActionApiModel()
+            {
+                Parameters = new Dictionary<string, object>()
                 {
                     {"Template", "Sample Template" },
                     {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                };
-            y = Clone(x);
-            ((List<string>)y.Parameters["Email"]).Add("y");
+                }
+            };
 
-            // Assert
-            Assert.False(x.Equals(y));
-
-            // Arrange: different template
-            y = Clone(x);
+            var y = Clone(x);
             y.Parameters["Template"] = "Changing template";
 
             // Assert
             Assert.False(x.Equals(y));
+        }
 
-            // Arrange: Same list of email different order.
-            x.Parameters = new Dictionary<string, object>()
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void InstancesWithDifferentKeyValueOfTypeListAreDifferent()
+        {
+            //Arrange: Differet list of email
+            var x = new ActionApiModel()
+            {
+                Parameters = new Dictionary<string, object>()
                 {
                     {"Template", "Sample Template" },
                     {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                };
-            y.Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
-                };
+                }
+            };
+
+            var y = Clone(x);
+            ((List<string>)y.Parameters["Email"]).Add("y");
 
             // Assert
-            Assert.True(x.Equals(y));
+            Assert.False(x.Equals(y));
 
             // Arrange: Different list of email, same length
             x.Parameters = new Dictionary<string, object>()
@@ -147,6 +154,31 @@ namespace Services.Test.Models
 
             // Assert
             Assert.False(x.Equals(y));
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void InstancesWithSameKeyValueOfTypeListAreSame()
+        {
+            // Arrange: Same list of email different order.
+            var x = new ActionApiModel()
+            {
+                Parameters = new Dictionary<string, object>()
+                {
+                    {"Template", "Sample Template" },
+                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
+                }
+            };
+            var y = new ActionApiModel()
+            {
+                Parameters = new Dictionary<string, object>()
+                {
+                    {"Template", "Sample Template" },
+                    {"Email", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
+                }
+            };
+
+            // Assert
+            Assert.True(x.Equals(y));
         }
 
         private static T Clone<T>(T o)

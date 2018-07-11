@@ -100,7 +100,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
         {
             internal string ActionType { get; set; }
             internal IDictionary<string, object> Parameters { get; set; }
-
         }
 
         [JsonProperty("Id")]
