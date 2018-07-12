@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
-using Microsoft.Azure.IoTSolutions.IotHubManager.DevicePropertiesAgent;
+using Microsoft.Azure.IoTSolutions.IotHubManager.RecurringTasksAgent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -77,7 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
             // Run a recurring tasks which updates the device properties in CosmosDB every 1 hour
-            appLifetime.ApplicationStarted.Register(() => this.ApplicationContainer.Resolve<IRecurringTasks>().Run());
+            appLifetime.ApplicationStarted.Register(() => this.ApplicationContainer.Resolve<IRecurringTasksAgent>().Run());
         }
 
         private void PrintBootstrapInfo(IContainer container)

@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="2.1.4" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RecurringTasksAgent\RecurringTasksAgent.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
   <ItemGroup>
