@@ -110,7 +110,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             existing.Deleted = true;
 
             var item = JsonConvert.SerializeObject(existing);
-            await this.storage.UpdateAsync(
+            await this.storage.UpsertAsync(
                 STORAGE_COLLECTION,
                 existing.Id,
                 item,
@@ -250,7 +250,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
             Rule newRule = this.Deserialize(result.Data);
             newRule.ETag = result.ETag;
-            newRule.Id = result.Key;
+
+            if (newRule.Id == null) newRule.Id = result.Key;
 
             return newRule;
         }
@@ -285,18 +286,21 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         private async Task<Rule> UpsertAsync(Rule rule, Rule savedRule)
         {
-
-            if (savedRule == null)
+            // If rule does not exist and id is provided upsert rule with that id
+            if (savedRule == null && rule.Id != null)
             {
-                return await this.CreateAsync(rule);
+                rule.DateCreated = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
+                rule.DateModified = rule.DateCreated;
+            }
+            else // update rule with stored date created
+            {
+                rule.DateCreated = savedRule.DateCreated;
+                rule.DateModified = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
             }
 
-            rule.DateCreated = savedRule.DateCreated;
-            rule.DateModified = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
-
-            // Save the updated rule
+            // Save the updated rule if it exists or create new rule with id
             var item = JsonConvert.SerializeObject(rule);
-            var result = await this.storage.UpdateAsync(
+            var result = await this.storage.UpsertAsync(
                 STORAGE_COLLECTION,
                 rule.Id,
                 item,
