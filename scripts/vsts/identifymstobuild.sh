@@ -4,18 +4,19 @@
 
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../ && pwd )/"
 
+
 changes="";
 servicestobuild=""
 declare -A microservices
 
 microservices+=(
-        ["asamanager"]="\/asa\-manager\/"
-        ["pcsauth"]="\/pcs\-auth\/"
-        ["pcsconfig"]="\/pcs\-config\/"
-        ["iothubmanager"]="\/iothub\-manager\/"
-        ["pcsstorageadapter"]="\/pcs\-storage\-adapter\/"
-        ["devicetelemetry"]="\/device\-telemetry\/"
-        ["devicesimulation"]="\/device\-simulation\/"
+        ["asamanager"]="asa\-manager\/"
+        ["pcsauth"]="pcs\-auth\/"
+        ["pcsconfig"]="pcs\-config\/"
+        ["iothubmanager"]="iothub\-manager\/"
+        ["pcsstorageadapter"]="pcs\-storage\-adapter\/"
+        ["devicetelemetry"]="device\-telemetry\/"
+        ["devicesimulation"]="device\-simulation\/"
 )
 
 get_changed_folders() 
@@ -26,29 +27,27 @@ get_changed_folders()
 check_if_microservice_changed() 
 {
     ifchanged=$(echo $changes | grep $1)
-	if [[ "$ifchanged" != "" ]]; then
+    if [[ "$ifchanged" != "" ]]; then
          servicestobuild="$servicestobuild,$2"
-	fi
+    fi
 }
 
 set_env_vars_for_build() 
 {
     servicestobuild="${servicestobuild%\,}"
     servicestobuild="${servicestobuild#\,}"
-    echo "##vso[task.setvariable variable=servicestobuild;isOutput=true]$servicestobuild"
+    echo "##vso[task.setvariable variable=servicestobuild]$servicestobuild"
 }
 
 main()
 {
     get_changed_folders
-
-    for microservice in ${!microservices[@]}; do
+    for microservice in ${!microservices[@]}; 
+    do
         regex=${microservices[${microservice}]}
-	    check_if_microservice_changed $regex $microservice
+        check_if_microservice_changed $regex $microservice
     done
-
     set_env_vars_for_build 
 }
 
 main
-echo $changes
