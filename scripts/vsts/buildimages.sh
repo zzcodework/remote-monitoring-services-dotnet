@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # Copyright (c) Microsoft. All rights reserved.
 # Note: Windows Bash doesn't support shebang extra params
-set -e
 
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../ && pwd )/"
 
-servicestobuild=$(IdentifyMS.services)
+servicestobuild=$(IdentifyMS.servicestobuild)
 declare -A microservicefolders
 
 microservicefolders+=(
