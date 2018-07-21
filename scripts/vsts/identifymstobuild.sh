@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Copyright (c) Microsoft. All rights reserved.
 # Note: Windows Bash doesn't support shebang extra params
-set -e
 
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../ && pwd )/"
 
@@ -22,6 +21,7 @@ microservices+=(
 get_changed_folders() 
 {
     changes=$(git log --name-only --oneline -1 --pretty="format:")
+	echo $changes
 }
 
 check_if_microservice_changed() 
