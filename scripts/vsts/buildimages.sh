@@ -7,6 +7,10 @@ APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../ && pwd )/"
 servicestobuild=$1
 declare -A microservicefolders
 
+if [[ $servicestobuild == "" ]]; then
+   exit 1
+fi
+
 microservicefolders+=(
         ["asamanager"]="asa-manager"
         ["pcsauth"]="pcs-auth"
