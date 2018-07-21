@@ -21,7 +21,6 @@ microservices+=(
 get_changed_folders() 
 {
     changes=$(git log --name-only --oneline -1 --pretty="format:")
-	echo $changes
 }
 
 check_if_microservice_changed() 
@@ -52,3 +51,4 @@ main()
 }
 
 main
+echo $changes

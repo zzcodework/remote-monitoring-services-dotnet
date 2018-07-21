@@ -4,7 +4,7 @@
 
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../ && pwd )/"
 
-servicestobuild=$(IdentifyMS.servicestobuild)
+servicestobuild=$1
 declare -A microservicefolders
 
 microservicefolders+=(
