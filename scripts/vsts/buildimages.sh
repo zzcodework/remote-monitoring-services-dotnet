@@ -4,7 +4,7 @@
 
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../ && pwd )/"
 
-servicestobuild=${SERVICESTOBUILD}
+servicestobuild=$SERVICESTOBUILD
 declare -A microservicefolders
 
 microservicefolders+=(
@@ -12,6 +12,16 @@ microservicefolders+=(
         ["pcsauth"]="pcs-auth"
         ["pcsconfig"]="pcs-config"
         ["iothubmanager"]="iothub-manager"
+        ["pcsstorageadapter"]="pcs-storage-adapter"
+        ["devicetelemetry"]="device-telemetry"
+        ["devicesimulation"]="device-simulation"
+)
+
+microservicestags+=(
+        ["asamanager"]="asa-manager"
+        ["pcsauth"]="pcs-auth"
+        ["pcsconfig"]="pcs-config"
+        ["iothubmanager"]="azureiotpcs/iothub-manager-dotnet"
         ["pcsstorageadapter"]="pcs-storage-adapter"
         ["devicetelemetry"]="device-telemetry"
         ["devicesimulation"]="device-simulation"
@@ -26,6 +36,7 @@ build()
 		cd $location
 		scripts/docker/build
 		cd ..
+        cp ${microservicestags[${microservice}]} ./imagestobuild
     done
 }
 
