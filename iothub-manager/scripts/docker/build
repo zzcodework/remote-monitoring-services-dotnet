@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Copyright (c) Microsoft. All rights reserved.
+# Note: Windows Bash doesn't support shebang extra params
+
+set -e
 
 # Note: use lowercase names for the Docker images
 DOCKER_IMAGE="azureiotpcs/iothub-manager-dotnet"
@@ -51,3 +55,5 @@ build_docker_image() {
 
 compile
 build_docker_image
+
+set +e
