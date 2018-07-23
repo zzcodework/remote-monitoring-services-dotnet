@@ -27,4 +27,6 @@ build()
     done
 }
 
+echo `pwd`
+
 build
