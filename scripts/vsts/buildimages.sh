@@ -22,7 +22,6 @@ set_env_vars_for_build()
     echo "##vso[task.setvariable variable=servicesbuilt]$servicesbuilt"
 }
 
-
 build()
 {
 
@@ -39,7 +38,6 @@ build()
         cd ..
     done
 }
-
 
 build
 set_env_vars_for_build
