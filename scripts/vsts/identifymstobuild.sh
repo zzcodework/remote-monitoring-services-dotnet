@@ -21,7 +21,12 @@ microservices+=(
 
 get_changed_folders() 
 {
-    changes=$(git log --name-only --oneline -1 --pretty="format:")
+    if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then
+        changes=$(git log --name-only --oneline -1 --pretty="format:")
+     else
+        changes=$(git log --name-only --oneline -2 --pretty="format:")
+     fi
+     echo $changes
 }
 
 check_if_microservice_changed() 

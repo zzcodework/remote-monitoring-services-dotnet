@@ -13,6 +13,8 @@ microservicedockernames+=(
         ["devicesimulation"]="device-simulation"
 )
 
+echo $SERVICESBUILT
+
 tag()
 {
 
@@ -23,11 +25,11 @@ tag()
         names=${microservicedockernames[${msfolder}]}
         echo "Names - $names"
         docker tag azureiotpcs/$names-dotnet:testing azureiotpcsdev/$names-dotnet:latest
-        echo -e "azureiotpcsdev/$names-dotnet:latest" >> scripts/vsts/imagestobuild
+        echo -e "azureiotpcsdev/$names-dotnet:latest" >> scripts/vsts/imagestopush
     done
 }
 
 
-truncate -s 0 scripts/vsts/imagestobuild 
+truncate -s 0 scripts/vsts/imagestopush
 tag
-cat scripts/vsts/imagestobuild
+cat scripts/vsts/imagestopush
