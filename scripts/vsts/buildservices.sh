@@ -28,6 +28,5 @@ build()
 }
 
 cd $APP_HOME
-echo `pwd`
 
 build
