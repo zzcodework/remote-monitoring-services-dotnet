@@ -51,3 +51,4 @@ main()
 }
 
 main
+echo $servicestobuild
