@@ -17,8 +17,8 @@ microservicefolders+=(
 
 set_env_vars_for_build() 
 {
-    servicestobuild="${servicesbuilt%\,}"
-    servicestobuild="${servicesbuilt#\,}"
+    servicesbuilt="${servicesbuilt%\,}"
+    servicesbuilt="${servicesbuilt#\,}"
     echo "##vso[task.setvariable variable=servicesbuilt]$servicesbuilt"
 }
 
@@ -32,11 +32,14 @@ build()
         location=${microservicefolders[${msfolder}]}
         cd $location
         scripts/docker/build
+
         if [ $? -eq 0 ]; then
-             servicesbuilt="$servicesbuilt,$microservice"
+             servicesbuilt="$servicesbuilt,$msfolder"
         fi
         cd ..
     done
 }
 
+
 build
+set_env_vars_for_build
