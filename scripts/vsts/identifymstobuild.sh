@@ -24,7 +24,7 @@ get_changed_folders()
     if [ "$BUILD_SOURCEBRANCHNAME" == "master" ]; then
         changes=$(git log --name-only --oneline -1 --pretty="format:")
      else
-        changes=$(git log --name-only --oneline -2 --pretty="format:")
+        changes=$(git whatchanged --name-only --pretty="" origin/master..HEAD)
      fi
      echo $changes
 }
