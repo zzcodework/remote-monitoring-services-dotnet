@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.IO;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.Auth;
 
@@ -26,6 +27,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
         private const string JWT_USER_ID_FROM_KEY = APPLICATION_KEY + "extract_userid_from";
         private const string JWT_NAME_FROM_KEY = APPLICATION_KEY + "extract_name_from";
         private const string JWT_EMAIL_FROM_KEY = APPLICATION_KEY + "extract_email_from";
+        private const string JWT_ROLES_FROM_KEY = APPLICATION_KEY + "extract_roles_from";
+        private const string POLICIES_FOLDER_KEY = APPLICATION_KEY + "policies_folder";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
@@ -48,9 +51,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
-                JwtUserIdFrom = configData.GetString(JWT_USER_ID_FROM_KEY, "email").Split(','),
-                JwtNameFrom = configData.GetString(JWT_NAME_FROM_KEY, "email").Split(','),
-                JwtEmailFrom = configData.GetString(JWT_EMAIL_FROM_KEY, "email").Split(',')
+                JwtUserIdFrom = configData.GetString(JWT_USER_ID_FROM_KEY, "oid").Split(','),
+                JwtNameFrom = configData.GetString(JWT_NAME_FROM_KEY, "given_name,family_name").Split(','),
+                JwtEmailFrom = configData.GetString(JWT_EMAIL_FROM_KEY, "email").Split(','),
+                JwtRolesFrom = configData.GetString(JWT_ROLES_FROM_KEY, "roles"),
+                PoliciesFolder = MapRelativePath(configData.GetString(POLICIES_FOLDER_KEY))
             };
 
             this.ClientAuthConfig = new ClientAuthConfig
@@ -68,6 +73,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
                 // By default the allowed clock skew is 2 minutes
                 JwtClockSkew = TimeSpan.FromSeconds(configData.GetInt(JWT_CLOCK_SKEW_KEY, 120)),
             };
+        }
+
+        private static string MapRelativePath(string path)
+        {
+            return path.StartsWith(".") ? Path.Combine(AppContext.BaseDirectory, path) : path;
         }
     }
 }
