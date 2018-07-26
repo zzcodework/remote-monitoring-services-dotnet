@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
@@ -35,7 +36,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
 
             if (!isAuthorized)
             {
-                context.Result = new ForbidResult();
+                throw new NoAuthorizationException($"Current user is not authorized to perform this action: '{this.allowedAction}'");
             }
             else
             {
