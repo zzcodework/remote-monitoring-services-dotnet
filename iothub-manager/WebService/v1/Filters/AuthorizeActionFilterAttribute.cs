@@ -52,15 +52,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
         /// <returns>true if validatation succeed</returns>
         private bool ValidateAuthorization(HttpContext httpContext, string allowedAction)
         {
-            if (!httpContext.Request.GetAuthRequired()) return true;
+            if (!httpContext.Request.GetAuthRequired() || !httpContext.Request.IsExternalRequest()) return true;
 
             if (allowedAction == null || !allowedAction.Any()) return true;
 
             var userAllowedActions = httpContext.Request.GetCurrentUserAllowedActions();
-            if (userAllowedActions == null || !userAllowedActions.Any())
-            {
-                return false;
-            }
+            if (userAllowedActions == null || !userAllowedActions.Any()) return false;
 
             // validation succeeds if any required action occurs in the current user's allowed allowedAction
             return userAllowedActions.Select(a => a.ToLowerInvariant())

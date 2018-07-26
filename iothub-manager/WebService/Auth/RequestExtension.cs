@@ -13,6 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth
         private const string CONTEXT_KEY_USER_CLAIMS = "CurrentUserClaims";
         private const string CONTEXT_KEY_AUTH_REQUIRED = "AuthRequired";
         private const string CONTEXT_KEY_ALLOWED_ACTIONS = "CurrentUserAllowedActions";
+        private const string CONTEXT_KEY_EXTERNAL_REQUEST = "ExternalRequest";
         // Role claim type
         private const string ROLE_CLAIM_TYPE = "roles";
         private const string USER_OBJECT_ID_CLAIM_TYPE = "oid";
@@ -49,6 +50,23 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth
             }
 
             return (bool)request.HttpContext.Items[CONTEXT_KEY_AUTH_REQUIRED];
+        }
+
+        // Store source of request in the current request
+        public static void SetExternalRequest(this HttpRequest request, bool external)
+        {
+            request.HttpContext.Items[CONTEXT_KEY_EXTERNAL_REQUEST] = external;
+        }
+
+        // Get the source of request in the current request
+        public static bool IsExternalRequest(this HttpRequest request)
+        {
+            if (!request.HttpContext.Items.ContainsKey(CONTEXT_KEY_EXTERNAL_REQUEST))
+            {
+                return true;
+            }
+
+            return (bool)request.HttpContext.Items[CONTEXT_KEY_EXTERNAL_REQUEST];
         }
 
         // Get the user's role claims from the current request

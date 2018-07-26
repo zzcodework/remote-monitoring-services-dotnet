@@ -107,7 +107,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth
             var header = string.Empty;
             var token = string.Empty;
 
-            // Store this setting to skip validating authorization in the controller
+            // Store this setting to skip validating authorization in the controller if enabled
             context.Request.SetAuthRequired(this.config.AuthRequired);
 
             if (!context.Request.Headers.ContainsKey(EXT_RESOURCES_HEADER))
@@ -120,8 +120,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth
 
                 // Call the next delegate/middleware in the pipeline
                 this.log.Debug("Skipping auth for service to service request", () => { });
+                context.Request.SetExternalRequest(false);
                 return this.requestDelegate(context);
             }
+
+            context.Request.SetExternalRequest(true);
 
             if (!this.authRequired)
             {

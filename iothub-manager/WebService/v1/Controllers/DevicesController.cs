@@ -28,7 +28,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <summary>Get a list of devices</summary>
         /// <returns>List of devices</returns>
         [HttpGet]
-        [Authorize("CreateDevices")]
         public async Task<DeviceListApiModel> GetDevicesAsync([FromQuery] string query)
         {
             string continuationToken = string.Empty;
