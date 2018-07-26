@@ -94,7 +94,7 @@ more information. More information on environment variables
 
 1. Make sure the [Prerequisites](#prerequisites) are set up.
 1. Set the following environment variables in your system. More information on environment variables [here](#configuration-and-environment-variables).
-	1. `PCS_AUTH_WEBSERVICE_URL` = {authentication service endpoint}
+    1. `PCS_AUTH_WEBSERVICE_URL` = {authentication service endpoint}
     1. `PCS_IOTHUB_CONNSTRING` = {your Azure IoT Hub connection string}
     1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = {storage adapter service endpoint}
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:

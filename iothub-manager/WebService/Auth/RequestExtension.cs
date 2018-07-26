@@ -34,7 +34,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth
             return request.HttpContext.Items[CONTEXT_KEY_USER_CLAIMS] as IEnumerable<Claim>;
         }
 
-
         // Store authentication setting in the current request
         public static void SetAuthRequired(this HttpRequest request, bool authRequired)
         {
