@@ -24,4 +24,7 @@
   <ItemGroup>
     <Folder Include="Properties" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(ProjectDir)/scripts/local/dependencies pcs-auth" />
+  </Target>
 </Project>

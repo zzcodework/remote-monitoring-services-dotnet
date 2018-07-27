@@ -4,6 +4,7 @@
     <LangVersion>7</LangVersion>
     <AssemblyName>Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService</AssemblyName>
     <RootNamespace>Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService</RootNamespace>
+    <Configurations>Debug;Release;RemoteMonitoring-Debug</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="appsettings.ini">
@@ -21,4 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(ProjectDir)/scripts/local/dependencies device-telemetry" />
+  </Target>
 </Project>
