@@ -43,12 +43,12 @@ namespace Services.Test
         {
             var userObjectId = this.rand.NextString();
             var roles = new List<string> { "Admin" };
-            var allowedActions = new List<string> { "CreateDevices", "UpdateDevices" };
+            var allowedActions = new List<string> { "CreateRules", "UpdateAlarms" };
 
             var response = new HttpResponse
             {
                 StatusCode = HttpStatusCode.OK,
-                IsSuccess = true,
+                IsSuccessStatusCode = true,
                 Content = JsonConvert.SerializeObject(allowedActions)
             };
 
