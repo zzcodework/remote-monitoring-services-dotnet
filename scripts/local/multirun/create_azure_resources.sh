@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+log_file="env"
 
 function version_formatter { 
 	echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
@@ -24,7 +25,12 @@ function npm_package_is_installed {
 	# set to 1 initially
 	local return_=1
 	# set to 0 if not found
-	npm list -g | grep $1 >/dev/null 2>&1 || { local return_=0; }
+	set +e
+	check=$(npm list --depth 1 --global iot-solutions | grep empty)
+	if [ "$check" == "" ]; then
+		return_=0
+	fi
+	set -e
 	# return value
 	echo $return_
 }
@@ -47,8 +53,25 @@ if [ $pckg_chk -ne 0 ]; then
 fi
 
 echo "Login to Azure Account."
-pcs login
+#pcs login
 
-echo "Logged in"
 
+echo "Creating resources"
+#pcs -t remotemonitoring -s local  | tee -a "$log_file"
+
+echo "Resources are created."
+
+tail -n 18 env >> envvars
+
+set +e
+
+while IFS='' read -r line || [[ -n "$line" ]]; do
+    echo "Setting env vars: $line"    	
+    export $line
+    echo "export $line" >> ../.env
+done < envvars
+
+
+rm -rf envvars
+rm -rf env
 

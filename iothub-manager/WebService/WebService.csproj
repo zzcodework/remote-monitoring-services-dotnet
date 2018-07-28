@@ -4,7 +4,6 @@
     <LangVersion>7</LangVersion>
     <AssemblyName>Microsoft.Azure.IoTSolutions.IotHubManager.WebService</AssemblyName>
     <RootNamespace>Microsoft.Azure.IoTSolutions.IotHubManager.WebService</RootNamespace>
-    <Configurations>Debug;Release;RemoteMonitoring-Debug</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="appsettings.ini">
@@ -28,7 +27,4 @@
   <ItemGroup>
     <Folder Include="Properties" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(ProjectDir)/scripts/local/dependencies iothub-manager" />
-  </Target>
 </Project>

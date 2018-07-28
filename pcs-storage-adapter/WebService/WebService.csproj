@@ -28,7 +28,4 @@
   <ItemGroup>
     <Folder Include="Properties" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(ProjectDir)/scripts/local/dependencies storage-adapter" />
-  </Target>
 </Project>

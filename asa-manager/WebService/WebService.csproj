@@ -44,7 +44,4 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(ProjectDir)/scripts/local/dependencies asa-manager" />
-  </Target>
 </Project>
