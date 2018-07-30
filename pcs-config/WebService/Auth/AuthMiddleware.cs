@@ -147,7 +147,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Auth
             }
             else
             {
-                this.log.Warn("Authorization header not found", () => { });
+                this.log.Error("Authorization header not found", () => { });
             }
 
             if (header != null && header.StartsWith(AUTH_HEADER_PREFIX))
@@ -202,7 +202,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Auth
                     }
                     else
                     {
-                        this.log.Error("JWT token doesn't include any role claims.", () => { });
+                        this.log.Warn("JWT token doesn't include any role claims.", () => { });
                     }
 
                     return true;
