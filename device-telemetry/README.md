@@ -45,7 +45,7 @@ Follow the instructions for
 
 This service depends on the following repository.
 1. [Storage Adapter Microservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
-2. [Authentication Microservice](https://github.com/Azure/pcs-auth-dotnet) (if auth is enabled)
+2. [Authentication Microservice](https://github.com/Azure/pcs-auth-dotnet)
 
 ### 3. Environment variables required to run the service
 In order to run the service, some environment variables need to be created
