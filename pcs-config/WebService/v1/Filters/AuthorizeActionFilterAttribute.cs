@@ -31,7 +31,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-
             bool isAuthorized = this.ValidateAuthorization(context.HttpContext, this.allowedAction);
 
             if (!isAuthorized)

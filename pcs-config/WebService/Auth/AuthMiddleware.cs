@@ -147,7 +147,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Auth
             }
             else
             {
-                this.log.Error("Authorization header not found", () => { });
+                this.log.Warn("Authorization header not found", () => { });
             }
 
             if (header != null && header.StartsWith(AUTH_HEADER_PREFIX))
