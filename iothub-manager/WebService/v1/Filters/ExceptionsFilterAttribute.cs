@@ -43,6 +43,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
             {
                 context.Result = this.GetResponse(HttpStatusCode.BadRequest, context.Exception);
             }
+            else if (context.Exception is NoAuthorizationException)
+            {
+                context.Result = this.GetResponse(HttpStatusCode.Forbidden, context.Exception);
+            }
             else if (context.Exception != null
                      && context.Exception.GetBaseException() is InvalidConfigurationException)
             {
