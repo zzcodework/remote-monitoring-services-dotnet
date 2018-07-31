@@ -51,7 +51,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
             {
                 context.Result = this.GetResponse(HttpStatusCode.InternalServerError, context.Exception);
             }
-            else if (context.Exception is NoAuthorizationException)
+            else if (context.Exception is NotAuthorizedException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.Forbidden, context.Exception);
             }

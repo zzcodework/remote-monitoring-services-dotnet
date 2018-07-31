@@ -7,17 +7,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions
     /// <summary>
     /// This exception is thrown when the user is not authorized to perform the action.
     /// </summary>
-    public class NoAuthorizationException : Exception
+    public class NotAuthorizedException : Exception
     {
-        public NoAuthorizationException() : base()
+        public NotAuthorizedException() : base()
         {
         }
 
-        public NoAuthorizationException(string message) : base(message)
+        public NotAuthorizedException(string message) : base(message)
         {
         }
 
-        public NoAuthorizationException(string message, Exception innerException) : base(message, innerException)
+        public NotAuthorizedException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }
