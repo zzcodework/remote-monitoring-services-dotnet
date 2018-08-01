@@ -3,13 +3,13 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "generate-env",
-            "command": "${workspaceFolder}/scripts/local/genenv",
-            "type": "shell",
-            "group": "build",
-            "problemMatcher": "$msCompile"
-        },
+					{
+						"label": "generate-env",
+						"command": "source ${workspaceFolder}/scripts/local/launch/.env",
+						"type": "shell",
+						"group": "build",
+						"problemMatcher": "$msCompile"
+					},
         {
             "label": "build-services",
             "command": "dotnet",

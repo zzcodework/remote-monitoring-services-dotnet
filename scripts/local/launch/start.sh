@@ -1,7 +1,10 @@
 #!/bin/bash
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../ && pwd )"
-source $APP_HOME/scripts/local/.env
-cd $APP_HOME/scripts/local/multirun
+
+source $APP_HOME/scripts/local/launch/.env_uris
+source $APP_HOME/scripts/local/launch/.env
+
+cd $APP_HOME/scripts/local/launch
 
 sh check_dependencies.sh device-telemetry $azres
 azres=$?
@@ -19,8 +22,10 @@ azres=$(($azres+$?))
 set -e
 
 if [ $azres -ne 0 ]; then
-	read  -n 1 -p "Have you created required Azure resources (Y/N)?" yn
-	echo -e "\n"
+
+   read  -n 1 -p "Have you created required Azure resources (Y/N)?" yn
+   echo -e "\n"
+
    case $yn in
 	   "Y") 
 			echo -e "Please set the env variables in .env file.\n The file is located under scripts/local folder.";  
@@ -28,7 +33,7 @@ if [ $azres -ne 0 ]; then
 		;;
 	   "N") 
 			echo "Setting up Azure resources."; 
-			$APP_HOME/scripts/local/multirun/create_azure_resources.sh;
+			$APP_HOME/scripts/local/launch/create_azure_resources.sh;
 		;;
 		*)
 			echo "Incorrect option. Please re-run the script."
@@ -37,6 +42,17 @@ if [ $azres -ne 0 ]; then
    esac
 fi
 
-start $APP_HOME/remote-monitoring.sln
+source $APP_HOME/scripts/local/launch/.env_uris
+source $APP_HOME/scripts/local/launch/.env
+sh $APP_HOME/scripts/local/launch/start_device_simulation.sh
 
+editor=$1
+
+if [[ "$editor" == "" || "$editor" == "vs" ]]; then
+    start $APP_HOME/remote-monitoring.sln
+else
+    cd $APP_HOME
+	code .
+fi
+	
 set +e

@@ -8,6 +8,8 @@ _dev/
 *.exe
 *.bck
 .vscode
+.env2
+.envvars
 
 
 ### MacOS

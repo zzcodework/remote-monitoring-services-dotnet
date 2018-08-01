@@ -57,4 +57,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)scripts\local\launch\load_env" />
+  </Target>
 </Project>
