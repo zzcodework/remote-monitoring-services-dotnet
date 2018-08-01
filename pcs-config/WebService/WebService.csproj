@@ -25,6 +25,6 @@
     <Folder Include="Auth" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(SolutionDir)scripts\local\launch\load_env" />
+    <Exec Command="$(ProjectDir)\..\..\scripts\local\launch\load_env" />
   </Target>
 </Project>
