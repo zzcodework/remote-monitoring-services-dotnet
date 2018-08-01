@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Exceptions;
 using Newtonsoft.Json;
 
@@ -51,7 +52,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Filters
             {
                 context.Result = this.GetResponse(HttpStatusCode.InternalServerError, context.Exception);
             }
-            else if (context.Exception is NoAuthorizationException)
+            else if (context.Exception is NotAuthorizedException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.Forbidden, context.Exception);
             }
