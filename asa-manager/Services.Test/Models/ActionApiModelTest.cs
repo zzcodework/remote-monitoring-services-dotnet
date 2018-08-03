@@ -15,8 +15,8 @@ namespace Services.Test.Models
         public void EmptyInstancesAreEqual()
         {
             // Arrange
-            var x = new ActionApiModel();
-            var y = new ActionApiModel();
+            var x = new EmailActionApiModel();
+            var y = new EmailActionApiModel();
 
             // Assert
             Assert.True(x.Equals(y));
@@ -26,9 +26,9 @@ namespace Services.Test.Models
         public void NonEmptyInstancesWithSameDataAreEqual()
         {
             // Arrange: action without parameters
-            var x = new ActionApiModel()
+            var x = new EmailActionApiModel()
             {
-                ActionType = Guid.NewGuid().ToString()
+                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email
             };
 
             var y = Clone(x);
@@ -37,10 +37,10 @@ namespace Services.Test.Models
             Assert.True(x.Equals(y));
 
             // Arrange: action with parameters
-            x = new ActionApiModel()
+            x = new EmailActionApiModel()
             {
-                ActionType = Guid.NewGuid().ToString(),
-                 Parameters = new Dictionary<string, object>()
+                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
+                Parameters = new Dictionary<string, object>()
                 {
                     {"Template", "Sample Template" },
                     {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
@@ -56,9 +56,9 @@ namespace Services.Test.Models
         public void InstancesWithDifferentDataAreDifferent()
         {
             // Arrange
-            var x = new ActionApiModel()
+            var x = new EmailActionApiModel()
             {
-                ActionType = Guid.NewGuid().ToString(),
+                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
                 Parameters = new Dictionary<string, object>()
                 {
                     {"Template", "Sample Template" },
@@ -66,16 +66,13 @@ namespace Services.Test.Models
                 }
             };
 
-            var y1 = Clone(x);
             var y2 = Clone(x);
             var y3 = Clone(x);
 
-            y1.ActionType += "x";
             y2.Parameters.Add("key1", "x");
             y3.Parameters["Template"] += "sample string";
 
             // Assert
-            Assert.False(x.Equals(y1));
             Assert.False(x.Equals(y2));
             Assert.False(x.Equals(y3));
             Assert.False(x.Equals(null));
@@ -85,7 +82,7 @@ namespace Services.Test.Models
         public void InstancesWithDifferentKeysAreDifferent()
         {
             // Arrange: different number of key-value pairs in Parameters.
-            var x = new ActionApiModel()
+            var x = new EmailActionApiModel()
             {
                 Parameters = new Dictionary<string, object>()
                 {
@@ -105,7 +102,7 @@ namespace Services.Test.Models
         public void InstancesWithDifferentKayValuesAreDifferent()
         {
             // Arrange: different template
-            var x = new ActionApiModel()
+            var x = new EmailActionApiModel()
             {
                 Parameters = new Dictionary<string, object>()
                 {
@@ -125,7 +122,7 @@ namespace Services.Test.Models
         public void InstancesWithDifferentKeyValueOfTypeListAreDifferent()
         {
             //Arrange: Differet list of email
-            var x = new ActionApiModel()
+            var x = new EmailActionApiModel()
             {
                 Parameters = new Dictionary<string, object>()
                 {
@@ -160,7 +157,7 @@ namespace Services.Test.Models
         public void InstancesWithSameKeyValueOfTypeListAreSame()
         {
             // Arrange: Same list of email different order.
-            var x = new ActionApiModel()
+            var x = new EmailActionApiModel()
             {
                 Parameters = new Dictionary<string, object>()
                 {
@@ -168,7 +165,7 @@ namespace Services.Test.Models
                     {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
                 }
             };
-            var y = new ActionApiModel()
+            var y = new EmailActionApiModel()
             {
                 Parameters = new Dictionary<string, object>()
                 {

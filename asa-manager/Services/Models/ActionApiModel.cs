@@ -4,39 +4,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
 {
-    public class ActionApiModel
+    public interface IActionApiModel
     {
-        [JsonProperty(PropertyName = "Type")]
-        public string ActionType { get; set; } = String.Empty;
+        [JsonConverter(typeof(StringEnumConverter))]
+        Type ActionType { get; set; }
+        IDictionary<string, Object> Parameters { get; set; }
+    }
+
+    public class EmailActionApiModel : IActionApiModel
+    {
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Type ActionType { get; set; }
 
         // Parameters dictionary is case-insensitive.
-        [JsonProperty(PropertyName = "Parameters")]
-        [JsonConverter(typeof(ParametersDictionaryConverter))]
+        [JsonConverter(typeof(EmailParametersDictionaryValidator))]
         public IDictionary<string, Object> Parameters { get; set; }
 
-        public ActionApiModel() {
-            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-        }
-
-        public ActionApiModel(string action, Dictionary<string, Object> parameters)
+        public EmailActionApiModel()
         {
-            this.ActionType = action;
-            this.Parameters = parameters;
+            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is ActionApiModel x))
+            if (!(obj is EmailActionApiModel x))
             {
                 return false;
             }
             else
             {
-                obj = (ActionApiModel)obj;
+                obj = (EmailActionApiModel)obj;
             }
             return this.ActionType.Equals(x.ActionType)
                 && this.IsEqualDictionary(x.Parameters);
@@ -53,32 +56,32 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         // For a dictionary[key] => list, does a comaprison of all the elements of the list, regardless of order. 
         private bool IsEqualDictionary(IDictionary<string, object> compareDictionary)
         {
-             /*
-             Possible cases: 
-             1. Both null.
-             2. One is null.
-             3. Different number of key value pairs.
-             4. Same key, different value of type string.
-             5. Same key, different value of type list.
-             6. Same key, same value in different order for list.
-             7. Same key, same value in same order.
-             8. Same key, one is string, one is list.
-             */
+            /*
+            Possible cases: 
+            1. Both null.
+            2. One is null.
+            3. Different number of key value pairs.
+            4. Same key, different value of type string.
+            5. Same key, different value of type list.
+            6. Same key, same value in different order for list.
+            7. Same key, same value in same order.
+            8. Same key, one is string, one is list.
+            */
             if (this.Parameters.Count != compareDictionary.Count) return false;
 
-            foreach(var key in this.Parameters.Keys)
+            foreach (var key in this.Parameters.Keys)
             {
-                if (!compareDictionary.ContainsKey(key) || 
+                if (!compareDictionary.ContainsKey(key) ||
                     !IsSameType(this.Parameters[key], compareDictionary[key]))
                 {
                     return false;
                 }
-                else if (this.Parameters[key] is IList<string> && 
+                else if (this.Parameters[key] is IList<string> &&
                     !IsListEqual((List<string>)this.Parameters[key], (List<string>)compareDictionary[key]))
                 {
                     return false;
                 }
-                else if (!(this.Parameters[key] is IList<string>) && 
+                else if (!(this.Parameters[key] is IList<string>) &&
                     !compareDictionary[key].Equals(this.Parameters[key]))
                 {
                     return false;
@@ -101,31 +104,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         }
     }
 
-    public class ParametersDictionaryConverter : JsonConverter
+    public enum Type
     {
-        public override bool CanWrite => false;
-
-        public override bool CanRead => true;
-
-        public override bool CanConvert(Type objectType)
-        {
-            return false;
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var returnDictionary = new Dictionary<string, object>();
-            JObject jsonObject = JObject.Load(reader);
-            // Casting to proper types.
-            if (jsonObject["Email"] != null) returnDictionary["Email"] = ((JArray)jsonObject["Email"]).ToObject<List<string>>();
-            if (jsonObject["Template"] != null) returnDictionary["Template"] = jsonObject["Template"].ToObject<string>();
-            if (jsonObject["Subject"] != null) returnDictionary["Subject"] = jsonObject["Subject"].ToObject<string>();
-            return returnDictionary;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException("Use default implementation for writing to the field.");
-        }
+        Email
     }
 }

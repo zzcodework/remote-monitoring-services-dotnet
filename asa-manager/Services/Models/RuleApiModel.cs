@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
@@ -12,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         public RuleApiModel()
         {
             this.Conditions = new List<ConditionApiModel>();
-            this.Actions = new List<ActionApiModel>();
+            this.Actions = new List<IActionApiModel>();
         }
 
         [JsonProperty("Id")]
@@ -42,8 +43,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         [JsonProperty("TimePeriod")]
         public long TimePeriod { get; set; }
 
+        [JsonConverter(typeof(ActionConverter))]
         [JsonProperty(PropertyName = "Actions")]
-        public List<ActionApiModel> Actions { get; set; }
+        public List<IActionApiModel> Actions { get; set; }
 
         [JsonProperty("Deleted")]
         public bool Deleted { get; set; }

@@ -76,14 +76,14 @@ namespace TelemetryRulesAgent.Test.Models
             // Assert
             var expectedJSON = JsonConvert.SerializeObject(new
             {
-                Id = (string) null,
-                Name = (string) null,
-                Description = (string) null,
-                GroupId = (string) null,
-                Severity = (string) null,
-                AggregationWindow = (string) null,
+                Id = (string)null,
+                Name = (string)null,
+                Description = (string)null,
+                GroupId = (string)null,
+                Severity = (string)null,
+                AggregationWindow = (string)null,
                 Fields = new string[] { },
-                Actions =  new List<object>() { },
+                Actions = new List<object>() { },
                 __rulefilterjs = "return true;"
             });
             Assert.Equal(expectedJSON, json);
@@ -101,7 +101,7 @@ namespace TelemetryRulesAgent.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Actions = new List<ActionApiModel>() { GetSampleActionData() },
+                Actions = new List<IActionApiModel>() { GetSampleActionData() },
                 Calculation = SOURCE_NO_AGGREGATION
             };
 
@@ -144,7 +144,7 @@ namespace TelemetryRulesAgent.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Actions = new List<ActionApiModel>() { GetSampleActionData() },
+                Actions = new List<IActionApiModel>() { GetSampleActionData() },
                 Calculation = SOURCE_AVG_AGGREGATOR,
                 TimePeriod = sourceAggr
             };
@@ -198,7 +198,7 @@ namespace TelemetryRulesAgent.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Actions = new List<ActionApiModel>() { GetSampleActionData() },
+                Actions = new List<IActionApiModel>() { GetSampleActionData() },
                 Calculation = SOURCE_NO_AGGREGATION,
                 Conditions = new List<ConditionApiModel>
                 {
@@ -275,7 +275,7 @@ namespace TelemetryRulesAgent.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Actions = new List<ActionApiModel>() { GetSampleActionData() },
+                Actions = new List<IActionApiModel>() { GetSampleActionData() },
                 Calculation = SOURCE_AVG_AGGREGATOR,
                 TimePeriod = SOURCE_5MINS_AGGREGATION,
                 Conditions = new List<ConditionApiModel>
@@ -341,7 +341,7 @@ namespace TelemetryRulesAgent.Test.Models
                 Description = Guid.NewGuid().ToString(),
                 GroupId = Guid.NewGuid().ToString(),
                 Severity = Guid.NewGuid().ToString(),
-                Actions = new List<ActionApiModel>() { GetSampleActionData() },
+                Actions = new List<IActionApiModel>() { GetSampleActionData() },
                 Calculation = aggregator,
                 TimePeriod = SOURCE_5MINS_AGGREGATION,
                 Conditions = new List<ConditionApiModel>
@@ -372,11 +372,11 @@ namespace TelemetryRulesAgent.Test.Models
             Assert.Equal(expectedJSON, json);
         }
 
-        public static ActionApiModel GetSampleActionData()
+        public static EmailActionApiModel GetSampleActionData()
         {
-            return new ActionApiModel()
+            return new EmailActionApiModel()
             {
-                ActionType = "Email",
+                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
                 Parameters = new Dictionary<string, object>()
                 {
                     {"Template", "This is a new email" },

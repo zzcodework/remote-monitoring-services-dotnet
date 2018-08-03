@@ -124,7 +124,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
         public List<string> Fields { get; set; }
 
         [JsonProperty("Actions")]
-        public List<ActionApiModel> Actions { get; set; }
+        public List<IActionApiModel> Actions { get; set; }
 
         [JsonProperty("__rulefilterjs")]
         public string RuleFilterJs => this.ConditionsToJavascript();
@@ -133,7 +133,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
         {
             this.conditions = new List<Condition>();
             this.Fields = new List<string>();
-            this.Actions = new List<ActionApiModel>();
+            this.Actions = new List<IActionApiModel>();
         }
 
         public AsaRefDataRule(RuleApiModel rule) : this()

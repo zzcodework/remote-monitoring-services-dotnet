@@ -103,8 +103,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService
             this.telemetryRulesAgent = this.ApplicationContainer.Resolve<TelemetryRulesAgent.IAgent>();
             this.telemetryRulesAgent.RunAsync(this.agentsRunState.Token);
 
-            this.deviceGroupsAgent = this.ApplicationContainer.Resolve<DeviceGroupsAgent.IAgent>();
-            this.deviceGroupsAgent.RunAsync(this.agentsRunState.Token);
+            // this.deviceGroupsAgent = this.ApplicationContainer.Resolve<DeviceGroupsAgent.IAgent>();
+            // this.deviceGroupsAgent.RunAsync(this.agentsRunState.Token);
         }
 
         private void StopAgents()
