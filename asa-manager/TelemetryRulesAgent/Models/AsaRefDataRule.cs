@@ -86,8 +86,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
         // Internal data structure needed to serialize the model to JSON
         private readonly List<Condition> conditions;
 
-        private readonly List<string> actions;
-
         private struct Condition
         {
             internal string Calculation { get; set; }

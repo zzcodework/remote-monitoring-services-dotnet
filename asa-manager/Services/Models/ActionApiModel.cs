@@ -69,7 +69,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             foreach (var key in this.Parameters.Keys)
             {
                 if (!compareDictionary.ContainsKey(key) ||
-                    !IsAssignable(this.Parameters[key], compareDictionary[key]))
+                    !IsSameType(this.Parameters[key], compareDictionary[key]))
                 {
                     return false;
                 }
@@ -92,9 +92,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             return list1.Count == list2.Count && !list1.Except(list2).Any();
         }
 
-        private static bool IsAssignable(object a, object b)
+        private static bool IsSameType(object a, object b)
         {
-            // Checks if two objects are of same type, in the same inheritance tree, or one is implemented by the other. 
+            // Checks if two objects are of same type
             return a.GetType() == b.GetType();
         }
     }
