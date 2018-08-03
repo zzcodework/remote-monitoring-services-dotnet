@@ -178,6 +178,37 @@ namespace Services.Test.Models
             Assert.True(x.Equals(y));
         }
 
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void InstancesWithSameKeyValuePairCaseInsensitiveAreSame()
+        {
+            // Arrange: Same list of email different order.
+            var tempDictionary = new Dictionary<string, object>()
+            {
+                {"ActionType", "Email"},
+                {"Parameters", new Dictionary<string, object>()
+                {
+                    {"Template", "Sample Template" },
+                    {"Email", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
+                } }
+            };
+
+            var tempDictionary2 = new Dictionary<string, object>()
+            {
+                {"ActionType", "Email"},
+                {"Parameters", new Dictionary<string, object>()
+                {
+                    {"tEmplate", "Sample Template" },
+                    {"eMail", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
+                } }
+            };
+
+            var a = JsonConvert.SerializeObject(tempDictionary);
+            var b = JsonConvert.SerializeObject(tempDictionary2);
+            var c = JsonConvert.DeserializeObject<EmailActionApiModel>(a);
+            var d = JsonConvert.DeserializeObject<EmailActionApiModel>(b);
+            Assert.True(c.Equals(d));
+        }
+
         private static T Clone<T>(T o)
         {
             var a = JsonConvert.SerializeObject(o);

@@ -24,12 +24,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
 
         // Parameters dictionary is case-insensitive.
         [JsonConverter(typeof(EmailParametersDictionaryValidator))]
-        public IDictionary<string, Object> Parameters { get; set; }
+        public IDictionary<string, Object> Parameters { get; set; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-        public EmailActionApiModel()
-        {
-            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-        }
+        public EmailActionApiModel() { }
 
         public override bool Equals(object obj)
         {
@@ -58,8 +55,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         {
             /*
             Possible cases: 
-            1. Both null.
-            2. One is null.
+            1. Both empty.
+            2. One is empty.
             3. Different number of key value pairs.
             4. Same key, different value of type string.
             5. Same key, different value of type list.
@@ -72,7 +69,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             foreach (var key in this.Parameters.Keys)
             {
                 if (!compareDictionary.ContainsKey(key) ||
-                    !IsSameType(this.Parameters[key], compareDictionary[key]))
+                    !IsAssignable(this.Parameters[key], compareDictionary[key]))
                 {
                     return false;
                 }
@@ -95,12 +92,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
             return list1.Count == list2.Count && !list1.Except(list2).Any();
         }
 
-        private static bool IsSameType(object a, object b)
+        private static bool IsAssignable(object a, object b)
         {
             // Checks if two objects are of same type, in the same inheritance tree, or one is implemented by the other. 
-            var type1 = a.GetType();
-            var type2 = b.GetType();
-            return type1.IsAssignableFrom(type2) || type2.IsAssignableFrom(type1);
+            return a.GetType() == b.GetType();
         }
     }
 
