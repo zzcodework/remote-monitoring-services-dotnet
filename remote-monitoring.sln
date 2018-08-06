@@ -76,6 +76,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelemetryRulesAgent.Test", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecurringTasksAgent", "iothub-manager\RecurringTasksAgent\RecurringTasksAgent.csproj", "{446A5674-F2E1-4D09-BCAA-0B2D15C9F18F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "remote-monitoring", "remote-monitoring.csproj", "{0EE18A44-E538-432C-90A4-68C243FAD94B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -458,6 +460,18 @@ Global
 		{446A5674-F2E1-4D09-BCAA-0B2D15C9F18F}.Release|x64.Build.0 = Release|Any CPU
 		{446A5674-F2E1-4D09-BCAA-0B2D15C9F18F}.Release|x86.ActiveCfg = Release|Any CPU
 		{446A5674-F2E1-4D09-BCAA-0B2D15C9F18F}.Release|x86.Build.0 = Release|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Debug|x64.Build.0 = Debug|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Debug|x86.Build.0 = Debug|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Release|x64.ActiveCfg = Release|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Release|x64.Build.0 = Release|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Release|x86.ActiveCfg = Release|Any CPU
+		{0EE18A44-E538-432C-90A4-68C243FAD94B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
