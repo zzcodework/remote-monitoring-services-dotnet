@@ -1,8 +1,8 @@
 #!/bin/bash
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../ && pwd )"
 
-source $APP_HOME/scripts/local/launch/.env_uris
-source $APP_HOME/scripts/local/launch/.env
+source $APP_HOME/scripts/local/launch/.env_uris 2> /dev/null
+source $APP_HOME/scripts/local/launch/.env 2> /dev/null
 
 cd $APP_HOME/scripts/local/launch
 

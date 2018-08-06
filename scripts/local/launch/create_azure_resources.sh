@@ -65,7 +65,6 @@ function check_dependencies {
 
 function set_env_vars {
 	while IFS='' read -r line || [[ -n "$line" ]]; do 	
-        export $line
 		line=$(echo $line | sed -e 's/\;/\\\;/g')
 		echo "export $line" >> $log_file
 		echo "SET $line" >> $bat
@@ -80,8 +79,8 @@ check_dependencies
 create_resources
 
 tail -n 19 $log_file >> $envvars
-truncate -s 0 $log_file
 head -n -2 $envvars
+truncate -s 0 $log_file
 
 set +e
 

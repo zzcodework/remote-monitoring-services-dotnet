@@ -9,4 +9,5 @@ set -e
 
 cd $APP_HOME/device-simulation/scripts/docker
 ./run
+
 set +e
