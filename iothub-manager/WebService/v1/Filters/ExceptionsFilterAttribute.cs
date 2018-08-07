@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Exceptions;
 using Newtonsoft.Json;
 
@@ -43,7 +44,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
             {
                 context.Result = this.GetResponse(HttpStatusCode.BadRequest, context.Exception);
             }
-            else if (context.Exception is NoAuthorizationException)
+            else if (context.Exception is NotAuthorizedException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.Forbidden, context.Exception);
             }

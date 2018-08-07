@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Exceptions;
 using Newtonsoft.Json;
 
@@ -51,7 +52,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
             {
                 context.Result = this.GetResponse(HttpStatusCode.InternalServerError, context.Exception);
             }
-            else if (context.Exception is NoAuthorizationException)
+            else if (context.Exception is NotAuthorizedException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.Forbidden, context.Exception);
             }
@@ -110,7 +111,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
             }
 
             var result = new ObjectResult(error);
-            result.StatusCode = (int) code;
+            result.StatusCode = (int)code;
             result.Formatters.Add(new JsonOutputFormatter(new JsonSerializerSettings(), ArrayPool<char>.Shared));
 
             this.log.Error(e.Message, () => new { result.StatusCode });
