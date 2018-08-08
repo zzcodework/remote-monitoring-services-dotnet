@@ -88,7 +88,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                     this.Deleted = rule.Deleted;
                 }
 
-                foreach (IActionItem action in rule.Actions)
+                foreach (var action in rule.Actions)
                 {
                     this.Actions.Add(new ActionApiModel(action));
                 }
@@ -102,35 +102,36 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
 
         public Rule ToServiceModel()
         {
-            List<Condition> conditions = new List<Condition>();
-            List<IActionItem> actions = new List<IActionItem>();
+            var conditions = new List<Condition>();
+            var actions = new List<IActionItem>();
 
-            foreach (ConditionApiModel condition in this.Conditions)
+            foreach (var condition in this.Conditions)
             {
                 conditions.Add(condition.ToServiceModel());
             }
 
-            foreach (ActionApiModel action in this.Actions)
+            foreach (var action in this.Actions)
             {
                 actions.Add(action.ToServiceModel());
             }
 
-            if (!Enum.TryParse<CalculationType>(this.Calculation, true, out CalculationType calculation))
+            if (!Enum.TryParse(this.Calculation, true, out CalculationType calculation))
             {
                 throw new InvalidInputException($"The value of 'Calculation' - '{this.Calculation}' is not valid");
             }
 
-            if (!Enum.TryParse<SeverityType>(this.Severity, true, out SeverityType severity))
+            if (!Enum.TryParse(this.Severity, true, out SeverityType severity))
             {
                 throw new InvalidInputException($"The value of 'Severity' - '{this.Severity}' is not valid");
             }
 
-            if (!long.TryParse(!string.IsNullOrEmpty(this.TimePeriod) ? this.TimePeriod : "0", out long timePeriod) || (calculation == CalculationType.Average && string.IsNullOrEmpty(this.TimePeriod)))
+            if (!long.TryParse(!string.IsNullOrEmpty(this.TimePeriod) ? this.TimePeriod : "0", out var timePeriod) ||
+                (calculation == CalculationType.Average && string.IsNullOrEmpty(this.TimePeriod)))
             {
                 throw new InvalidInputException($"The value of 'TimePeriod' - '{this.TimePeriod}' is not valid");
             }
 
-            bool deleted = false;
+            var deleted = false;
             if (this.Deleted.HasValue)
             {
                 deleted = this.Deleted.Value;
@@ -150,11 +151,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                 Calculation = calculation,
                 TimePeriod = timePeriod,
                 Conditions = conditions,
-<<<<<<< HEAD
-                Actions = actions
-=======
+                Actions = actions,
                 Deleted = deleted
->>>>>>> 4215be28ffbbf0bd91014a0929786a65976cb189
             };
         }
     }
