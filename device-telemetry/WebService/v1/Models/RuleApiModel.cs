@@ -2,11 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Rule = Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Rule;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
@@ -93,7 +92,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                     this.Actions.Add(new ActionApiModel(action));
                 }
 
-                foreach (Condition condition in rule.Conditions)
+                foreach (var condition in rule.Conditions)
                 {
                     this.Conditions.Add(new ConditionApiModel(condition));
                 }

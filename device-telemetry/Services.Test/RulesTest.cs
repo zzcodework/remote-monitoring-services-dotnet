@@ -7,12 +7,14 @@ using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter;
 using Moq;
 using Newtonsoft.Json;
 using Services.Test.helpers;
 using Xunit;
+using Type = System.Type;
 
 namespace Services.Test
 {
@@ -327,7 +329,7 @@ namespace Services.Test
                 ETag = "1234",
                 Key = newRuleId
             };
-            
+
 
             this.storageAdapter.Setup(x => x.CreateAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(result));
@@ -359,7 +361,8 @@ namespace Services.Test
 
             var sampleActions = new List<IActionItem>
             {
-                new EmailActionItem(Type.Email, new Dictionary<string, object>()
+                new EmailActionItem(
+                    new Dictionary<string, object>
                     {
                         {"email", new Newtonsoft.Json.Linq.JArray(){"sampleEmail@gmail.com", "sampleEmail2@gmail.com"}},
                         {"subject", "Test Email"}
