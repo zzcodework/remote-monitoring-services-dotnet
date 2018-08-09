@@ -11,6 +11,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Moq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Services.Test.helpers;
 using Xunit;
 
@@ -599,5 +600,31 @@ namespace Services.Test
             return result;
         }
 
+        [Fact]
+        public async Task AddPackageTest()
+        {
+            var collectionId = "packages";
+            var key = "package name";
+            var pkg = new Package
+            {
+                Id = string.Empty,
+                Name = key,
+                Type = PackageType.EDGE_MANIFEST,
+                Content = "SomeContent"
+            };
+            var value = JsonConvert.SerializeObject(pkg);
+            this.mockClient
+                .Setup(x => x.CreateAsync(It.Is<string>(i => i == collectionId),
+                                          It.Is<string>(i => JToken.DeepEquals(JObject.Parse(i), JObject.Parse(value)))))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+            var result = await this.storage.AddPackageAsync(pkg);
+            Assert.Equal(pkg.Name, result.Name);
+            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.Content, result.Content);
+        }
     }
 }
