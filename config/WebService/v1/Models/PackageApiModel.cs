@@ -1,5 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -8,6 +12,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
     public class PackageApiModel
     {
+        private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
+
         [JsonProperty("Id")]
         public string Id;
 
@@ -17,8 +23,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonConverter(typeof(StringEnumConverter))]
         public PackageType Type { get; set; }
 
-        [JsonProperty("Content")]
-        public string Content { get; set; }
+        [JsonProperty(PropertyName = "DateCreated")]
+        public string DateCreated { get; set; } = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
 
         public PackageApiModel()
         {
@@ -29,8 +35,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         {
             this.Id = model.Id;
             this.Name = model.Name;
-            this.Content = model.Content;
             this.Type = model.Type;
+            this.DateCreated = model.DateCreated;
         }
 
         public Package ToServiceModel()
@@ -38,9 +44,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             return new Package
             {
                 Id = this.Id,
-                Content = this.Content,
                 Name = this.Name,
-                Type = this.Type
+                Type = this.Type,
+                DateCreated = this.DateCreated
             };
         }
     }

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
     public class Storage : IStorage
     {
+        private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
         private readonly IStorageAdapterClient client;
         private readonly IServicesConfig config;
 
@@ -182,6 +184,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         }
         public async Task<Package> AddPackageAsync(Package package)
         {
+            package.DateCreated = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
             var value = JsonConvert.SerializeObject(package, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             var response = await this.client.CreateAsync(PACKAGES_COLLECTION_ID, value);
             return this.CreatePackageServiceModel(response);

@@ -38,14 +38,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpPost]
         public async Task<PackageApiModel> PostAsync(string type, IFormFile package)
         {
-            bool isValidPackageType = Enum.TryParse(type, out PackageType uploadedPackageType);
+            if(String.IsNullOrEmpty(type)) {
+                throw new InvalidInputException($"Package type must be provided");
+            }
 
+            bool isValidPackageType = Enum.TryParse(type, out PackageType uploadedPackageType);
             if(!isValidPackageType)
             {
                 throw new InvalidInputException($"Provided package type {type} is not valid.");
             }
 
-            if(string.IsNullOrWhiteSpace(package.FileName) || package.Length == 0)
+            if(package == null || string.IsNullOrWhiteSpace(package.FileName) || package.Length == 0)
             {
                 throw new InvalidInputException("File upload is invalid. Please check the input");
             }
@@ -62,6 +65,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 Name = package.FileName,
                 Type = uploadedPackageType
             };
+
             return new PackageApiModel(await this.storage.AddPackageAsync(packageToAdd));
         }
 

@@ -15,6 +15,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         public PackageType Type { get; set; }
 
         public string Content { get; set; }
+
+        public string DateCreated { get; set; }
     }
 
     public enum PackageType
