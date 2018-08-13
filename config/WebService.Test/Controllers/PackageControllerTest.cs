@@ -29,9 +29,9 @@ namespace WebService.Test.Controllers
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         [InlineData("EDGE_MANIFEST", "filename", true, false)]
-        //[InlineData("EDGE_MANIFEST", "filename", false, true)]
-        //[InlineData("EDGE_MANIFEST", "", true, true)]
-        //[InlineData("BAD_TYPE", "filename", true, true)]
+        [InlineData("EDGE_MANIFEST", "filename", false, true)]
+        [InlineData("EDGE_MANIFEST", "", true, true)]
+        [InlineData("BAD_TYPE", "filename", true, true)]
         public async Task PostAsyncTest(string type, string filename, bool giveValidFile, bool expectException)
         {
                 // Arrange
@@ -46,7 +46,7 @@ namespace WebService.Test.Controllers
                                                             p.Name.Equals(filename))))
                                 .ReturnsAsync(new Package() {
                                     Name = filename,
-                                    Type = (PackageType) Enum.Parse(typeof(PackageType), type)
+                                    Type = PackageType.EDGE_MANIFEST
                                 });
             try
             {
