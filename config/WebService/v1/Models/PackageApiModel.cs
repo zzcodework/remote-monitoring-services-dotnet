@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Collections.Generic;
-using System.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;

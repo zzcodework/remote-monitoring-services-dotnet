@@ -42,15 +42,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 throw new InvalidInputException($"Package type must be provided");
             }
 
-            bool isValidPackageType = Enum.TryParse(type, out PackageType uploadedPackageType);
+            bool isValidPackageType = Enum.TryParse(type, true, out PackageType uploadedPackageType);
             if(!isValidPackageType)
             {
                 throw new InvalidInputException($"Provided package type {type} is not valid.");
             }
 
-            if(package == null || string.IsNullOrWhiteSpace(package.FileName) || package.Length == 0)
+            if(package == null || string.IsNullOrEmpty(package.FileName) || package.Length == 0)
             {
-                throw new InvalidInputException("File upload is invalid. Please check the input");
+                throw new InvalidInputException("Package uploaded is missing or invalid.");
             }
 
             var packageContent = string.Empty;
