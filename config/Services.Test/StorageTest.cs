@@ -610,7 +610,8 @@ namespace Services.Test
                 Id = string.Empty,
                 Name = key,
                 Type = PackageType.EDGE_MANIFEST,
-                Content = "SomeContent"
+                Content = "SomeContent",
+                DateCreated = DateTimeOffset.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:sszzz")
             };
             var value = JsonConvert.SerializeObject(pkg);
             this.mockClient

@@ -29,12 +29,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             return new PackageListApiModel(await this.storage.GetAllPackagesAync());
         }
 
-        [HttpGet("{id}")]
-        public async Task<PackageApiModel> GetAsync(string id)
-        {
-            return new PackageApiModel(await this.storage.GetPackageAsync(id));
-        }
-
         [HttpPost]
         public async Task<PackageApiModel> PostAsync(string type, IFormFile package)
         {

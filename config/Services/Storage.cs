@@ -27,7 +27,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<DeviceGroup> UpdateDeviceGroupAsync(string id, DeviceGroup input, string etag);
         Task DeleteDeviceGroupAsync(string id);
         Task<IEnumerable<Package>> GetAllPackagesAync();
-        Task<Package> GetPackageAsync(string id);
         Task<Package> AddPackageAsync(Package package);
         Task DeletePackageAsync(string id);
     }
@@ -193,12 +192,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         public async Task DeletePackageAsync(string id)
         {
             await this.client.DeleteAsync(PACKAGES_COLLECTION_ID, id);
-        }
-
-        public async Task<Package> GetPackageAsync(string id)
-        {
-            var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, id);
-            return this.CreatePackageServiceModel(response);
         }
 
         private DeviceGroup CreateGroupServiceModel(ValueApiModel input)
