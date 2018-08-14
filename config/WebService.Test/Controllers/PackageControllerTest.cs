@@ -34,20 +34,20 @@ namespace WebService.Test.Controllers
         [InlineData("BAD_TYPE", "filename", true, true)]
         public async Task PostAsyncTest(string type, string filename, bool giveValidFile, bool expectException)
         {
-                // Arrange
-                IFormFile file = null;
-                if(giveValidFile)
-                {
-                    file = this.CreateSampleFile(filename);
-                }
+            // Arrange
+            IFormFile file = null;
+            if(giveValidFile)
+            {
+                file = this.CreateSampleFile(filename);
+            }
 
-                this.mockStorage.Setup(x => x.AddPackageAsync(
-                                        It.Is<Package>(p => p.Type.ToString().Equals(type) &&
-                                                            p.Name.Equals(filename))))
-                                .ReturnsAsync(new Package() {
-                                    Name = filename,
-                                    Type = PackageType.EDGE_MANIFEST
-                                });
+            this.mockStorage.Setup(x => x.AddPackageAsync(
+                                    It.Is<Package>(p => p.Type.ToString().Equals(type) &&
+                                                        p.Name.Equals(filename))))
+                            .ReturnsAsync(new Package() {
+                                Name = filename,
+                                Type = PackageType.EDGE_MANIFEST
+                            });
             try
             {
                 // Act
