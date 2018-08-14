@@ -24,6 +24,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty(PropertyName = "DateCreated")]
         public string DateCreated { get; set; } = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
 
+        [JsonProperty("Content")]
+        public string Content { get; set; }
+
         public PackageApiModel()
         {
 
@@ -35,6 +38,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             this.Name = model.Name;
             this.Type = model.Type;
             this.DateCreated = model.DateCreated;
+            this.Content = model.Content;
         }
 
         public Package ToServiceModel()
@@ -44,7 +48,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
                 Id = this.Id,
                 Name = this.Name,
                 Type = this.Type,
-                DateCreated = this.DateCreated
+                DateCreated = this.DateCreated,
+                Content = this.Content
             };
         }
     }
