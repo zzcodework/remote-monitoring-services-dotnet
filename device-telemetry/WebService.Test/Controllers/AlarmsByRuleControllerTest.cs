@@ -9,6 +9,7 @@ using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers;
 using Moq;
 using System;
 using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter;
 using WebService.Test.helpers;
 using Xunit;

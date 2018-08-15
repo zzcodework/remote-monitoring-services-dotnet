@@ -9,6 +9,7 @@ using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services

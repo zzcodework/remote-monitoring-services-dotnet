@@ -17,6 +17,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         Uri DocumentDbUri { get; }
         string DocumentDbKey { get; }
         int DocumentDbThroughput { get; set; }
+        string TimeSeriesFqdn { get; }
+        string ActiveDirectoryTenant { get; }
+        string ActiveDirectoryAppId { get; }
+        string ActiveDirectoryAppSecret { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -61,5 +65,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
                 this.DocumentDbKey = match.Groups["key"].Value;
             }
         }
+
+        public string TimeSeriesFqdn { get; set; }
+        
+        public string ActiveDirectoryTenant { get; set; }
+
+        public string ActiveDirectoryAppId { get; set; }
+
+        public string ActiveDirectoryAppSecret { get; set; }
     }
 }

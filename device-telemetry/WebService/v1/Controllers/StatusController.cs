@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models;

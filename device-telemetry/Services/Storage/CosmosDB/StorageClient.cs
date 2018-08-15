@@ -11,9 +11,8 @@ using Microsoft.Azure.Documents.SystemFunctions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
-using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
+namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB
 {
     public interface IStorageClient
     {

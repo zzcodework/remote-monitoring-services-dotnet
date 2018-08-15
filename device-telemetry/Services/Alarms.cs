@@ -15,6 +15,7 @@ using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 {
