@@ -2,18 +2,22 @@
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeries
 {
     public class ValueApiModel
     {
         [JsonProperty("schemaRid")]
-        public long SchemaRid { get; set; }
+        public long ?SchemaRid { get; set; }
+
+        [JsonProperty("schema")]
+        public SchemaModel Schema { get; set; }
 
         [JsonProperty("$ts")]
         public string Timestamp { get; set; }
 
         [JsonProperty("values")]
-        public List<string> Values { get; set; }
+        public List<JValue> Values { get; set; }
     }
 }

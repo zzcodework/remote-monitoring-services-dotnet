@@ -53,6 +53,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         private const string FROM_KEY = "from";
         private const string TO_KEY = "to";
 
+        private const string DEVICE_ID_KEY = "iothub-connection-device-id";
+
         public TimeSeriesClient(
             IHttpClient httpClient,
             IServicesConfig config,
@@ -90,7 +92,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             this.log.Info(msg, () => new { request });
 
             var response = await this.httpClient.PostAsync(request);
-            var jsonResponse = JsonConvert.DeserializeObject<JToken>(response.Content);
+            var messages = JsonConvert.DeserializeObject<ValueListApiModel>(response.Content);
 
             // Todo: convert tsi data to messageList
 
