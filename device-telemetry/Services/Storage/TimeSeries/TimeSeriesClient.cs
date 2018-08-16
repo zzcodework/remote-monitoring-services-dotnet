@@ -24,7 +24,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             int skip,
             int limit,
             string[] devices);
-        Tuple<bool, string> Ping();
     }
 
     public class TimeSeriesClient : ITimeSeriesClient
@@ -37,18 +36,20 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         private readonly string tenant;
         private readonly string fqdn;
 
+        private const string TSI_DATE_FORMAT = "yyyy-MM-ddTHH:mm:ssZ";
+
         private const string TIME_SERIES_API_VERSION = "api-version=2016-12-12";
         private const string TIME_SERIES_TIMEOUT = "timeout=PT20S";
         private const string EVENTS_KEY = "events";
         private const string SEARCH_SPAN_KEY = "searchSpan";
         private const string PREDICATE_KEY = "predicate";
         private const string TOP_KEY = "top";
-        private const string TOP_SORT_KEY = "sort";
-        private const string TOP_INPUT_KEY = "input";
-        private const string TOP_BUILT_IN_PROP_KEY = "builtInProperty";
-        private const string TOP_BUILT_IN_PROP_VALUE = "$ts";
-        private const string TOP_ORDER_KEY = "order";
-        private const string TOP_COUNT_KEY = "count";
+        private const string SORT_KEY = "sort";
+        private const string SORT_INPUT_KEY = "input";
+        private const string BUILT_IN_PROP_KEY = "builtInProperty";
+        private const string BUILT_IN_PROP_VALUE = "$ts";
+        private const string SORT_ORDER_KEY = "order";
+        private const string COUNT_KEY = "count";
         private const string FROM_KEY = "from";
         private const string TO_KEY = "to";
 
@@ -85,19 +86,15 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             request.SetContent(
                 this.PrepareInput(from, to, order, skip, limit, devices));
 
-            var msg = "Making Query to Time Series: Uri" + request.Uri.ToString() + " Body: " + request.Content.ToString();
+            var msg = "Making Query to Time Series: Uri" + request.Uri + " Body: " + request.Content;
             this.log.Info(msg, () => new { request });
 
             var response = await this.httpClient.PostAsync(request);
             var jsonResponse = JsonConvert.DeserializeObject<JToken>(response.Content);
 
-            throw new NotImplementedException();
-        }
+            // Todo: convert tsi data to messageList
 
-        public Tuple<bool, string> Ping()
-        {
-            return new Tuple<bool, string>(false,
-                    "Could not reach Time Series Service.");
+            throw new NotImplementedException();
         }
 
         private async Task<string> AcquireAccessTokenAsync()
@@ -123,6 +120,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             return token.AccessToken;
         }
 
+        /// <summary>
+        /// Creates the request body for the Time Series get events API 
+        /// </summary>
         private JObject PrepareInput(
             DateTimeOffset? from,
             DateTimeOffset? to,
@@ -133,26 +133,31 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         {
             var result = new JObject();
 
-            // Add searchSpan if from or to are provided
-            if (from.HasValue || to.HasValue)
+            // Add the search span clause.
+            // End of the interval is exclusive.
+            if (!to.HasValue) to = DateTimeOffset.UtcNow;
+            if (!from.HasValue) from = DateTimeOffset.MinValue;
+
+            result.Add(SEARCH_SPAN_KEY, new JObject(
+                new JProperty(FROM_KEY, from.Value.ToString(TSI_DATE_FORMAT)),
+                new JProperty(TO_KEY, to.Value.ToString(TSI_DATE_FORMAT))));
+
+            // Add the limit top clause
+            JObject builtInPropObject = new JObject(new JProperty(BUILT_IN_PROP_KEY, BUILT_IN_PROP_VALUE));
+            JArray sortArray = new JArray(new JObject
+                {
+                    { SORT_INPUT_KEY, builtInPropObject },
+                    { SORT_ORDER_KEY, order }
+                }
+            );
+
+            JObject topObject = new JObject
             {
-                if (!to.HasValue) to = DateTimeOffset.UtcNow;
-                if (!from.HasValue) from = DateTimeOffset.MaxValue;
+                { SORT_KEY, sortArray },
+                { COUNT_KEY, skip + limit }
+            };
 
-                result.Add(SEARCH_SPAN_KEY, new JObject(
-                    new JProperty(FROM_KEY, from),
-                    new JProperty(TO_KEY, to)));
-            }
-
-            // TODO How to do skip?
-
-            // Add limit and order to query
-            result.Add(TOP_KEY, new JObject(
-                new JProperty(TOP_SORT_KEY, new JArray(
-                    new JObject(TOP_INPUT_KEY, new JObject(
-                        new JProperty(TOP_BUILT_IN_PROP_KEY, TOP_BUILT_IN_PROP_VALUE),
-                        new JProperty(TOP_ORDER_KEY, order)))),
-                new JProperty(TOP_COUNT_KEY, limit))));
+            result.Add(TOP_KEY, topObject);
 
             return result;
         }

@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
@@ -10,13 +11,14 @@ using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeries;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 {
     public interface IMessages
     {
-        MessageList List(
+        Task<MessageList> ListAsync(
             DateTimeOffset? from,
             DateTimeOffset? to,
             string order,
@@ -31,10 +33,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         private const string DATA_PREFIX = DATA_PROPERTY_NAME + ".";
         private const string DATA_SCHEMA_TYPE = DATA_PREFIX + "schema";
         private const string DATA_PARTITION_ID = "PartitionId";
+        private const string TSI_STORAGE_TYPE_KEY = "tsi";
 
         private readonly ILogger log;
         private readonly IStorageClient storageClient;
+        private readonly ITimeSeriesClient timeSeriesClient;
 
+        private readonly bool timeSeriesEnabled;
         private readonly DocumentClient documentClient;
         private readonly string databaseName;
         private readonly string collectionId;
@@ -42,16 +47,45 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         public Messages(
             IServicesConfig config,
             IStorageClient storageClient,
+            ITimeSeriesClient timeSeriesClient,
             ILogger logger)
         {
             this.storageClient = storageClient;
+            this.timeSeriesClient = timeSeriesClient;
+            this.timeSeriesEnabled = config.StorageType.Equals(
+                TSI_STORAGE_TYPE_KEY, StringComparison.OrdinalIgnoreCase);
             this.documentClient = storageClient.GetDocumentClient();
             this.databaseName = config.MessagesConfig.DocumentDbDatabase;
             this.collectionId = config.MessagesConfig.DocumentDbCollection;
             this.log = logger;
         }
 
-        public MessageList List(
+        public async Task<MessageList> ListAsync(
+            DateTimeOffset? from,
+            DateTimeOffset? to,
+            string order,
+            int skip,
+            int limit,
+            string[] devices)
+        {
+            return this.timeSeriesEnabled ? 
+                await this.getListFromTimeSeriesAsync(from, to, order, skip, limit, devices) : 
+                this.getListFromCosmos(from, to, order, skip, limit, devices);
+        }
+
+        private async Task<MessageList> getListFromTimeSeriesAsync(
+            DateTimeOffset? from,
+            DateTimeOffset? to,
+            string order,
+            int skip,
+            int limit,
+            string[] devices)
+        {
+            var tsiList = await this.timeSeriesClient.ListAsync(from, to, order, skip, limit, devices);
+            return new MessageList();
+        }
+
+        private MessageList getListFromCosmos(
             DateTimeOffset? from,
             DateTimeOffset? to,
             string order,

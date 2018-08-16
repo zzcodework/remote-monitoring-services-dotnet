@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
@@ -27,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet]
-        public MessageListApiModel Get(
+        public async Task<MessageListApiModel> GetAsync(
             [FromQuery] string from,
             [FromQuery] string to,
             [FromQuery] string order,
@@ -56,7 +57,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 throw new BadRequestException("The number of devices cannot exceed 200");
             }
 
-            MessageList messageList = this.messageService.List(
+            MessageList messageList = await this.messageService.ListAsync(
                 fromDate,
                 toDate,
                 order,
