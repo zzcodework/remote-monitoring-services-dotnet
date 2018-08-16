@@ -43,6 +43,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         private const string EVENTS_KEY = "events";
         private const string SEARCH_SPAN_KEY = "searchSpan";
         private const string PREDICATE_KEY = "predicate";
+        private const string PREDICATE_STRING_KEY = "predicateString";
         private const string TOP_KEY = "top";
         private const string SORT_KEY = "sort";
         private const string SORT_INPUT_KEY = "input";
@@ -94,9 +95,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             var response = await this.httpClient.PostAsync(request);
             var messages = JsonConvert.DeserializeObject<ValueListApiModel>(response.Content);
 
-            // Todo: convert tsi data to messageList
+            // todo: add skip
 
-            throw new NotImplementedException();
+            var result = messages.ToMessageList();
+
+            return messages.ToMessageList();
         }
 
         private async Task<string> AcquireAccessTokenAsync()
@@ -135,14 +138,30 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         {
             var result = new JObject();
 
-            // Add the search span clause.
-            // End of the interval is exclusive.
+            // Add the search span clause
+            // End of the interval is exclusive
             if (!to.HasValue) to = DateTimeOffset.UtcNow;
             if (!from.HasValue) from = DateTimeOffset.MinValue;
 
             result.Add(SEARCH_SPAN_KEY, new JObject(
                 new JProperty(FROM_KEY, from.Value.ToString(TSI_DATE_FORMAT)),
                 new JProperty(TO_KEY, to.Value.ToString(TSI_DATE_FORMAT))));
+
+            // Add the predicate for devices
+            if (devices != null && devices.Length > 0)
+            {
+                var devicePredicates = new List<string>();
+                foreach (var device in devices)
+                {
+                    devicePredicates.Add($"[{DEVICE_ID_KEY}].String='{device}'");
+                }
+
+                var predicateStringObject = new JObject
+                {
+                    new JProperty(PREDICATE_STRING_KEY, string.Join(" OR ", devicePredicates))
+                };
+                result.Add(PREDICATE_KEY, predicateStringObject);
+            }
 
             // Add the limit top clause
             JObject builtInPropObject = new JObject(new JProperty(BUILT_IN_PROP_KEY, BUILT_IN_PROP_VALUE));
