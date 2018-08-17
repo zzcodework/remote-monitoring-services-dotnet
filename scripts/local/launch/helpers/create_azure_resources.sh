@@ -18,7 +18,7 @@ function node_is_installed {
 	# set to 0 if not found
 	local version=`node -v`
 	if [ $(version_formatter $version) -ge $(version_formatter "9.0.0") ]; then
-	return_=1
+		return_=1
 	fi
 	# return value
 	echo $return_
