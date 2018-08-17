@@ -28,8 +28,8 @@ set -e
 
 if [ $azres -ne 0 ]; then
 
-   read  -n 1 -p "Have you created required Azure resources (Y/N)?" yn
-   echo -e "\n"
+	read  -n 1 -p "Have you created required Azure resources (Y/N)?" yn
+	echo -e "\n"
 
 	case $yn in
 	"Y") 
