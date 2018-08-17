@@ -95,11 +95,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             var response = await this.httpClient.PostAsync(request);
             var messages = JsonConvert.DeserializeObject<ValueListApiModel>(response.Content);
 
-            // todo: add skip
-
-            var result = messages.ToMessageList();
-
-            return messages.ToMessageList();
+            return messages.ToMessageList(skip);
         }
 
         private async Task<string> AcquireAccessTokenAsync()

@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             this.Events = new List<ValueApiModel>();
         }
 
-        public MessageList ToMessageList()
+        public MessageList ToMessageList(int skip)
         {
             var messages = new List<Message>();
             var properties = new HashSet<string>();
@@ -29,18 +29,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             {
                 try
                 {
-                    // Track each new message schema type
+                    // Track each new message schema type.
+                    // The first message of the new schema message type
+                    // contains the TSI schema info.
                     if (!tsiEvent.SchemaRid.HasValue)
                     {
                         schemas.Add(tsiEvent.Schema.Rid, tsiEvent.Schema);
                         tsiEvent.SchemaRid = tsiEvent.Schema.Rid;
-
-                        // Add new properties from schema
-                        var schemaProperties = schemas[tsiEvent.Schema.Rid].PropertiesByIndex();
-                        foreach (var property in schemaProperties)
-                        {
-                            properties.Add(property.Key);
-                        }
                     }
 
                     var schema = schemas[tsiEvent.SchemaRid.Value];
@@ -58,6 +53,22 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 catch (Exception e)
                 {
                     throw new InvalidInputException("Failed to parse message from Time Series Insights.", e);
+                }
+            }
+
+            // Trim list to start from skip value.
+            // Note: Time Series does not have a skip parameter.
+            // Must query for all values up to skip + limit and return starting from skip.
+            // Time Series has a query limit of 10,000 events.
+            messages = messages.GetRange(skip, messages.Count - skip);
+
+            // Add properties from schemas
+            foreach (var schema in schemas)
+            {
+                var schemaProperties = schema.Value.PropertiesByIndex();
+                foreach (var property in schemaProperties)
+                {
+                    properties.Add(property.Key);
                 }
             }
 
