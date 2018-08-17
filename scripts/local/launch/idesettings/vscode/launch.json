@@ -32,10 +32,10 @@
                 },
                 "type": "coreclr",
                 "request": "launch",
-                "preLaunchTask": "build",
+                //"preLaunchTask": "source-env",
                 "program": "${workspaceRoot}/pcs-auth/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.Auth.WebService.dll",
                 "args": [],
-                "cwd": "${workspaceRoot}/WebService/bin/Debug/netcoreapp2.0",
+                "cwd": "${workspaceRoot}/pcs-auth/WebService/bin/Debug/netcoreapp2.0",
                 // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
                 "console": "integratedTerminal",
                 "internalConsoleOptions": "openOnSessionStart"
@@ -47,15 +47,15 @@
                     "ASPNETCORE_ENVIRONMENT": "Development",
                     // Environment variables used in appsettings.ini.  
                     // Required Settings. 
-                    "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "{ Azure Cosmos DB connection string }",
+                    "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "${env:PCS_TELEMETRY_DOCUMENTDB_CONNSTRING}",
                     "PCS_TELEMETRY_WEBSERVICE_URL": "http://localhost:9004/v1",
                     "PCS_CONFIG_WEBSERVICE_URL": "http://localhost:9005/v1",
                     "PCS_IOTHUBMANAGER_WEBSERVICE_URL": "http://localhost:9002/v1",
-                    "PCS_ASA_DATA_AZUREBLOB_ACCOUNT": "{ Azure Blob Storage account name }",
-                    "PCS_ASA_DATA_AZUREBLOB_KEY" : "{ Azure Blob Storage Key }",
-                    "PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX": "{ Azure Blob Storage endpoint suffix, ex. 'core.windows.net' }",
-                    "PCS_EVENTHUB_CONNSTRING": "{ Event Hub Connection String for RootManageSharedAccessKey }",
-                    "PCS_EVENTHUB_NAME": "{ Name of Event Hub }",
+                    "PCS_ASA_DATA_AZUREBLOB_ACCOUNT": "${env:PCS_ASA_DATA_AZUREBLOB_ACCOUNT}",
+                    "PCS_ASA_DATA_AZUREBLOB_KEY" : "${env:PCS_ASA_DATA_AZUREBLOB_KEY}",
+                    "PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX": "${env:PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX}",
+                    "PCS_EVENTHUB_CONNSTRING": "${env:PCS_EVENTHUB_CONNSTRING}",
+                    "PCS_EVENTHUB_NAME": "${env:PCS_EVENTHUB_NAME}",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                     "PCS_LOG_LEVEL": "Debug"
                 },
@@ -79,7 +79,7 @@
                 },
                 "type": "coreclr",
                 "request": "launch",
-                "preLaunchTask": "build",
+                //"preLaunchTask": "source-env",
                 "program": "${workspaceRoot}/asa-manager/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.AsaManager.WebService.dll",
                 "args": [],
                 "cwd": "${workspaceRoot}/asa-manager/WebService/bin/Debug/netcoreapp2.0",
@@ -90,62 +90,13 @@
             {
                 "env": {
                     // Note: Any setting made in this file will override the operating system environment variable of that name.
-                    
-                    // See https://docs.microsoft.com/aspnet/core/fundamentals/environments
-                    "ASPNETCORE_ENVIRONMENT": "Development",
-
-                    // Environment variables used in appsettings.ini.  
-                    // Required Settings. 
-                    "PCS_IOTHUB_CONNSTRING": "your Azure IoT Hub connection string",
-                    "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1",
-                    // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
-                    "PCS_LOG_LEVEL": "Debug",
-                    "PCS_AUTH_REQUIRED": "false",
-                    "PCS_AUTH_ISSUER": "",
-                    "PCS_AUTH_AUDIENCE": "",
-                    "PCS_CORS_WHITELIST": "",
-                    "PCS_SUBSCRIPTION_DOMAIN": "",
-                    "PCS_SUBSCRIPTION_ID": "",
-                    "PCS_RESOURCE_GROUP": "",
-                    "PCS_IOHUB_NAME": ""
-                },
-                "stopAtEntry": false,
-                "justMyCode": false,
-                "enableStepFiltering": true,
-                "name": "DeviceSimulation",
-                "launchBrowser": {
-                    "enabled": false,
-                    "args": "${auto-detect-url}",
-                    "windows": {
-                        "command": "cmd.exe",
-                        "args": "/C start ${auto-detect-url}"
-                    },
-                    "osx": {
-                        "command": "open"
-                    },
-                    "linux": {
-                        "command": "xdg-open"
-                    }
-                },
-                "type": "coreclr",
-                "request": "launch",
-                "preLaunchTask": "build",
-                "program": "${workspaceRoot}/device-simulation/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.DeviceSimulation.WebService.dll",
-                "args": [],
-                "cwd": "${workspaceRoot}/device-simulation/WebService/bin/Debug/netcoreapp2.0",
-                // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
-                "console": "integratedTerminal",
-                "internalConsoleOptions": "openOnSessionStart"
-            },
-            {
-                "env": {
-                    // Note: Any setting made in this file will override the operating system environment variable of that name.
                     // See https://docs.microsoft.com/aspnet/core/fundamentals/environments
                     "ASPNETCORE_ENVIRONMENT": "Development",
                     // Environment variables used in appsettings.ini.  
                     // Required Settings. 
-                    "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "your DocumentDB connection string",
+                    "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "${env:PCS_TELEMETRY_DOCUMENTDB_CONNSTRING}",
                     "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1/",
+                    "PCS_AUTH_WEBSERVICE_URL": "http://localhost:9001/v1/",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                     "PCS_LOG_LEVEL": "Debug"
                 },
@@ -169,7 +120,7 @@
                 },
                 "type": "coreclr",
                 "request": "launch",
-                "preLaunchTask": "build",
+                //"preLaunchTask": "source-env",
                 "program": "${workspaceRoot}/device-telemetry/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.dll",
                 "args": [],
                 "cwd": "${workspaceRoot}/device-telemetry/WebService/bin/Debug/netcoreapp2.0",
@@ -184,8 +135,9 @@
                     "ASPNETCORE_ENVIRONMENT": "Development",
                     // Environment variables used in appsettings.ini.  
                     // Required Settings. 
-                    "PCS_IOTHUB_CONNSTRING": "your Azure IoT Hub connection string",
+                    "PCS_IOTHUB_CONNSTRING": "${env:PCS_IOTHUB_CONNSTRING}",
                     "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1/",
+                    "PCS_AUTH_WEBSERVICE_URL": "http://localhost:9001/v1/",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                     "PCS_LOG_LEVEL": "Debug"
                 },
@@ -209,7 +161,7 @@
                 },
                 "type": "coreclr",
                 "request": "launch",
-                "preLaunchTask": "build",
+                //"preLaunchTask": "source-env",
                 "program": "${workspaceRoot}/iothub-manager/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.IotHubManager.WebService.dll",
                 "args": [],
                 "cwd": "${workspaceRoot}/iothub-manager/WebService/bin/Debug/netcoreapp2.0",
@@ -224,11 +176,11 @@
                     "ASPNETCORE_ENVIRONMENT": "Development",
                     // Environment variables used in appsettings.ini.  
                     // Required Settings. 
-                    "PCS_AZUREMAPS_KEY": "your Azure Maps key",
+                    "PCS_AZUREMAPS_KEY": "${env:PCS_AZUREMAPS_KEY}",
                     "PCS_DEVICESIMULATION_WEBSERVICE_URL": "http://localhost:9003/v1",
                     "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1/",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
-                    "PCS_LOG_LEVEL": "Debug"
+                    "PCS_AUTH_WEBSERVICE_URL": "http://localhost:9001/v1/",
                 },
                 "stopAtEntry": false,
                 "justMyCode": false,
@@ -250,7 +202,8 @@
                 },
                 "type": "coreclr",
                 "request": "launch",
-                "preLaunchTask": "build",
+                //"preLaunchTask": "source-env",
+                "preLaunchTask":"device-simulation-launch" ,
                 "program": "${workspaceRoot}/pcs-config/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.UIConfig.WebService.dll",
                 "args": [],
                 "cwd": "${workspaceRoot}/pcs-config/WebService/bin/Debug/netcoreapp2.0",
@@ -267,7 +220,7 @@
 
                     // Environment variables used in appsettings.ini.  
                     // Required Settings. 
-                    "PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING": "your document DB connection string"
+                    "PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING":  "${env:PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING}",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                 },
                 "stopAtEntry": false,
@@ -290,25 +243,20 @@
                 },
                 "type": "coreclr",
                 "request": "launch",
-                "preLaunchTask": "build",
+                //"preLaunchTask": "source-env",
                 "program": "${workspaceRoot}/pcs-storage-adapter/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.StorageAdapter.WebService.dll",
                 "args": [],
                 "cwd": "${workspaceRoot}/pcs-storage-adapter/WebService/bin/Debug/netcoreapp2.0",
                 // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
                 "console": "integratedTerminal",
                 "internalConsoleOptions": "openOnSessionStart"
-            },
-            {
-                "name": ".NET Core Attach",
-                "type": "coreclr",
-                "request": "attach",
-                "processId": "${command:pickProcess}"
             }
         ],
         "compounds": [
             {
-                "name": "All microservices",
-                "configurations": ["StorageAdapter", "UIConfig", "IotHubManager", "DeviceTelemetry", "DeviceSimulation", "AsaManager", "Auth"]
+                "name": "Run All microservices",
+                "configurations": ["StorageAdapter", "UIConfig", "IotHubManager", "DeviceTelemetry", "AsaManager", "Auth", "devicesimulation"],
+               
             }
         ]
     }
