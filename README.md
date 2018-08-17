@@ -1,4 +1,4 @@
-[![Build status][build-badge]][build-url]
+[![Build][build-badge]][build-url]
 [![Issues][issues-badge]][issues-url]
 [![Gitter][gitter-badge]][gitter-url]
 
