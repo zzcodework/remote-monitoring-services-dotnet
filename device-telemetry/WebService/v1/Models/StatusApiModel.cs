@@ -38,7 +38,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
         [JsonProperty(PropertyName = "Properties", Order = 70)]
         public Dictionary<string, string> Properties => new Dictionary<string, string>
         {
-            { "Region", "US" },
+            { "Region", "US" }
         };
 
         /// <summary>A property bag with details about the internal dependencies</summary>
