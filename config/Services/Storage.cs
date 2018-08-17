@@ -180,7 +180,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             var response = await this.client.GetAllAsync(PACKAGES_COLLECTION_ID);
             return response.Items.AsParallel().Select(this.CreatePackageServiceModel);
-            throw new System.NotImplementedException();
         }
         public async Task<Package> AddPackageAsync(Package package)
         {

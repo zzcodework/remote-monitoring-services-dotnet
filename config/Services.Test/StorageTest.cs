@@ -610,13 +610,14 @@ namespace Services.Test
                 Id = string.Empty,
                 Name = key,
                 Type = PackageType.EDGE_MANIFEST,
-                Content = "SomeContent",
-                DateCreated = DateTimeOffset.UtcNow.ToString("yyyy-MM-dd'T'HH:mm:sszzz")
+                Content = "SomeContent"
             };
             var value = JsonConvert.SerializeObject(pkg);
+
             this.mockClient
-                .Setup(x => x.CreateAsync(It.Is<string>(i => i == collectionId),
-                                          It.Is<string>(i => JToken.DeepEquals(JObject.Parse(i), JObject.Parse(value)))))
+                .Setup(x => x.CreateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => this.IsMatchingPackage(i, value))))
                 .ReturnsAsync(new ValueApiModel
                 {
                     Key = key,
@@ -626,6 +627,24 @@ namespace Services.Test
             Assert.Equal(pkg.Name, result.Name);
             Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
+        }
+
+        private bool IsMatchingPackage(string pkgJson, string originalPkgJson) {
+            var createdPkg = JObject.Parse(pkgJson);
+            var originalPkg = JObject.Parse(originalPkgJson);
+
+            // To prevent false failures on unit tests we allow a couple of seconds diffence
+            // when verifying the date created.
+            var dateCreated = DateTimeOffset.Parse(createdPkg["DateCreated"].ToString());
+            var secondsDiff = (DateTimeOffset.UtcNow - dateCreated).TotalSeconds;
+            if (secondsDiff > 3) {
+                return false;
+            }
+
+            createdPkg.Remove("DateCreated");
+            originalPkg.Remove("DateCreated");
+
+            return JToken.DeepEquals(createdPkg, originalPkg);
         }
     }
 }
