@@ -39,23 +39,23 @@ function npm_package_is_installed {
 }
 
 function create_resources {
-   # Login to Azure Subscription
-   echo "Sign in to Azure Account."
-   pcs login
-   # Creating RM resources in Azure Subscription
-   echo "Creating resources ..."
-   pcs -t remotemonitoring -s local  | tee -a "$env_file"
+	# Login to Azure Subscription
+	echo "Sign in to Azure Account."
+	pcs login
+	# Creating RM resources in Azure Subscription
+	echo "Creating resources ..."
+	pcs -t remotemonitoring -s local  | tee -a "$env_file"
 }
 
 function check_dependencies {
-    # check if node is installed
+	# check if node is installed
 	local chck_node=$(node_is_installed)
 	if [ $chck_node -ne 0 ]; then
 		echo "Please install node with version 8.11.3 or lesser."
 		exit 1
 	fi
 
-    # check if "iot-solutions" is installed. if NOT, install it globally
+	# check if "iot-solutions" is installed. if NOT, install it globally
 	local pckg_chk=$(npm_package_is_installed "iot-solutions")
 	if [ $pckg_chk -ne 0 ]; then 
 		echo "Installing IoT Solution npm package"
@@ -68,7 +68,7 @@ function check_dependencies {
 }
 
 function set_env_vars {
-    while IFS='' read -r line || [[ -n "$line" ]]; do
+	while IFS='' read -r line || [[ -n "$line" ]]; do
 		if [ "$1" == "linux" ]; then
 			line=$(echo $line | sed -e 's/\;/\\\;/g')
 			echo "export $line" >> "$APP_HOME/os/linux/$env_file"
@@ -79,7 +79,7 @@ function set_env_vars {
 			line=$(echo $line | sed '0,/\=/s//\ /')
 			echo "SETX $line" >> "$APP_HOME/os/win/$win_file"
 		fi    
-    done < $envvars
+	done < $envvars
 }
 
 function cleanup {
