@@ -72,6 +72,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 throw new InvalidInputException("Rule not provided in request body.");
             }
             Rule newRule = await this.ruleService.CreateAsync(rule.ToServiceModel());
+
             return new RuleApiModel(newRule, false);
         }
 
@@ -89,6 +90,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             //Ensure the id on the model matches the route
             rule.Id = id;
             Rule updatedRule = await this.ruleService.UpsertIfNotDeletedAsync(rule.ToServiceModel());
+
             return new RuleApiModel(updatedRule, false);
         }
 
