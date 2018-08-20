@@ -260,6 +260,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
             if (string.IsNullOrEmpty(newRule.Id)) newRule.Id = result.Key;
             this.LogEventAndRuleCountToDiagnostics("Rule_Created");
+
             return newRule;
         }
 

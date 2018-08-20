@@ -32,6 +32,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
             this.maxRetries = config.DiagnosticsMaxLogRetries;
         }
 
+        /**
+         * Logs event with given event name and empty event properties
+         * to diagnostics event endpoint.
+         */
         public async Task LogEventAsync(string eventName)
         {
             var request = new HttpRequest();
@@ -45,6 +49,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
             await this.PostHttpRequest(request);
         }
 
+        /**
+         * Logs event with given event name and event properties
+         * to diagnostics event endpoint.
+         */
         public async Task LogEventAsync(string eventName, Dictionary<string, object> eventProperties)
         {
             var request = new HttpRequest();
