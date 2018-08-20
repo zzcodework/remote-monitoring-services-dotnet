@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models;
@@ -15,12 +14,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
     public sealed class RulesController : Controller
     {
         private readonly IRules ruleService;
-        private readonly IDiagnosticsClient diagnosticsClient;
 
-        public RulesController(IRules ruleService, IDiagnosticsClient diagnosticsClient)
+        public RulesController(IRules ruleService)
         {
             this.ruleService = ruleService;
-            this.diagnosticsClient = diagnosticsClient;
         }
 
         [HttpGet("{id}")]
