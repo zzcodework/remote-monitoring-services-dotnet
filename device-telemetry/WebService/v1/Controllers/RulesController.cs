@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models;
@@ -14,10 +15,12 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
     public sealed class RulesController : Controller
     {
         private readonly IRules ruleService;
+        private readonly IDiagnosticsClient diagnosticsClient;
 
-        public RulesController(IRules ruleService)
+        public RulesController(IRules ruleService, IDiagnosticsClient diagnosticsClient)
         {
             this.ruleService = ruleService;
+            this.diagnosticsClient = diagnosticsClient;
         }
 
         [HttpGet("{id}")]
@@ -69,7 +72,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 throw new InvalidInputException("Rule not provided in request body.");
             }
             Rule newRule = await this.ruleService.CreateAsync(rule.ToServiceModel());
-
+            
             return new RuleApiModel(newRule, false);
         }
 
@@ -87,7 +90,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             //Ensure the id on the model matches the route
             rule.Id = id;
             Rule updatedRule = await this.ruleService.UpsertIfNotDeletedAsync(rule.ToServiceModel());
-
+            this.diagnosticsClient.LogEventAsync("Rule_Created");
             return new RuleApiModel(updatedRule, false);
         }
 
