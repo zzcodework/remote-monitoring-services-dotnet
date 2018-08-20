@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter;
@@ -42,6 +43,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         Task<Rule> CreateAsync(Rule rule);
 
         Task<Rule> UpsertIfNotDeletedAsync(Rule rule);
+
+        void LogEventAndRuleCountToDiagnostics(string eventName);
     }
 
     public class Rules : IRules
@@ -54,15 +57,18 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         private readonly ILogger log;
 
         private readonly IAlarms alarms;
+        private readonly IDiagnosticsClient diagnosticsClient;
 
         public Rules(
             IStorageAdapterClient storage,
             ILogger logger,
-            IAlarms alarms)
+            IAlarms alarms,
+            IDiagnosticsClient diagnosticsClient)
         {
             this.storage = storage;
             this.log = logger;
             this.alarms = alarms;
+            this.diagnosticsClient = diagnosticsClient;
         }
 
         public async Task CreateFromTemplateAsync(string template)
@@ -115,6 +121,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
                 existing.Id,
                 item,
                 existing.ETag);
+            this.LogEventAndRuleCountToDiagnostics("Rule_Deleted");
         }
 
         public async Task<Rule> GetAsync(string id)
@@ -252,7 +259,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             newRule.ETag = result.ETag;
 
             if (string.IsNullOrEmpty(newRule.Id)) newRule.Id = result.Key;
-
+            this.LogEventAndRuleCountToDiagnostics("Rule_Created");
             return newRule;
         }
 
@@ -282,6 +289,17 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             }
 
             return await this.UpsertAsync(rule, savedRule);
+        }
+
+        public async void LogEventAndRuleCountToDiagnostics(string eventName)
+        {
+            await this.diagnosticsClient.LogEventAsync(eventName);
+            int ruleCount = await this.GetRuleCountAsync();
+            var eventProperties = new Dictionary<string, object>
+            {
+                { "Count", ruleCount }
+            };
+            await this.diagnosticsClient.LogEventAsync("Rule_Count", eventProperties);
         }
 
         private async Task<Rule> UpsertAsync(Rule rule, Rule savedRule)
@@ -351,6 +369,22 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             {
                 throw new ExternalDependencyException("Unable to parse data.", e);
             }
+        }
+
+        private async Task<int> GetRuleCountAsync()
+        {
+            ValueListApiModel rules = await this.storage.GetAllAsync(STORAGE_COLLECTION);
+            int ruleCount = 0;
+            foreach (var item in rules.Items)
+            {
+                var rule = this.Deserialize(item.Data);
+                if (!rule.Deleted)
+                {
+                    ruleCount++;
+                }
+            }
+
+            return ruleCount;
         }
     }
 }

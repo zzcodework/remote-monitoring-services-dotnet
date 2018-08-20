@@ -45,6 +45,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string USER_MANAGEMENT_KEY = "UserManagementService:";
         private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "webservice_url";
 
+        private const string DIAGNOSTICS_KEY = "DiagnosticsService:";
+        private const string DIAGNOSTICS_URL_KEY = DIAGNOSTICS_KEY + "webservice_url";
+        private const string DIAGNOSTICS_MAX_LOG_RETRIES = DIAGNOSTICS_KEY + "max_log_retries";
+
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
         private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
@@ -78,7 +82,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
                 DocumentDbThroughput = configData.GetInt(DOCUMENTDB_RUS_KEY),
                 StorageAdapterApiUrl = configData.GetString(STORAGE_ADAPTER_API_URL_KEY),
                 StorageAdapterApiTimeout = configData.GetInt(STORAGE_ADAPTER_API_TIMEOUT_KEY),
-                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY)
+                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY),
+                DiagnosticsApiUrl = configData.GetString(DIAGNOSTICS_URL_KEY),
+                DiagnosticsMaxLogRetries = configData.GetInt(DIAGNOSTICS_MAX_LOG_RETRIES)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig
