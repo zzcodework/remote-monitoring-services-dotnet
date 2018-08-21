@@ -25,15 +25,15 @@ abc@pcs sh start.sh
 ````
 ![start](https://user-images.githubusercontent.com/39531904/44294555-edc39700-a24d-11e8-8053-07ab4c185442.PNG)
  
-#### Helper scripts
-These scripts are located under helpers folder which is under the launch folder. The script create_azure_resources.sh can be independently called to create resources in the cloud. The script check_dependencies.sh checks if environment variables are set for a particular microservices.
+#### helpers scripts
+These scripts are located under helpers folder which is under the launch folder. The script create-azure-resources.sh can be independently called to create resources in the cloud. The script check_dependencies.sh checks if environment variables are set for a particular microservices.
 ##### Usage:
 1) check environment variables for a microservice 
-sh check_dependencies.sh <microservice_folder_name> 
+sh check-dependencies.sh <microservice_folder_name> 
 2) create Azure resources 
-sh create_azure_resources.sh
+sh create-azure-resources.sh
 
-After creating the reuired azure resources, using start or create_azure_resources.sh, one should execute the scripts under *os/{linux / win / osx}* to set the environment variables. 
+After creating the reuired azure resources, using start or create-azure-resources.sh, one should execute the scripts under *os/{linux / win / osx}* to set the environment variables. 
 
 #### Recap of steps to set environent variables
 1) Run start.sh
@@ -44,7 +44,6 @@ After creating the reuired azure resources, using start or create_azure_resource
 The preconfigured launch & task configuration(s) for VS code are included in the *scripts / local / launch / idesettings* folder. These settings are useful for building individual OR all microservices. 
 
 ##### Steps to import launch settings
-
 1) Set the required environment variables in the .env file under launch folder. 
 2) Click of the debug icon on the left-hand panel of the IDE. (This will create .vs folder under root folder in the repo) 
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)

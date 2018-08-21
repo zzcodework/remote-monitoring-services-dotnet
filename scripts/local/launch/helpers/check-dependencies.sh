@@ -8,6 +8,4 @@ cd $APP_HOME/$1
 
 ./scripts/env-vars-check > /dev/null
 
-
 set +e
-

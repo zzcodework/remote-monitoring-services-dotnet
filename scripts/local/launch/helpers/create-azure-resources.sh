@@ -118,6 +118,11 @@ function main {
 		sh "$APP_HOME/os/osx/$env_file"
 		sh "$APP_HOME/os/osx/.env_uris.sh"
 	fi
+
+	if [ "$OSTYPE" == "linux"* ]; then
+		sh "$APP_HOME/os/linux/$env_file"
+		sh "$APP_HOME/os/linux/.env_uris.sh"
+	fi
 }
 
 main
