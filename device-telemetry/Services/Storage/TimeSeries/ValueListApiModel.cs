@@ -34,8 +34,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                     // contains the TSI schema info.
                     if (!tsiEvent.SchemaRid.HasValue)
                     {
-                        schemas.Add(tsiEvent.Schema.Rid, tsiEvent.Schema);
-                        tsiEvent.SchemaRid = tsiEvent.Schema.Rid;
+                        schemas.Add(tsiEvent.Schema.RowId, tsiEvent.Schema);
+                        tsiEvent.SchemaRid = tsiEvent.Schema.RowId;
                     }
 
                     var schema = schemas[tsiEvent.SchemaRid.Value];

@@ -18,6 +18,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         string DocumentDbKey { get; }
         int DocumentDbThroughput { get; set; }
         string TimeSeriesFqdn { get; }
+        string TimeSeriesHost { get; }
+        string TimeSertiesApiVersion { get; }
+        string TimeSeriesTimeout { get; }
         string ActiveDirectoryTenant { get; }
         string ActiveDirectoryAppId { get; }
         string ActiveDirectoryAppSecret { get; }
@@ -67,7 +70,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         }
 
         public string TimeSeriesFqdn { get; set; }
-        
+
+        public string TimeSeriesHost { get; set; }
+
+        public string TimeSertiesApiVersion { get; set; }
+
+        public string TimeSeriesTimeout { get; set; }
+
         public string ActiveDirectoryTenant { get; set; }
 
         public string ActiveDirectoryAppId { get; set; }

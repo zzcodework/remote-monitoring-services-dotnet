@@ -2,16 +2,16 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
-using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;
-using Newtonsoft.Json.Linq;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeries
 {
@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
     {
         Task<Tuple<bool, string>> PingAsync();
 
-        Task<MessageList> ListAsync(
+        Task<MessageList> QueryEventsAsync(
             DateTimeOffset? from,
             DateTimeOffset? to,
             string order,
@@ -33,15 +33,21 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         private readonly IHttpClient httpClient;
         private readonly ILogger log;
 
+        private AuthenticationResult token;
+
         private readonly string applicationId;
         private readonly string applicationSecret;
         private readonly string tenant;
         private readonly string fqdn;
+        private readonly string host;
+        private readonly string apiVersion;
+        private readonly string timeout;
 
         private const string TSI_DATE_FORMAT = "yyyy-MM-ddTHH:mm:ssZ";
 
-        private const string TIME_SERIES_API_VERSION = "api-version=2016-12-12";
-        private const string TIME_SERIES_TIMEOUT = "timeout=PT20S";
+        private const string AUTHORITY_ENDPOINT = "https://login.windows.net/";
+        private const string TIME_SERIES_API_VERSION_PREFIX = "api-version";
+        private const string TIME_SERIES_TIMEOUT_PREFIX = "timeout";
         private const string EVENTS_KEY = "events";
         private const string AVAILABILITY_KEY = "availability";
         private const string SEARCH_SPAN_KEY = "searchSpan";
@@ -70,6 +76,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             this.applicationSecret = config.ActiveDirectoryAppSecret;
             this.tenant = config.ActiveDirectoryTenant;
             this.fqdn = config.TimeSeriesFqdn;
+            this.host = config.TimeSeriesHost;
+            this.apiVersion = config.TimeSertiesApiVersion;
+            this.timeout = config.TimeSeriesTimeout;
         }
 
         /// <summary>
@@ -83,10 +92,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 
             // Prepare request
             HttpRequest request = this.PrepareRequest(
-                this.fqdn,
                 AVAILABILITY_KEY,
                 accessToken,
-                new[] { TIME_SERIES_TIMEOUT });
+                new[] { TIME_SERIES_TIMEOUT_PREFIX + "=" + this.timeout });
 
             var response = await this.httpClient.GetAsync(request);
 
@@ -99,7 +107,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             return new Tuple<bool, string>(true, "Time Series Insights alive and well!");
         }
 
-        public async Task<MessageList> ListAsync(
+        public async Task<MessageList> QueryEventsAsync(
             DateTimeOffset? from,
             DateTimeOffset? to,
             string order, int skip,
@@ -111,16 +119,15 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 
             // Prepare request
             HttpRequest request = this.PrepareRequest(
-                this.fqdn,
                 EVENTS_KEY,
                 accessToken,
-                new[] { TIME_SERIES_TIMEOUT });
+                new[] { TIME_SERIES_TIMEOUT_PREFIX + "=" + this.timeout });
 
             request.SetContent(
                 this.PrepareInput(from, to, order, skip, limit, devices));
 
             var msg = "Making Query to Time Series: Uri" + request.Uri + " Body: " + request.Content;
-            this.log.Info(msg, () => new { request });
+            this.log.Info(msg, () => new { request.Uri, request.Content });
 
             var response = await this.httpClient.PostAsync(request);
             var messages = JsonConvert.DeserializeObject<ValueListApiModel>(response.Content);
@@ -130,6 +137,12 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 
         private async Task<string> AcquireAccessTokenAsync()
         {
+            // Return existing token unless it is near expiry or null
+            if (this.token != null && DateTimeOffset.UtcNow < this.token.ExpiresOn)
+            {
+                return this.token.AccessToken;
+            }
+
             if (string.IsNullOrEmpty(this.applicationId) ||
                 string.IsNullOrEmpty(this.applicationSecret) ||
                 string.IsNullOrEmpty(this.tenant))
@@ -139,16 +152,18 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             }
 
             var authenticationContext = new AuthenticationContext(
-                $"https://login.windows.net/{this.tenant}",
+                AUTHORITY_ENDPOINT + this.tenant,
                 TokenCache.DefaultShared);
 
-            AuthenticationResult token = await authenticationContext.AcquireTokenAsync(
-                resource: "https://api.timeseries.azure.com/",
+            AuthenticationResult tokenResponse = await authenticationContext.AcquireTokenAsync(
+                resource: this.host,
                 clientCredential: new ClientCredential(
                     clientId: this.applicationId,
                     clientSecret: this.applicationSecret));
 
-            return token.AccessToken;
+            this.token = tokenResponse;
+
+            return this.token.AccessToken;
         }
 
         /// <summary>
@@ -213,18 +228,17 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         /// Creates an HttpRequest for Time Series Insights with the required headers and tokens.
         /// </summary>
         private HttpRequest PrepareRequest(
-            string fqdn,
             string path,
             string accessToken,
             string[] queryArgs = null)
         {
-            string args = TIME_SERIES_API_VERSION;
-            if (args != null && queryArgs.Any())
+            string args = TIME_SERIES_API_VERSION_PREFIX + "=" + this.apiVersion;
+            if (queryArgs != null && queryArgs.Any())
             {
                 args += "&" + String.Join("&", queryArgs);
             }
 
-            Uri uri = new UriBuilder("https", fqdn)
+            Uri uri = new UriBuilder("https", this.fqdn)
             {
                 Path = path,
                 Query = args

@@ -20,23 +20,23 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             // excluded in conversion to message model
             this.excludeProperties = new HashSet<string>
             {
-                "iothub-message-schema",
-                "iothub-creation-time-utc",
+                "$$ContentType",
                 "$$CreationTimeUtc",
                 "$$MessageSchema",
-                "$$ContentType",
-                "iothub-connection-device-id",
-                "iothub-connection-auth-method",
-                "iothub-connection-auth-generation-id",
-                "iothub-enqueuedtime",
-                "iothub-message-source",
+                "content-encoding",
                 "content-type",
-                "content-encoding"
+                "iothub-connection-auth-generation-id",
+                "iothub-connection-auth-method",
+                "iothub-connection-device-id",
+                "iothub-creation-time-utc",
+                "iothub-enqueuedtime",
+                "iothub-message-schema",
+                "iothub-message-source"
             };
         }
 
         [JsonProperty("rid")]
-        public long Rid { get; set; }
+        public long RowId { get; set; }
 
         [JsonProperty("$esn")]
         public string EventSourceName { get; set; }
@@ -70,14 +70,14 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         {
             for (int i = 0; i < this.Properties.Count; i++)
             {
-                if (this.Properties[i].Name.Equals(DEVICE_ID_KEY))
+                if (this.Properties[i].Name.Equals(DEVICE_ID_KEY, StringComparison.OrdinalIgnoreCase))
                 {
                     return i;
                 }
             }
 
             throw new InvalidInputException("No device id found in message schema from Time Series Insights. " +
-                                            "Device id property 'iothub-connection-device-id' is missing.");
+                                            $"Device id property '{DEVICE_ID_KEY}' is missing.");
         }
     }
 }

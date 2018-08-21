@@ -70,7 +70,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         {
             return this.timeSeriesEnabled ? 
                 await this.GetListFromTimeSeriesAsync(from, to, order, skip, limit, devices) : 
-                this.GetListFromCosmos(from, to, order, skip, limit, devices);
+                this.GetListFromCosmosDb(from, to, order, skip, limit, devices);
         }
 
         private async Task<MessageList> GetListFromTimeSeriesAsync(
@@ -81,10 +81,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             int limit,
             string[] devices)
         {
-            return await this.timeSeriesClient.ListAsync(from, to, order, skip, limit, devices);
+            return await this.timeSeriesClient.QueryEventsAsync(from, to, order, skip, limit, devices);
         }
 
-        private MessageList GetListFromCosmos(
+        private MessageList GetListFromCosmosDb(
             DateTimeOffset? from,
             DateTimeOffset? to,
             string order,
