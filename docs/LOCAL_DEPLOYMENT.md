@@ -1,4 +1,4 @@
-Starting Microservices on local environemnt
+Starting Microservices on local environment
 =====
 ### New & Existing Users
 The new repository contains a **start** script and few other scripts to bootstrap the new users with the required cloud resources. These scripts are used to create azure resources like Cosmos DB, IoTHub, Azure Stream Analytics etc. The start script is located in *scripts / local / launch* folder under root directory of the repository.
@@ -42,12 +42,7 @@ After creating the required azure resources, using start or create-azure-resourc
 The preconfigured launch & task configuration(s) for VS code are included in the *scripts / local / launch / idesettings* folder. These settings are useful for building individual OR all microservices. 
 
 ##### Steps to import launch settings
-1) Set the required environment variables in the .env file under launch folder. 
-2) Click of the debug icon on the left-hand panel of the IDE. (This will create .vs folder under root folder in the repo) 
-=======
- 
 1) Click the debug icon on the left-hand panel of the IDE. (This will create .vs folder under root folder in the repo) 
->>>>>>> 19922a8d8844aacf412febf7dcf2cda0174351fb
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)
 2) Replace the auto-created launch.json & task.json files under .vs folder with files under vscode folder present under idesettings. 
 3) This will list all the debug/build configuration. 
@@ -58,3 +53,41 @@ The preconfigured launch & task configuration(s) for VS code are included in the
     1. appsettings.ini under WebService
     2. launchSettings.json under Properties folder under WebService.
 3) For multiple startup project settings, please set only WebService projects as startup projects.   
+
+Structure of the microservices
+=========
+Each microservice comprises of following projects/folders. 
+1) scripts 
+2) WebService  
+3) Service  
+4) WebService.Test  
+5) Service.Test
+
+Description: 
+1) Scripts  
+The scripts folder is organized as follows\
+i. **docker** sub folder for building docker containers of the current microservice.\
+ii. **root** folder contains scripts for building and running services natively.\
+&nbsp; 
+![script folder structure](https://user-images.githubusercontent.com/39531904/44290937-10df4e00-a230-11e8-9cd4-a9c0644e166b.PNG "Caption")\
+The docker build scripts require environment variables to be set up before execution. The run scripts can run both natively built and dockerized microservice. The run script under docker folder can also be independently used to pull and run published docker images. One can modify the tag and the account to pull different version or privately built docker images.
+&nbsp; 
+
+2) WebService  
+It contains code for REST endpoints of the microservice.
+&nbsp;  
+
+3) Service  
+It contains business logic and code interfacing various SDKs. 
+&nbsp;
+
+4) WebService.Test  
+It contains unit tests for the REST endpoints of the microservice. 
+&nbsp; 
+
+5) Service  
+It contains unit tests for the business logic and code interfacing various SDKs.
+&nbsp;  
+
+6) Other Projects  
+The microservice might contain other projects such as RecurringTaskAgent etc.
