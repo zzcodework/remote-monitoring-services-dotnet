@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Exceptions;
 using Newtonsoft.Json;
 
@@ -42,6 +43,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
                      || context.Exception is InvalidInputException)
             {
                 context.Result = this.GetResponse(HttpStatusCode.BadRequest, context.Exception);
+            }
+            else if (context.Exception is NotAuthorizedException)
+            {
+                context.Result = this.GetResponse(HttpStatusCode.Forbidden, context.Exception);
             }
             else if (context.Exception != null
                      && context.Exception.GetBaseException() is InvalidConfigurationException)
@@ -93,14 +98,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters
 
             if (stackTrace)
             {
-                error["StackTrace"] = e.StackTrace.Split(new[] { "\n" }, StringSplitOptions.None);
+                error["StackTrace"] = e.StackTrace?.Split(new[] { "\n" }, StringSplitOptions.None);
 
                 if (e.InnerException != null)
                 {
                     e = e.InnerException;
                     error["InnerExceptionMessage"] = e.Message;
                     error["InnerExceptionType"] = e.GetType().FullName;
-                    error["InnerExceptionStackTrace"] = e.StackTrace.Split(new[] { "\n" }, StringSplitOptions.None);
+                    error["InnerExceptionStackTrace"] = e.StackTrace?.Split(new[] { "\n" }, StringSplitOptions.None);
                 }
             }
 
