@@ -19,14 +19,21 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             this.Events = new List<ValueApiModel>();
         }
 
+        /// <summary>
+        /// Converts Time Series Events to service MessageList model.
+        /// Takes in a skip value to return messages starting from skip.
+        /// </summary>
         public MessageList ToMessageList(int skip)
         {
             var messages = new List<Message>();
             var properties = new HashSet<string>();
             var schemas = new Dictionary<long, SchemaModel>();
+            var schemaIdsInRange = new HashSet<long>();
 
-            foreach (var tsiEvent in this.Events)
+            for (int i = 0; i < this.Events.Count; i++)
             {
+                var tsiEvent = this.Events[i];
+
                 try
                 {
                     // Track each new message schema type.
@@ -38,17 +45,27 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                         tsiEvent.SchemaRid = tsiEvent.Schema.RowId;
                     }
 
-                    var schema = schemas[tsiEvent.SchemaRid.Value];
-
-                    // Add message from event
-                    var message = new Message
+                    // Note: Time Series does not have a skip parameter.
+                    // Must query for all values up to skip + limit and
+                    // return messages starting from skip.
+                    // Time Series has a query limit of 10,000 events.
+                    if (i >= skip)
                     {
-                        DeviceId = tsiEvent.Values[schema.GetDeviceIdIndex()].ToString(),
-                        Time = DateTimeOffset.Parse(tsiEvent.Timestamp),
-                        Data = this.GetEventAsJson(tsiEvent.Values, schema)
-                    };
+                        // Add message from event
+                        var schema = schemas[tsiEvent.SchemaRid.Value];
+                        
+                        // Keep track of schemas needed for properties
+                        schemaIdsInRange.Add(schema.RowId);
 
-                    messages.Add(message);
+                        var message = new Message
+                        {
+                            DeviceId = tsiEvent.Values[schema.GetDeviceIdIndex()].ToString(),
+                            Time = DateTimeOffset.Parse(tsiEvent.Timestamp),
+                            Data = this.GetEventAsJson(tsiEvent.Values, schema)
+                        };
+
+                        messages.Add(message);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -56,16 +73,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 }
             }
 
-            // Trim list to start from skip value.
-            // Note: Time Series does not have a skip parameter.
-            // Must query for all values up to skip + limit and return starting from skip.
-            // Time Series has a query limit of 10,000 events.
-            messages = messages.GetRange(skip, messages.Count - skip);
-
             // Add properties from schemas
-            foreach (var schema in schemas)
+            foreach (var id in schemaIdsInRange)
             {
-                var schemaProperties = schema.Value.PropertiesByIndex();
+                var schemaProperties = schemas[id].PropertiesByIndex();
                 foreach (var property in schemaProperties)
                 {
                     properties.Add(property.Key);

@@ -64,14 +64,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 errors.Add("Unable to use storage");
             }
 
-            // Check connection to Time Series Insights
-            var timeSeriesStatus = await this.timeSeriesClient.PingAsync();
-            if (!timeSeriesStatus.Item1)
-            {
-                statusIsOk = false;
-                errors.Add("Unable to use Time Series Insights");
-            }
-
             // Prepare status message
             if (!statusIsOk)
             {
@@ -87,6 +79,14 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 TIME_SERIES_KEY,
                 StringComparison.OrdinalIgnoreCase))
             {
+                // Check connection to Time Series Insights
+                var timeSeriesStatus = await this.timeSeriesClient.PingAsync();
+                if (!timeSeriesStatus.Item1)
+                {
+                    statusIsOk = false;
+                    errors.Add("Unable to use Time Series Insights");
+                }
+
                 result.Dependencies.Add("TimeSeries", timeSeriesStatus.Item2);
             }
 
