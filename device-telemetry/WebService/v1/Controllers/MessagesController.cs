@@ -44,7 +44,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             if (limit == null) limit = 1000;
 
             // TODO: move this logic to the storage engine, depending on the
-            // storage type the limit will be different. 200 is DocumentDb
+            // storage type the limit will be different. 200 is CosmosDb
             // limit for the IN clause.
             string[] deviceIds = new string[0];
             if (devices != null)

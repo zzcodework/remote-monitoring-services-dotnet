@@ -6,23 +6,23 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
 {
     public class StorageConfig
     {
-        public string DocumentDbDatabase { get; set; }
-        public string DocumentDbCollection { get; set; }
+        public string CosmosDbDatabase { get; set; }
+        public string CosmosDbCollection { get; set; }
 
         public StorageConfig(
-            string documentDbDatabase,
-            string documentDbCollection)
+            string cosmosDbDatabase,
+            string cosmosDbCollection)
         {
-            this.DocumentDbDatabase = documentDbDatabase;
-            if (string.IsNullOrEmpty(this.DocumentDbDatabase))
+            this.CosmosDbDatabase = cosmosDbDatabase;
+            if (string.IsNullOrEmpty(this.CosmosDbDatabase))
             {
-                throw new Exception("DocumentDb database name is empty in configuration");
+                throw new Exception("CosmosDb database name is empty in configuration");
             }
 
-            this.DocumentDbCollection = documentDbCollection;
-            if (string.IsNullOrEmpty(this.DocumentDbCollection))
+            this.CosmosDbCollection = cosmosDbCollection;
+            if (string.IsNullOrEmpty(this.CosmosDbCollection))
             {
-                throw new Exception("DocumentDb collection name is empty in configuration");
+                throw new Exception("CosmosDb collection name is empty in configuration");
             }
         }
     }

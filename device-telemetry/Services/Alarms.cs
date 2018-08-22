@@ -82,8 +82,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             ILogger logger)
         {
             this.storageClient = storageClient;
-            this.databaseName = config.AlarmsConfig.StorageConfig.DocumentDbDatabase;
-            this.collectionId = config.AlarmsConfig.StorageConfig.DocumentDbCollection;
+            this.databaseName = config.AlarmsConfig.StorageConfig.CosmosDbDatabase;
+            this.collectionId = config.AlarmsConfig.StorageConfig.CosmosDbCollection;
             this.log = logger;
             this.maxDeleteRetryCount = config.AlarmsConfig.MaxDeleteRetries;
         }

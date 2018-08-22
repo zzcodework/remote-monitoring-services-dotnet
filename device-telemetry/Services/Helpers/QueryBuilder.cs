@@ -112,7 +112,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Helpers
             ValidateInput(ref filterProperty);
 
             // build query
-            // TODO - GROUPBY and DISTINCT are not supported by documentDB yet, improve query once supported
+            // TODO - GROUPBY and DISTINCT are not supported by cosmosDB yet, improve query once supported
             // https://github.com/Azure/device-telemetry-dotnet/issues/58
             var queryBuilder = new StringBuilder();
             var sqlParameterCollection = new SqlParameterCollection();

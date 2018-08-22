@@ -20,7 +20,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
     {
         private readonly IConfig config;
         private readonly IStorageAdapterClient storageAdapter;
-        private readonly IStorageClient documentDb;
+        private readonly IStorageClient cosmosDb;
         private readonly ITimeSeriesClient timeSeriesClient;
         private readonly ILogger log;
 
@@ -29,13 +29,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
 
         public StatusController(
             IConfig config,
-            IStorageClient documentDb,
+            IStorageClient cosmosDb,
             IStorageAdapterClient storageAdapter,
             ITimeSeriesClient timeSeriesClient,
             ILogger logger)
         {
             this.config = config;
-            this.documentDb = documentDb;
+            this.cosmosDb = cosmosDb;
             this.storageAdapter = storageAdapter;
             this.timeSeriesClient = timeSeriesClient;
             this.log = logger;
@@ -56,9 +56,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 errors.Add("Unable to use key value storage");
             }
 
-            // Check connection to DocumentDb
-            var documentDbStatus = this.documentDb.Ping();
-            if (!documentDbStatus.Item1)
+            // Check connection to CosmosDb
+            var cosmosDbStatus = this.cosmosDb.Ping();
+            if (!cosmosDbStatus.Item1)
             {
                 statusIsOk = false;
                 errors.Add("Unable to use storage");
@@ -73,7 +73,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             // Prepare response
             var result = new StatusApiModel(statusIsOk, statusMsg);
             result.Dependencies.Add("Key Value Storage", storageAdapterStatus.Item2);
-            result.Dependencies.Add("Storage", documentDbStatus.Item2);
+            result.Dependencies.Add("Storage", cosmosDbStatus.Item2);
 
             if (this.config.ServicesConfig.StorageType.Equals(
                 TIME_SERIES_KEY,

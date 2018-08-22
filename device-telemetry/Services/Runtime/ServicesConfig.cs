@@ -14,9 +14,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         StorageConfig MessagesConfig { get; set; }
         AlarmsConfig AlarmsConfig { get; set; }
         string StorageType { get; set; }
-        Uri DocumentDbUri { get; }
-        string DocumentDbKey { get; }
-        int DocumentDbThroughput { get; set; }
+        Uri CosmosDbUri { get; }
+        string CosmosDbKey { get; }
+        int CosmosDbThroughput { get; set; }
         string TimeSeriesFqdn { get; }
         string TimeSeriesHost { get; }
         string TimeSertiesApiVersion { get; }
@@ -40,13 +40,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
 
         public string StorageType { get; set; }
 
-        public Uri DocumentDbUri { get; set; }
+        public Uri CosmosDbUri { get; set; }
 
-        public string DocumentDbKey { get; set; }
+        public string CosmosDbKey { get; set; }
 
-        public int DocumentDbThroughput { get; set; }
+        public int CosmosDbThroughput { get; set; }
 
-        public string DocumentDbConnString
+        public string CosmosDbConnString
         {
             set
             {
@@ -60,12 +60,12 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
                         UriKind.RelativeOrAbsolute,
                         out endpoint))
                 {
-                    var message = "Invalid connection string for DocumentDB";
+                    var message = "Invalid connection string for CosmosDB";
                     throw new InvalidConfigurationException(message);
                 }
 
-                this.DocumentDbUri = endpoint;
-                this.DocumentDbKey = match.Groups["key"].Value;
+                this.CosmosDbUri = endpoint;
+                this.CosmosDbKey = match.Groups["key"].Value;
             }
         }
 

@@ -51,8 +51,8 @@ namespace WebService.Test.Controllers
             this.log = new Mock<ILogger>();
 
             this.storage = new StorageClient(servicesConfig, this.log.Object);
-            string dbName = servicesConfig.AlarmsConfig.StorageConfig.DocumentDbDatabase;
-            string collName = servicesConfig.AlarmsConfig.StorageConfig.DocumentDbCollection;
+            string dbName = servicesConfig.AlarmsConfig.StorageConfig.CosmosDbDatabase;
+            string collName = servicesConfig.AlarmsConfig.StorageConfig.CosmosDbCollection;
             this.storage.CreateCollectionIfNotExistsAsync(dbName, collName);
 
             this.sampleAlarms = this.getSampleAlarms();

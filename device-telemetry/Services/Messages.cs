@@ -55,8 +55,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             this.timeSeriesEnabled = config.StorageType.Equals(
                 TSI_STORAGE_TYPE_KEY, StringComparison.OrdinalIgnoreCase);
             this.documentClient = storageClient.GetDocumentClient();
-            this.databaseName = config.MessagesConfig.DocumentDbDatabase;
-            this.collectionId = config.MessagesConfig.DocumentDbCollection;
+            this.databaseName = config.MessagesConfig.CosmosDbDatabase;
+            this.collectionId = config.MessagesConfig.CosmosDbCollection;
             this.log = logger;
         }
 
