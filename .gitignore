@@ -8,6 +8,7 @@ _dev/
 *.exe
 *.bck
 .vscode
+.env*
 
 
 ### MacOS
