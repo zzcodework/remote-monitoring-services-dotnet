@@ -65,6 +65,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 
         private const string DEVICE_ID_KEY = "iothub-connection-device-id";
 
+        private const string AAD_CLIENT_ID_KEY = "ApplicationClientId";
+        private const string AAD_CLIENT_SECRET_KEY = "ApplicationClientSecret";
+        private const string AAD_TENANT_KEY = "Tenant";
+
         public TimeSeriesClient(
             IHttpClient httpClient,
             IServicesConfig config,
@@ -156,7 +160,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 string.IsNullOrEmpty(this.tenant))
             {
                 throw new InvalidConfigurationException(
-                    $"Active Directory properties 'ApplicationClientId', 'ApplicationClientSecret' and 'Tenant' are not set.");
+                    $"Active Directory properties '{AAD_CLIENT_ID_KEY}', '{AAD_CLIENT_SECRET_KEY}' " +
+                    $"and '{AAD_TENANT_KEY}' are not set.");
             }
 
             var authenticationContext = new AuthenticationContext(
@@ -178,7 +183,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             catch (Exception e)
             {
                 var msg = "Unable to retrieve token with Active Directory properties" +
-                          "'ApplicationClientId', 'ApplicationClientSecret' and 'Tenant'.";
+                          $"'{AAD_CLIENT_ID_KEY}', '{AAD_CLIENT_SECRET_KEY}' and '{AAD_TENANT_KEY}'.";
                 throw new InvalidConfigurationException(msg, e);
             }
         }
