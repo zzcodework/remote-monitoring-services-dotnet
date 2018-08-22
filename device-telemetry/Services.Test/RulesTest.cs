@@ -339,16 +339,24 @@ namespace Services.Test
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void LogEvent_QueriesRuleCountAndLogs()
+        public async Task DeleteRule_QueriesRuleCountAndLogs()
         {
             // Arrange
             ValueListApiModel fakeRules = new ValueListApiModel();
             fakeRules.Items.Add(this.CreateFakeRule("rule1"));
             fakeRules.Items.Add(this.CreateFakeRule("rule2"));
             this.storageAdapter.Setup(x => x.GetAllAsync(It.IsAny<string>())).Returns(Task.FromResult(fakeRules));
+            
+            Rule test = new Rule
+            {
+                Enabled = true,
+                Deleted = false
+            };
+
+            this.SetUpStorageAdapterGet(test);
 
             // Act
-            this.rules.LogEventAndRuleCountToDiagnostics("Rule_Created");
+            await this.rules.DeleteAsync("id");
 
             // Assert
             this.storageAdapter.Verify(x => x.GetAllAsync(It.IsAny<string>()), Times.Once);
@@ -357,7 +365,7 @@ namespace Services.Test
 
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void LogEvent_RetriesOnError()
+        public async Task DeleteRule_RetriesLogOnError()
         {
             // Arrange
             ValueListApiModel fakeRules = new ValueListApiModel();
@@ -370,8 +378,16 @@ namespace Services.Test
                 .ReturnsAsync(new HttpResponse())
                 .ReturnsAsync(new HttpResponse());
 
+            Rule test = new Rule
+            {
+                Enabled = true,
+                Deleted = false
+            };
+
+            this.SetUpStorageAdapterGet(test);
+
             // Act
-            this.rules.LogEventAndRuleCountToDiagnostics("Rule_Created");
+            await this.rules.DeleteAsync("id");
 
             // Assert
             this.storageAdapter.Verify(x => x.GetAllAsync(It.IsAny<string>()), Times.Once);

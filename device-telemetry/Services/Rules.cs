@@ -43,8 +43,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         Task<Rule> CreateAsync(Rule rule);
 
         Task<Rule> UpsertIfNotDeletedAsync(Rule rule);
-
-        void LogEventAndRuleCountToDiagnostics(string eventName);
     }
 
     public class Rules : IRules
@@ -292,7 +290,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             return await this.UpsertAsync(rule, savedRule);
         }
 
-        public async void LogEventAndRuleCountToDiagnostics(string eventName)
+        private async void LogEventAndRuleCountToDiagnostics(string eventName)
         {
             await this.diagnosticsClient.LogEventAsync(eventName);
             int ruleCount = await this.GetRuleCountAsync();
