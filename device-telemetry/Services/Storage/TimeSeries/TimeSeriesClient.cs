@@ -25,7 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             string order,
             int skip,
             int limit,
-            string[] devices);
+            string[] deviceIds);
     }
 
     public class TimeSeriesClient : ITimeSeriesClient
@@ -120,7 +120,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             DateTimeOffset? to,
             string order, int skip,
             int limit,
-            string[] devices)
+            string[] deviceIds)
         {
             // Acquire an access token.
             string accessToken = await this.AcquireAccessTokenAsync();
@@ -132,7 +132,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 new[] { TIME_SERIES_TIMEOUT_PREFIX + "=" + this.timeout });
 
             request.SetContent(
-                this.PrepareInput(from, to, order, skip, limit, devices));
+                this.PrepareInput(from, to, order, skip, limit, deviceIds));
 
             var msg = "Making Query to Time Series: Uri" + request.Uri + " Body: " + request.Content;
             this.log.Info(msg, () => new { request.Uri, request.Content });
@@ -192,7 +192,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             string order,
             int skip,
             int limit,
-            string[] devices)
+            string[] deviceIds)
         {
             var result = new JObject();
 
@@ -206,12 +206,12 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 new JProperty(TO_KEY, to.Value.ToString(TSI_DATE_FORMAT))));
 
             // Add the predicate for devices
-            if (devices != null && devices.Length > 0)
+            if (deviceIds != null && deviceIds.Length > 0)
             {
                 var devicePredicates = new List<string>();
-                foreach (var device in devices)
+                foreach (var deviceId in deviceIds)
                 {
-                    devicePredicates.Add($"[{DEVICE_ID_KEY}].String='{device}'");
+                    devicePredicates.Add($"[{DEVICE_ID_KEY}].String='{deviceId}'");
                 }
 
                 var predicateStringObject = new JObject
