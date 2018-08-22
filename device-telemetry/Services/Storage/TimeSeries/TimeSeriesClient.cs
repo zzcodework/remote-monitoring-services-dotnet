@@ -88,7 +88,15 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         public async Task<Tuple<bool, string>> PingAsync()
         {
             // Acquire an access token.
-            string accessToken = await this.AcquireAccessTokenAsync();
+            string accessToken;
+            try
+            {
+                accessToken = await this.AcquireAccessTokenAsync();
+            }
+            catch (Exception e)
+            {
+                return new Tuple<bool, string>(false, "Unable to acquire access token. " + e.Message);
+            }
 
             // Prepare request
             HttpRequest request = this.PrepareRequest(
@@ -155,15 +163,24 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 AUTHORITY_ENDPOINT + this.tenant,
                 TokenCache.DefaultShared);
 
-            AuthenticationResult tokenResponse = await authenticationContext.AcquireTokenAsync(
-                resource: this.host,
-                clientCredential: new ClientCredential(
-                    clientId: this.applicationId,
-                    clientSecret: this.applicationSecret));
+            try
+            {
+                AuthenticationResult tokenResponse = await authenticationContext.AcquireTokenAsync(
+                    resource: this.host,
+                    clientCredential: new ClientCredential(
+                        clientId: this.applicationId,
+                        clientSecret: this.applicationSecret));
 
-            this.token = tokenResponse;
+                this.token = tokenResponse;
 
-            return this.token.AccessToken;
+                return this.token.AccessToken;
+            }
+            catch (Exception e)
+            {
+                var msg = "Unable to retrieve token with Active Directory properties" +
+                          "'ApplicationClientId', 'ApplicationClientSecret' and 'Tenant'.";
+                throw new InvalidConfigurationException(msg, e);
+            }
         }
 
         /// <summary>
