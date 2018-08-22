@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;
@@ -21,14 +22,14 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
     {
         private readonly IHttpClient httpClient;
         private readonly ILogger log;
-        private readonly string serviceUri;
+        private readonly string serviceUrl;
         private readonly int maxRetries;
 
         public DiagnosticsClient(IHttpClient httpClient, IServicesConfig config, ILogger logger)
         {
             this.httpClient = httpClient;
             this.log = logger;
-            this.serviceUri = config.DiagnosticsApiUrl;
+            this.serviceUrl = config.DiagnosticsApiUrl;
             this.maxRetries = config.DiagnosticsMaxLogRetries;
         }
 
@@ -48,7 +49,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
         public async Task LogEventAsync(string eventName, Dictionary<string, object> eventProperties)
         {
             var request = new HttpRequest();
-            request.SetUriFromString($"{this.serviceUri}/diagnosticsevents");
+            request.SetUriFromString($"{this.serviceUrl}/diagnosticsevents");
             DiagnosticsRequestModel model = new DiagnosticsRequestModel
             {
                 EventType = eventName,
@@ -66,21 +67,37 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
             {
                 try
                 {
-                    await this.httpClient.PostAsync(request);
-                    requestSucceeded = true;
+                    IHttpResponse response = await this.httpClient.PostAsync(request);
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        retries++;
+                        this.LogOnFailure(retries, response.Content);
+                    }
+                    else
+                    {
+                        requestSucceeded = true;
+                    }
                 }
                 catch (Exception e)
                 {
                     retries++;
-                    if (retries < this.maxRetries)
-                    {
-                        this.log.Warn("Failed to log diagnostics log, retrying", () => new { e.Message });
-                    }
-                    else
-                    {
-                        this.log.Error("Failed to log diagnostics log, reached max retries and will not log", () => new { e.Message });
-                    }
+                    this.LogOnFailure(retries, e.Message);
                 }
+            }
+        }
+
+        private void LogOnFailure(int retries, string errorMessage)
+        {
+            if (retries < this.maxRetries)
+            {
+                int retriesLeft = this.maxRetries - retries;
+                string logString = $"Failed to log to diagnostics, {retriesLeft} retries remaining";
+
+                this.log.Warn(logString, () => new { errorMessage });
+            }
+            else
+            {
+                this.log.Error("Failed to log to diagnostics, reached max retries and will not log", () => new { errorMessage });
             }
         }
     }
