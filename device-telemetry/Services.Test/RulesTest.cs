@@ -442,7 +442,6 @@ namespace Services.Test
 
         private ValueApiModel CreateFakeRule(string ruleId)
         {
-
             Rule test = new Rule
             {
                 Enabled = true,

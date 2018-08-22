@@ -38,15 +38,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
          */
         public async Task LogEventAsync(string eventName)
         {
-            var request = new HttpRequest();
-            request.SetUriFromString($"{this.serviceUri}/diagnosticsevents");
-            DiagnosticsRequestModel model = new DiagnosticsRequestModel
-            {
-                EventType = eventName,
-                EventProperties = new Dictionary<string, object>()
-            };
-            request.SetContent(JsonConvert.SerializeObject(model));
-            await this.PostHttpRequest(request);
+            await this.LogEventAsync(eventName, new Dictionary<string, object>());
         }
 
         /**
@@ -63,10 +55,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
                 EventProperties = eventProperties
             };
             request.SetContent(JsonConvert.SerializeObject(model));
-            await this.PostHttpRequest(request);
+            await this.PostHttpRequestWithRetryAsync(request);
         }
 
-        private async Task PostHttpRequest(HttpRequest request)
+        private async Task PostHttpRequestWithRetryAsync(HttpRequest request)
         {
             int retries = 0;
             bool requestSucceeded = false;
