@@ -21,7 +21,7 @@ For users who have already created the required azure resources, please set the 
 ````
 abc@pcs sh start.sh   
 ````
-![start](https://user-images.githubusercontent.com/39531904/44294555-edc39700-a24d-11e8-8053-07ab4c185442.PNG)
+![start](https://user-images.githubusercontent.com/39531904/44435771-6ab08280-a566-11e8-93c9-e6f35e5df247.PNG)
  
 #### helpers scripts
 These scripts are located under helpers folder which is under the launch folder. The script create-azure-resources.sh can be independently called to create resources in the cloud. The script check_dependencies.sh checks if environment variables are set for a particular microservices.
