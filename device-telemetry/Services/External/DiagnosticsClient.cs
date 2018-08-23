@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;
@@ -24,6 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
         private readonly ILogger log;
         private readonly string serviceUrl;
         private readonly int maxRetries;
+        private const int RETRY_SLEEP_MS = 500;
 
         public DiagnosticsClient(IHttpClient httpClient, IServicesConfig config, ILogger logger)
         {
@@ -31,7 +33,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
             this.log = logger;
             this.serviceUrl = config.DiagnosticsApiUrl;
             this.maxRetries = config.DiagnosticsMaxLogRetries;
-        }
+            if (string.IsNullOrEmpty(this.serviceUrl))
+            {
+                this.log.Error("Cannot log to diagnostics service, diagnostics url not provided", () => {});
+            }
+    }
 
         /**
          * Logs event with given event name and empty event properties
@@ -71,7 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         retries++;
-                        this.LogOnFailure(retries, response.Content);
+                        this.LogAndSleepOnFailure(retries, response.Content);
                     }
                     else
                     {
@@ -81,19 +87,19 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
                 catch (Exception e)
                 {
                     retries++;
-                    this.LogOnFailure(retries, e.Message);
+                    this.LogAndSleepOnFailure(retries, e.Message);
                 }
             }
         }
 
-        private void LogOnFailure(int retries, string errorMessage)
+        private void LogAndSleepOnFailure(int retries, string errorMessage)
         {
             if (retries < this.maxRetries)
             {
                 int retriesLeft = this.maxRetries - retries;
                 string logString = $"Failed to log to diagnostics, {retriesLeft} retries remaining";
-
                 this.log.Warn(logString, () => new { errorMessage });
+                Thread.Sleep(RETRY_SLEEP_MS);
             }
             else
             {
