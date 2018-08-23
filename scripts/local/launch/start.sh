@@ -32,7 +32,7 @@ if [ $azres -ne 0 ]; then
 
 	case $yn in
 	"Y") 
-		echo -e "Please set the env variables in .env file.\n The file is located under scripts/local folder.";  
+		echo -e "Please set the env variables in set_env file.\n The file is located under scripts/local/launch/os/{OS_TYPE} folder.";  
 		exit 0
 	;;
 	"N") 
