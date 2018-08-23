@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
@@ -346,7 +347,9 @@ namespace Services.Test
             fakeRules.Items.Add(this.CreateFakeRule("rule1"));
             fakeRules.Items.Add(this.CreateFakeRule("rule2"));
             this.storageAdapter.Setup(x => x.GetAllAsync(It.IsAny<string>())).Returns(Task.FromResult(fakeRules));
-            
+            IHttpResponse fakeOkResponse = new HttpResponse(HttpStatusCode.OK, "", null);
+            this.httpClientMock.Setup(x => x.PostAsync(It.IsAny<HttpRequest>())).ReturnsAsync(fakeOkResponse);
+
             Rule test = new Rule
             {
                 Enabled = true,
@@ -374,9 +377,9 @@ namespace Services.Test
             this.storageAdapter.Setup(x => x.GetAllAsync(It.IsAny<string>())).Returns(Task.FromResult(fakeRules));
             this.httpClientMock.SetupSequence(x => x.PostAsync(It.IsAny<HttpRequest>()))
                 .Throws<Exception>()
-                .Throws<Exception>()
-                .ReturnsAsync(new HttpResponse())
-                .ReturnsAsync(new HttpResponse());
+                .ReturnsAsync(new HttpResponse(HttpStatusCode.ServiceUnavailable, "", null))
+                .ReturnsAsync(new HttpResponse(HttpStatusCode.OK, "", null))
+                .ReturnsAsync(new HttpResponse(HttpStatusCode.OK, "", null));
 
             Rule test = new Rule
             {
