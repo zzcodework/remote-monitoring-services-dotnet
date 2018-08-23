@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) Microsoft. All rights reserved.
 
-APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../ && pwd )"
+APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../ && pwd )" 2> /dev/null
 
 echo "Checking environment variables ...."
 
@@ -23,11 +23,8 @@ azres=$(($azres+$?))
 sh helpers/check-dependencies.sh storage-adapter $azres
 azres=$(($azres+$?))
 
-set -e
-
 if [ $azres -ne 0 ]; then
-
-	read  -n 1 -p "Have you created required Azure resources (Y/N)?" yn
+	read -p "Have you created required Azure resources (Y/N)?" yn
 	echo -e "\n"
 
 	case $yn in
@@ -45,5 +42,3 @@ if [ $azres -ne 0 ]; then
 	;;
 	esac
 fi
-
-set +e
