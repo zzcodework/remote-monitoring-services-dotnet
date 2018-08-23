@@ -116,12 +116,12 @@ function main {
 
 	if [ "$OSTYPE" == "darwin"* ]; then
 		sh "$APP_HOME/os/osx/$env_file"
-		sh "$APP_HOME/os/osx/set-env-uris.sh"
+		sh "$APP_HOME/os/osx/set-env-uri.sh"
 	fi
 
 	if [ "$OSTYPE" == "linux"* ]; then
 		sh "$APP_HOME/os/linux/$env_file"
-		sh "$APP_HOME/os/linux/set-env-uris.sh"
+		sh "$APP_HOME/os/linux/set-env-uri.sh"
 	fi
 }
 
