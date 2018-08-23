@@ -48,7 +48,7 @@ The preconfigured launch & task configuration(s) for VS code are included in the
 
 ##### Steps to import launch settings
 1) Import this repository OR the services submodule from the azure-iot-pcs-remote-monitoring-dotnet.
-2) Click the Add Configuration under present under debug menu. (This will create .vs folder) 
+2) Click the Add Configuration under present under debug menu. (This will create .vscode folder) 
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)
 3) Replace the auto-created launch.json & task.json files with files under vscode folder which is present under idesettings. 
 4) This will list all the debug/build configuration. 
