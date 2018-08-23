@@ -85,11 +85,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryRulesAgent", "asa-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryRulesAgent.Test", "asa-manager\TelemetryRulesAgent.Test\TelemetryRulesAgent.Test.csproj", "{8BF4960A-D0C0-4A83-8B44-A81B199BF1DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulationAgent", "device-simulation\SimulationAgent\SimulationAgent.csproj", "{76CFE6C3-4577-4FF2-B4EC-05F20CD474E3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulationAgent.Test", "device-simulation\SimulationAgent.Test\SimulationAgent.Test.csproj", "{EE15EE44-8A6F-4704-B902-92AC46951C48}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecurringTasksAgent", "iothub-manager\RecurringTasksAgent\RecurringTasksAgent.csproj", "{76B4FC5C-D3B4-4FE5-878E-3C6B824B3DD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "remote-monitoring", "remote-monitoring.csproj", "{0EE18A44-E538-432C-90A4-68C243FAD94B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
