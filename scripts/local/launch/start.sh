@@ -14,13 +14,13 @@ sh helpers/check-dependencies.sh device-telemetry $azres
 azres=$?
 sh helpers/check-dependencies.sh iothub-manager $azres
 azres=$(($azres+$?))
-sh helpers/check-dependencies.sh pcs-auth $azres
+sh helpers/check-dependencies.sh auth $azres
 azres=$(($azres+$?))
-sh helpers/check-dependencies.sh pcs-config $azres
+sh helpers/check-dependencies.sh config $azres
 azres=$(($azres+$?))
 sh helpers/check-dependencies.sh asa-manager $azres
 azres=$(($azres+$?))
-sh helpers/check-dependencies.sh pcs-storage-adapter $azres
+sh helpers/check-dependencies.sh storage-adapter $azres
 azres=$(($azres+$?))
 
 set -e
