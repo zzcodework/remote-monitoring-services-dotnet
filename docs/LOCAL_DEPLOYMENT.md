@@ -1,7 +1,7 @@
 Starting Microservices on local environment
 =====
 ### New & Existing Users
-The new repository contains a **start** script and few other scripts to bootstrap the new users with the required cloud resources. These scripts are used to create azure resources like Cosmos DB, IoTHub, Azure Stream Analytics etc. The start script is located in *scripts / local / launch* folder under root directory of the repository.
+The new repository contains a **start** script and few other scripts to bootstrap the new users with the required cloud resources. These scripts are used to create azure resources like Cosmos DB, IoTHub, Azure Stream Analytics etc. The start script is located in *scripts / local / launch* folder under root directory of this repository. If you have cloned azure-iot-pcs-remote-monitoring-dotnet repository, the scripts folder is present under services submodule (folder).
 
 **Please Note:**
 *These scripts are executable in **bash shell only**. On windows these scripts can be run manually using Git Bash shell or by using Windows Sub system for Linux. The instructions to enable WSL are available* *[here](https://docs.microsoft.com/en-us/windows/wsl/install-win10).*
@@ -31,7 +31,12 @@ sh check-dependencies.sh <microservice_folder_name>
 2) create Azure resources 
 sh create-azure-resources.sh
 
-After creating the required azure resources, using start or create-azure-resources.sh, one should execute the scripts under *os/{linux / win / osx}* to set the environment variables. 
+After creating the required azure resources, using start or create-azure-resources.sh, one should execute the following scripts present under *os/{linux / win / osx}* to set the environment variables. 
+1) set-env-uri
+2) set-env
+
+**Please Note:**
+*If you are using windows, you will have to execute these scripts in CMD shell. On OSX, these scripts are automatically run by the start script. For linux, the environment variables present in these scripts need to be set at global location, depending upon the flavour of linux you are using.* 
 
 #### Recap of steps to create resources and set environment variables
 1) Run start.sh
@@ -42,10 +47,11 @@ After creating the required azure resources, using start or create-azure-resourc
 The preconfigured launch & task configuration(s) for VS code are included in the *scripts / local / launch / idesettings* folder. These settings are useful for building individual OR all microservices. 
 
 ##### Steps to import launch settings
-1) Click the debug icon on the left-hand panel of the IDE. (This will create .vs folder under root folder in the repo) 
+1) Import this repository OR the services submodule from the azure-iot-pcs-remote-monitoring-dotnet.
+2) Click the Add Configuration under present under debug menu. (This will create .vs folder) 
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)
-2) Replace the auto-created launch.json & task.json files under .vs folder with files under vscode folder present under idesettings. 
-3) This will list all the debug/build configuration. 
+3) Replace the auto-created launch.json & task.json files with files under vscode folder which is present under idesettings. 
+4) This will list all the debug/build configuration. 
 
 ##### Visual Studio
 1) If you have set the environment variables using the scripts, then you could use the Visual Studio to debug by starting multiple startup projects. Please follow the instructions [here](https://msdn.microsoft.com/en-us/library/ms165413.aspx) to set multiple startup projects.
@@ -53,6 +59,7 @@ The preconfigured launch & task configuration(s) for VS code are included in the
     1. appsettings.ini under WebService
     2. launchSettings.json under Properties folder under WebService.
 3) For multiple startup project settings, please set only WebService projects as startup projects.   
+4) Start device simulation service using start-device-simulation script present under launch folder.
 
 Structure of the microservices
 =========
