@@ -12,7 +12,7 @@ This script checks if required environment variables are set on the local system
 For users who have already created the required azure resources, please set the envvironment variables on your machine so as to be accessible by the IDE. Alternatively, these varaibles can be set in the launch configurations of the IDE in launch.json for VS code or Debug Settings under Properties for solution in Visual Studio. Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.
 
 **Please Note:**
-*This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install node packages, if they are not already installed. At times, the script might fail while installing npm packages. In such cases, please install npm package **iot-solutions** using following command using administartive privileges or sudo access.*
+*This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install node packages, if they are not already installed. At times, the script might fail while installing npm packages. In such cases, please install npm package **iot-solutions** using following command with administartive or root privileges.*
 
 *npm install -g iot-solutions*
 &nbsp; 
