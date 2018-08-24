@@ -14,13 +14,13 @@
       "launchUrl": "http://localhost:9024/v1/status",
       "environmentVariables": {
         "PCS_TELEMETRY_WEBSERVICE_URL": "http://localhost:9004/v1",
-        "PCS_CONFIG_WEBSERVICE_URL": "http://localhost:9005/v1",
         "PCS_IOTHUBMANAGER_WEBSERVICE_URL": "http://localhost:9002/v1",
-        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "$(PCS_TELEMETRY_DOCUMENTDB_CONNSTRING)",
-        "PCS_ASA_DATA_AZUREBLOB_ACCOUNT": "$(PCS_ASA_DATA_AZUREBLOB_ACCOUNT)",
-        "PCS_ASA_DATA_AZUREBLOB_KEY": "$(PCS_ASA_DATA_AZUREBLOB_KEY)",
         "PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX": "$(PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX)",
-        "PCS_EVENTHUB_CONNSTRING": "$(PCS_EVENTHUB_CONNSTRING)"
+        "PCS_ASA_DATA_AZUREBLOB_ACCOUNT": "$(PCS_ASA_DATA_AZUREBLOB_ACCOUNT)",
+        "PCS_EVENTHUB_CONNSTRING": "$(PCS_EVENTHUB_CONNSTRING)",
+        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "$(PCS_TELEMETRY_DOCUMENTDB_CONNSTRING)",
+        "PCS_CONFIG_WEBSERVICE_URL": "http://localhost:9005/v1",
+        "PCS_ASA_DATA_AZUREBLOB_KEY": "$(PCS_ASA_DATA_AZUREBLOB_KEY)"
       }
     },
     "WebService": {
@@ -29,16 +29,23 @@
       "launchUrl": "http://localhost:9024/v1/status",
       "environmentVariables": {
         "PCS_TELEMETRY_WEBSERVICE_URL": "http://localhost:9004/v1",
-        "PCS_CONFIG_WEBSERVICE_URL": "http://localhost:9005/v1",
         "PCS_IOTHUBMANAGER_WEBSERVICE_URL": "http://localhost:9002/v1",
-        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "$(PCS_TELEMETRY_DOCUMENTDB_CONNSTRING)",
-        "PCS_ASA_DATA_AZUREBLOB_ACCOUNT": "$(PCS_ASA_DATA_AZUREBLOB_ACCOUNT)",
-        "PCS_ASA_DATA_AZUREBLOB_KEY": "$(PCS_ASA_DATA_AZUREBLOB_KEY)",
         "PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX": "$(PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX)",
+        "PCS_ASA_DATA_AZUREBLOB_ACCOUNT": "$(PCS_ASA_DATA_AZUREBLOB_ACCOUNT)",
         "PCS_EVENTHUB_CONNSTRING": "$(PCS_EVENTHUB_CONNSTRING)",
+        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "$(PCS_TELEMETRY_DOCUMENTDB_CONNSTRING)",
+        "PCS_CONFIG_WEBSERVICE_URL": "http://localhost:9005/v1",
+        "PCS_ASA_DATA_AZUREBLOB_KEY": "$(PCS_ASA_DATA_AZUREBLOB_KEY)",
         "PCS_EVENTHUB_NAME": "$(PCS_EVENTHUB_NAME)"
       },
       "applicationUrl": "http://localhost:9024/v1/status"
+    },
+    "Azure Dev Spaces": {
+      "commandName": "AzureDevSpaces",
+      "launchBrowser": true,
+      "resourceGroup": "solutions-accelerators-azds",
+      "aksName": "rmv1-azds",
+      "subscriptionId": "a39a9c06-5f37-4c1c-b2ce-8ab4d51effb9"
     }
   }
 }

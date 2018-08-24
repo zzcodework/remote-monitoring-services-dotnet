@@ -1,39 +1,37 @@
 kind: helm-release
 apiVersion: 1.0
 build:
-  context: .
+  context: ..\..
   dockerfile: Dockerfile
 install:
-  chart: charts/webservice
+  chart: charts/asamanager
   values:
   - values.dev.yaml?
   - secrets.dev.yaml?
   set:
-    replicaCount: 1
     image:
       tag: $(tag)
       pullPolicy: Never
+    disableProbes: true
     ingress:
       hosts:
       # This expands to [space.s.]webservice.<guid>.<region>.aksapp.io
-      - $(spacePrefix)webservice$(hostSuffix)
+      - $(spacePrefix)asamanager$(hostSuffix)
+       
 configurations:
   develop:
     build:
       dockerfile: Dockerfile.develop
       useGitIgnore: true
-      args:
-        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION:-Debug}
     container:
-      values:
-      - "charts/webservice/values.dev.yaml"
+      syncTarget: /src
       sync:
       - "**/Pages/**"
       - "**/Views/**"
       - "**/wwwroot/**"
       - "!**/*.{sln,csproj}"
-      command: [dotnet, run, --no-restore, --no-build, --no-launch-profile, -c, "${BUILD_CONFIGURATION:-Debug}"]
+      command:  [dotnet, run, --no-restore, --no-build, --no-launch-profile, -c, "${Configuration:-Debug}"]
       iterate:
         processesToKill: [dotnet, vsdbg]
         buildCommands:
-        - [dotnet, build, --no-restore, -c, "${BUILD_CONFIGURATION:-Debug}"]
+        - [dotnet, build, --no-restore, -c, "${Configuration:-Debug}"]

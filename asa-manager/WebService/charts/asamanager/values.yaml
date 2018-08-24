@@ -1,10 +1,10 @@
-# Default values for asa-manager.
+# Default values for asamanager.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-fullnameOverride: asa-manager
+fullnameOverride: asamanager
 replicaCount: 1
 image:
-  repository: asa-manager
+  repository: asamanager
   tag: stable
   pullPolicy: IfNotPresent
 imagePullSecrets: []
@@ -16,12 +16,11 @@ imagePullSecrets: []
   # - name: myRegistryKeySecretName
 service:
   type: ClusterIP
-  internalPort: 9024
   externalPort: 9024
-
+  internalPort: 9024
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
     # kubernetes.io/tls-acme: "true"

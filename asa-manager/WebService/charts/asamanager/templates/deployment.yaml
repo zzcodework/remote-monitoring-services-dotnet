@@ -1,10 +1,10 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "webservice.fullname" . }}
+  name: {{ template "asamanager.fullname" . }}
   labels:
-    app: {{ template "webservice.name" . }}
-    chart: {{ template "webservice.chart" . }}
+    app: {{ template "asamanager.name" . }}
+    chart: {{ template "asamanager.chart" . }}
     draft: {{ default "draft-app" .Values.draft }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,12 +12,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "webservice.name" . }}
+      app: {{ template "asamanager.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "webservice.name" . }}
+        app: {{ template "asamanager.name" . }}
         draft: {{ default "draft-app" .Values.draft }}
         release: {{ .Release.Name }}
       annotations:
@@ -31,6 +31,7 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          {{- if not .Values.disableProbes }}
           livenessProbe:
             httpGet:
               path: /
@@ -39,6 +40,7 @@ spec:
             httpGet:
               path: /
               port: http
+          {{- end }}
           env:
             {{- $root := . }}
             {{- range $ref, $values := .Values.secrets }}
@@ -46,7 +48,7 @@ spec:
             - name: {{ $ref }}_{{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "webservice.fullname" $root }}-{{ $ref | lower }}
+                  name: {{ template "asamanager.fullname" $root }}-{{ $ref | lower }}
                   key: {{ $key }}
             {{- end }}
             {{- end }}
