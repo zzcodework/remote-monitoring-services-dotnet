@@ -14,6 +14,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
 {
     public interface IDiagnosticsClient
     {
+        bool CanLogToDiagnostics { get; }
+
         Task LogEventAsync(string eventName);
 
         Task LogEventAsync(string eventName, Dictionary<string, object> eventProperties);
@@ -21,6 +23,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
 
     public class DiagnosticsClient : IDiagnosticsClient
     {
+        public bool CanLogToDiagnostics { get; }
+
         private readonly IHttpClient httpClient;
         private readonly ILogger log;
         private readonly string serviceUrl;
@@ -36,6 +40,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
             if (string.IsNullOrEmpty(this.serviceUrl))
             {
                 this.log.Error("Cannot log to diagnostics service, diagnostics url not provided", () => {});
+                this.CanLogToDiagnostics = false;
+            }
+            else
+            {
+                this.CanLogToDiagnostics = true;
             }
     }
 
@@ -55,14 +64,21 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External
         public async Task LogEventAsync(string eventName, Dictionary<string, object> eventProperties)
         {
             var request = new HttpRequest();
-            request.SetUriFromString($"{this.serviceUrl}/diagnosticsevents");
-            DiagnosticsRequestModel model = new DiagnosticsRequestModel
+            try
             {
-                EventType = eventName,
-                EventProperties = eventProperties
-            };
-            request.SetContent(JsonConvert.SerializeObject(model));
-            await this.PostHttpRequestWithRetryAsync(request);
+                request.SetUriFromString($"{this.serviceUrl}/diagnosticsevents");
+                DiagnosticsRequestModel model = new DiagnosticsRequestModel
+                {
+                    EventType = eventName,
+                    EventProperties = eventProperties
+                };
+                request.SetContent(JsonConvert.SerializeObject(model));
+                await this.PostHttpRequestWithRetryAsync(request);
+            }
+            catch (Exception e)
+            {
+                this.log.Warn("Cannot log to diagnostics service, diagnostics url not provided", () => new { e.Message });
+            }
         }
 
         private async Task PostHttpRequestWithRetryAsync(HttpRequest request)

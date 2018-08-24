@@ -292,13 +292,16 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         private async void LogEventAndRuleCountToDiagnostics(string eventName)
         {
-            await this.diagnosticsClient.LogEventAsync(eventName);
-            int ruleCount = await this.GetRuleCountAsync();
-            var eventProperties = new Dictionary<string, object>
-            {
-                { "Count", ruleCount }
-            };
-            await this.diagnosticsClient.LogEventAsync("Rule_Count", eventProperties);
+            if (this.diagnosticsClient.CanLogToDiagnostics)
+            { 
+                await this.diagnosticsClient.LogEventAsync(eventName);
+                int ruleCount = await this.GetRuleCountAsync();
+                var eventProperties = new Dictionary<string, object>
+                {
+                    { "Count", ruleCount }
+                };
+                await this.diagnosticsClient.LogEventAsync("Rule_Count", eventProperties);
+            }
         }
 
         private async Task<Rule> UpsertAsync(Rule rule, Rule savedRule)
