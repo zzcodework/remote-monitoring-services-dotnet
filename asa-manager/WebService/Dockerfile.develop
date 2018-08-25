@@ -1,4 +1,4 @@
-FROM microsoft/aspnetcore-build:2.0
+FROM microsoft/aspnetcore-build:2.0-jessie
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV DOTNET_USE_POLLING_FILE_WATCHER=true
 
@@ -11,13 +11,12 @@ COPY ["asa-manager/Services/Services.csproj", "asa-manager/Services/"]
 COPY ["asa-manager/SetupAgent/SetupAgent.csproj", "asa-manager/SetupAgent/"]
 COPY ["asa-manager/TelemetryRulesAgent/TelemetryRulesAgent.csproj", "asa-manager/TelemetryRulesAgent/"]
 COPY ["asa-manager/WebService/WebService.csproj", "asa-manager/WebService/"]
-COPY ["asa-manager/WebService/set-env", "asa-manager/WebService/set-env"]
+COPY ["asa-manager/WebService/azds_entrypoint.sh", "asa-manager/WebService/azds_entrypoint.sh"]
 
-RUN chmod 777 /src/asa-manager/WebService/set-env
-RUN /src/asa-manager/WebService/set-env
+RUN chmod 777 /src/asa-manager/WebService/azds_entrypoint.sh
 RUN dotnet restore -nowarn:msb3202,nu1503
 COPY . .
 WORKDIR "/src/asa-manager/WebService"
 RUN dotnet build "WebService.csproj"
 
-CMD ["dotnet", "run", "--no-restore", "--no-build", "--no-launch-profile"]
+ENTRYPOINT  ["sh", "/src/asa-manager/WebService/azds_entrypoint.sh"]

@@ -29,7 +29,7 @@ configurations:
       - "**/Pages/**"
       - "**/Views/**"
       - "**/wwwroot/**"
-      - "!**/*.{sln,csproj}"
+      - "!**/*.{sln,csproj.sh}"
       command:  [dotnet, run, --no-restore, --no-build, --no-launch-profile, -c, "${Configuration:-Debug}"]
       iterate:
         processesToKill: [dotnet, vsdbg]
