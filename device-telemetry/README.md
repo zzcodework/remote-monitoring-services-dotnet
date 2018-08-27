@@ -55,6 +55,16 @@ for more information. More information on environment variables
   * `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
   * `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
   * `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
+  * `PCS_AAD_TENANT` = {Azure Active Directory Tenant ID}
+    * see: Azure Portal => Azure Active Directory => Properties => Directory ID
+  * `PCS_AAD_APPID` = {Azure Active Directory application ID}
+    * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Application ID
+  * `PCS_AAD_APPSECRET` = {application secret}
+    * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Settings => Passwords
+  * `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
+    * Allowed values: ["cosmosdb", "tsi"]. Default is "tsi"
+  * `PCS_TSI_FQDN`= {Time Series FQDN}
+    * see: Azure Portal => Your Resource Group => Time Series Insights Environment => Data Access FQDN
 
 ## Running the service with Visual Studio or VS Code
 
