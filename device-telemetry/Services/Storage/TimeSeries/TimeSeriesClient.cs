@@ -62,6 +62,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         private const string COUNT_KEY = "count";
         private const string FROM_KEY = "from";
         private const string TO_KEY = "to";
+        private const int CLOCK_CALIBRATION_IN_SECONDS = 5;
 
         private const string DEVICE_ID_KEY = "iothub-connection-device-id";
 
@@ -88,6 +89,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         /// <summary>
         /// Makes a request to the enviornment availability API to verify
         /// that the fqdn provided can reach Time Series Insights.
+        /// Returns a tuple with the status [bool isAvailable, string message].
         /// </summary>
         public async Task<Tuple<bool, string>> PingAsync()
         {
@@ -150,9 +152,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         private async Task<string> AcquireAccessTokenAsync()
         {
             // Return existing token unless it is near expiry or null
-            if (this.token != null && DateTimeOffset.UtcNow < this.token.ExpiresOn)
+            if (this.token != null)
             {
-                return this.token.AccessToken;
+                // Add buffer time to renew token, built in buffer for AAD is 5 mins
+                if (DateTimeOffset.UtcNow.AddSeconds(CLOCK_CALIBRATION_IN_SECONDS) < this.token.ExpiresOn)
+                {
+                    return this.token.AccessToken;
+                }
             }
 
             if (string.IsNullOrEmpty(this.applicationId) ||

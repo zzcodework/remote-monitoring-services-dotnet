@@ -69,7 +69,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 }
                 catch (Exception e)
                 {
-                    throw new InvalidInputException("Failed to parse message from Time Series Insights.", e);
+                    throw new TimeSeriesParseException("Failed to parse message from Time Series Insights.", e);
                 }
             }
 

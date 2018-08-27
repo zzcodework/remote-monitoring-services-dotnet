@@ -76,7 +76,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 }
             }
 
-            throw new InvalidInputException("No device id found in message schema from Time Series Insights. " +
+            throw new TimeSeriesParseException("No device id found in message schema from Time Series Insights. " +
                                             $"Device id property '{DEVICE_ID_KEY}' is missing.");
         }
     }
