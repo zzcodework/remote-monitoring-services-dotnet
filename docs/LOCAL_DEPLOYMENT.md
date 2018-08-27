@@ -7,10 +7,6 @@ Starting Microservices on local environment
     i. [set-env-uri.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)
     ii. [set-env.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)
 
-##### Usage:   
-````
-abc@pcs sh start.sh   
-````
 ![start](https://user-images.githubusercontent.com/39531904/44435771-6ab08280-a566-11e8-93c9-e6f35e5df247.PNG)
 
 **Please Note:**
@@ -22,7 +18,11 @@ abc@pcs sh start.sh
 &nbsp; 
 
 #### Existing Users
-For users who have already created the required azure resources, please set the envvironment variables globally on your machine so as to be accessible by the IDE. Alternatively, these varaibles can be set in the launch configurations of the IDE in launch.json for VS code or Debug Settings under Properties for solution in Visual Studio. Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.
+For users who have already created the required azure resources, please set the environment variables 
+1) Globally on your machine so as to be accessible by the IDE. OR 
+2) In the launch configurations of the IDE in launch.json for VS code or Debug Settings under Properties for solution in Visual Studio. 
+
+*Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
 
 ### Walk through for importing new Solution into the IDE
 ##### VS Code 
@@ -58,7 +58,8 @@ sh create-azure-resources.sh
 
 After creating the required azure resources, using start or create-azure-resources.sh, one should execute the scripts under *os/{linux / win / osx}* to set the environment variables. 
 
-### Structure of the microservices
+Structure of the microservices
+===
 Each microservice comprises of following projects/folders. 
 1) scripts 
 2) WebService  
