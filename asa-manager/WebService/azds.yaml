@@ -29,7 +29,7 @@ configurations:
       - "**/Pages/**"
       - "**/Views/**"
       - "**/wwwroot/**"
-      - "!**/*.{sln,csproj.sh}"
+      - "!**/*.{sln,csproj,sh}"
       command:  ["sh", "/src/asa-manager/WebService/azds_entrypoint.sh"]
       iterate:
         processesToKill: [dotnet, vsdbg]
