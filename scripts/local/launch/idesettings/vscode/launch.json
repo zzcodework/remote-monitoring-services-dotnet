@@ -33,9 +33,9 @@
                 "type": "coreclr",
                 "request": "launch",
                 //"preLaunchTask": "source-env",
-                "program": "${workspaceRoot}/pcs-auth/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.Auth.WebService.dll",
+                "program": "${workspaceRoot}/auth/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.Auth.WebService.dll",
                 "args": [],
-                "cwd": "${workspaceRoot}/pcs-auth/WebService/bin/Debug/netcoreapp2.0",
+                "cwd": "${workspaceRoot}/auth/WebService/bin/Debug/netcoreapp2.0",
                 // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
                 "console": "integratedTerminal",
                 "internalConsoleOptions": "openOnSessionStart"
@@ -204,9 +204,9 @@
                 "request": "launch",
                 //"preLaunchTask": "source-env",
                 "preLaunchTask":"device-simulation-launch" ,
-                "program": "${workspaceRoot}/pcs-config/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.UIConfig.WebService.dll",
+                "program": "${workspaceRoot}/config/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.UIConfig.WebService.dll",
                 "args": [],
-                "cwd": "${workspaceRoot}/pcs-config/WebService/bin/Debug/netcoreapp2.0",
+                "cwd": "${workspaceRoot}/config/WebService/bin/Debug/netcoreapp2.0",
                 // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
                 "console": "integratedTerminal",
                 "internalConsoleOptions": "openOnSessionStart"
@@ -244,9 +244,9 @@
                 "type": "coreclr",
                 "request": "launch",
                 //"preLaunchTask": "source-env",
-                "program": "${workspaceRoot}/pcs-storage-adapter/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.StorageAdapter.WebService.dll",
+                "program": "${workspaceRoot}/storage-adapter/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.StorageAdapter.WebService.dll",
                 "args": [],
-                "cwd": "${workspaceRoot}/pcs-storage-adapter/WebService/bin/Debug/netcoreapp2.0",
+                "cwd": "${workspaceRoot}/storage-adapter/WebService/bin/Debug/netcoreapp2.0",
                 // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
                 "console": "integratedTerminal",
                 "internalConsoleOptions": "openOnSessionStart"
