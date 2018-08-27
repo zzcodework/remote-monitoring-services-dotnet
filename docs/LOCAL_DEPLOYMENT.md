@@ -24,7 +24,7 @@ abc@pcs sh start.sh
 #### Existing Users
 For users who have already created the required azure resources, please set the envvironment variables globally on your machine so as to be accessible by the IDE. Alternatively, these varaibles can be set in the launch configurations of the IDE in launch.json for VS code or Debug Settings under Properties for solution in Visual Studio. Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.
 
-### Walk through for importing new Solution in IDE
+### Walk through for importing new Solution into the IDE
 ##### VS Code 
 The preconfigured launch & task configuration(s) for VS code are included in the *scripts / local / launch / idesettings* folder. These settings are useful for building individual OR all microservices. 
 
