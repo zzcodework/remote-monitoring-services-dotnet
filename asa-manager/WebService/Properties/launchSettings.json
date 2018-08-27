@@ -39,13 +39,6 @@
         "PCS_EVENTHUB_NAME": "$(PCS_EVENTHUB_NAME)"
       },
       "applicationUrl": "http://localhost:9024/v1/status"
-    },
-    "Azure Dev Spaces": {
-      "commandName": "AzureDevSpaces",
-      "launchBrowser": true,
-      "resourceGroup": "solutions-accelerators-azds",
-      "aksName": "rmv1-azds",
-      "subscriptionId": "a39a9c06-5f37-4c1c-b2ce-8ab4d51effb9"
     }
   }
 }

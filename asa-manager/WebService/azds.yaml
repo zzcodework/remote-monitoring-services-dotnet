@@ -30,7 +30,7 @@ configurations:
       - "**/Views/**"
       - "**/wwwroot/**"
       - "!**/*.{sln,csproj.sh}"
-      command:  [dotnet, run, --no-restore, --no-build, --no-launch-profile, -c, "${Configuration:-Debug}"]
+      command:  ["sh", "/src/asa-manager/WebService/azds_entrypoint.sh"]
       iterate:
         processesToKill: [dotnet, vsdbg]
         buildCommands:
