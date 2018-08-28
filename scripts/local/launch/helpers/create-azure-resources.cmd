@@ -17,24 +17,24 @@ call :main
 ::::::::::::::::::::: Functions ::::::::::::::::::::
 
 :create_azure_resources
-	: Login to Azure Subscription
-	echo Creating Azure resources ... This operation might fail if you are not logged in. Please login and try again.
-	: Creating RM resources in Azure Subscription
-	call pcs -t remotemonitoring -s local --setLocalEnvironments .env
+    :: Login to Azure Subscription
+    echo Creating Azure resources ... This operation might fail if you are not logged in. Please login and try again.
+    : Creating RM resources in Azure Subscription
+    call pcs -t remotemonitoring -s local --setLocalEnvironments .env
 GOTO:EOF
 
 :install_cli
     cd ..\..\..\..\
-	:: If pcs-cli is installed this step will do nothing
-	git clone https://github.com/Azure/pcs-cli.git  > Nul 2>&1
-	:: Build and Link CLI
+    :: If pcs-cli is installed this step will do nothing
+    git clone https://github.com/Azure/pcs-cli.git  > Nul 2>&1
+    :: Build and Link CLI
     echo "Building pcs-cli ....."
 
-	cd pcs-cli
-	call npm install 
+    cd pcs-cli
+    call npm install 
     call npm start
     call npm link > Nul 2>&1
-	cd ..\remote-monitoring-services-dotnet\scripts\local\launch
+    cd ..\remote-monitoring-services-dotnet\scripts\local\launch
 GOTO:EOF
 
 :check_dependencies
