@@ -3,8 +3,8 @@ Starting Microservices on local environment
 ### Steps to create Azure resources
 #### New Users
 1) Run the [start.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/) script located under launch *(scripts/local/launch)* folder.
-2) Run the following script to set environment variables. The scripts are located under *(scripts/local/launch/os)* folder.\
-    i. [set-env-uri.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)\
+2) Run the following script to set environment variables. The scripts are located under *(scripts/local/launch/os)* folder.
+    i. [set-env-uri.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)
     ii. The created environment variables are present in [.env](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/) file located in *(scripts/local/launch)* folder.
 ![start](https://user-images.githubusercontent.com/39531904/44435771-6ab08280-a566-11e8-93c9-e6f35e5df247.PNG)
 
@@ -28,7 +28,7 @@ The preconfigured launch & task configuration(s) for VS code are included in the
 1) Import this repository OR the services submodule from the azure-iot-pcs-remote-monitoring-dotnet.
 2) Click the Add Configuration under present under debug menu. (This will create .vscode folder) 
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)
-3) Replace the auto-created launch.json & task.json files under .vs folder with files under vscode folder present under idesettings. 
+3) Replace the auto-created launch.json & task.json files under .vscode folder with files under vscode folder located under idesettings. 
 4) This will list all the debug/build configuration. 
 
 ##### Visual Studio
