@@ -25,8 +25,7 @@ For users who have already created the required azure resources, please **set th
 The preconfigured launch & task configuration(s) for VS code are included in the *scripts / local / launch / idesettings* folder. These settings are useful for building individual OR all microservices. 
 
 ##### Steps to import launch settings
-1) Import this repository OR the services submodule from the azure-iot-pcs-remote-monitoring-dotnet.
-2) Click the Add Configuration under present under debug menu. (This will create .vscode folder) 
+1) Click the debug icon on the left-hand panel of the IDE. (This will create .vs folder under root folder in the repo) 
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)
 3) Replace the auto-created launch.json & task.json files under .vs folder with files under vscode folder present under idesettings. 
 4) This will list all the debug/build configuration. 
