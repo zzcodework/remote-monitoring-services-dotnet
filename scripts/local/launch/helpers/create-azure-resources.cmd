@@ -52,7 +52,7 @@ GOTO:EOF
 GOTO:EOF
 
 :copy_env
-	xcopy ..\..\..\..\pcs-cli\.env .\
+    xcopy ..\..\..\..\pcs-cli\.env .\
 GOTO:EOF
 
 ::::::::::::::::::::: Helper Function ::::::::::::::::::::
