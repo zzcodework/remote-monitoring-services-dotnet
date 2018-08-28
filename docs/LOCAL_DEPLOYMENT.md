@@ -45,7 +45,7 @@ The new repository contains a **start** script and few other scripts to bootstra
 #### Helpers scripts
 These scripts are located under helpers folder which is under the launch folder. The script create-azure-resources.sh can be independently called to create resources in the cloud.
 ##### Usage:
-1) create Azure resources 
+1) create Azure resources\ 
 [create-azure-resources.(sh|cmd)](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/helpers/create-azure-resources.sh)
 
 
