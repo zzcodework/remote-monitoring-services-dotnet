@@ -9,7 +9,8 @@ Starting Microservices on local environment
 ![start](https://user-images.githubusercontent.com/39531904/44435771-6ab08280-a566-11e8-93c9-e6f35e5df247.PNG)
 
 **Please Note:**
-*This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install [pcs-cli](https://github.com/Azure/pcs-cli) a cli interface for remote-monitoring deployments.*
+1) *If you have cloned azure-iot-pcs-remote-monitoring-dotnet repository, the scripts folder is present under services submodule (folder).*
+2) *This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install [pcs-cli](https://github.com/Azure/pcs-cli) a cli interface for remote-monitoring deployments.*
 &nbsp; 
 
 #### Existing Users
@@ -24,15 +25,11 @@ For users who have already created the required azure resources, please **set th
 The preconfigured launch & task configuration(s) for VS code are included in the *scripts / local / launch / idesettings* folder. These settings are useful for building individual OR all microservices. 
 
 ##### Steps to import launch settings
-1) Click the debug icon on the left-hand panel of the IDE. (This will create .vs folder under root folder in the repo) 
+1) Import this repository OR the services submodule from the azure-iot-pcs-remote-monitoring-dotnet.
+2) Click the Add Configuration under present under debug menu. (This will create .vscode folder) 
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)
-<<<<<<< HEAD
-3) Replace the auto-created launch.json & task.json with files under vscode folder which is present under idesettings. 
+3) Replace the auto-created launch.json & task.json files under .vs folder with files under vscode folder present under idesettings. 
 4) This will list all the debug/build configuration. 
-=======
-2) Replace the auto-created launch.json & task.json files under .vs folder with files under vscode folder present under idesettings. 
-3) This will list all the debug/build configuration. 
->>>>>>> Changed documentation for readability
 
 ##### Visual Studio
 1) If you have set the environment variables using the scripts, then you could use the Visual Studio to debug by starting multiple startup projects. Please follow the instructions [here](https://msdn.microsoft.com/en-us/library/ms165413.aspx) to set multiple startup projects.
@@ -44,9 +41,6 @@ The preconfigured launch & task configuration(s) for VS code are included in the
 ### Script Descriptions
 #### Start Script
 The new repository contains a **start** script and few other scripts to bootstrap the new users with the required cloud resources. These scripts are used to create azure resources like Cosmos DB, IoTHub, Azure Stream Analytics etc. The start script is located in *scripts / local / launch* folder under root directory of the repository.
-
-This script checks if required environment variables are set on the local system. If the variables are set then one can open the IDE to start the microservices. If the variables are not set then this script will guide through the process of creating the new variables. It will then create different scripts under *scripts / local / launch / os / OS_TYPE /* which can be used to set environment variables on the machine.
-
 
 #### Helpers scripts
 These scripts are located under helpers folder which is under the launch folder. The script create-azure-resources.sh can be independently called to create resources in the cloud. The script check_dependencies.sh checks if environment variables are set for a particular microservices.
