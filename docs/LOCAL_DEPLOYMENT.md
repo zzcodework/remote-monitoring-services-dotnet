@@ -16,7 +16,7 @@ Starting Microservices on local environment
 For users who have already created the required azure resources, please do one of the following: 
 1) Set the environment variables globally on your machine. 
 2) **VS Code:** Set the environment variables in the launch configurations of the IDE i.e. launch.json
-3) **Visual Studio:** Set the environment variables in debug Settings under Properties for the WebService project of the microservices.
+3) **Visual Studio:** Set the environment variables for WebService project of the microservices by adding it to Properties → Debug → Environment variables
 
 *Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
 
