@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) Microsoft. All rights reserved.
 # This script will install pcs-cli on this machine.
-# For more info on pcs-cli visit ().
+# For more info on pcs-cli visit (https://github.com/Azure/pcs-cli).
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../ && pwd )" 2> /dev/null
 read -p "Have you created required Azure resources (Y/N)?" yn
 case $yn in
