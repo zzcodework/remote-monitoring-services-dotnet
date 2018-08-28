@@ -81,7 +81,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             this.applicationSecret = config.ActiveDirectoryAppSecret;
             this.tenant = config.ActiveDirectoryTenant;
             this.fqdn = config.TimeSeriesFqdn;
-            this.host = config.TimeSeriesHost;
+            this.host = config.TimeSeriesAudience;
             this.apiVersion = config.TimeSertiesApiVersion;
             this.timeout = config.TimeSeriesTimeout;
         }

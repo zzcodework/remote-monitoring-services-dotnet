@@ -18,7 +18,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         string CosmosDbKey { get; }
         int CosmosDbThroughput { get; set; }
         string TimeSeriesFqdn { get; }
-        string TimeSeriesHost { get; }
+        string TimeSeriesAudience { get; }
+        string TimeSeriesExplorerUrl { get; }
         string TimeSertiesApiVersion { get; }
         string TimeSeriesTimeout { get; }
         string ActiveDirectoryTenant { get; }
@@ -71,7 +72,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
 
         public string TimeSeriesFqdn { get; set; }
 
-        public string TimeSeriesHost { get; set; }
+        public string TimeSeriesAudience { get; set; }
+
+        public string TimeSeriesExplorerUrl { get; set; }
 
         public string TimeSertiesApiVersion { get; set; }
 

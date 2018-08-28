@@ -30,7 +30,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
 
         private const string TIME_SERIES_KEY = APPLICATION_KEY + "TimeSeries:";
         private const string TIME_SERIES_FQDN = TIME_SERIES_KEY + "fqdn";
-        private const string TIME_SERIES_HOST = TIME_SERIES_KEY + "host";
+        private const string TIME_SERIES_AUDIENCE = TIME_SERIES_KEY + "audience";
+        private const string TIME_SERIES_EXPLORER_URL = TIME_SERIES_KEY + "explorer_url";
         private const string TIME_SERIES_API_VERSION = TIME_SERIES_KEY + "api_version";
         private const string TIME_SERIES_TIMEOUT = TIME_SERIES_KEY + "timeout";
 
@@ -91,7 +92,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
                 StorageAdapterApiTimeout = configData.GetInt(STORAGE_ADAPTER_API_TIMEOUT_KEY),
                 UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY),
                 TimeSeriesFqdn = configData.GetString(TIME_SERIES_FQDN),
-                TimeSeriesHost = configData.GetString(TIME_SERIES_HOST),
+                TimeSeriesAudience = configData.GetString(TIME_SERIES_AUDIENCE),
+                TimeSeriesExplorerUrl = configData.GetString(TIME_SERIES_EXPLORER_URL),
                 TimeSertiesApiVersion = configData.GetString(TIME_SERIES_API_VERSION),
                 TimeSeriesTimeout = configData.GetString(TIME_SERIES_TIMEOUT),
                 ActiveDirectoryTenant = configData.GetString(AAD_TENANT),

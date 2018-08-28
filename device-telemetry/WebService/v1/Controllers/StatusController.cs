@@ -2,9 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeries;
@@ -26,6 +26,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
 
         private const string STORAGE_TYPE_KEY = "StorageType";
         private const string TIME_SERIES_KEY = "tsi";
+        private const string TIME_SERIES_EXPLORER_URL_KEY = "TsiExplorerUrl";
+        private const string TIME_SERIES_EXPLORER_URL_SEPARATOR_CHAR = ".";
 
         public StatusController(
             IConfig config,
@@ -75,6 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             result.Dependencies.Add("Key Value Storage", storageAdapterStatus.Item2);
             result.Dependencies.Add("Storage", cosmosDbStatus.Item2);
 
+            // Add Time Series Dependencies if needed
             if (this.config.ServicesConfig.StorageType.Equals(
                 TIME_SERIES_KEY,
                 StringComparison.OrdinalIgnoreCase))
@@ -86,8 +89,15 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                     statusIsOk = false;
                     errors.Add("Unable to use Time Series Insights");
                 }
-
                 result.Dependencies.Add("TimeSeries", timeSeriesStatus.Item2);
+
+                // Add Time Series Insights explorer url
+                var timeSeriesFqdn = this.config.ServicesConfig.TimeSeriesFqdn;
+                var enviornmentId = timeSeriesFqdn.Substring(0, timeSeriesFqdn.IndexOf(TIME_SERIES_EXPLORER_URL_SEPARATOR_CHAR));
+                var explorerUrl = this.config.ServicesConfig.TimeSeriesExplorerUrl +
+                    "?environmentId=" + enviornmentId +
+                    "&tid=" + this.config.ServicesConfig.ActiveDirectoryTenant;
+                result.Dependencies.Add(TIME_SERIES_EXPLORER_URL_KEY, explorerUrl);
             }
 
             result.Properties.Add(STORAGE_TYPE_KEY, this.config.ServicesConfig.StorageType);

@@ -78,7 +78,7 @@ namespace Services.Test.TimeSeries
         private void SetupClientWithConfigValues()
         {
             this.servicesConfig.Setup(f => f.TimeSeriesFqdn).Returns("test123");
-            this.servicesConfig.Setup(f => f.TimeSeriesHost).Returns("test123");
+            this.servicesConfig.Setup(f => f.TimeSeriesAudience).Returns("test123");
             this.servicesConfig.Setup(f => f.TimeSertiesApiVersion).Returns("2016-12-12-test");
             this.servicesConfig.Setup(f => f.TimeSeriesTimeout).Returns("PT20S");
             this.servicesConfig.Setup(f => f.ActiveDirectoryTenant).Returns("test123");

@@ -41,6 +41,14 @@ if [[ -z "$PCS_AUTH_AUDIENCE" ]]; then
     exit -1
 fi
 
+if [[ -z "$PCS_TELEMETRY_STORAGE_TYPE" ]]; then
+    echo "Error: the PCS_TELEMETRY_STORAGE_TYPE environment variable is not defined."
+    exit -1
+fi
+
+# The settings below are for Time Series Insights. If your deployment does not use
+# Time Series Insights they are safe to remove.
+
 if [[ -z "$PCS_AAD_TENANT" ]]; then
     echo "Error: the PCS_AAD_TENANT environment variable is not defined."
     exit -1
@@ -53,11 +61,6 @@ fi
 
 if [[ -z "$PCS_AAD_APPSECRET" ]]; then
     echo "Error: the PCS_AAD_APPSECRET environment variable is not defined."
-    exit -1
-fi
-
-if [[ -z "$PCS_TELEMETRY_STORAGE_TYPE" ]]; then
-    echo "Error: the PCS_TELEMETRY_STORAGE_TYPE environment variable is not defined."
     exit -1
 fi
 
