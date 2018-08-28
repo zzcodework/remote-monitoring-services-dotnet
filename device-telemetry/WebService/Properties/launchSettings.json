@@ -13,10 +13,10 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:9004/v1/status",
       "environmentVariables": {
-        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "$(PCS_TELEMETRY_DOCUMENTDB_CONNSTRING)",
+        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "${PCS_TELEMETRY_DOCUMENTDB_CONNSTRING}",
         "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1",
         "PCS_AUTH_WEBSERVICE_URL": "http://localhost:9001/v1",
-        "PCS_DIAGNOSTICS_ENDPOINT_URL": "http://localhost:9006/v1",
+        "PCS_DIAGNOSTICS_WEBSERVICE_URL": "http://localhost:9006/v1",
         "PCS_AUTH_REQUIRED": "false"
       }
     },
@@ -25,10 +25,10 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:9004/v1/status",
       "environmentVariables": {
-        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "$(PCS_TELEMETRY_DOCUMENTDB_CONNSTRING)",
+        "PCS_TELEMETRY_DOCUMENTDB_CONNSTRING": "${PCS_TELEMETRY_DOCUMENTDB_CONNSTRING}",
         "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1",
         "PCS_AUTH_WEBSERVICE_URL": "http://localhost:9001/v1",
-        "PCS_DIAGNOSTICS_ENDPOINT_URL": "http://localhost:9006/v1",
+        "PCS_DIAGNOSTICS_WEBSERVICE_URL": "http://localhost:9006/v1",
         "PCS_AUTH_REQUIRED": "false"
       },
       "applicationUrl": "http://localhost:9004/v1/status"
