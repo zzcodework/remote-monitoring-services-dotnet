@@ -2,25 +2,20 @@ Starting Microservices on local environment
 =====
 ### Steps to create Azure resources
 #### New Users
-1) Run the [start.sh](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/start.sh) script located under launch *(scripts/local/launch)* folder.
-2) Run the following scripts to set environment variables. The scripts are located under *(scripts/local/launch/os)* folder.
+1) Run the [start.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/) script located under launch *(scripts/local/launch)* folder.
+2) Run the following script to set environment variables. The scripts are located under *(scripts/local/launch/os)* folder.
     i. [set-env-uri.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)
-    ii. [set-env.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)
-
+    ii. The created environment variables are present in [.env](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/) file located in *(scripts/local/launch)* folder.
 ![start](https://user-images.githubusercontent.com/39531904/44435771-6ab08280-a566-11e8-93c9-e6f35e5df247.PNG)
 
 **Please Note:**
-1) *These scripts are executable in **bash shell only**. On windows these scripts can be run manually using Git Bash shell or by using Windows Sub system for Linux. The instructions to enable WSL are available* *[here](https://docs.microsoft.com/en-us/windows/wsl/install-win10).*
-
-2) *This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install node packages, if they are not already installed. At times, the script might fail while installing npm packages. In such cases, please install npm package **iot-solutions** using following command using administartive privileges or sudo access.*
-
-    *npm install -g iot-solutions*
+*This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install [pcs-cli](https://github.com/Azure/pcs-cli) a cli interface for remote-monitoring deployments.*
 &nbsp; 
 
 #### Existing Users
-For users who have already created the required azure resources, please set the environment variables 
-1) Globally on your machine so as to be accessible by the IDE. OR 
-2) In the launch configurations of the IDE in launch.json for VS code or Debug Settings under Properties for solution in Visual Studio. 
+For users who have already created the required azure resources, please **set the environment variables** 
+1) Globally on your machine, so as to be accessible by the IDE OR 
+2) In the launch configurations of the IDE i.e. launch.json for VS code or Debug Settings under Properties for solution in Visual Studio.
 
 *Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
 
