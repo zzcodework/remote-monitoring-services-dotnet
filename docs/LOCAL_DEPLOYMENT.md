@@ -13,10 +13,11 @@ Starting Microservices on local environment
 2) *This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install [pcs-cli](https://github.com/Azure/pcs-cli) a cli interface for remote-monitoring deployments.*
 &nbsp; 
 
-#### Existing Users
-For users who have already created the required azure resources, please **set the environment variables** 
-1) Globally on your machine, so as to be accessible by the IDE OR 
-2) In the launch configurations of the IDE i.e. launch.json for VS code or Debug Settings under Properties for solution in Visual Studio.
+#### Existing Users 
+For users who have already created the required azure resources, please do one of the following: 
+1) Set the environment variables globally on your machine. 
+2) **VS Code:** Set the environment variables in the launch configurations of the IDE i.e. launch.json
+3) **Visual Studio** Set the environment variables in debug Settings under Properties for solution in Visual Studio.
 
 *Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
 
