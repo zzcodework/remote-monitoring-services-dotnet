@@ -88,6 +88,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
             // leaks, but not so good for the overall performance.
             //builder.RegisterType<CLASS_NAME>().As<INTERFACE_NAME>().SingleInstance();
             builder.RegisterType<UserManagementClient>().As<IUserManagementClient>().SingleInstance();
+            builder.RegisterType<DiagnosticsClient>().As<IDiagnosticsClient>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)

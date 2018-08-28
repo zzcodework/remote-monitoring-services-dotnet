@@ -25,6 +25,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         string ActiveDirectoryTenant { get; }
         string ActiveDirectoryAppId { get; }
         string ActiveDirectoryAppSecret { get; }
+        string DiagnosticsApiUrl { get; }
+        int DiagnosticsMaxLogRetries { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -46,6 +48,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         public string CosmosDbKey { get; set; }
 
         public int CosmosDbThroughput { get; set; }
+
+        public string DiagnosticsApiUrl { get; set; }
+
+        public int DiagnosticsMaxLogRetries { get; set; }
 
         public string CosmosDbConnString
         {

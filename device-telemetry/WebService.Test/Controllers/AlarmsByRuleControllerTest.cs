@@ -10,6 +10,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter;
 using WebService.Test.helpers;
 using Xunit;
@@ -65,7 +66,7 @@ namespace WebService.Test.Controllers
             }
 
             Alarms alarmService = new Alarms(servicesConfig, this.storage, this.log.Object);
-            Rules rulesService = new Rules(storageAdapterClient.Object, this.log.Object, alarmService);
+            Rules rulesService = new Rules(storageAdapterClient.Object, this.log.Object, alarmService, new Mock<IDiagnosticsClient>().Object);
             this.controller = new AlarmsByRuleController(alarmService, rulesService, this.log.Object);
         }
 

@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-       "applicationUrl": "http://localhost:9004/",
-         "sslPort": 0
+      "applicationUrl": "http://localhost:9004/",
+      "sslPort": 0
     }
   },
   "profiles": {
@@ -20,7 +20,9 @@
           "PCS_TSI_FQDN": "$(PCS_TSI_FQDN)",
           "PCS_AAD_APPID": "$(PCS_AAD_APPID)", 
           "PCS_AAD_APPSECRET": "$(PCS_AAD_APPSECRET)",
-          "PCS_AAD_TENANT": "$(PCS_AAD_TENANT)"
+          "PCS_AAD_TENANT": "$(PCS_AAD_TENANT)",
+          "PCS_DIAGNOSTICS_ENDPOINT_URL": "http://localhost:9006/v1",
+          "PCS_AUTH_REQUIRED": "false"
         }
     },
     "WebService": {
@@ -35,7 +37,9 @@
         "PCS_TSI_FQDN": "$(PCS_TSI_FQDN)",
         "PCS_AAD_APPID": "$(PCS_AAD_APPID)", 
         "PCS_AAD_APPSECRET": "$(PCS_AAD_APPSECRET)",
-        "PCS_AAD_TENANT": "$(PCS_AAD_TENANT)"
+        "PCS_AAD_TENANT": "$(PCS_AAD_TENANT)",
+        "PCS_DIAGNOSTICS_ENDPOINT_URL": "http://localhost:9006/v1",
+        "PCS_AUTH_REQUIRED": "false"
       },
       "applicationUrl": "http://localhost:9004/v1/status"
     }
