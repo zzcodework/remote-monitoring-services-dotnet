@@ -39,10 +39,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                     // Track each new message schema type.
                     // The first message of the new schema message type
                     // contains the TSI schema info.
-                    if (!tsiEvent.SchemaRid.HasValue)
+                    if (!tsiEvent.SchemaRowId.HasValue)
                     {
                         schemas.Add(tsiEvent.Schema.RowId, tsiEvent.Schema);
-                        tsiEvent.SchemaRid = tsiEvent.Schema.RowId;
+                        tsiEvent.SchemaRowId = tsiEvent.Schema.RowId;
                     }
 
                     // Note: Time Series does not have a skip parameter.
@@ -52,7 +52,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                     if (i >= skip)
                     {
                         // Add message from event
-                        var schema = schemas[tsiEvent.SchemaRid.Value];
+                        var schema = schemas[tsiEvent.SchemaRowId.Value];
                         
                         // Keep track of schemas needed for properties
                         schemaIdsInRange.Add(schema.RowId);
@@ -63,7 +63,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                             Time = DateTimeOffset.Parse(tsiEvent.Timestamp),
                             Data = this.GetEventAsJson(tsiEvent.Values, schema)
                         };
-
                         messages.Add(message);
                     }
                 }

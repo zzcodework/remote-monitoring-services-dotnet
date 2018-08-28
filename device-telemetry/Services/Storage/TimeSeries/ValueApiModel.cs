@@ -9,7 +9,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
     public class ValueApiModel
     {
         [JsonProperty("schemaRid")]
-        public long ?SchemaRid { get; set; }
+        public long ?SchemaRowId { get; set; }
 
         [JsonProperty("schema")]
         public SchemaModel Schema { get; set; }

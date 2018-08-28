@@ -35,6 +35,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 
         private AuthenticationResult token;
 
+        private readonly string authority;
         private readonly string applicationId;
         private readonly string applicationSecret;
         private readonly string tenant;
@@ -45,7 +46,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 
         private const string TSI_DATE_FORMAT = "yyyy-MM-ddTHH:mm:ssZ";
 
-        private const string AUTHORITY_ENDPOINT = "https://login.windows.net/";
         private const string TIME_SERIES_API_VERSION_PREFIX = "api-version";
         private const string TIME_SERIES_TIMEOUT_PREFIX = "timeout";
         private const string EVENTS_KEY = "events";
@@ -77,6 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         {
             this.httpClient = httpClient;
             this.log = log;
+            this.authority = config.TimeSeriesAuthority;
             this.applicationId = config.ActiveDirectoryAppId;
             this.applicationSecret = config.ActiveDirectoryAppSecret;
             this.tenant = config.ActiveDirectoryTenant;
@@ -171,7 +172,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
             }
 
             var authenticationContext = new AuthenticationContext(
-                AUTHORITY_ENDPOINT + this.tenant,
+                this.authority + this.tenant,
                 TokenCache.DefaultShared);
 
             try
