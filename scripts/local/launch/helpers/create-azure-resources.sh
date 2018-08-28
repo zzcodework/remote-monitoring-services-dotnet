@@ -5,8 +5,8 @@ APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../ && pwd )"
 
 env_file=".env.sh"
 envvars=".envvars.sh"
-linux_file="set_env.sh"
-win_file="set_env.cmd"
+linux_file="set-env.sh"
+win_file="set-env.cmd"
 
 function version_formatter { 
 	echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
@@ -15,6 +15,19 @@ function version_formatter {
 function node_is_installed {
 	# set to 1 initially
 	local return_=0
+	which node > /dev/null
+	if [ $? -eq 0 ]; then
+	       #"node is installed, skipping..."
+	       return_=0
+	else
+	       return_=1   
+	fi
+	# return value
+	echo $return_
+}
+
+function check_node_version {
+         local return_=0	
 	# set to 0 if not found
 	local version=`node -v`
 	if [ $(version_formatter $version) -ge $(version_formatter "9.0.0") ]; then
@@ -54,6 +67,12 @@ function check_dependencies {
 		echo "Please install node with version 8.11.3 or lesser."
 		exit 1
 	fi
+        
+	local chck_node_v=$(check_node_version)
+        if [ $chck_node_v -ne 0 ]; then
+                echo "Please update your node with version 8.11.3 or lesser."
+                exit 1
+        fi
 
 	# check if "iot-solutions" is installed. if NOT, install it globally
 	local pckg_chk=$(npm_package_is_installed "iot-solutions")
@@ -116,13 +135,13 @@ function main {
 
 	if [ "$OSTYPE" == "darwin"* ]; then
 		sh "$APP_HOME/os/osx/$env_file"
-		sh "$APP_HOME/os/osx/.env_uris.sh"
+		sh "$APP_HOME/os/osx/set-env-uri.sh"
 	fi
 
 	if [ "$OSTYPE" == "linux"* ]; then
 		sh "$APP_HOME/os/linux/$env_file"
-		sh "$APP_HOME/os/linux/.env_uris.sh"
+		sh "$APP_HOME/os/linux/set-env-uri.sh"
 	fi
 }
-
 main
+
