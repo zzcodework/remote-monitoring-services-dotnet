@@ -38,19 +38,16 @@ The preconfigured launch & task configuration(s) for VS code are included in the
     2. launchSettings.json under Properties folder under WebService.
 3) For multiple startup project settings, please set only WebService projects as startup projects.   
 
-### Script Descriptions
+### Script Description
 #### Start Script
 The new repository contains a **start** script and few other scripts to bootstrap the new users with the required cloud resources. These scripts are used to create azure resources like Cosmos DB, IoTHub, Azure Stream Analytics etc. The start script is located in *scripts / local / launch* folder under root directory of the repository.
 
 #### Helpers scripts
-These scripts are located under helpers folder which is under the launch folder. The script create-azure-resources.sh can be independently called to create resources in the cloud. The script check_dependencies.sh checks if environment variables are set for a particular microservices.
+These scripts are located under helpers folder which is under the launch folder. The script create-azure-resources.sh can be independently called to create resources in the cloud.
 ##### Usage:
-1) check environment variables for a microservice 
-sh check-dependencies.sh <microservice_folder_name> 
-2) create Azure resources 
+1) create Azure resources 
 sh create-azure-resources.sh
 
-After creating the required azure resources, using start or create-azure-resources.sh, one should execute the scripts under *os/{linux / win / osx}* to set the environment variables. 
 
 Structure of the microservices
 ===
