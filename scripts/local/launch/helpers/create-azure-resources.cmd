@@ -79,7 +79,7 @@ GOTO:EOF
     set "version1=%~1"
     set "version2=%~2"
     :LOOP
-        :: Parse a number by braking down using delimiters
+        :: Parse a number by breaking down using delimiters
         call :parse_numbers "%version1%" number1 version1
         call :parse_numbers "%version2%" number2 version2
 
