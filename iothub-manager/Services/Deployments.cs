@@ -37,8 +37,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private readonly IDeviceGroupsClient deviceGroupsClient;
         private readonly IPackageManagementClient packageClient;
 
-
-
         public Deployments(
             IServicesConfig config,
             IDeviceGroupsClient deviceGroupsClient,
