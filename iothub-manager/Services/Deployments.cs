@@ -26,10 +26,17 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     {
         private const int MAX_DEPLOYMENTS = 20;
         private const string DEPLOYMENT_NAME_KEY = "Name";
+        private const string RM_CREATED_KEY = "RMDeployment";
+        private const string DEVICE_GROUP_ID_PARAM = "deviceGroupId";
+        private const string NAME_PARAM = "name";
+        private const string PACKAGE_ID_PARAM = "packageId";
+        private const string PRIORITY_PARAM = "priority";
+
         private RegistryManager registry;
         private string ioTHubHostName;
         private IDeviceGroupsClient deviceGroupsClient;
         private IPackageManagementClient packageClient;
+
 
         public Deployments(
             IServicesConfig config,
@@ -51,55 +58,74 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             this.packageClient = packageClient;
         }
 
+        public Deployments(
+            IDeviceGroupsClient deviceGroupsClient,
+            IPackageManagementClient packageClient,
+            RegistryManager registry,
+            string ioTHubHostName)
+        {
+            this.deviceGroupsClient = deviceGroupsClient;
+            this.packageClient = packageClient;
+            this.registry = registry;
+            this.ioTHubHostName = ioTHubHostName;
+        }
+
         /// <summary>
         /// Schedules a deployment of the provided package, to the given group.
         /// </summary>
         /// <returns>Scheduled deployment</returns>
         public async Task<DeploymentServiceModel> CreateAsync(DeploymentServiceModel model)
         {
-            if(string.IsNullOrEmpty(model.DeviceGroupId))
+            if (string.IsNullOrEmpty(model.DeviceGroupId))
             {
-                throw new ArgumentNullException("deviceGroupId");
+                throw new ArgumentNullException(DEVICE_GROUP_ID_PARAM);
             }
 
-            if(string.IsNullOrEmpty(model.PackageId))
+            if (string.IsNullOrEmpty(model.Name))
             {
-                throw new ArgumentNullException("packageId");
+                throw new ArgumentNullException(NAME_PARAM);
+            }
+
+            if (string.IsNullOrEmpty(model.PackageId))
+            {
+                throw new ArgumentNullException(PACKAGE_ID_PARAM);
             }
 
             if (model.Priority < 0)
             {
-                throw new ArgumentOutOfRangeException("priority", 
-                                                      model.Priority,
-                                                      "The priority provided should be 0 or greater");
-            }
-
-
-            try{
-                await this.packageClient.GetPackageAsync(model.PackageId);
-            } catch (Exception ex) {
-                Console.WriteLine("failing: " + ex);
+                throw new ArgumentOutOfRangeException(PRIORITY_PARAM,
+                    model.Priority,
+                    "The priority provided should be 0 or greater");
             }
 
             var getDeviceGroupTask = this.deviceGroupsClient.GetDeviceGroupsAsync(model.DeviceGroupId);
             var package = await this.packageClient.GetPackageAsync(model.PackageId);
             var deviceGroup = await getDeviceGroupTask;
 
-            var edgeConfiguration = this.CreateEdgeConfiguration(deviceGroup, package, model.Priority, model.Name);
+            var edgeConfiguration = this.CreateEdgeConfiguration(deviceGroup, package,
+                                                                 model.Priority, model.Name);
             return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(edgeConfiguration));
         }
 
         /// <summary>
         /// Retrieves all deployments that have been scheduled on the iothub.
+        ///
+        /// Only deployments which were created by RM will be returned.
         /// </summary>
-        /// <returns>All scheduled deployments</returns>
+        /// <returns>All scheduled deployments with RMDeployment label</returns>
         public async Task<DeploymentServiceListModel> GetAsync()
         {
             // TODO: Currently they only support 20 deployments
-            IEnumerable<Configuration> deployments = await this.registry.GetConfigurationsAsync(MAX_DEPLOYMENTS);
+            var deployments = await this.registry.GetConfigurationsAsync(MAX_DEPLOYMENTS);
+
+            if (deployments == null)
+            {
+                throw new ResourceNotFoundException($"No deployments found for {this.ioTHubHostName} hub.");
+            }
 
             List<DeploymentServiceModel> serviceModelDeployments = 
-                    deployments.AsParallel().Select(config => new DeploymentServiceModel(config))
+                    deployments.Where(this.CheckIfDeploymentWasMadeByRM)
+                               .Select(config => new DeploymentServiceModel(config))
                                                 .OrderBy(conf => conf.Name)
                                                 .ToList();
 
@@ -112,15 +138,21 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         /// <returns>Deployment for the given id</returns>
         public async Task<DeploymentServiceModel> GetAsync(string deploymentId)
         {
-            if(string.IsNullOrEmpty(deploymentId))
+            if (string.IsNullOrEmpty(deploymentId))
             {
-                throw new ArgumentNullException("deploymentId");
+                throw new ArgumentNullException(nameof(deploymentId));
             }
 
             Configuration deployment = await this.registry.GetConfigurationAsync(deploymentId);
-            if(deployment == null)
+            if (deployment == null)
             {
                 throw new ResourceNotFoundException($"Deployment with id {deploymentId} not found.");
+            }
+
+            if (!this.CheckIfDeploymentWasMadeByRM(deployment))
+            {
+                throw new ResourceNotSupportedException($"Deployment with id {deploymentId}" + @" was 
+                                                        created externally and therefore not supported");
             }
             
             return new DeploymentServiceModel(deployment);
@@ -134,7 +166,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         {
             if(string.IsNullOrEmpty(deploymentId))
             {
-                throw new ArgumentNullException("deploymentId");
+                throw new ArgumentNullException(nameof(deploymentId));
             }
 
             await this.registry.RemoveConfigurationAsync(deploymentId);
@@ -145,7 +177,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                                                       int priority,
                                                       string name)
         {
-            // Deployment IDs must be lowercase
             var deploymentId = $"{deviceGroup.Id}--{package.Id}".ToLower();
             var edgeConfiguration = new Configuration(deploymentId);
 
@@ -165,8 +196,16 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 edgeConfiguration.Labels = new Dictionary<string, string>();
             }
             edgeConfiguration.Labels.Add(DEPLOYMENT_NAME_KEY, name);
+            edgeConfiguration.Labels.Add(RM_CREATED_KEY, "true");
 
             return edgeConfiguration;
+        }
+
+        private bool CheckIfDeploymentWasMadeByRM(Configuration conf)
+        {
+            return conf.Labels != null &&
+                   conf.Labels.ContainsKey(RM_CREATED_KEY) &&
+                   bool.TryParse(conf.Labels[RM_CREATED_KEY], out var res) && res;
         }
     }
 }

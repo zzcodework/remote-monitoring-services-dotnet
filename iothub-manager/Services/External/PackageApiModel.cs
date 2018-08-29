@@ -34,6 +34,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
 
     public enum PackageType
     {
-        EDGE_MANIFEST
+        EdgeManifest
     }
 }

@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using Microsoft.Azure.Devices;
-using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {

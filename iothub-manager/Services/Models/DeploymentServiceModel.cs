@@ -9,7 +9,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
     {
         private const string DEPLOYMENT_NAME_KEY = "Name";
         public DateTime CreatedDateTimeUtc { get; set; }
-        public string DeploymentId { get; set; }
+        public string Id { get; set; }
         public DeploymentMetrics DeploymentMetrics { get; set; }
         public string DeviceGroupId { get; set; }
         public string Name {get; set; }
@@ -24,7 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public DeploymentServiceModel(Configuration config)
         {   
             this.CreatedDateTimeUtc = config.CreatedTimeUtc;
-            this.DeploymentId = config.Id;
+            this.Id = config.Id;
 
             // TODO: Add checks here
             var groupAndPkgIds = config.Id.Split(new [] { "--" }, StringSplitOptions.None);
@@ -37,13 +37,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             
             this.PackageId = groupAndPkgIds[1];
             this.Priority = config.Priority;
-            this.Type = DeploymentType.EDGE_MANIFEST;
+            this.Type = DeploymentType.EdgeManifest;
 
             this.DeploymentMetrics = new DeploymentMetrics(config.SystemMetrics, config.Metrics);
         }
     }
 
     public enum DeploymentType {
-        EDGE_MANIFEST
+        EdgeManifest
     }
 }
