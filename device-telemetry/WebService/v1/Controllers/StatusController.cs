@@ -97,7 +97,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 var explorerUrl = this.config.ServicesConfig.TimeSeriesExplorerUrl +
                     "?environmentId=" + enviornmentId +
                     "&tid=" + this.config.ServicesConfig.ActiveDirectoryTenant;
-                result.Dependencies.Add(TIME_SERIES_EXPLORER_URL_KEY, explorerUrl);
+                result.Properties.Add(TIME_SERIES_EXPLORER_URL_KEY, explorerUrl);
             }
 
             result.Properties.Add(STORAGE_TYPE_KEY, this.config.ServicesConfig.StorageType);
