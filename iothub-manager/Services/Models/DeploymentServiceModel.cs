@@ -8,8 +8,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
     public class DeploymentServiceModel
     {
         private const string DEPLOYMENT_NAME_KEY = "Name";
+        private const string DEPLOYMENT_ID_SEPARATOR = "--";
         public DateTime CreatedDateTimeUtc { get; set; }
-        public string DeploymentId { get; set; }
+        public string Id { get; set; }
         public DeploymentMetrics DeploymentMetrics { get; set; }
         public string DeviceGroupId { get; set; }
         public string Name {get; set; }
@@ -22,28 +23,31 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         }
 
         public DeploymentServiceModel(Configuration config)
-        {   
-            this.CreatedDateTimeUtc = config.CreatedTimeUtc;
-            this.DeploymentId = config.Id;
+        {
+            if (!config.Id.Contains(DEPLOYMENT_ID_SEPARATOR))
+            {
+                throw new ArgumentException($"Invalid deploymentId provided {config.Id}");
+            }
 
-            // TODO: Add checks here
-            var groupAndPkgIds = config.Id.Split(new [] { "--" }, StringSplitOptions.None);
-            this.DeviceGroupId = groupAndPkgIds[0];
-
+            var groupAndPkgIds = config.Id.Split(new [] { DEPLOYMENT_ID_SEPARATOR }, 
+                                                 StringSplitOptions.None);
             if(config.Labels?.Count > 0)
             {
                 this.Name = config.Labels[DEPLOYMENT_NAME_KEY];
             }
-            
+
+            this.CreatedDateTimeUtc = config.CreatedTimeUtc;
+            this.DeviceGroupId = groupAndPkgIds[0];
+            this.Id = config.Id;
             this.PackageId = groupAndPkgIds[1];
             this.Priority = config.Priority;
-            this.Type = DeploymentType.EDGE_MANIFEST;
+            this.Type = DeploymentType.EdgeManifest;
 
             this.DeploymentMetrics = new DeploymentMetrics(config.SystemMetrics, config.Metrics);
         }
     }
 
     public enum DeploymentType {
-        EDGE_MANIFEST
+        EdgeManifest
     }
 }

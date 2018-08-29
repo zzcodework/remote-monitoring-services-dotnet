@@ -16,7 +16,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
-
     public delegate Task<DevicePropertyServiceModel> DevicePropertyDelegate(DevicePropertyServiceModel model);
     public interface IDevices
     {

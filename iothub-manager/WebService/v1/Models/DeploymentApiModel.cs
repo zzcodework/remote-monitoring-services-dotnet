@@ -15,7 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "DeviceGroupId")]
         public string DeviceGroupId { get; set; }
 
-        [JsonProperty(PropertyName = "DeploymentId")]
+        [JsonProperty(PropertyName = "Id")]
         public string DeploymentId { get; set; }
 
          [JsonProperty(PropertyName = "Name")]
@@ -41,7 +41,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public DeploymentApiModel(DeploymentServiceModel serviceModel)
         {
             this.CreatedDateTimeUtc = serviceModel.CreatedDateTimeUtc;
-            this.DeploymentId = serviceModel.DeploymentId;
+            this.DeploymentId = serviceModel.Id;
             this.DeviceGroupId = serviceModel.DeviceGroupId;
             this.Name = serviceModel.Name;
             this.PackageId = serviceModel.PackageId;

@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 
-using System;
 using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
@@ -31,19 +29,15 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         {
         }
 
-        public DeploymentMetricsApiModel(DeploymentMetrics serviceModel)
+        public DeploymentMetricsApiModel(DeploymentMetrics metricsServiceModel)
         {
-            IDictionary<string, long> metrics = serviceModel.metrics;
-            this.AppliedCount = this.GetMetricsValueOrDefault(metrics, APPLIED_METRICS_KEY);
-            this.TargetedCount = this.GetMetricsValueOrDefault(metrics, TARGETED_METRICS_KEY);
-            this.SucceededCount = this.GetMetricsValueOrDefault(metrics, SUCCESSFUL_METRICS_KEY);
-            this.FailedCount = this.GetMetricsValueOrDefault(metrics, FAILED_METRICS_KEY);
-        }
+            if (metricsServiceModel == null) return;
 
-        private long GetMetricsValueOrDefault(IDictionary<string, long> metrics, string key)
-        {
-            long value;
-            return metrics.TryGetValue(key, out value) ? value : 0;
+            var metrics = metricsServiceModel.Metrics;
+            this.AppliedCount = metrics.TryGetValue(APPLIED_METRICS_KEY, out var value) ? value : 0;
+            this.TargetedCount = metrics.TryGetValue(TARGETED_METRICS_KEY, out value) ? value : 0;
+            this.SucceededCount = metrics.TryGetValue(SUCCESSFUL_METRICS_KEY, out value) ? value : 0;
+            this.FailedCount = metrics.TryGetValue(FAILED_METRICS_KEY, out value) ? value : 0;
         }
     }
 }

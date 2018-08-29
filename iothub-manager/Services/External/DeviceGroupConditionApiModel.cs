@@ -17,5 +17,3 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
         public string Value { get; set; }
     }
 }
-
-

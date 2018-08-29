@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 
-using System;
-using System.Linq;
 using System.Collections.Generic;
-using Microsoft.Azure.Devices;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
@@ -14,14 +11,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public DeploymentServiceListModel(List<DeploymentServiceModel> items)
         {
             this.Items = items;
-        }
-
-        public DeploymentServiceListModel(IEnumerable<Configuration> configs)
-        {   
-            configs.AsParallel().Select(config => new DeploymentServiceModel(config))
-                                .OrderBy(conf => conf.Name)
-                                .ToList();
-
         }
     }
 }

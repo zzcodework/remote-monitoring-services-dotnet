@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved.
 
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Newtonsoft.Json;

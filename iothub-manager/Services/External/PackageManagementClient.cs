@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved.
 
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -70,7 +69,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
                 case HttpStatusCode.NotFound:
                     throw new ResourceNotFoundException($"{response.Content}, request URL = {request.Uri}");
                 default:
-                    throw new HttpRequestException($"Http request failed, status code = {response.StatusCode}, content = {response.Content}, request URL = {request.Uri}");
+                    throw new HttpRequestException($"Http request failed, status code = {response.StatusCode}, "
+                                                  +$"content = {response.Content}, request URL = {request.Uri}");
             }
         }
     }
