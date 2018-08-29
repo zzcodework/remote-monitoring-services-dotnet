@@ -16,7 +16,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
             this.Metrics = new Dictionary<string, long>();
 
-            // TODO: Cleaner way to copy to dictionary
             if (systemMetrics?.Results.Count > 0)
             {
                 foreach (var pair in systemMetrics.Results)
