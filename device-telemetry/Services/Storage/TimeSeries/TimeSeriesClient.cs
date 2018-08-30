@@ -88,7 +88,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         }
 
         /// <summary>
-        /// Makes a request to the enviornment availability API to verify
+        /// Makes a request to the environment availability API to verify
         /// that the fqdn provided can reach Time Series Insights.
         /// Returns a tuple with the status [bool isAvailable, string message].
         /// </summary>

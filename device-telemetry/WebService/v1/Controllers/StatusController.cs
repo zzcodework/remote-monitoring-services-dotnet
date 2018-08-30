@@ -93,9 +93,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
 
                 // Add Time Series Insights explorer url
                 var timeSeriesFqdn = this.config.ServicesConfig.TimeSeriesFqdn;
-                var enviornmentId = timeSeriesFqdn.Substring(0, timeSeriesFqdn.IndexOf(TIME_SERIES_EXPLORER_URL_SEPARATOR_CHAR));
+                var environmentId = timeSeriesFqdn.Substring(0, timeSeriesFqdn.IndexOf(TIME_SERIES_EXPLORER_URL_SEPARATOR_CHAR));
                 var explorerUrl = this.config.ServicesConfig.TimeSeriesExplorerUrl +
-                    "?environmentId=" + enviornmentId +
+                    "?environmentId=" + environmentId +
                     "&tid=" + this.config.ServicesConfig.ActiveDirectoryTenant;
                 result.Properties.Add(TIME_SERIES_EXPLORER_URL_KEY, explorerUrl);
             }
