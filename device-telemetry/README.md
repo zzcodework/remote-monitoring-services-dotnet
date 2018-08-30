@@ -66,6 +66,7 @@ for more information. More information on environment variables
   * `PCS_TSI_FQDN`= {Time Series FQDN}
     * see: Azure Portal => Your Resource Group => Time Series Insights Environment => Data Access FQDN
   * `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
+
 ## Running the service with Visual Studio or VS Code
 
 1. Make sure the [Prerequisites](#prerequisites) are set up.
