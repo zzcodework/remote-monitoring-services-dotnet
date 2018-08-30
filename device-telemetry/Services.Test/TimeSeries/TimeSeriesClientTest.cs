@@ -84,6 +84,7 @@ namespace Services.Test.TimeSeries
             this.servicesConfig.Setup(f => f.ActiveDirectoryTenant).Returns("test123");
             this.servicesConfig.Setup(f => f.ActiveDirectoryAppId).Returns("test123");
             this.servicesConfig.Setup(f => f.ActiveDirectoryAppSecret).Returns("test123");
+            this.servicesConfig.Setup(f => f.TimeSeriesAuthority).Returns("https://login.testing.net/");
 
             this.client = new TimeSeriesClient(
                 this.httpClient.Object,
