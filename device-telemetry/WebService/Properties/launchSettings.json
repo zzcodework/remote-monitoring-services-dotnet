@@ -21,7 +21,7 @@
           "PCS_AAD_APPID": "$(PCS_AAD_APPID)", 
           "PCS_AAD_APPSECRET": "$(PCS_AAD_APPSECRET)",
           "PCS_AAD_TENANT": "$(PCS_AAD_TENANT)",
-          "PCS_DIAGNOSTICS_ENDPOINT_URL": "http://localhost:9006/v1",
+          "PCS_DIAGNOSTICS_WEBSERVICE_URL": "http://localhost:9006/v1",
           "PCS_AUTH_REQUIRED": "false"
         }
     },
@@ -38,7 +38,7 @@
         "PCS_AAD_APPID": "$(PCS_AAD_APPID)", 
         "PCS_AAD_APPSECRET": "$(PCS_AAD_APPSECRET)",
         "PCS_AAD_TENANT": "$(PCS_AAD_TENANT)",
-        "PCS_DIAGNOSTICS_ENDPOINT_URL": "http://localhost:9006/v1",
+        "PCS_DIAGNOSTICS_WEBSERVICE_URL": "http://localhost:9006/v1",
         "PCS_AUTH_REQUIRED": "false"
       },
       "applicationUrl": "http://localhost:9004/v1/status"

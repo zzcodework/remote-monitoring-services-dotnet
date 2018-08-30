@@ -65,8 +65,7 @@ for more information. More information on environment variables
     * Allowed values: ["cosmosdb", "tsi"]. Default is "tsi"
   * `PCS_TSI_FQDN`= {Time Series FQDN}
     * see: Azure Portal => Your Resource Group => Time Series Insights Environment => Data Access FQDN
-  * `PCS_DIAGNOSTICS_ENDPOINT_URL` (optional) = http://localhost:9006/v1
-
+  * `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
 ## Running the service with Visual Studio or VS Code
 
 1. Make sure the [Prerequisites](#prerequisites) are set up.
@@ -82,7 +81,7 @@ for more information. More information on environment variables
    1. `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Document Db connection string}
    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
    1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-   1. `PCS_DIAGNOSTICS_ENDPOINT_URL` (optional) = http://localhost:9006/v1
+   1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
 1. Start the WebService project (e.g. press F5).
 1. Using an HTTP client like [Postman][postman-url], use the
 [RESTful API][project-wiki] to test out the service.
@@ -96,7 +95,7 @@ More information on environment variables
     1. `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
     1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
     1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-    1. `PCS_DIAGNOSTICS_ENDPOINT_URL` (optional) = http://localhost:9006/v1
+    1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    * `build`: compile all the projects and run the tests.
    * `compile`: compile all the projects.
