@@ -17,6 +17,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         Uri DocumentDbUri { get; }
         string DocumentDbKey { get; }
         int DocumentDbThroughput { get; set; }
+        string DiagnosticsApiUrl { get; }
+        int DiagnosticsMaxLogRetries { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -38,6 +40,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         public string DocumentDbKey { get; set; }
 
         public int DocumentDbThroughput { get; set; }
+
+        public string DiagnosticsApiUrl { get; set; }
+
+        public int DiagnosticsMaxLogRetries { get; set; }
 
         public string DocumentDbConnString
         {
