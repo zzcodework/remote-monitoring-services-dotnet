@@ -14,9 +14,18 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         StorageConfig MessagesConfig { get; set; }
         AlarmsConfig AlarmsConfig { get; set; }
         string StorageType { get; set; }
-        Uri DocumentDbUri { get; }
-        string DocumentDbKey { get; }
-        int DocumentDbThroughput { get; set; }
+        Uri CosmosDbUri { get; }
+        string CosmosDbKey { get; }
+        int CosmosDbThroughput { get; set; }
+        string TimeSeriesFqdn { get; }
+        string TimeSeriesAuthority { get; }
+        string TimeSeriesAudience { get; }
+        string TimeSeriesExplorerUrl { get; }
+        string TimeSertiesApiVersion { get; }
+        string TimeSeriesTimeout { get; }
+        string ActiveDirectoryTenant { get; }
+        string ActiveDirectoryAppId { get; }
+        string ActiveDirectoryAppSecret { get; }
         string DiagnosticsApiUrl { get; }
         int DiagnosticsMaxLogRetries { get; }
     }
@@ -35,17 +44,17 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
 
         public string StorageType { get; set; }
 
-        public Uri DocumentDbUri { get; set; }
+        public Uri CosmosDbUri { get; set; }
 
-        public string DocumentDbKey { get; set; }
+        public string CosmosDbKey { get; set; }
 
-        public int DocumentDbThroughput { get; set; }
+        public int CosmosDbThroughput { get; set; }
 
         public string DiagnosticsApiUrl { get; set; }
 
         public int DiagnosticsMaxLogRetries { get; set; }
 
-        public string DocumentDbConnString
+        public string CosmosDbConnString
         {
             set
             {
@@ -59,13 +68,31 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
                         UriKind.RelativeOrAbsolute,
                         out endpoint))
                 {
-                    var message = "Invalid connection string for DocumentDB";
+                    var message = "Invalid connection string for CosmosDB";
                     throw new InvalidConfigurationException(message);
                 }
 
-                this.DocumentDbUri = endpoint;
-                this.DocumentDbKey = match.Groups["key"].Value;
+                this.CosmosDbUri = endpoint;
+                this.CosmosDbKey = match.Groups["key"].Value;
             }
         }
+
+        public string TimeSeriesFqdn { get; set; }
+
+        public string TimeSeriesAuthority { get; set; }
+
+        public string TimeSeriesAudience { get; set; }
+
+        public string TimeSeriesExplorerUrl { get; set; }
+
+        public string TimeSertiesApiVersion { get; set; }
+
+        public string TimeSeriesTimeout { get; set; }
+
+        public string ActiveDirectoryTenant { get; set; }
+
+        public string ActiveDirectoryAppId { get; set; }
+
+        public string ActiveDirectoryAppSecret { get; set; }
     }
 }

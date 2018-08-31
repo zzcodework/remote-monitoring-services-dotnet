@@ -11,9 +11,8 @@ using Microsoft.Azure.Documents.SystemFunctions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
-using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
+namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB
 {
     public interface IStorageClient
     {
@@ -62,9 +61,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             IServicesConfig config,
             ILogger logger)
         {
-            this.storageUri = config.DocumentDbUri;
-            this.storagePrimaryKey = config.DocumentDbKey;
-            this.storageThroughput = config.DocumentDbThroughput;
+            this.storageUri = config.CosmosDbUri;
+            this.storagePrimaryKey = config.CosmosDbKey;
+            this.storageThroughput = config.CosmosDbThroughput;
             this.log = logger;
             this.client = this.GetDocumentClient();
         }
