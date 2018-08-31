@@ -1,8 +1,8 @@
-[![Build status](https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_apis/build/status/Consolidated%20Repo)](https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_build/latest?definitionId=22)
+[![Build][build-badge]][build-url]
 [![Issues][issues-badge]][issues-url]
 [![Gitter][gitter-badge]][gitter-url]
 
-Remote Monitoring Solution with Azure IoT
+Remote Monitoring Microservices
 ========
 <div align="center">
 <img src="https://user-images.githubusercontent.com/33666587/39657377-33612fc8-4fbc-11e8-98a8-58906236238a.png" width="600" height="auto"/>
@@ -10,6 +10,7 @@ Remote Monitoring Solution with Azure IoT
 
 Overview
 ========
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://www.azureiotsolutions.com/Accelerators#solutions/types/RM2)
 > There is a Java version of this repo available [here](https://github.com/Azure/remote-monitoring-services-java).
 
 Remote monitoring helps you get better visibility into your devices, assets, and
@@ -38,6 +39,7 @@ Getting Started
 There are two ways to deploy a solution:
 1) Deploy using the web interface using the instructions [here](https://docs.microsoft.com/azure/iot-suite/iot-suite-remote-monitoring-deploy).
 2) Deploy using the [command line](https://docs.microsoft.com/azure/iot-suite/iot-suite-remote-monitoring-deploy-cli).
+3) Deploy locally using the instructions [here](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/docs/LOCAL_DEPLOYMENT.md).
 
 Common Scenarios
 ================
@@ -61,17 +63,13 @@ Architecture Overview
 [Learn more](https://docs.microsoft.com/azure/iot-suite/iot-suite-remote-monitoring-sample-walkthrough) about the Remote Monitoring architecture, including the use of microservices and Docker containers.
 
 ## Components
-* [Remote Monitoring Web UI](https://github.com/Azure/pcs-remote-monitoring-webui)
-* [Command Line Interface (CLI)](https://github.com/Azure/pcs-cli)
-* [IoT Hub manager](https://github.com/Azure/iothub-manager-dotnet)
-* [User Management](https://github.com/Azure/pcs-auth-dotnet)
-* [Device Simulation](https://github.com/Azure/device-simulation-dotnet)
-* [Telemetry](https://github.com/Azure/device-telemetry-dotnet)
-* [ASA Manager](https://github.com/Azure/asa-manager-dotnet)
-* [Configuration](https://github.com/azure/pcs-config-dotnet)
-* [Storage Adapter](https://github.com/azure/pcs-storage-adapter-dotnet)
-* [Application Gateway (SSL Proxy WebApp)](https://github.com/Azure/reverse-proxy-dotnet)
-* [API Gateway](https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/tree/master/reverse-proxy)
+* [IoT Hub manager](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/iothub-manager)
+* [User Management](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/auth)
+* [Telemetry](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-telemetry)
+* [ASA Manager](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/asa-manager)
+* [Configuration](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/config)
+* [Storage Adapter](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter)
+
 
 How-to and Troubleshooting Resources
 ====================================
@@ -93,8 +91,8 @@ License
 Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the [MIT](LICENSE) License.
 
-[build-badge]: https://img.shields.io/travis/Azure/azure-iot-pcs-remote-monitoring-dotnet.svg
-[build-url]: https://travis-ci.org/Azure/azure-iot-pcs-remote-monitoring-dotnet
+[build-badge]:https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_apis/build/status/Consolidated%20Repo
+[build-url]: https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_build/latest?definitionId=22
 [issues-badge]: https://img.shields.io/github/issues/azure/azure-iot-pcs-remote-monitoring-dotnet.svg
 [issues-url]: https://github.com/azure/azure-iot-pcs-remote-monitoring-dotnet/issues
 [gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg

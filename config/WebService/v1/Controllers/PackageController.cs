@@ -26,35 +26,41 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpGet]
         public async Task<PackageListApiModel> GetAllAsync()
         {
-            return new PackageListApiModel(await this.storage.GetAllPackagesAync());
+            return new PackageListApiModel(await this.storage.GetPackagesAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<PackageApiModel> GetAsync(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new InvalidInputException("Valid id must be provided");
+            }
+
             return new PackageApiModel(await this.storage.GetPackageAsync(id));
         }
 
         [HttpPost]
         public async Task<PackageApiModel> PostAsync(string type, IFormFile package)
         {
-            if(String.IsNullOrEmpty(type)) {
-                throw new InvalidInputException($"Package type must be provided");
+            if (string.IsNullOrEmpty(type))
+            {
+                throw new InvalidInputException("Package type must be provided");
             }
 
             bool isValidPackageType = Enum.TryParse(type, true, out PackageType uploadedPackageType);
-            if(!isValidPackageType)
+            if (!isValidPackageType)
             {
                 throw new InvalidInputException($"Provided package type {type} is not valid.");
             }
 
-            if(package == null || string.IsNullOrEmpty(package.FileName) || package.Length == 0)
+            if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))
             {
                 throw new InvalidInputException("Package uploaded is missing or invalid.");
             }
 
-            var packageContent = string.Empty;
-            using(var streamReader = new StreamReader(package.OpenReadStream()))
+            string packageContent;
+            using (var streamReader = new StreamReader(package.OpenReadStream()))
             {
                 packageContent = await streamReader.ReadToEndAsync();
             }
@@ -72,6 +78,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpDelete("{id}")]
         public async Task DeleteAsync(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new InvalidInputException("Valid id must be provided");
+            }
+
             await this.storage.DeletePackageAsync(id);
         }
     }

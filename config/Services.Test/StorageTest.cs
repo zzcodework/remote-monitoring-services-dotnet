@@ -23,6 +23,7 @@ namespace Services.Test
         private readonly Mock<IStorageAdapterClient> mockClient;
         private readonly Storage storage;
         private readonly Random rand;
+        private const string PACKAGES_COLLECTION_ID = "packages";
 
         public StorageTest()
         {
@@ -603,13 +604,13 @@ namespace Services.Test
         [Fact]
         public async Task AddPackageTest()
         {
-            var collectionId = "packages";
-            var key = "package name";
+            const string collectionId = "packages";
+            const string key = "package name";
             var pkg = new Package
             {
                 Id = string.Empty,
                 Name = key,
-                Type = PackageType.EDGE_MANIFEST,
+                Type = PackageType.EdgeManifest,
                 Content = "SomeContent"
             };
             var value = JsonConvert.SerializeObject(pkg);
@@ -623,26 +624,49 @@ namespace Services.Test
                     Key = key,
                     Data = value
                 });
+
             var result = await this.storage.AddPackageAsync(pkg);
             Assert.Equal(pkg.Name, result.Name);
             Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
         }
 
-        private bool IsMatchingPackage(string pkgJson, string originalPkgJson) {
+        [Fact]
+        public async Task DeletePackageAsyncTest()
+        {
+            var packageId = this.rand.NextString();
+
+            this.mockClient
+                .Setup(x => x.DeleteAsync(It.Is<string>(s => s == PACKAGES_COLLECTION_ID),
+                                          It.Is<string>(s => s == packageId)))
+                .Returns(Task.FromResult(0));
+
+            await this.storage.DeletePackageAsync(packageId);
+
+            this.mockClient
+                .Verify(x => x.DeleteAsync(
+                        It.Is<string>(s => s == PACKAGES_COLLECTION_ID),
+                        It.Is<string>(s => s == packageId)),
+                    Times.Once);
+        }
+
+        private bool IsMatchingPackage(string pkgJson, string originalPkgJson)
+        {
+            const string dateCreatedField = "DateCreated";
             var createdPkg = JObject.Parse(pkgJson);
             var originalPkg = JObject.Parse(originalPkgJson);
 
             // To prevent false failures on unit tests we allow a couple of seconds diffence
             // when verifying the date created.
-            var dateCreated = DateTimeOffset.Parse(createdPkg["DateCreated"].ToString());
+            var dateCreated = DateTimeOffset.Parse(createdPkg[dateCreatedField].ToString());
             var secondsDiff = (DateTimeOffset.UtcNow - dateCreated).TotalSeconds;
-            if (secondsDiff > 3) {
+            if (secondsDiff > 3)
+            {
                 return false;
             }
 
-            createdPkg.Remove("DateCreated");
-            originalPkg.Remove("DateCreated");
+            createdPkg.Remove(dateCreatedField);
+            originalPkg.Remove(dateCreatedField);
 
             return JToken.DeepEquals(createdPkg, originalPkg);
         }
