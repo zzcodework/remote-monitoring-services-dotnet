@@ -43,11 +43,11 @@ function clean_up {
 }
 
 function start_all_services_nohup {
-    for msfolder in ${!microservices[@]}; do
-        location=${microservicefolders[${msfolder}]}
-        cd "$location/WebService"
-        nohup azds up -v > ../../../"$location.azds.op" 2>&1 &
-    done
+         for msfolder in ${!microservices[@]}; do
+                  location=${microservicefolders[${msfolder}]}
+                  cd "$location/WebService"
+                  nohup azds up -v > ../../../"$location.azds.op" 2>&1 &
+         done
 }
 
 function main {
