@@ -8,11 +8,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         public int MaxDeleteRetries { get; set; }
 
         public AlarmsConfig(
-            string documentDbDatabase,
-            string documentDbCollection,
+            string cosmosDbDatabase,
+            string cosmosDbCollection,
             int maxDeleteRetries)
         {
-            this.StorageConfig = new StorageConfig(documentDbDatabase, documentDbCollection);
+            this.StorageConfig = new StorageConfig(cosmosDbDatabase, cosmosDbCollection);
             this.MaxDeleteRetries = maxDeleteRetries;
         }
     }
