@@ -11,6 +11,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
     {
         public string ETag { get; set; }
         public string DeviceId { get; set; }
+        public bool IsEdgeDevice { get; set; }
         public bool IsSimulated { get; set; }
         public Dictionary<string, JToken> DesiredProperties { get; set; }
         public Dictionary<string, JToken> ReportedProperties { get; set; }
@@ -26,6 +27,25 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             Dictionary<string, JToken> desiredProperties,
             Dictionary<string, JToken> reportedProperties,
             Dictionary<string, JToken> tags,
+            bool isSimulated) : this(
+                etag: etag,
+                deviceId: deviceId,
+                desiredProperties: desiredProperties,
+                reportedProperties: reportedProperties,
+                tags: tags,
+                isEdgeDevice: false,
+                isSimulated: isSimulated
+            )
+        {
+        }
+
+        public DeviceTwinServiceModel(
+            string etag,
+            string deviceId,
+            Dictionary<string, JToken> desiredProperties,
+            Dictionary<string, JToken> reportedProperties,
+            Dictionary<string, JToken> tags,
+            bool isEdgeDevice,
             bool isSimulated)
         {
             this.ETag = etag;
@@ -33,6 +53,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.DesiredProperties = desiredProperties;
             this.ReportedProperties = reportedProperties;
             this.Tags = tags;
+            this.IsEdgeDevice = isEdgeDevice;
             this.IsSimulated = isSimulated;
         }
 
@@ -45,6 +66,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 this.Tags = TwinCollectionToDictionary(twin.Tags);
                 this.DesiredProperties = TwinCollectionToDictionary(twin.Properties.Desired);
                 this.ReportedProperties = TwinCollectionToDictionary(twin.Properties.Reported);
+                this.IsEdgeDevice = twin.Capabilities?.IotEdge ?? false;
                 this.IsSimulated = this.Tags.ContainsKey("IsSimulated") && this.Tags["IsSimulated"].ToString() == "Y";
             }
         }
@@ -61,7 +83,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 ETag = this.ETag,
                 Tags = DictionaryToTwinCollection(this.Tags),
-                Properties = properties
+                Properties = properties,
+                Capabilities = this.IsEdgeDevice ? new DeviceCapabilities()
+                {
+                    IotEdge = this.IsEdgeDevice
+                } : null
             };
         }
 
