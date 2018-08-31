@@ -4,7 +4,7 @@ build:
   context: ..\
   dockerfile: Dockerfile
 install:
-  chart: charts/asamanager
+  chart: charts/config
   values:
   - values.dev.yaml?
   - secrets.dev.yaml?
@@ -15,9 +15,9 @@ install:
     disableProbes: true
     ingress:
       hosts:
-      # This expands to [space.s.]webservice.<guid>.<region>.aksapp.io
-      - $(spacePrefix)asamanager$(hostSuffix)
-       
+      # This expands to [space.s.]config.<guid>.<region>.aksapp.io
+      - $(spacePrefix)config$(hostSuffix)
+
 configurations:
   develop:
     build:

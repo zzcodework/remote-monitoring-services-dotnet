@@ -1,16 +1,13 @@
 FROM microsoft/aspnetcore-build:2.0
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV DOTNET_USE_POLLING_FILE_WATCHER=true
-
-EXPOSE 9024
+EXPOSE 9002
 
 WORKDIR /src
-COPY ["asa-manager.sln", "./"]
-COPY ["DeviceGroupsAgent/DeviceGroupsAgent.csproj", "DeviceGroupsAgent/"]
+COPY ["iothub-manager.sln", "./"]
 COPY ["Services/Services.csproj", "Services/"]
-COPY ["SetupAgent/SetupAgent.csproj", "SetupAgent/"]
-COPY ["TelemetryRulesAgent/TelemetryRulesAgent.csproj", "TelemetryRulesAgent/"]
 COPY ["WebService/WebService.csproj", "WebService/"]
+COPY ["RecurringTasksAgent/RecurringTasksAgent.csproj", "RecurringTasksAgent/"]
 COPY ["WebService/azds_entrypoint.sh", "WebService/azds_entrypoint.sh"]
 
 RUN chmod 777 /src/WebService/azds_entrypoint.sh

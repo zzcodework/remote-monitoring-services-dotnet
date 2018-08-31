@@ -4,7 +4,7 @@ build:
   context: ..\
   dockerfile: Dockerfile
 install:
-  chart: charts/asamanager
+  chart: charts/iothubmanager
   values:
   - values.dev.yaml?
   - secrets.dev.yaml?
@@ -12,17 +12,17 @@ install:
     image:
       tag: $(tag)
       pullPolicy: Never
-    disableProbes: true
     ingress:
       hosts:
-      # This expands to [space.s.]webservice.<guid>.<region>.aksapp.io
-      - $(spacePrefix)asamanager$(hostSuffix)
-       
+      # This expands to [space.s.]iothubmanager.<guid>.<region>.aksapp.io
+      - $(spacePrefix)iothubmanager$(hostSuffix)
+
 configurations:
   develop:
     build:
       dockerfile: Dockerfile.develop
       useGitIgnore: true
+      disableProbes: true
     container:
       syncTarget: /src
       sync:
