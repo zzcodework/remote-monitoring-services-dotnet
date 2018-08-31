@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
@@ -13,7 +14,6 @@ using Xunit;
 
 namespace WebService.Test.v1.Controllers
 {
-
     public class DeploymentsControllerTest
     {
         private readonly DeploymentsController deploymentsController;
@@ -23,7 +23,6 @@ namespace WebService.Test.v1.Controllers
         private const string PACKAGE_ID = "packageId";
         private const string DEPLOYMENT_ID = "dvcGroupId--packageId";
         private const int PRIORITY = 10;
-
 
         public DeploymentsControllerTest()
         {
@@ -81,7 +80,7 @@ namespace WebService.Test.v1.Controllers
                 });
             }
 
-            this.deploymentsMock.Setup(x => x.GetAsync()).ReturnsAsync(
+            this.deploymentsMock.Setup(x => x.ListAsync()).ReturnsAsync(
                 new DeploymentServiceListModel(deploymentsList)
             );
 
@@ -114,39 +113,42 @@ namespace WebService.Test.v1.Controllers
                                              bool throwsException)
         {
             // Arrange
-            this.deploymentsMock.Setup(x => x.CreateAsync(
-                                        Match.Create<DeploymentServiceModel>(model =>
-                                            model.DeviceGroupId == deviceGroupId &&
-                                            model.PackageId == packageId &&
-                                            model.Priority == priority &&
-                                            model.Name == name &&
-                                            model.Type == DeploymentType.EdgeManifest)))
-                                .ReturnsAsync(new DeploymentServiceModel()
-            {
-                Name = name,
-                DeviceGroupId = deviceGroupId,
-                PackageId = packageId,
-                Priority = priority,
-                Id = $"{deviceGroupId}--{packageId}",
-                Type = DeploymentType.EdgeManifest,
-                CreatedDateTimeUtc = DateTime.UtcNow
-            });
-
-            try
-            {
-                // Act
-                var depApiModel = new DeploymentApiModel()
+            this.deploymentsMock.Setup(x => x.CreateAsync(Match.Create<DeploymentServiceModel>(model =>
+                    model.DeviceGroupId == deviceGroupId &&
+                    model.PackageId == packageId &&
+                    model.Priority == priority &&
+                    model.Name == name &&
+                    model.Type == DeploymentType.EdgeManifest)))
+                .ReturnsAsync(new DeploymentServiceModel()
                 {
                     Name = name,
                     DeviceGroupId = deviceGroupId,
                     PackageId = packageId,
+                    Priority = priority,
+                    Id = $"{deviceGroupId}--{packageId}",
                     Type = DeploymentType.EdgeManifest,
-                    Priority = priority
-                };
+                    CreatedDateTimeUtc = DateTime.UtcNow
+                });
+
+            var depApiModel = new DeploymentApiModel()
+            {
+                Name = name,
+                DeviceGroupId = deviceGroupId,
+                PackageId = packageId,
+                Type = DeploymentType.EdgeManifest,
+                Priority = priority
+            };
+
+            // Act
+            if (throwsException)
+            {
+                await Assert.ThrowsAsync<InvalidInputException>(async () => await this.deploymentsController.PostAsync(depApiModel));
+            }
+            else
+            {
                 var result = await this.deploymentsController.PostAsync(depApiModel);
 
                 // Assert
-                Assert.False(throwsException);
                 Assert.Equal($"{deviceGroupId}--{packageId}", result.DeploymentId);
                 Assert.Equal(name, result.Name);
                 Assert.Equal(packageId, result.PackageId);
@@ -154,10 +156,6 @@ namespace WebService.Test.v1.Controllers
                 Assert.Equal(priority, result.Priority);
                 Assert.Equal(DeploymentType.EdgeManifest, result.Type);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
-            }
-            catch (Exception ex)
-            {
-                Assert.True(throwsException, ex.Message);
             }
         }
     }

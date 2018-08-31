@@ -199,7 +199,7 @@ namespace Services.Test
             this.registry.Setup(r => r.GetConfigurationsAsync(20))
                          .ReturnsAsync(configurations);
 
-            var returnedDeployments = await this.deployments.GetAsync();
+            var returnedDeployments = await this.deployments.ListAsync();
             Assert.Equal(numDeployments, returnedDeployments.Items.Count);
 
             // verify deployments are ordered by name
@@ -208,7 +208,6 @@ namespace Services.Test
                 Assert.Equal("deployment" + i, returnedDeployments.Items[i].Name);
             }
         }
-
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public async Task FilterOutNonRmDeploymentsTest()
@@ -220,7 +219,7 @@ namespace Services.Test
             this.registry.Setup(r => r.GetConfigurationsAsync(20))
                 .ReturnsAsync(configurations);
 
-            var returnedDeployments = await this.deployments.GetAsync();
+            var returnedDeployments = await this.deployments.ListAsync();
             Assert.Single(returnedDeployments.Items);
             Assert.StartsWith("test--config", returnedDeployments.Items[0].Id);
         }

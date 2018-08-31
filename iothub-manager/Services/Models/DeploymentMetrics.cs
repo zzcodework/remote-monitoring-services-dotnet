@@ -16,7 +16,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
             this.Metrics = new Dictionary<string, long>();
 
-            if (systemMetrics?.Results.Count > 0)
+            if (systemMetrics?.Results?.Count > 0)
             {
                 foreach (var pair in systemMetrics.Results)
                 {
@@ -24,7 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 }
             }
 
-            if (customMetrics?.Results.Count > 0)
+            if (customMetrics?.Results?.Count > 0)
             {
                 foreach (var pair in customMetrics.Results)
                 {

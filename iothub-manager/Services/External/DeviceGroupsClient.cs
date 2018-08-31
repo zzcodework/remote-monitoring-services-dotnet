@@ -37,7 +37,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
          */
         public async Task<DeviceGroupApiModel> GetDeviceGroupsAsync(string deviceGroupId)
         {
-            var request = this.CreateRequest($"{deviceGroupId}");
+            var request = this.CreateRequest(deviceGroupId);
             var response = await this.httpClient.GetAsync(request);
             this.CheckStatusCode(response, request);
 

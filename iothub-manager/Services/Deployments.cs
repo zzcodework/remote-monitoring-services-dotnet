@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     public interface IDeployments
     {
         Task<DeploymentServiceModel> CreateAsync(DeploymentServiceModel model);
-        Task<DeploymentServiceListModel> GetAsync();
+        Task<DeploymentServiceListModel> ListAsync();
         Task<DeploymentServiceModel> GetAsync(string id);
         Task DeleteAsync(string deploymentId);
     }
@@ -97,42 +97,33 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                     "The priority provided should be 0 or greater");
             }
 
-            var getDeviceGroupTask = this.deviceGroupsClient.GetDeviceGroupsAsync(model.DeviceGroupId);
-
-            PackageApiModel package;
-
-            try
-            {
-                package = await this.packageClient.GetPackageAsync(model.PackageId);
-            }
-            catch (ResourceNotFoundException)
-            {
-                throw new ResourceNotFoundException($"Package {model.PackageId} not found");
-            }
-
-            DeviceGroupApiModel deviceGroup;
+            var getDeviceGroup = this.deviceGroupsClient.GetDeviceGroupsAsync(model.DeviceGroupId);
+            var getPackage = this.packageClient.GetPackageAsync(model.PackageId);
 
             try
             {
-                deviceGroup = await getDeviceGroupTask;
+                Task.WaitAll(getDeviceGroup, getPackage);
             }
-            catch (ResourceNotFoundException)
+            catch (AggregateException ae)
             {
-                throw new ResourceNotFoundException($"DeviceGroup {model.DeviceGroupId} not found");
+                throw ae.InnerException ?? ae;
             }
 
-            var edgeConfiguration = this.CreateEdgeConfiguration(deviceGroup, package,
+            PackageApiModel package = getPackage.Result;
+            DeviceGroupApiModel deviceGroup = getDeviceGroup.Result;
+
+
+            var edgeConfiguration = this.CreateEdgeConfiguration(getDeviceGroup.Result, getPackage.Result,
                                                                  model.Priority, model.Name);
             return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(edgeConfiguration));
         }
 
         /// <summary>
         /// Retrieves all deployments that have been scheduled on the iothub.
-        ///
         /// Only deployments which were created by RM will be returned.
         /// </summary>
         /// <returns>All scheduled deployments with RMDeployment label</returns>
-        public async Task<DeploymentServiceListModel> GetAsync()
+        public async Task<DeploymentServiceListModel> ListAsync()
         {
             // TODO: Currently they only support 20 deployments
             var deployments = await this.registry.GetConfigurationsAsync(MAX_DEPLOYMENTS);
