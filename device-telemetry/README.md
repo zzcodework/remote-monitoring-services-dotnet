@@ -4,13 +4,13 @@
 
 # Device Telemetry Overview
 
-This service provides a RESTful endpoint for read access to device 
+This service provides a RESTful endpoint for read access to device
 telemetry, full CRUD for rules, and read/write for alarms from storage.
 
 ## Why?
 
-This microservice was built as part of the 
-[Azure IoT Remote Monitoring](https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet) 
+This microservice was built as part of the
+[Azure IoT Remote Monitoring](https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet)
 project to provide a generic implementation for an end-to-end IoT solution. More information [here][rm-arch-url].
 
 ## Features
@@ -22,22 +22,22 @@ project to provide a generic implementation for an end-to-end IoT solution. More
 
 ## Documentation
 
-* View the API documentation in the 
+* View the API documentation in the
 [Wiki](https://github.com/Azure/device-telemetry-dotnet/wiki).
 
 # How to use
 
 ## Running the service with Docker
 
-You can run the microservice and its dependencies using 
+You can run the microservice and its dependencies using
 [Docker](https://www.docker.com/) with the instructions [here][run-with-docker-url].
 
 ## Running the service locally
 
 ## Prerequisites
 ### 1. Deploy Azure Services
-This service has a dependency on the following Azure resources. 
-Follow the instructions for 
+This service has a dependency on the following Azure resources.
+Follow the instructions for
 [Deploy the Azure services](https://docs.microsoft.com/azure/iot-suite/iot-suite-remote-monitoring-deploy-local#deploy-the-azure-services).
 * Cosmos DB
 
@@ -50,11 +50,22 @@ This service depends on the following repository.
 ### 3. Environment variables required to run the service
 In order to run the service, some environment variables need to be created
 at least once. See specific instructions for IDE or command line setup below
-for more information. More information on environment variables 
+for more information. More information on environment variables
 [here](#configuration-and-environment-variables).
   * `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
   * `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
   * `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
+  * `PCS_AAD_TENANT` = {Azure Active Directory Tenant ID}
+    * see: Azure Portal => Azure Active Directory => Properties => Directory ID
+  * `PCS_AAD_APPID` = {Azure Active Directory application ID}
+    * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Application ID
+  * `PCS_AAD_APPSECRET` = {application secret}
+    * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Settings => Passwords
+  * `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
+    * Allowed values: ["cosmosdb", "tsi"]. Default is "tsi"
+  * `PCS_TSI_FQDN`= {Time Series FQDN}
+    * see: Azure Portal => Your Resource Group => Time Series Insights Environment => Data Access FQDN
+  * `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
 
 ## Running the service with Visual Studio or VS Code
 
@@ -71,20 +82,21 @@ for more information. More information on environment variables
    1. `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Document Db connection string}
    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
    1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-   1. etc...
+   1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
 1. Start the WebService project (e.g. press F5).
-1. Using an HTTP client like [Postman][postman-url], use the 
+1. Using an HTTP client like [Postman][postman-url], use the
 [RESTful API][project-wiki] to test out the service.
 
 ## Running the service from the command line
 
 1. Make sure the [Prerequisites](#prerequisites) are set up.
-1. Set the following environment variables in your system. 
-More information on environment variables 
+1. Set the following environment variables in your system.
+More information on environment variables
 [here](#configuration-and-environment-variables).
     1. `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
     1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
     1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
+    1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    * `build`: compile all the projects and run the tests.
    * `compile`: compile all the projects.
@@ -96,10 +108,10 @@ This microservice contains the following projects:
 * **WebService.csproj** - C# web service exposing REST interface for managing Ruels,
     Alarms, and Messages
 * **WebService.Test.csproj** - Unit tests for web services functionality
-* **Services.csproj** - C# assembly containining business logic for interacting 
+* **Services.csproj** - C# assembly containining business logic for interacting
 with storage and the Storage Adapter microservice
 * **Services.Test.csproj** - Unit tests for services functionality
-* **Solution/scripts** - Contains build scripts, docker container creation scripts, 
+* **Solution/scripts** - Contains build scripts, docker container creation scripts,
 and scripts for running the microservice from the command line
 
 ## Updating the Docker image
@@ -135,7 +147,7 @@ there are several ways to manage environment variables.
 1. Visual Studio Code (Windows/MacOS/Linux) loads the environment variables from
    [.vscode/launch.json](.vscode/launch.json)
 1. When running the service **with Docker** or **from the command line**, the
-   application will inherit environment variables values from the system. 
+   application will inherit environment variables values from the system.
    * [This page][windows-envvars-howto-url] describes how to setup env vars
      in Windows. We suggest to edit and execute once the
      [env-vars-setup.cmd](scripts/env-vars-setup.cmd) script included in the
@@ -154,7 +166,7 @@ Please follow our [contribution guidelines](CONTRIBUTING.md).  We love PRs too.
 
 # Feedback
 
-Please enter issues, bugs, or suggestions as 
+Please enter issues, bugs, or suggestions as
 [GitHub Issues](https://github.com/Azure/device-telemetry-dotnet/issues).
 
 # License

@@ -2,13 +2,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.StorageAdapter;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter;
 using Moq;
 using Newtonsoft.Json;
@@ -22,10 +26,12 @@ namespace Services.Test
     {
         private readonly Mock<IStorageAdapterClient> storageAdapter;
         private readonly Mock<ILogger> logger;
-        private readonly Mock<IServicesConfig> servicesConfig;
+        private readonly IServicesConfig servicesConfig;
         private readonly Mock<IRules> rulesMock;
         private readonly Mock<IAlarms> alarms;
+        private readonly Mock<IHttpClient> httpClientMock;
         private readonly IRules rules;
+        private readonly IDiagnosticsClient diagnosticsClient;
 
         private const int LIMIT = 1000;
 
@@ -33,10 +39,17 @@ namespace Services.Test
         {
             this.storageAdapter = new Mock<IStorageAdapterClient>();
             this.logger = new Mock<ILogger>();
-            this.servicesConfig = new Mock<IServicesConfig>();
+            this.servicesConfig = new ServicesConfig
+            {
+                DiagnosticsApiUrl = "http://localhost:9006/v1",
+                DiagnosticsMaxLogRetries = 3
+            };
             this.rulesMock = new Mock<IRules>();
             this.alarms = new Mock<IAlarms>();
-            this.rules = new Rules(this.storageAdapter.Object, this.logger.Object, this.alarms.Object);
+            this.httpClientMock = new Mock<IHttpClient>();
+            this.diagnosticsClient = new DiagnosticsClient(this.httpClientMock.Object, this.servicesConfig, this.logger.Object);
+            this.rules = new Rules(this.storageAdapter.Object, this.logger.Object, this.alarms.Object, this.diagnosticsClient);
+
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -341,6 +354,64 @@ namespace Services.Test
             Assert.Equal(newRuleId, rule.Id);
         }
 
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task DeleteRule_QueriesRuleCountAndLogs()
+        {
+            // Arrange
+            ValueListApiModel fakeRules = new ValueListApiModel();
+            fakeRules.Items.Add(this.CreateFakeRule("rule1"));
+            fakeRules.Items.Add(this.CreateFakeRule("rule2"));
+            this.storageAdapter.Setup(x => x.GetAllAsync(It.IsAny<string>())).Returns(Task.FromResult(fakeRules));
+            IHttpResponse fakeOkResponse = new HttpResponse(HttpStatusCode.OK, "", null);
+            this.httpClientMock.Setup(x => x.PostAsync(It.IsAny<HttpRequest>())).ReturnsAsync(fakeOkResponse);
+
+            Rule test = new Rule
+            {
+                Enabled = true,
+                Deleted = false
+            };
+
+            this.SetUpStorageAdapterGet(test);
+
+            // Act
+            await this.rules.DeleteAsync("id");
+
+            // Assert
+            this.storageAdapter.Verify(x => x.GetAllAsync(It.IsAny<string>()), Times.Once);
+            this.httpClientMock.Verify(x => x.PostAsync(It.IsAny<HttpRequest>()), Times.Exactly(2));
+        }
+
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task DeleteRule_RetriesLogOnError()
+        {
+            // Arrange
+            ValueListApiModel fakeRules = new ValueListApiModel();
+            fakeRules.Items.Add(this.CreateFakeRule("rule1"));
+            fakeRules.Items.Add(this.CreateFakeRule("rule2"));
+            this.storageAdapter.Setup(x => x.GetAllAsync(It.IsAny<string>())).Returns(Task.FromResult(fakeRules));
+            this.httpClientMock.SetupSequence(x => x.PostAsync(It.IsAny<HttpRequest>()))
+                .Throws<Exception>()
+                .ReturnsAsync(new HttpResponse(HttpStatusCode.ServiceUnavailable, "", null))
+                .ReturnsAsync(new HttpResponse(HttpStatusCode.OK, "", null))
+                .ReturnsAsync(new HttpResponse(HttpStatusCode.OK, "", null));
+
+            Rule test = new Rule
+            {
+                Enabled = true,
+                Deleted = false
+            };
+
+            this.SetUpStorageAdapterGet(test);
+
+            // Act
+            await this.rules.DeleteAsync("id");
+
+            // Assert
+            this.storageAdapter.Verify(x => x.GetAllAsync(It.IsAny<string>()), Times.Once);
+            this.httpClientMock.Verify(x => x.PostAsync(It.IsAny<HttpRequest>()), Times.Exactly(4));
+        }
+
         private void ThereAreNoRulessInStorage()
         {
             this.rulesMock.Setup(x => x.GetListAsync(null, 0, LIMIT, null, false))
@@ -413,6 +484,24 @@ namespace Services.Test
             this.storageAdapter
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(result));
+        }
+
+        private ValueApiModel CreateFakeRule(string ruleId)
+        {
+            Rule test = new Rule
+            {
+                Enabled = true,
+                Id = ruleId
+            };
+
+            string ruleString = JsonConvert.SerializeObject(test);
+
+            return new ValueApiModel
+            {
+                Data = ruleString,
+                ETag = "1234",
+                Key = ruleId
+            };
         }
     }
 }

@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter
+namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.StorageAdapter
 {
     public class ValueListApiModel
     {

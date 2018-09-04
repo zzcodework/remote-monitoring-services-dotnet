@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Moq;
@@ -24,27 +25,27 @@ namespace Services.Test
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InitialListIsEmpty()
+        public async Task InitialListIsEmptyAsync()
         {
             // Arrange
             this.ThereAreNoMessagesInStorage();
 
             // Act
-            var list = this.messages.Object.List(null, null, null, SKIP, LIMIT, null);
+            var list = await this.messages.Object.ListAsync(null, null, null, SKIP, LIMIT, null);
 
             // Assert
-            Assert.Equal(0, list.Messages.Count);
-            Assert.Equal(0, list.Properties.Count);
+            Assert.Empty(list.Messages);
+            Assert.Empty(list.Properties);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void GetListWithValues()
+        public async Task GetListWithValuesAsync()
         {
             // Arrange
             this.ThereAreSomeMessagesInStorage();
 
             // Act
-            var list = this.messages.Object.List(null, null, null, SKIP, LIMIT, null);
+            var list = await this.messages.Object.ListAsync(null, null, null, SKIP, LIMIT, null);
 
             // Assert
             Assert.NotEmpty(list.Messages);
@@ -53,8 +54,8 @@ namespace Services.Test
 
         private void ThereAreNoMessagesInStorage()
         {
-            this.messages.Setup(x => x.List(null, null, null, SKIP, LIMIT, null))
-                .Returns(new MessageList());
+            this.messages.Setup(x => x.ListAsync(null, null, null, SKIP, LIMIT, null))
+                .ReturnsAsync(new MessageList());
         }
 
         private void ThereAreSomeMessagesInStorage()
@@ -74,8 +75,8 @@ namespace Services.Test
             sampleProperties.Add("data.sample_unit");
             sampleProperties.Add("data.sample_speed");
 
-            this.messages.Setup(x => x.List(null, null, null, SKIP, LIMIT, null))
-                .Returns(new MessageList(sampleMessages, sampleProperties));
+            this.messages.Setup(x => x.ListAsync(null, null, null, SKIP, LIMIT, null))
+                .ReturnsAsync(new MessageList(sampleMessages, sampleProperties));
         }
     }
 }
