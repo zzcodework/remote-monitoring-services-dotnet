@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,7 @@ namespace WebService.Test.Controllers
         private readonly Mock<IStorage> mockStorage;
         private readonly PackageController controller;
         private readonly Random rand;
+        private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
         public PackageControllerTest()
         {
@@ -28,15 +30,16 @@ namespace WebService.Test.Controllers
         }
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        [InlineData("EDGE_MANIFEST", "filename", true, false)]
-        [InlineData("EDGE_MANIFEST", "filename", false, true)]
-        [InlineData("EDGE_MANIFEST", "", true, true)]
+        [InlineData("EdgeManifest", "filename", true, false)]
+        [InlineData("EdgeManifest", "filename", false, true)]
+        [InlineData("EdgeManifest", "", true, true)]
         [InlineData("BAD_TYPE", "filename", true, true)]
-        public async Task PostAsyncTest(string type, string filename, bool giveValidFile, bool expectException)
+        public async Task PostAsyncExceptionVerificationTest(string type, string filename,
+                                                             bool isValidFileProvided, bool expectException)
         {
             // Arrange
             IFormFile file = null;
-            if(giveValidFile)
+            if (isValidFileProvided)
             {
                 file = this.CreateSampleFile(filename);
             }
@@ -46,7 +49,7 @@ namespace WebService.Test.Controllers
                                                         p.Name.Equals(filename))))
                             .ReturnsAsync(new Package() {
                                 Name = filename,
-                                Type = PackageType.EDGE_MANIFEST
+                                Type = PackageType.EdgeManifest
                             });
             try
             {
@@ -58,9 +61,80 @@ namespace WebService.Test.Controllers
                 Assert.Equal(filename, package.Name);
                 Assert.Equal(type, package.Type.ToString());
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Assert.True(expectException);
+            }
+        }
+
+        [Fact]
+        public async Task GetPackageTest()
+        {
+            const string id = "packageId";
+            const string name = "packageName";
+            const PackageType type = PackageType.EdgeManifest;
+            const string content = "{}";
+            string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
+
+            this.mockStorage
+                .Setup(x => x.GetPackageAsync(id))
+                .ReturnsAsync(new Package()
+                {
+                    Id = id,
+                    Name = name,
+                    Content = content,
+                    Type = type,
+                    DateCreated = dateCreated
+                });
+
+            var pkg = await this.controller.GetAsync(id);
+
+            this.mockStorage
+                .Verify(x => x.GetPackageAsync(id), Times.Once);
+
+            Assert.Equal(id, pkg.Id);
+            Assert.Equal(name, pkg.Name);
+            Assert.Equal(type, pkg.Type);
+            Assert.Equal(content, pkg.Content);
+            Assert.Equal(dateCreated, pkg.DateCreated);
+        }
+
+        [Fact]
+        public async Task GetAllPackageTest()
+        {
+            const string id = "packageId";
+            const string name = "packageName";
+            const PackageType type = PackageType.EdgeManifest;
+            const string content = "{}";
+            string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
+
+            int[] idx = new int[] {0, 1, 2};
+            var packages = idx.Select(i => new Package()
+                                     {
+                                         Id = id + i,
+                                         Name = name + i,
+                                         Content = content + i,
+                                         Type = type + i,
+                                         DateCreated = dateCreated
+                                     }).ToList();
+
+            this.mockStorage
+                .Setup(x => x.GetPackagesAsync())
+                .ReturnsAsync(packages);
+
+            var resultPackages = await this.controller.GetAllAsync();
+
+            this.mockStorage
+                .Verify(x => x.GetPackagesAsync(), Times.Once);
+
+            foreach (int i in idx)
+            {
+                var pkg = resultPackages.Items.ElementAt(i);
+                Assert.Equal(id + i, pkg.Id);
+                Assert.Equal(name + i, pkg.Name);
+                Assert.Equal(type + i, pkg.Type);
+                Assert.Equal(content + i, pkg.Content);
+                Assert.Equal(dateCreated, pkg.DateCreated);
             }
         }
 

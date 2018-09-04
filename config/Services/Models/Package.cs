@@ -21,6 +21,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 
     public enum PackageType
     {
-        EDGE_MANIFEST
+        EdgeManifest
     }
 }
