@@ -27,7 +27,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public MethodParameterServiceModel MethodParameter { get; set; }
 
-        public DeviceTwinServiceModel UpdateTwin { get; set; }
+        public TwinServiceModel UpdateTwin { get; set; }
 
         public string FailureReason { get; set; }
 
@@ -89,7 +89,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
             if (jobResponse.UpdateTwin != null)
             {
-                this.UpdateTwin = new DeviceTwinServiceModel(jobResponse.UpdateTwin);
+                this.UpdateTwin = new TwinServiceModel(jobResponse.UpdateTwin);
             }
 
             this.FailureReason = jobResponse.FailureReason;

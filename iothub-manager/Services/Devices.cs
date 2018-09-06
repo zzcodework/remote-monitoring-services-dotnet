@@ -25,12 +25,15 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         Task<DeviceServiceModel> CreateAsync(DeviceServiceModel toServiceModel);
         Task<DeviceServiceModel> CreateOrUpdateAsync(DeviceServiceModel toServiceModel, DevicePropertyDelegate devicePropertyDelegate);
         Task DeleteAsync(string id);
+        Task<TwinServiceModel> GetModuleTwinAsync(string deviceId, string moduleId);
+        Task<TwinServiceListModel> GetModuleTwinsByQueryAsync(string query, string continuationToken);
     }
 
     public class Devices : IDevices
     {
         private const int MAX_GET_LIST = 1000;
         private const string QUERY_PREFIX = "SELECT * FROM devices";
+        private const string MODULE_QUERY_PREFIX = "SELECT * FROM devices.modules";
 
         private RegistryManager registry;
         private string ioTHubHostName;
@@ -48,6 +51,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 this.registry = RegistryManager.CreateFromConnectionString(conn);
                 this.ioTHubHostName = IotHubConnectionStringBuilder.Create(conn).HostName;
             });
+        }
+
+        public Devices(RegistryManager registry, string ioTHubHostName)
+        {
+            this.registry = registry;
+            this.ioTHubHostName = ioTHubHostName;
         }
 
         /// <summary>
@@ -71,7 +80,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             // normally we need deviceTwins for all devices to show device list
             var devices = await this.registry.GetDevicesAsync(MAX_GET_LIST);
 
-            var twins = await this.GetTwinByQueryAsync(query, continuationToken, MAX_GET_LIST);
+            var twins = await this.GetTwinByQueryAsync(QUERY_PREFIX,
+                                                       query,
+                                                       continuationToken,
+                                                       MAX_GET_LIST);
 
             // since deviceAsync does not support continuationToken for now, we need to ignore those devices which does not shown in twins
             return new DeviceServiceListModel(devices
@@ -178,16 +190,46 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             await this.registry.RemoveDeviceAsync(id);
         }
 
+        public async Task<TwinServiceModel> GetModuleTwinAsync(string deviceId, string moduleId)
+        {
+            if (string.IsNullOrWhiteSpace(deviceId))
+            {
+                throw new InvalidInputException("A valid deviceId must be provided.");
+            }
+
+            if (string.IsNullOrWhiteSpace(moduleId))
+            {
+                throw new InvalidInputException("A valid moduleId must be provided.");
+            }
+
+            var twin = await this.registry.GetTwinAsync(deviceId, moduleId);
+            return new TwinServiceModel(twin);
+        }
+
+        public async Task<TwinServiceListModel> GetModuleTwinsByQueryAsync(string query,
+                                                                           string continuationToken)
+        {
+            var twins = await this.GetTwinByQueryAsync(MODULE_QUERY_PREFIX,
+                                                       query,
+                                                       continuationToken,
+                                                       MAX_GET_LIST);
+            var result = twins.Result.Select(twin => new TwinServiceModel(twin)).ToList();
+
+            return new TwinServiceListModel(result, twins.ContinuationToken);
+        }
+
         /// <summary>
         /// Get twin result by query
         /// </summary>
+        /// <param name="queryPrefix">The query prefix which selects devices or device modules</param>
         /// <param name="query">The query without prefix</param>
         /// <param name="continuationToken">The continuationToken</param>
         /// <param name="nubmerOfResult">The max result</param>
         /// <returns></returns>
-        private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(string query, string continuationToken, int nubmerOfResult)
+        private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(string queryPrefix,
+            string query, string continuationToken, int nubmerOfResult)
         {
-            query = string.IsNullOrEmpty(query) ? QUERY_PREFIX : $"{QUERY_PREFIX} where {query}";
+            query = string.IsNullOrEmpty(query) ? queryPrefix : $"{queryPrefix} where {query}";
 
             var twins = new List<Twin>();
 
