@@ -7,21 +7,22 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
-    public class DeviceTwinServiceModel
+    public class TwinServiceModel
     {
         public string ETag { get; set; }
         public string DeviceId { get; set; }
+        public string ModuleId { get; set; }
         public bool IsEdgeDevice { get; set; }
         public bool IsSimulated { get; set; }
         public Dictionary<string, JToken> DesiredProperties { get; set; }
         public Dictionary<string, JToken> ReportedProperties { get; set; }
         public Dictionary<string, JToken> Tags { get; set; }
 
-        public DeviceTwinServiceModel()
+        public TwinServiceModel()
         {
         }
 
-        public DeviceTwinServiceModel(
+        public TwinServiceModel(
             string etag,
             string deviceId,
             Dictionary<string, JToken> desiredProperties,
@@ -39,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
         }
 
-        public DeviceTwinServiceModel(
+        public TwinServiceModel(
             string etag,
             string deviceId,
             Dictionary<string, JToken> desiredProperties,
@@ -57,12 +58,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.IsSimulated = isSimulated;
         }
 
-        public DeviceTwinServiceModel(Twin twin)
+        public TwinServiceModel(Twin twin)
         {
             if (twin != null)
             {
                 this.ETag = twin.ETag;
                 this.DeviceId = twin.DeviceId;
+                this.ModuleId = twin.ModuleId;
                 this.Tags = TwinCollectionToDictionary(twin.Tags);
                 this.DesiredProperties = TwinCollectionToDictionary(twin.Properties.Desired);
                 this.ReportedProperties = TwinCollectionToDictionary(twin.Properties.Reported);

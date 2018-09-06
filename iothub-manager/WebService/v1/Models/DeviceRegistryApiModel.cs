@@ -121,7 +121,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         public DeviceServiceModel ToServiceModel()
         {
-            var twinModel = new DeviceTwinServiceModel
+            var twinModel = new TwinServiceModel
             (
                 etag: this.TwinEtag,
                 deviceId: this.Id,
