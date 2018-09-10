@@ -21,7 +21,7 @@ namespace WebService.Test.v1.Controllers
         private const string DEPLOYMENT_NAME = "depname";
         private const string DEVICE_GROUP_ID = "dvcGroupId";
         private const string PACKAGE_ID = "packageId";
-        private const string DEPLOYMENT_ID = "dvcGroupId--packageId";
+        private const string DEPLOYMENT_ID = "dvcGroupId-packageId";
         private const int PRIORITY = 10;
 
         public DeploymentsControllerTest()
@@ -113,6 +113,7 @@ namespace WebService.Test.v1.Controllers
                                              bool throwsException)
         {
             // Arrange
+            var deploymentId = "test-deployment";
             this.deploymentsMock.Setup(x => x.CreateAsync(Match.Create<DeploymentServiceModel>(model =>
                     model.DeviceGroupId == deviceGroupId &&
                     model.PackageId == packageId &&
@@ -125,7 +126,7 @@ namespace WebService.Test.v1.Controllers
                     DeviceGroupId = deviceGroupId,
                     PackageId = packageId,
                     Priority = priority,
-                    Id = $"{deviceGroupId}--{packageId}",
+                    Id = deploymentId,
                     Type = DeploymentType.EdgeManifest,
                     CreatedDateTimeUtc = DateTime.UtcNow
                 });
@@ -149,7 +150,7 @@ namespace WebService.Test.v1.Controllers
                 var result = await this.deploymentsController.PostAsync(depApiModel);
 
                 // Assert
-                Assert.Equal($"{deviceGroupId}--{packageId}", result.DeploymentId);
+                Assert.Equal(deploymentId, result.DeploymentId);
                 Assert.Equal(name, result.Name);
                 Assert.Equal(packageId, result.PackageId);
                 Assert.Equal(deviceGroupId, result.DeviceGroupId);

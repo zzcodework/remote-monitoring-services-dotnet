@@ -9,17 +9,17 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
     public class DeploymentApiModel
     {
+        [JsonProperty(PropertyName = "Id")]
+        public string DeploymentId { get; set; }
+
+        [JsonProperty(PropertyName = "Name")]
+        public string Name { get; set; }
+
         [JsonProperty(PropertyName = "CreatedDateTimeUtc")]
         public DateTime CreatedDateTimeUtc { get; set; }
 
         [JsonProperty(PropertyName = "DeviceGroupId")]
         public string DeviceGroupId { get; set; }
-
-        [JsonProperty(PropertyName = "Id")]
-        public string DeploymentId { get; set; }
-
-         [JsonProperty(PropertyName = "Name")]
-        public string Name { get; set; }
         
         [JsonProperty(PropertyName = "PackageId")]
         public string PackageId { get; set; }

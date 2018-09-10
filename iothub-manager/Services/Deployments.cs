@@ -25,8 +25,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     public class Deployments : IDeployments
     {
         private const int MAX_DEPLOYMENTS = 20;
-        private const string DEPLOYMENT_NAME_KEY = "Name";
-        private const string RM_CREATED_KEY = "RMDeployment";
+        private const string DEPLOYMENT_NAME_LABEL = "Name";
+        private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
+        private const string DEPLOYMENT_PACKAGE_ID_LABEL = "PackageId";
+        private const string RM_CREATED_LABEL = "RMDeployment";
         private const string DEVICE_GROUP_ID_PARAM = "deviceGroupId";
         private const string NAME_PARAM = "name";
         private const string PACKAGE_ID_PARAM = "packageId";
@@ -44,7 +46,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         {
             if (config == null)
             {
-                throw new ArgumentNullException("config");
+                throw new ArgumentNullException(nameof(config));
             }
 
             IoTHubConnectionHelper.CreateUsingHubConnectionString(config.IoTHubConnString, (conn) =>
@@ -109,12 +111,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw ae.InnerException ?? ae;
             }
 
-            PackageApiModel package = getPackage.Result;
-            DeviceGroupApiModel deviceGroup = getDeviceGroup.Result;
-
-
-            var edgeConfiguration = this.CreateEdgeConfiguration(getDeviceGroup.Result, getPackage.Result,
-                                                                 model.Priority, model.Name);
+            var edgeConfiguration = this.CreateEdgeConfiguration(model.Name, getDeviceGroup.Result,
+                                                                 getPackage.Result, model.Priority);
             return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(edgeConfiguration));
         }
 
@@ -182,12 +180,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             await this.registry.RemoveConfigurationAsync(deploymentId);
         }
 
-        private Configuration CreateEdgeConfiguration(DeviceGroupApiModel deviceGroup, 
+        private Configuration CreateEdgeConfiguration(string name,
+                                                      DeviceGroupApiModel deviceGroup, 
                                                       PackageApiModel package, 
-                                                      int priority,
-                                                      string name)
+                                                      int priority)
         {
-            var deploymentId = $"{deviceGroup.Id}--{package.Id}".ToLower();
+            var deploymentId = Guid.NewGuid().ToString().ToLower();
             var edgeConfiguration = new Configuration(deploymentId);
 
             var packageEdgeConfiguration = JsonConvert.DeserializeObject<Configuration>(package.Content);
@@ -205,8 +203,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             {
                 edgeConfiguration.Labels = new Dictionary<string, string>();
             }
-            edgeConfiguration.Labels.Add(DEPLOYMENT_NAME_KEY, name);
-            edgeConfiguration.Labels.Add(RM_CREATED_KEY, "true");
+            edgeConfiguration.Labels.Add(DEPLOYMENT_NAME_LABEL, name);
+            edgeConfiguration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, deviceGroup.Id);
+            edgeConfiguration.Labels.Add(DEPLOYMENT_PACKAGE_ID_LABEL, package.Id);
+            edgeConfiguration.Labels.Add(RM_CREATED_LABEL, Boolean.TrueString);
 
             return edgeConfiguration;
         }
@@ -214,8 +214,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private bool CheckIfDeploymentWasMadeByRM(Configuration conf)
         {
             return conf.Labels != null &&
-                   conf.Labels.ContainsKey(RM_CREATED_KEY) &&
-                   bool.TryParse(conf.Labels[RM_CREATED_KEY], out var res) && res;
+                   conf.Labels.ContainsKey(RM_CREATED_LABEL) &&
+                   bool.TryParse(conf.Labels[RM_CREATED_LABEL], out var res) && res;
         }
     }
 }

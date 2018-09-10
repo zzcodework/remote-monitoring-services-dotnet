@@ -14,10 +14,18 @@ namespace Services.Test
     public class DeploymentsTest
     {
         private readonly Deployments deployments;
-
         private readonly Mock<IPackageManagementClient> packageClient;
         private readonly Mock<IDeviceGroupsClient> deviceGroups;
         private readonly Mock<RegistryManager> registry;
+
+        private const string DEPLOYMENT_NAME_LABEL = "Name";
+        private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
+        private const string DEPLOYMENT_PACKAGE_ID_LABEL = "PackageId";
+        private const string RM_CREATED_LABEL = "RMDeployment";
+        private const string RESOURCE_NOT_FOUND_EXCEPTION =
+            "Microsoft.Azure.IoTSolutions.IotHubManager.Services." +
+            "Exceptions.ResourceNotSupportedException, Microsoft.Azure." + 
+            "IoTSolutions.IotHubManager.Services, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
 
         private const string TEST_PACKAGE_JSON =
                 @"{
@@ -95,93 +103,84 @@ namespace Services.Test
         }
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        [InlineData("depname", "dvcgroupid", "packageid", 10, false)]
-        [InlineData("", "dvcgroupid", "packageid", 10, true)]
-        [InlineData("depname", "", "packageid", 10, true)]
-        [InlineData("depname", "dvcgroupid", "", 10, true)]
-        [InlineData("depname", "dvcgroupid", "packageid", -2, true)]
+        [InlineData("depname", "dvcgroupid", "packageid", 10, "")]
+        [InlineData("", "dvcgroupid", "packageid", 10, "System.ArgumentNullException")]
+        [InlineData("depname", "", "packageid", 10, "System.ArgumentNullException")]
+        [InlineData("depname", "dvcgroupid", "", 10, "System.ArgumentNullException")]
+        [InlineData("depname", "dvcgroupid", "packageid", -2, "System.ArgumentOutOfRangeException")]
         public async Task CreateDeploymentTest(string deploymentName, string deviceGroupId,
                                                string packageId, int priority,
-                                               bool expectException)
+                                               string expectedException)
         {
-            string deploymentId = $"{deviceGroupId}--{packageId}";
             var depModel = new DeploymentServiceModel()
             {
+                Name = deploymentName,
                 DeviceGroupId = deviceGroupId,
                 PackageId = packageId,
-                Priority = priority,
-                Name = deploymentName
-            };
-
-            this.packageClient.Setup(p => p.GetPackageAsync(It.Is<string>(s => s == packageId)))
-                              .ReturnsAsync(new PackageApiModel()
-                                            {
-                                                Id = packageId,
-                                                Name = packageId + "Name",
-                                                Type = PackageType.EdgeManifest,
-                                                Content = TEST_PACKAGE_JSON
-                              });
-
-            this.deviceGroups.Setup(d => d.GetDeviceGroupsAsync(It.Is<string>(s => s == deviceGroupId)))
-                             .ReturnsAsync(new DeviceGroupApiModel()
-                                           {
-                                               Id = deviceGroupId,
-                                               DisplayName = deviceGroupId + "Name",
-                                               ETag = deviceGroupId + "Etag"
-                                           });
-
-            var newConfig = new Configuration($"{deviceGroupId}--{packageId}")
-            {
-                Labels = new Dictionary<string, string>() {{"Name", deploymentName }},
                 Priority = priority
             };
 
-            this.registry.Setup(r => r.AddConfigurationAsync(
-                    It.Is<Configuration>(c => c.Id == deploymentId)))
-                         .ReturnsAsync(newConfig);
+            this.packageClient.Setup(p => p.GetPackageAsync(It.Is<string>(s => s == packageId)))
+                .ReturnsAsync(new PackageApiModel()
+                {
+                    Id = packageId,
+                    Name = packageId + "Name",
+                    Type = PackageType.EdgeManifest,
+                    Content = TEST_PACKAGE_JSON
+                });
 
-            try
+            this.deviceGroups.Setup(d => d.GetDeviceGroupsAsync(It.Is<string>(s => s == deviceGroupId)))
+                .ReturnsAsync(new DeviceGroupApiModel()
+                {
+                    Id = deviceGroupId, DisplayName = deviceGroupId + "Name", ETag = deviceGroupId + "Etag"
+                });
+
+            var newConfig = new Configuration("test-config")
+            {
+                Labels = new Dictionary<string, string>()
+                {
+                    { DEPLOYMENT_NAME_LABEL, deploymentName },
+                    { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
+                    { DEPLOYMENT_PACKAGE_ID_LABEL, packageId },
+                    { RM_CREATED_LABEL, Boolean.TrueString },
+                }, Priority = priority
+            };
+
+            this.registry.Setup(r => r.AddConfigurationAsync(It.Is<Configuration>(c =>
+                    c.Labels.ContainsKey(DEPLOYMENT_NAME_LABEL) &&
+                    c.Labels.ContainsKey(DEPLOYMENT_GROUP_ID_LABEL) &&
+                    c.Labels.ContainsKey(DEPLOYMENT_PACKAGE_ID_LABEL) &&
+                    c.Labels[DEPLOYMENT_NAME_LABEL] == deploymentName &&
+                    c.Labels[DEPLOYMENT_GROUP_ID_LABEL] == deviceGroupId &&
+                    c.Labels[DEPLOYMENT_PACKAGE_ID_LABEL] == packageId)))
+                .ReturnsAsync(newConfig);
+
+            if (string.IsNullOrEmpty(expectedException))
             {
                 var createdDeployment = await this.deployments.CreateAsync(depModel);
-                Assert.False(expectException);
-                Assert.Equal(deploymentId, createdDeployment.Id);
+                Assert.False(string.IsNullOrEmpty(createdDeployment.Id));
                 Assert.Equal(deploymentName, createdDeployment.Name);
                 Assert.Equal(packageId, createdDeployment.PackageId);
                 Assert.Equal(deviceGroupId, createdDeployment.DeviceGroupId);
                 Assert.Equal(priority, createdDeployment.Priority);
             }
-            catch (Exception)
+            else
             {
-                Assert.True(expectException);
+                await Assert.ThrowsAsync(Type.GetType(expectedException),
+                    async () => await this.deployments.CreateAsync(depModel));
             }
         }
 
-        [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        [InlineData(true, true, false)]
-        [InlineData(true, false, true)]
-        [InlineData(false, true, true)]
-        public async Task GetDeploymentTest(bool validDeploymentId, bool createdByRm, bool throwsException)
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task InvalidRmConfigurationTest()
         {
-            var deploymentId = validDeploymentId ? "test--config" : "";
-            var configuration = this.CreateConfiguration(deploymentId, 0, createdByRm);
+            var configuration = this.CreateConfiguration(0, false);
 
-            this.registry.Setup(r => r.GetConfigurationAsync(deploymentId))
+            this.registry.Setup(r => r.GetConfigurationAsync(It.IsAny<string>()))
                 .ReturnsAsync(configuration);
 
-            try
-            {
-                var returnedDeployment = await this.deployments.GetAsync(deploymentId);
-                Assert.False(throwsException);
-                Assert.Equal("test--config0", returnedDeployment.Id);
-                Assert.Equal("deployment0", returnedDeployment.Name);
-                Assert.Equal("config0", returnedDeployment.PackageId);
-                Assert.Equal("test", returnedDeployment.DeviceGroupId);
-                Assert.Equal(10, returnedDeployment.Priority);
-            }
-            catch (Exception)
-            {
-                Assert.True(throwsException);
-            }
+            await Assert.ThrowsAsync(Type.GetType(RESOURCE_NOT_FOUND_EXCEPTION),
+                    async () => await this.deployments.GetAsync(configuration.Id));
         }
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -193,11 +192,10 @@ namespace Services.Test
             var configurations = new List<Configuration>();
             for (int i = numDeployments - 1; i >= 0; i--)
             {
-                configurations.Add(this.CreateConfiguration("test--config", i, true));
+                configurations.Add(this.CreateConfiguration(i, true));
             }
 
-            this.registry.Setup(r => r.GetConfigurationsAsync(20))
-                         .ReturnsAsync(configurations);
+            this.registry.Setup(r => r.GetConfigurationsAsync(20)).ReturnsAsync(configurations);
 
             var returnedDeployments = await this.deployments.ListAsync();
             Assert.Equal(numDeployments, returnedDeployments.Items.Count);
@@ -212,32 +210,35 @@ namespace Services.Test
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public async Task FilterOutNonRmDeploymentsTest()
         {
-            var configurations = new List<Configuration>();
-            configurations.Add(this.CreateConfiguration("test--config", 0, true));
-            configurations.Add(this.CreateConfiguration("nonrm--config", 1, false));
+            var configurations = new List<Configuration>
+            {
+                this.CreateConfiguration(0, true),
+                this.CreateConfiguration(1, false)
+            };
 
             this.registry.Setup(r => r.GetConfigurationsAsync(20))
                 .ReturnsAsync(configurations);
 
             var returnedDeployments = await this.deployments.ListAsync();
             Assert.Single(returnedDeployments.Items);
-            Assert.StartsWith("test--config", returnedDeployments.Items[0].Id);
+            Assert.Equal("deployment0", returnedDeployments.Items[0].Name);
         }
 
-        private Configuration CreateConfiguration(string id, int idx, bool addCreatedByRmLabel)
+        private Configuration CreateConfiguration(int idx, bool addCreatedByRmLabel)
         {
-            var conf = new Configuration(id + idx)
+            var conf = new Configuration("test-config"+idx)
             {
                 Labels = new Dictionary<string, string>()
                 {
-                    {"Name", "deployment" + idx}
-                },
-                Priority = 10
+                    { DEPLOYMENT_NAME_LABEL, "deployment" + idx },
+                    { DEPLOYMENT_GROUP_ID_LABEL, "dvcGroupId" + idx },
+                    { DEPLOYMENT_PACKAGE_ID_LABEL, "packageId" + idx }
+                }, Priority = 10
             };
 
             if (addCreatedByRmLabel)
             {
-                conf.Labels.Add("RMDeployment", "true");
+                conf.Labels.Add(RM_CREATED_LABEL, "true");
             }
 
             return conf;

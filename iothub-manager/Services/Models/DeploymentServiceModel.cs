@@ -7,8 +7,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
     public class DeploymentServiceModel
     {
-        private const string DEPLOYMENT_NAME_KEY = "Name";
-        private const string DEPLOYMENT_ID_SEPARATOR = "--";
+        private const string DEPLOYMENT_NAME_LABEL = "Name";
+        private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
+        private const string DEPLOYMENT_PACKAGE_ID_LABEL = "PackageId";
+
         public DateTime CreatedDateTimeUtc { get; set; }
         public string Id { get; set; }
         public DeploymentMetrics DeploymentMetrics { get; set; }
@@ -24,22 +26,31 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public DeploymentServiceModel(Configuration config)
         {
-            if (!config.Id.Contains(DEPLOYMENT_ID_SEPARATOR))
+            if (string.IsNullOrEmpty(config.Id))
             {
                 throw new ArgumentException($"Invalid deploymentId provided {config.Id}");
             }
 
-            var groupAndPkgIds = config.Id.Split(new [] { DEPLOYMENT_ID_SEPARATOR }, 
-                                                 StringSplitOptions.None);
-            if(config.Labels?.Count > 0)
+            if (!config.Labels.ContainsKey(DEPLOYMENT_GROUP_ID_LABEL))
             {
-                this.Name = config.Labels[DEPLOYMENT_NAME_KEY];
+                throw new ArgumentException($"Configuration is missing necessary label {DEPLOYMENT_GROUP_ID_LABEL}");
             }
 
-            this.CreatedDateTimeUtc = config.CreatedTimeUtc;
-            this.DeviceGroupId = groupAndPkgIds[0];
+            if (!config.Labels.ContainsKey(DEPLOYMENT_PACKAGE_ID_LABEL))
+            {
+                throw new ArgumentException($"Configuration is missing necessary label {DEPLOYMENT_PACKAGE_ID_LABEL}");
+            }
+
+            if (!config.Labels.ContainsKey(DEPLOYMENT_NAME_LABEL))
+            {
+                throw new ArgumentException($"Configuration is missing necessary label {DEPLOYMENT_NAME_LABEL}");
+            }
+
             this.Id = config.Id;
-            this.PackageId = groupAndPkgIds[1];
+            this.Name = config.Labels[DEPLOYMENT_NAME_LABEL];
+            this.CreatedDateTimeUtc = config.CreatedTimeUtc;
+            this.DeviceGroupId = config.Labels[DEPLOYMENT_GROUP_ID_LABEL];
+            this.PackageId = config.Labels[DEPLOYMENT_PACKAGE_ID_LABEL];
             this.Priority = config.Priority;
             this.Type = DeploymentType.EdgeManifest;
 
