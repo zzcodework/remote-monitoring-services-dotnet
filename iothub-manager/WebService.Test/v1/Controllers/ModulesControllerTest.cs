@@ -101,11 +101,11 @@ namespace WebService.Test.v1.Controllers
                 ModuleId = moduleId,
                 DesiredProperties = new Dictionary<string, JToken>()
                 {
-                    {"version", JToken.Parse("'v2'")}
+                    { "version", JToken.Parse("'v2'") }
                 },
                 ReportedProperties = new Dictionary<string, JToken>()
                 {
-                    {"version", JToken.Parse("'v1'")}
+                    { "version", JToken.Parse("'v1'") }
                 }
             };
         }

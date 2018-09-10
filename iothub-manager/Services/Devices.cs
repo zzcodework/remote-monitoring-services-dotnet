@@ -224,10 +224,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         /// <param name="queryPrefix">The query prefix which selects devices or device modules</param>
         /// <param name="query">The query without prefix</param>
         /// <param name="continuationToken">The continuationToken</param>
-        /// <param name="nubmerOfResult">The max result</param>
+        /// <param name="numberOfResult">The max result</param>
         /// <returns></returns>
         private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(string queryPrefix,
-            string query, string continuationToken, int nubmerOfResult)
+            string query, string continuationToken, int numberOfResult)
         {
             query = string.IsNullOrEmpty(query) ? queryPrefix : $"{queryPrefix} where {query}";
 
@@ -238,7 +238,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             QueryOptions options = new QueryOptions();
             options.ContinuationToken = continuationToken;
 
-            while (twinQuery.HasMoreResults && twins.Count < nubmerOfResult)
+            while (twinQuery.HasMoreResults && twins.Count < numberOfResult)
             {
                 var response = await twinQuery.GetNextAsTwinAsync(options);
                 options.ContinuationToken = response.ContinuationToken;

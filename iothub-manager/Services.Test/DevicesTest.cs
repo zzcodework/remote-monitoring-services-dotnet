@@ -132,15 +132,12 @@ namespace Services.Test
                     var index = int.Parse(options.ContinuationToken);
                     var count = this.results.Count - index;
 
-                    if (index >= count)
+                    var continuedResults = new List<Twin>();
+                    if (index < count)
                     {
-                        resultResponse = new QueryResponse<Twin>(new List<Twin>(), "continuationToken");
+                        continuedResults = this.results.GetRange(index, count);
                     }
-                    else
-                    {
-                        var continuedResults = this.results.GetRange(index, count);
-                        resultResponse = new QueryResponse<Twin>(continuedResults, "continuationToken");
-                    }
+                    resultResponse = new QueryResponse<Twin>(continuedResults, "continuationToken");
                 }
 
                 return Task.FromResult(resultResponse);

@@ -34,10 +34,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public TwinPropertiesApiModel(Dictionary<string, JToken> desired, Dictionary<string, JToken> reported,
                                       string deviceId, string moduleId)
         {
-            this.DeviceId = deviceId;
-            this.ModuleId = moduleId;
             this.Desired = desired;
             this.Reported = reported;
+            this.DeviceId = deviceId;
+            this.ModuleId = moduleId;
         }
     }
 }

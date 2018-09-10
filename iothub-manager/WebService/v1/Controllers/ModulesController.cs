@@ -21,8 +21,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
             this.devices = devices;
         }
 
-        /// <summary>Get a list of devices</summary>
-        /// <returns>List of devices</returns>
+        /// <summary>Retrieve module twin properties based on provided query</summary>
+        /// <param name="query">Where clause of IoTHub query</param>
+        /// <returns>List of module twins</returns>
         [HttpGet]
         public async Task<TwinPropertiesListApiModel> GetModuleTwinsAsync([FromQuery] string query)
         {
@@ -36,6 +37,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
                 await this.devices.GetModuleTwinsByQueryAsync(query, continuationToken));
         }
 
+        /// <summary>Retrieve module twin properties. Query in body of post request</summary>
+        /// <param name="query">Where clause of IoTHub query</param>
+        /// <returns>List of module twins</returns>
         [HttpPost("query")]
         public async Task<TwinPropertiesListApiModel> QueryModuleTwinsAsync([FromBody] string query)
         {

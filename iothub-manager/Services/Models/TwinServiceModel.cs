@@ -34,8 +34,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 desiredProperties: desiredProperties,
                 reportedProperties: reportedProperties,
                 tags: tags,
-                isEdgeDevice: false,
-                isSimulated: isSimulated
+                isSimulated: isSimulated,
+                isEdgeDevice: false
             )
         {
         }
@@ -46,8 +46,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             Dictionary<string, JToken> desiredProperties,
             Dictionary<string, JToken> reportedProperties,
             Dictionary<string, JToken> tags,
-            bool isEdgeDevice,
-            bool isSimulated)
+            bool isSimulated,
+            bool isEdgeDevice)
         {
             this.ETag = etag;
             this.DeviceId = deviceId;
