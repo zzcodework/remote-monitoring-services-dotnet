@@ -128,8 +128,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 desiredProperties: this.Properties?.Desired,
                 reportedProperties: this.Properties?.Reported,
                 tags: this.Tags,
-                isEdgeDevice: this.IsEdgeDevice,
-                isSimulated: this.IsSimulated
+                isSimulated: this.IsSimulated,
+                isEdgeDevice: this.IsEdgeDevice
             );
 
             return new DeviceServiceModel
