@@ -18,6 +18,11 @@ services:
       - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://localhost:9022/v1
       - PCS_AUTH_WEBSERVICE_URL
       - PCS_TELEMETRY_DOCUMENTDB_CONNSTRING
+      - PCS_AAD_TENANT
+      - PCS_AAD_APPID
+      - PCS_AAD_APPSECRET
+      - PCS_TELEMETRY_STORAGE_TYPE
+      - PCS_TSI_FQDN
 
   auth:
     image: azureiotpcs/pcs-auth-dotnet:testing

@@ -23,15 +23,28 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
     {
         private const string APPLICATION_KEY = "TelemetryService:";
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
-        private const string STORAGE_TYPE_KEY = APPLICATION_KEY + "storage_type";
 
-        private const string DOCUMENTDB_KEY = "TelemetryService:DocumentDb:";
-        private const string DOCUMENTDB_CONNSTRING_KEY = DOCUMENTDB_KEY + "connstring";
-        private const string DOCUMENTDB_RUS_KEY = DOCUMENTDB_KEY + "RUs";
+        private const string COSMOSDB_KEY = "TelemetryService:CosmosDb:";
+        private const string COSMOSDB_CONNSTRING_KEY = COSMOSDB_KEY + "connstring";
+        private const string COSMOSDB_RUS_KEY = COSMOSDB_KEY + "RUs";
+
+        private const string TIME_SERIES_KEY = APPLICATION_KEY + "TimeSeries:";
+        private const string TIME_SERIES_FQDN = TIME_SERIES_KEY + "fqdn";
+        private const string TIME_SERIES_AUTHORITY = TIME_SERIES_KEY + "authority";
+        private const string TIME_SERIES_AUDIENCE = TIME_SERIES_KEY + "audience";
+        private const string TIME_SERIES_EXPLORER_URL = TIME_SERIES_KEY + "explorer_url";
+        private const string TIME_SERIES_API_VERSION = TIME_SERIES_KEY + "api_version";
+        private const string TIME_SERIES_TIMEOUT = TIME_SERIES_KEY + "timeout";
+
+        private const string AAD_KEY = APPLICATION_KEY + "AzureActiveDirectory:";
+        private const string AAD_TENANT = AAD_KEY + "tenant";
+        private const string AAD_APP_ID = AAD_KEY + "app_id";
+        private const string AAD_APP_SECRET = AAD_KEY + "app_secret";
 
         private const string MESSAGES_DB_KEY = "TelemetryService:Messages:";
         private const string MESSAGES_DB_DATABASE_KEY = MESSAGES_DB_KEY + "database";
         private const string MESSAGES_DB_COLLECTION_KEY = MESSAGES_DB_KEY + "collection";
+        private const string MESSAGES_STORAGE_TYPE = MESSAGES_DB_KEY + "storage_type";
 
         private const string ALARMS_DB_KEY = "TelemetryService:Alarms:";
         private const string ALARMS_DB_DATABASE_KEY = ALARMS_DB_KEY + "database";
@@ -44,6 +57,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
 
         private const string USER_MANAGEMENT_KEY = "UserManagementService:";
         private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "webservice_url";
+
+        private const string DIAGNOSTICS_KEY = "DiagnosticsService:";
+        private const string DIAGNOSTICS_URL_KEY = DIAGNOSTICS_KEY + "webservice_url";
+        private const string DIAGNOSTICS_MAX_LOG_RETRIES = DIAGNOSTICS_KEY + "max_log_retries";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
@@ -73,12 +90,23 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
                     configData.GetString(ALARMS_DB_DATABASE_KEY),
                     configData.GetString(ALARMS_DB_COLLECTION_KEY),
                     configData.GetInt(ALARMS_DB_MAX_DELETE_RETRIES)),
-                StorageType = configData.GetString(STORAGE_TYPE_KEY),
-                DocumentDbConnString = configData.GetString(DOCUMENTDB_CONNSTRING_KEY),
-                DocumentDbThroughput = configData.GetInt(DOCUMENTDB_RUS_KEY),
+                StorageType = configData.GetString(MESSAGES_STORAGE_TYPE),
+                CosmosDbConnString = configData.GetString(COSMOSDB_CONNSTRING_KEY),
+                CosmosDbThroughput = configData.GetInt(COSMOSDB_RUS_KEY),
                 StorageAdapterApiUrl = configData.GetString(STORAGE_ADAPTER_API_URL_KEY),
                 StorageAdapterApiTimeout = configData.GetInt(STORAGE_ADAPTER_API_TIMEOUT_KEY),
-                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY)
+                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY),
+                TimeSeriesFqdn = configData.GetString(TIME_SERIES_FQDN),
+                TimeSeriesAuthority = configData.GetString(TIME_SERIES_AUTHORITY),
+                TimeSeriesAudience = configData.GetString(TIME_SERIES_AUDIENCE),
+                TimeSeriesExplorerUrl = configData.GetString(TIME_SERIES_EXPLORER_URL),
+                TimeSertiesApiVersion = configData.GetString(TIME_SERIES_API_VERSION),
+                TimeSeriesTimeout = configData.GetString(TIME_SERIES_TIMEOUT),
+                ActiveDirectoryTenant = configData.GetString(AAD_TENANT),
+                ActiveDirectoryAppId = configData.GetString(AAD_APP_ID),
+                ActiveDirectoryAppSecret = configData.GetString(AAD_APP_SECRET),
+                DiagnosticsApiUrl = configData.GetString(DIAGNOSTICS_URL_KEY),
+                DiagnosticsMaxLogRetries = configData.GetInt(DIAGNOSTICS_MAX_LOG_RETRIES)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig
