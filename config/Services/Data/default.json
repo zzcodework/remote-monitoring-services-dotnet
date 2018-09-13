@@ -135,7 +135,7 @@
     {
       "Id": "1",
       "Name": "Default Simulation",
-      "ETag": "*",
+      "Etag": "*",
       "Enabled": true,
       "DeviceModels": [
         {
