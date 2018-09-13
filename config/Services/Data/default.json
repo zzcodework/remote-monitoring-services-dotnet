@@ -177,6 +177,14 @@
         {
           "Id": "truck-02",
           "Count": 1
+        },
+        {
+          "Id": "delivery-truck-01",
+          "Count": 1
+        },
+        {
+          "Id": "delivery-truck-02",
+          "Count": 1
         }
       ]
     }

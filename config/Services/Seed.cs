@@ -104,7 +104,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             if (this.config.SolutionType.IndexOf("devicesimulation", StringComparison.OrdinalIgnoreCase) > 0)
             {
-                await this.SeedDeviceSimulationAsync();
+                await this.SeedSimulationAsync();
             }
             else
             {
@@ -160,31 +160,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
             }
 
-            try
-            {
-                var simulationModel = await this.simulationClient.GetDefaultSimulationAsync();
-
-                if (simulationModel != null)
-                {
-                    this.log.Info("Skip seed simulation since there is already one simulation", () => new { simulationModel });
-                }
-                else
-                {
-                    foreach (var simulation in template.Simulations)
-                    {
-                        await this.simulationClient.UpdateSimulationAsync(simulation);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                this.log.Error("Failed to seed default simulation", () => new { ex.Message });
-                throw;
-            }
+            await this.SeedSimulationAsync();
         }
 
         // Seed single template for Device Simulation solution
-        private async Task SeedDeviceSimulationAsync()
+        private async Task SeedSimulationAsync()
         {
             try
             {
@@ -213,6 +193,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         private Template GetSeedContent(string templateName)
         {
+            Template template;
             string content;
             var root = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var file = Path.Combine(root, "Data", $"{templateName}.json");
@@ -226,8 +207,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             {
                 content = File.ReadAllText(file);
             }
-
-            Template template;
 
             try
             {
