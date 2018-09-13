@@ -3,7 +3,7 @@
     {
       "Id": "1",
       "Name": "Sample Simple Simulation",
-      "Etag": "*",
+      "ETag": "*",
       "Enabled": false,
       "DeviceModels": [
         {
@@ -15,7 +15,7 @@
     {
       "Id": "2",
       "Name": "Sample Multiple Devices",
-      "Etag": "*",
+      "ETag": "*",
       "Enabled": false,
       "DeviceModels": [
         {

@@ -7,8 +7,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {
     public class SimulationApiModel
     {
-        [JsonProperty(PropertyName = "Etag")]
-        public string Etag { get; set; }
+        [JsonProperty(PropertyName = "ETag")]
+        public string ETag { get; set; }
 
         [JsonProperty(PropertyName = "Id")]
         public string Id { get; set; }
