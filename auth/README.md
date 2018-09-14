@@ -148,8 +148,8 @@ https://github.com/Azure/pcs-auth-dotnet/issues.
 
 
 
-[build-badge]: https://img.shields.io/travis/Azure/pcs-auth-dotnet.svg
-[build-url]: https://travis-ci.org/Azure/pcs-auth-dotnet
+[build-badge]:https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_apis/build/status/Consolidated%20Repo
+[build-url]: https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_build/latest?definitionId=22
 [issues-badge]: https://img.shields.io/github/issues/azure/pcs-auth-dotnet.svg
 [issues-url]: https://github.com/azure/pcs-auth-dotnet/issues
 [gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg
