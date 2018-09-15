@@ -2,14 +2,14 @@
 source .env
 ####### helm release
 helm delete storageadapter
-
+helm delete telemetry
 
 #############################
 sleep 10
 
 ####### helm purge release
 helm del --purge storageadapter
-
+helm del --purge telemetry
 
 
 ############################
@@ -17,3 +17,4 @@ sleep 5
 
 ####### Install helm charts
 helm install --name storageadapter storageadapter/charts/storageadapter/ --set PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING}
+helm install --name telemetry telemetry/charts/devicetelemetry/ --set PCS_TELEMETRY_DOCUMENTDB_CONNSTRING=${PCS_TELEMETRY_DOCUMENTDB_CONNSTRING} --set PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL} --set PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL} --set PCS_AUTH_WEBSERVICE_URL=${PCS_AUTH_WEBSERVICE_URL} --set PCS_AAD_TENANT=${PCS_AAD_TENANT} --set PCS_AAD_APPID=${PCS_AAD_APPID} --set PCS_AAD_APPSECRET=${PCS_AAD_APPSECRET} --set PCS_TELEMETRY_STORAGE_TYPE=${PCS_TELEMETRY_STORAGE_TYPE} --set PCS_TSI_FQDN=${PCS_TSI_FQDN
