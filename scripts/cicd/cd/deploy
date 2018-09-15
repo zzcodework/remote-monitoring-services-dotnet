@@ -1,0 +1,19 @@
+#!/bin/bash
+source .env
+####### helm release
+helm delete storageadapter
+
+
+#############################
+sleep 10
+
+####### helm purge release
+helm del --purge storageadapter
+
+
+
+############################
+sleep 5
+
+####### Install helm charts
+helm install --name storageadapter storageadapter/charts/storageadapter/ --set PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING}
