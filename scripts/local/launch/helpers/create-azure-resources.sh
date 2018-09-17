@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) Microsoft. All rights reserved.
 
-APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../ && pwd )"
+APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../../ && pwd )"
 
 function version_formatter { 
 	echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
