@@ -19,6 +19,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         [JsonProperty(PropertyName = "Enabled")]
         public bool Enabled { get; set; }
 
+        [JsonProperty(PropertyName = "StartTime")]
+        public string StartTime { get; set; }
+
         [JsonProperty(PropertyName = "DeviceModels")]
         public List<DeviceModelRef> DeviceModels { get; set; }
     }

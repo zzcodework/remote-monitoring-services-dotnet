@@ -102,7 +102,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         private async Task SeedAsync()
         {
-            if (this.config.SolutionType.IndexOf("devicesimulation", StringComparison.OrdinalIgnoreCase) > 0)
+            if (this.config.SolutionType.StartsWith("devicesimulation", StringComparison.OrdinalIgnoreCase))
             {
                 await this.SeedSimulationAsync();
             }

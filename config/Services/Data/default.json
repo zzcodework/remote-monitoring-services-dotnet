@@ -137,6 +137,7 @@
       "Name": "Default Simulation",
       "ETag": "*",
       "Enabled": true,
+      "StartTime": "NOW",
       "DeviceModels": [
         {
           "Id": "chiller-01",
