@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) Microsoft. All rights reserved.
 
-APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../ && pwd )"
+APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../../../ && pwd )"
 
 function version_formatter { 
 	echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; 
@@ -54,7 +54,7 @@ function install_cli {
 	# Build and Link CLI
 	cd pcs-cli
 	npm install && npm start && npm link 2> /dev/null
-	cd ../remote-monitoring-services-dotnet/scripts/local/launch
+	cd $APP_HOME/scripts/local/launch
 }
 
 function create_resources {
