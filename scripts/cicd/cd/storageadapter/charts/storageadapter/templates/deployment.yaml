@@ -31,7 +31,7 @@ spec:
             - name: http
               containerPort: 9022
               protocol: TCP
-		  {{- if not .Values.disableProbes }}
+          {{- if not .Values.disableProbes }}
           livenessProbe:
             httpGet:
               path: /v1/status
