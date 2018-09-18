@@ -90,6 +90,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http
                 {
                     using (var response = await client.SendAsync(httpRequest))
                     {
+                        this.log.Debug("Response", () => new { response });
+
                         if (request.Options.EnsureSuccess) response.EnsureSuccessStatusCode();
 
                         return new HttpResponse
