@@ -103,7 +103,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http
                         };
                     }
                 }
-                catch (HttpRequestException e)
+                catch (Exception e)
                 {
                     var errorMessage = e.Message;
                     if (e.InnerException != null)
