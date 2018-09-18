@@ -4,8 +4,8 @@
 fullnameOverride: devicetelemetry
 replicaCount: 1
 image:
-  repository: azureiotpcs/telemetry-dotnet
-  tag: testing
+  repository: azureiotpcsdev/telemetry-dotnet
+  tag: sushil1
   pullPolicy: Always
 imagePullSecrets: []
   # Optionally specify an array of imagePullSecrets.
@@ -19,6 +19,8 @@ service:
   externalPort: 80
   internalPort: 9004
 
+#disableProbes:
+#  enabled: false
 ingress:
   enabled: true
   #annotations:
@@ -44,6 +46,7 @@ secrets:
     PCS_TELEMETRY_STORAGE_TYPE: PCS_TELEMETRY_STORAGE_TYPE
     PCS_TSI_FQDN: PCS_TSI_FQDN
     PCS_DIAGNOSTICS_WEBSERVICE_URL: PCS_DIAGNOSTICS_WEBSERVICE_URL
+    PCS_AUTH_REQUIRED: PCS_AUTH_REQUIRED
   # Optionally specify a set of secret objects whose values
   # will be injected as environment variables by default.
   # You should add this section to a file like secrets.yaml

@@ -19,6 +19,10 @@ service:
   externalPort: 80
   internalPort: 9022
 
+
+  #disableProbes:
+  #  enabled: false
+
 ingress:
   enabled: true
   #annotations:
