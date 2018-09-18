@@ -51,6 +51,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             var errors = new List<string>();
 
             // Check access to Storage Adapter
+            log.Debug("Sending ping",null);
             var storageAdapterStatus = await this.storageAdapter.PingAsync();
             if (!storageAdapterStatus.Item1)
             {

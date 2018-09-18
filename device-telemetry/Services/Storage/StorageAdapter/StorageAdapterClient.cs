@@ -50,9 +50,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter
         {
             try
             {
+                var request = this.PrepareRequest($"status");
+                log.Debug("Prepared Request", () => new { request });
                 var response = await this.httpClient.GetAsync(
                     this.PrepareRequest($"status"));
-
+                log.Debug("Response error", () => new { response });
                 if (response.IsError)
                 {
                     return new Tuple<bool, string>(false, "Status code: " + response.StatusCode);
