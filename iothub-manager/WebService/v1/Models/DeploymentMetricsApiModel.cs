@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Newtonsoft.Json;
 
@@ -24,6 +25,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         [JsonProperty(PropertyName = "TargetedCount")]
         public long TargetedCount { get; set; }
+
+        [JsonProperty(PropertyName = "DeviceStatuses")]
+        public IDictionary<string, DeploymentStatus> DeviceStatuses { get; set; }
 
         public DeploymentMetricsApiModel()
         {

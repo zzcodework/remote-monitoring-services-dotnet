@@ -210,6 +210,25 @@ namespace Services.Test
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task GetDeploymentsWithDeviceStatusTest()
+        {
+            var configuration = this.CreateConfiguration(0, true);
+            var deploymentId = configuration.Id;
+            this.registry.Setup(r => r.GetConfigurationAsync(deploymentId)).ReturnsAsync(configuration);
+
+            IQuery queryResult = new ResultQuery(3);
+            this.registry.Setup(r => r.CreateQuery(It.IsAny<string>())).Returns(queryResult);
+
+            var returnedDeployment = await this.deployments.GetAsync(deploymentId);
+            var deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceWithStatus;
+            Assert.Null(deviceStatuses);
+
+            returnedDeployment = await this.deployments.GetAsync(deploymentId, true);
+            deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceWithStatus;
+            Assert.Equal(3, deviceStatuses.Count);
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public async Task FilterOutNonRmDeploymentsTest()
         {
             var configurations = new List<Configuration>

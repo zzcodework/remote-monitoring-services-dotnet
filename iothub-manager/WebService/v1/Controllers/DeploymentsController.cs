@@ -57,11 +57,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 
         /// <summary>Get one deployment</summary>
         /// <param name="id">Deployment id</param>
+        /// <param name="includeDeviceStatus">Whether to retrieve additional details regarding device status</param>
         /// <returns>Deployment information with metrics</returns>
         [HttpGet("{id}")]
-        public async Task<DeploymentApiModel> GetAsync(string id)
+        public async Task<DeploymentApiModel> GetAsync(string id, [FromQuery] bool includeDeviceStatus = false)
         {
-            return new DeploymentApiModel(await this.deployments.GetAsync(id));
+            return new DeploymentApiModel(await this.deployments.GetAsync(id, includeDeviceStatus));
         }
 
         [HttpDelete("{id}")]
