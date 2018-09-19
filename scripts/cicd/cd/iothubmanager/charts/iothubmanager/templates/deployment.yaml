@@ -1,10 +1,10 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "devicetelemetry.fullname" . }}
+  name: {{ template "iothubmanager.fullname" . }}
   labels:
-    app: {{ template "devicetelemetry.name" . }}
-    chart: {{ template "devicetelemetry.chart" . }}
+    app: {{ template "iothubmanager.name" . }}
+    chart: {{ template "iothubmanager.chart" . }}
     draft: {{ default "draft-app" .Values.draft }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,12 +12,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "devicetelemetry.name" . }}
+      app: {{ template "iothubmanager.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "devicetelemetry.name" . }}
+        app: {{ template "iothubmanager.name" . }}
         draft: {{ default "draft-app" .Values.draft }}
         release: {{ .Release.Name }}
       annotations:
@@ -29,7 +29,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 9004
+              containerPort: 9002
               protocol: TCP
 	  {{- if not .Values.disableProbes }}
           livenessProbe:
@@ -52,7 +52,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "devicetelemetry.fullname" $root }}-{{ $ref | lower }}
+                  name: {{ template "iothubmanager.fullname" $root }}-{{ $ref | lower }}
                   key: {{ $key }}
             {{- end }}
             {{- end }}

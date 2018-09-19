@@ -1,10 +1,10 @@
-# Default values for devicetelemetry.
+# Default values for iothubmanager.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-fullnameOverride: devicetelemetry
+fullnameOverride: iothubmanager
 replicaCount: 1
 image:
-  repository: azureiotpcs/telemetry-dotnet
+  repository: azureiotpcs/iothub-manager-dotnet
   tag: testing
   pullPolicy: Always
 imagePullSecrets: []
@@ -17,16 +17,14 @@ imagePullSecrets: []
 service:
   type: ClusterIP
   externalPort: 80
-  internalPort: 9004
+  internalPort: 9002
 
-#disableProbes:
-#  enabled: false
 ingress:
   enabled: true
   #annotations:
     #kubernetes.io/ingress.class: addon-http-application-routing
     # kubernetes.io/tls-acme: "true"
-  path: /devicetelemetry
+  path: /iothubmanager
   hosts:
     - rm-aks-test.eastus.cloudapp.azure.com
   # hosts:
@@ -35,18 +33,11 @@ ingress:
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
-secrets:
-  devicetelemetry:
-    PCS_TELEMETRY_DOCUMENTDB_CONNSTRING: PCS_TELEMETRY_DOCUMENTDB_CONNSTRING
-    PCS_STORAGEADAPTER_WEBSERVICE_URL: PCS_STORAGEADAPTER_WEBSERVICE_URL
+secrets: 
+  iothubmanager:
     PCS_AUTH_WEBSERVICE_URL: PCS_AUTH_WEBSERVICE_URL
-    PCS_AAD_TENANT: PCS_AAD_TENANT
-    PCS_AAD_APPID: PCS_AAD_APPID
-    PCS_AAD_APPSECRET: PCS_AAD_APPSECRET
-    PCS_TELEMETRY_STORAGE_TYPE: PCS_TELEMETRY_STORAGE_TYPE
-    PCS_TSI_FQDN: PCS_TSI_FQDN
-    PCS_DIAGNOSTICS_WEBSERVICE_URL: PCS_DIAGNOSTICS_WEBSERVICE_URL
-    PCS_AUTH_REQUIRED: PCS_AUTH_REQUIRED
+    PCS_IOTHUB_CONNSTRING: PCS_IOTHUB_CONNSTRING
+    PCS_STORAGEADAPTER_WEBSERVICE_URL: PCS_STORAGEADAPTER_WEBSERVICE_URL 
   # Optionally specify a set of secret objects whose values
   # will be injected as environment variables by default.
   # You should add this section to a file like secrets.yaml
