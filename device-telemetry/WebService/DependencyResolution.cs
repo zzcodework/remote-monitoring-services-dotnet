@@ -6,7 +6,10 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeries;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -65,8 +68,17 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
             var logger = new Logger(Uptime.ProcessId, LogLevel.Debug);
             builder.RegisterInstance(logger).As<ILogger>().SingleInstance();
 
+            // Set up storage client for Cosmos DB
             var storageClient = new StorageClient(config.ServicesConfig, logger);
             builder.RegisterInstance(storageClient).As<IStorageClient>().SingleInstance();
+
+            // Http
+            IHttpClient httpClient = new HttpClient(logger);
+            builder.RegisterInstance(httpClient).As<IHttpClient>();
+
+            // Setup Time Series Insights Client
+            var timeSeriesClient = new TimeSeriesClient(httpClient, config.ServicesConfig, logger);
+            builder.RegisterInstance(timeSeriesClient).As<ITimeSeriesClient>().SingleInstance();
 
             // Auth and CORS setup
             Auth.Startup.SetupDependencies(builder, config);

@@ -30,4 +30,32 @@ IF "%PCS_AUTH_AUDIENCE%" == "" (
     exit /B 1
 )
 
+IF "%PCS_TELEMETRY_STORAGE_TYPE%" == "" (
+    echo Error: the PCS_TELEMETRY_STORAGE_TYPE environment variable is not defined.
+    exit /B 1
+)
+
+:: The settings below are for Time Series Insights. If your deployment does not use
+:: Time Series Insights they are safe to remove.
+
+IF "%PCS_AAD_TENANT%" == "" (
+    echo Error: the PCS_AAD_TENANT environment variable is not defined.
+    exit /B 1
+)
+
+IF "%PCS_AAD_APPID%" == "" (
+    echo Error: the PCS_AAD_APPID environment variable is not defined.
+    exit /B 1
+)
+
+IF "%PCS_AAD_APPSECRET%" == "" (
+    echo Error: the PCS_AAD_APPSECRET environment variable is not defined.
+    exit /B 1
+)
+
+IF "%PCS_TSI_FQDN%" == "" (
+    echo Error: the PCS_TSI_FQDN environment variable is not defined.
+    exit /B 1
+)
+
 endlocal

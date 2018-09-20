@@ -55,6 +55,16 @@ for more information. More information on environment variables
   * `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
   * `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
   * `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
+  * `PCS_AAD_TENANT` = {Azure Active Directory Tenant ID}
+    * see: Azure Portal => Azure Active Directory => Properties => Directory ID
+  * `PCS_AAD_APPID` = {Azure Active Directory application ID}
+    * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Application ID
+  * `PCS_AAD_APPSECRET` = {application secret}
+    * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Settings => Passwords
+  * `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
+    * Allowed values: ["cosmosdb", "tsi"]. Default is "tsi"
+  * `PCS_TSI_FQDN`= {Time Series FQDN}
+    * see: Azure Portal => Your Resource Group => Time Series Insights Environment => Data Access FQDN
   * `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
 
 ## Running the service with Visual Studio or VS Code
@@ -164,8 +174,8 @@ Please enter issues, bugs, or suggestions as
 Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the [MIT](LICENSE) License.
 
-[build-badge]: https://img.shields.io/travis/Azure/device-telemetry-dotnet.svg
-[build-url]: https://travis-ci.org/Azure/device-telemetry-dotnet
+[build-badge]:https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_apis/build/status/Consolidated%20Repo
+[build-url]: https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_build/latest?definitionId=22
 [issues-badge]: https://img.shields.io/github/issues/azure/device-telemetry-dotnet.svg
 [issues-url]: https://github.com/azure/device-telemetry-dotnet/issues
 [gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg
