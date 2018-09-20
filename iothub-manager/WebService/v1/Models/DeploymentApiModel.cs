@@ -51,7 +51,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.Type = serviceModel.Type;
             this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
             {
-                DeviceStatuses = serviceModel.DeploymentMetrics.DeviceWithStatus
+                DeviceStatuses = serviceModel.DeploymentMetrics?.DeviceWithStatus
             };
         }
 
