@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 ####### helm delete release
 helm delete storageadapter
 helm delete telemetry
