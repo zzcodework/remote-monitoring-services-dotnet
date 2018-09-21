@@ -54,29 +54,24 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         {
             if (!(obj is RuleApiModel x)) return false;
 
-            var count = this.Conditions.Count();
-            var conditionsMatch = x.Conditions.Count() == count;
-
-            while (conditionsMatch && --count >= 0)
+            for (int i = 0; i < this.Conditions.Count; i++)
             {
-                conditionsMatch = conditionsMatch
-                                  && this.Conditions[count].Equals(x.Conditions[count]);
+                if (!this.Conditions[i].Equals(x.Conditions[i]))
+                {
+                    return false;
+                }
+            }
+            
+            for (int i = 0; i < this.Actions.Count; i++)
+            {
+                if (!this.Actions[i].Equals(x.Actions[i]))
+                {
+                    return false;
+                }
             }
 
-            // Compare ActionList.
-            count = this.Actions.Count();
-            var actionsMatch = count == x.Actions.Count();
-
-            while (actionsMatch && --count >= 0)
-            {
-                actionsMatch = actionsMatch
-                                  && this.Actions[count].Equals(x.Actions[count]);
-            }
-
-            // Compare everything
-            return conditionsMatch
-                   && actionsMatch
-                   && string.Equals(this.Id, x.Id)
+            // Compare all other parameters if conditions and actions are equal
+            return string.Equals(this.Id, x.Id)
                    && string.Equals(this.Name, x.Name)
                    && string.Equals(this.Description, x.Description)
                    && this.Enabled == x.Enabled
@@ -95,6 +90,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                 hashCode = (hashCode * 397) ^ (this.Name != null ? this.Name.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Description != null ? this.Description.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ this.Enabled.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.Deleted.GetHashCode();
                 hashCode = (hashCode * 397) ^ (this.GroupId != null ? this.GroupId.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Severity != null ? this.Severity.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Conditions != null ? this.Conditions.GetHashCode() : 0);

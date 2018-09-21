@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 {
-    public class EmailParametersDictionaryValidator : JsonConverter
+    public class EmailParametersDictionaryConverter : JsonConverter
     {
         private const string EMAIL_KEY = "Email";
         private const string TEMPLATE_KEY = "Template";
@@ -29,12 +29,12 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
             // Casting to proper types.
             // Converting this to a case-insensitive dictionary for case insensitive look up.
             Dictionary<string, object> caseInsensitiveJsonDictionary = new Dictionary<string, object>(jsonObject.ToObject<Dictionary<string, object>>(), StringComparer.OrdinalIgnoreCase);
-            if (caseInsensitiveJsonDictionary.ContainsKey("Email") && caseInsensitiveJsonDictionary["Email"] != null)
-                returnDictionary["Email"] = ((JArray)caseInsensitiveJsonDictionary["Email"]).ToObject<List<string>>();
-            if (caseInsensitiveJsonDictionary.ContainsKey("Template") && caseInsensitiveJsonDictionary["Template"] != null)
-                returnDictionary["Template"] = caseInsensitiveJsonDictionary["Template"];
-            if (caseInsensitiveJsonDictionary.ContainsKey("Subject") && caseInsensitiveJsonDictionary["Subject"] != null)
-                returnDictionary["Subject"] = caseInsensitiveJsonDictionary["Subject"];
+            if (caseInsensitiveJsonDictionary.ContainsKey(EMAIL_KEY) && caseInsensitiveJsonDictionary[EMAIL_KEY] != null)
+                returnDictionary[EMAIL_KEY] = ((JArray)caseInsensitiveJsonDictionary[EMAIL_KEY]).ToObject<List<string>>();
+            if (caseInsensitiveJsonDictionary.ContainsKey(TEMPLATE_KEY) && caseInsensitiveJsonDictionary[TEMPLATE_KEY] != null)
+                returnDictionary[TEMPLATE_KEY] = caseInsensitiveJsonDictionary[TEMPLATE_KEY];
+            if (caseInsensitiveJsonDictionary.ContainsKey(SUBJECT_KEY) && caseInsensitiveJsonDictionary[SUBJECT_KEY] != null)
+                returnDictionary[SUBJECT_KEY] = caseInsensitiveJsonDictionary[SUBJECT_KEY];
             return returnDictionary;
         }
 
