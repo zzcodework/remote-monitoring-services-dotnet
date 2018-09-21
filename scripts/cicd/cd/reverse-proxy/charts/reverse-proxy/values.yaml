@@ -1,10 +1,10 @@
-# Default values for webui.
+# Default values for reverse-proxy.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-fullnameOverride: webui
+fullnameOverride: reverse-proxy
 replicaCount: 1
 image:
-  repository: azureiotpcs/pcs-remote-monitoring-webui 
+  repository: azureiotpcs/remote-monitoring-nginx
   tag: testing
   pullPolicy: Always
 imagePullSecrets: []
@@ -14,17 +14,24 @@ imagePullSecrets: []
   #
   # This uses credentials from secret "myRegistryKeySecretName".
   # - name: myRegistryKeySecretName
+  #
+probes:
+  enabled: false
+
 service:
   type: ClusterIP
-  internalPort: 10080
+  internalPort: 80
   externalPort: 10080
+  internalHttpsPort: 443
+  externalHttpsPort: 10443
+
 
 ingress:
-  enabled: true
+  enabled: false
   #annotations:
   #kubernetes.io/ingress.class: addon-http-application-routing
     # kubernetes.io/tls-acme: "true"
-  path: /webui
+  path: /
   hosts:
     - rm-aks-test.eastus.cloudapp.azure.com
   # hosts:
@@ -33,9 +40,7 @@ ingress:
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
-secrets: 
-  webui:
-    REACT_APP_BASE_SERVICE_URL: REACT_APP_BASE_SERVICE_URL
+secrets: {}
   # Optionally specify a set of secret objects whose values
   # will be injected as environment variables by default.
   # You should add this section to a file like secrets.yaml

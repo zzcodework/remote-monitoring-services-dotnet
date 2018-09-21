@@ -1,10 +1,10 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "webui.fullname" . }}
+  name: {{ template "reverse-proxy.fullname" . }}
   labels:
-    app: {{ template "webui.name" . }}
-    chart: {{ template "webui.chart" . }}
+    app: {{ template "reverse-proxy.name" . }}
+    chart: {{ template "reverse-proxy.chart" . }}
     draft: {{ default "draft-app" .Values.draft }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,37 +12,42 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "webui.name" . }}
+      app: {{ template "reverse-proxy.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "webui.name" . }}
+        app: {{ template "reverse-proxy.name" . }}
         draft: {{ default "draft-app" .Values.draft }}
         release: {{ .Release.Name }}
       annotations:
         buildID: {{ .Values.buildID }}
     spec:
+      volumes:
+        - name: certs-volume
+          configMap:
+            name: cert-config
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: certs-volume
+            mountPath: /app/certs
           ports:
             - name: http
               containerPort: 10080
               protocol: TCP
+          {{- if .Values.probes.enabled }}
           livenessProbe:
             httpGet:
               path: /
               port: http
-              periodSeconds: 120
-              initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: /
               port: http
-              periodSeconds: 120
-              initialDelaySeconds: 300
+          {{- end }}
           env:
             {{- $root := . }}
             {{- range $ref, $values := .Values.secrets }}
@@ -50,7 +55,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "webui.fullname" $root }}-{{ $ref | lower }}
+                  name: {{ template "reverse-proxy.fullname" $root }}-{{ $ref | lower }}
                   key: {{ $key }}
             {{- end }}
             {{- end }}
