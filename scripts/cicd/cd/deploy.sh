@@ -54,6 +54,7 @@ upgrade() {
 must_run_once_more(){
    #### Thisstep is required due to bug in helm https://github.com/helm/helm/issues/1479
     helm install --name storageadapter storageadapter/charts/storageadapter/ --set secrets.storageadapter.PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING} --set-string secrets.storageadapter.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED}
+    exit 0
 }
 
 
