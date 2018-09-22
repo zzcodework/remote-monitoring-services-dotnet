@@ -16,3 +16,4 @@ helm del --purge simulation
 helm del --purge auth
 helm del --purge webui
 helm del --purge asamanager
+exit 0
