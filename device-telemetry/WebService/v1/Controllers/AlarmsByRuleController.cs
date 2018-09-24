@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Devices;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
@@ -165,7 +166,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             if (deviceIds.Length > DEVICE_LIMIT)
             {
                 this.log.Warn("The client requested too many devices", () => new { deviceIds.Length });
-                throw new BadRequestException("The number of devices cannot exceed 200");
+                throw new BadRequestException("The number of devices cannot exceed " + DEVICE_LIMIT);
             }
 
             List<Alarm> alarmsList = this.alarmService.ListByRule(
