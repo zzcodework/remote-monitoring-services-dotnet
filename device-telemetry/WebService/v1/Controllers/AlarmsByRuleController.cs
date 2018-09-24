@@ -51,6 +51,22 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             return await this.GetAlarmCountByRuleHelper(from, to, order, skip, limit, deviceIds);
         }
 
+        [HttpPost]
+        public async Task<AlarmByRuleListApiModel> PostAsync([FromBody] QueryApiModel body)
+        {
+            string[] deviceIds = body.Devices == null
+                ? new string[0]
+                : body.Devices.ToArray();
+
+            return await this.GetAlarmCountByRuleHelper(
+                body.From,
+                body.To,
+                body.Order,
+                body.Skip,
+                body.Limit,
+                deviceIds);
+        }
+
         [HttpGet("{id}")]
         public AlarmListByRuleApiModel Get(
             [FromRoute] string id,
@@ -76,28 +92,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             [FromBody] QueryApiModel body)
         {
             string[] deviceIds = body.Devices == null
-                ? new string[0] 
+                ? new string[0]
                 : body.Devices.ToArray();
 
             return this.GetAlarmListByRuleHelper(
                 id,
-                body.From, 
-                body.To, 
-                body.Order, 
-                body.Skip, 
-                body.Limit, 
-                deviceIds);
-        }
-
-        [HttpPost]
-        public async Task<AlarmByRuleListApiModel> PostAsync(
-            [FromBody] QueryApiModel body)
-        {
-            string[] deviceIds = body.Devices == null
-                ? new string[0]
-                : body.Devices.ToArray();
-
-            return await this.GetAlarmCountByRuleHelper(
                 body.From,
                 body.To,
                 body.Order,
@@ -105,7 +104,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
                 body.Limit,
                 deviceIds);
         }
-        
+
         private async Task<AlarmByRuleListApiModel> GetAlarmCountByRuleHelper(
             string from,
             string to,

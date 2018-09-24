@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
@@ -49,8 +48,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpPost]
-        public async Task<MessageListApiModel> PostAsync(
-            [FromBody] QueryApiModel body)
+        public async Task<MessageListApiModel> PostAsync([FromBody] QueryApiModel body)
         {
             string[] deviceIds = body.Devices == null
                 ? new string[0]
