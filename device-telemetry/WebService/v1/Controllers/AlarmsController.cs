@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
     [TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class AlarmsController : Controller
     {
-        private const int LIMIT = 200;
+        private const int DEVICE_LIMIT = 1000;
         private const int DELETE_LIMIT = 1000;
 
         private readonly IAlarms alarmService;
@@ -42,34 +42,29 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             [FromQuery] int? limit,
             [FromQuery] string devices)
         {
-            DateTimeOffset? fromDate = DateHelper.ParseDate(from);
-            DateTimeOffset? toDate = DateHelper.ParseDate(to);
-
-            if (order == null) order = "asc";
-            if (skip == null) skip = 0;
-            if (limit == null) limit = 1000;
-
             string[] deviceIds = new string[0];
             if (!string.IsNullOrEmpty(devices))
             {
                 deviceIds = devices.Split(',');
             }
 
-            if (deviceIds.Length > LIMIT)
-            {
-                this.log.Warn("The client requested too many devices", () => new { devices.Length });
-                throw new BadRequestException("The number of devices cannot exceed 200");
-            }
+            return this.ListHelper(from, to, order, skip, limit, deviceIds);
+        }
 
-            List<Alarm> alarmsList = this.alarmService.List(
-                fromDate,
-                toDate,
-                order,
-                skip.Value,
-                limit.Value,
+        [HttpPost(Version.PATH + "/[controller]")]
+        public AlarmListApiModel Post([FromBody] QueryApiModel body)
+        {
+            string[] deviceIds = body.Devices == null
+                ? new string[0]
+                : body.Devices.ToArray();
+
+            return this.ListHelper(
+                body.From,
+                body.To,
+                body.Order,
+                body.Skip,
+                body.Limit,
                 deviceIds);
-
-            return new AlarmListApiModel(alarmsList);
         }
 
         [HttpGet(Version.PATH + "/[controller]/{id}")]
@@ -126,6 +121,38 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             }
 
             this.alarmService.Delete(alarmList.Items);
+        }
+
+        private AlarmListApiModel ListHelper(
+            string from,
+            string to,
+            string order,
+            int? skip,
+            int? limit,
+            string[] deviceIds)
+        {
+            DateTimeOffset? fromDate = DateHelper.ParseDate(from);
+            DateTimeOffset? toDate = DateHelper.ParseDate(to);
+
+            if (order == null) order = "asc";
+            if (skip == null) skip = 0;
+            if (limit == null) limit = 1000;
+
+            if (deviceIds.Length > DEVICE_LIMIT)
+            {
+                this.log.Warn("The client requested too many devices", () => new { deviceIds.Length });
+                throw new BadRequestException("The number of devices cannot exceed " + DEVICE_LIMIT);
+            }
+
+            List<Alarm> alarmsList = this.alarmService.List(
+                fromDate,
+                toDate,
+                order,
+                skip.Value,
+                limit.Value,
+                deviceIds);
+
+            return new AlarmListApiModel(alarmsList);
         }
     }
 }
