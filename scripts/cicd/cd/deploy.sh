@@ -54,7 +54,6 @@ upgrade() {
 must_run_once_more(){
    #### Thisstep is required due to bug in helm https://github.com/helm/helm/issues/1479
     helm install --name storageadapter storageadapter/charts/storageadapter/ --set secrets.storageadapter.PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING} --set-string secrets.storageadapter.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED}
-    helm install --name config config/charts/config --set secrets.config.PCS_DEVICESIMULATION_WEBSERVICE_URL=${PCS_DEVICESIMULATION_WEBSERVICE_URL} --set secrets.config.PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL} --set secrets.config.PCS_TELEMETRY_WEBSERVICE_URL=${PCS_TELEMETRY_WEBSERVICE_URL} --set secrets.config.PCS_AZUREMAPS_KEY=${PCS_AZUREMAPS_KEY} --set secrets.config.PCS_AUTH_WEBSERVICE_URL=${PCS_AUTH_WEBSERVICE_URL} --set-string secrets.config.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED} --debug
      exit 0
 }
 
