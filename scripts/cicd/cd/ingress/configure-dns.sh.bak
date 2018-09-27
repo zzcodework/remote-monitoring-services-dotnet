@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Public IP address of your ingress controller
-IP="NGINXIP"
+IP="<pending>"
 
 # Name to associate with public IP address
 DNSNAME="DNSGIVENNAME"
