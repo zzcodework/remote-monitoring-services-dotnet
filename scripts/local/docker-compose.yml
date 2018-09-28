@@ -65,7 +65,7 @@ services:
       - PCS_APPLICATION_SECRET
 
   devicesimulation:
-    image: azureiotpcs/device-simulation-dotnet:testing
+    image: azureiotpcs/device-simulation-dotnet:DS-1.0.2
     depends_on:
       - storageadapter
     environment:
