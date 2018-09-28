@@ -1,5 +1,9 @@
 #!/bin/bash
 ####### helm delete release
+echo "Config current context"
+kubectl config current-context 
+
+echo "Deleting services from above context"
 helm delete storageadapter
 helm delete telemetry
 helm delete iothubmanager
@@ -17,4 +21,5 @@ helm del --purge auth
 helm del --purge webui
 helm del --purge asamanager
 helm del --purge config
+cat ~/.kube/config
 exit 0
