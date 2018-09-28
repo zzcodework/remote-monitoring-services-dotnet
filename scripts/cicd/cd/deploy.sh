@@ -25,7 +25,7 @@ source .env
 
 ####### Install helm charts
 install() {
-	helm install --name storageadapter storageadapter/charts/storageadapter/ --set secrets.storageadapter.PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING} --set-string secrets.storageadapter.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED}
+#	helm install --name storageadapter storageadapter/charts/storageadapter/ --set secrets.storageadapter.PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING} --set-string secrets.storageadapter.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED}
 
 	helm install --name telemetry telemetry/charts/devicetelemetry/ --set secrets.devicetelemetry.PCS_TELEMETRY_DOCUMENTDB_CONNSTRING=${PCS_TELEMETRY_DOCUMENTDB_CONNSTRING} --set secrets.devicetelemetry.PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL} --set secrets.devicetelemetry.PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL} --set secrets.devicetelemetry.PCS_AUTH_WEBSERVICE_URL=${PCS_AUTH_WEBSERVICE_URL} --set secrets.devicetelemetry.PCS_AAD_TENANT=${PCS_AAD_TENANT} --set secrets.devicetelemetry.PCS_AAD_APPID=${PCS_AAD_APPID} --set secrets.devicetelemetry.PCS_AAD_APPSECRET=${PCS_AAD_APPSECRET} --set secrets.devicetelemetry.PCS_TELEMETRY_STORAGE_TYPE=${PCS_TELEMETRY_STORAGE_TYPE} --set secrets.devicetelemetry.PCS_TSI_FQDN=${PCS_TSI_FQDN} --set-string secrets.devicetelemetry.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED}
 
@@ -59,3 +59,5 @@ must_run_once_more(){
 
 
 must_run_once_more
+
+install

@@ -28,7 +28,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /devicetelemetry
   hosts:
-    - rm-aks-test.eastus.cloudapp.azure.com
+    - DNSNAME 
   # hosts:
   #   - chart-example.local
   tls: []

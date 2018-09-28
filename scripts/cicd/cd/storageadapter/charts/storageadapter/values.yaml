@@ -30,7 +30,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /storageadapter
   hosts:
-    - rm-aks-test.eastus.cloudapp.azure.com
+    - DNSNAME
   tls: []
     # - secretName: chart-example-tls
     #   hosts:

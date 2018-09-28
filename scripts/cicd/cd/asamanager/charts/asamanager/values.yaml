@@ -26,7 +26,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /asamanager
   hosts:
-    - rm-aks-test.eastus.cloudapp.azure.com
+    - DNSNAME 
   # hosts:
   #   - chart-example.local
   tls: []

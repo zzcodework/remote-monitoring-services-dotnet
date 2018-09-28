@@ -26,13 +26,13 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   path: /iothubmanager
   hosts:
-    - rm-aks-test.eastus.cloudapp.azure.com
+    - DNSNAME 
   # hosts:
   #   - chart-example.local
   tls: []
     # - secretName: chart-example-tls
     #   hosts:
-    #     - chart-example.local
+    #     - chart-example.locam
 secrets: 
   iothubmanager:
     PCS_AUTH_WEBSERVICE_URL: PCS_AUTH_WEBSERVICE_URL
