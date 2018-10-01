@@ -130,7 +130,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                 throw new InvalidInputException($"The value of 'TimePeriod' - '{this.TimePeriod}' is not valid");
             }
 
-            var deleted = false;
+            bool deleted = false;
             if (this.Deleted.HasValue)
             {
                 deleted = this.Deleted.Value;
