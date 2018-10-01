@@ -28,7 +28,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
             JObject jsonObject = JObject.Load(reader);
 
             // Convert to a case-insensitive dictionary for case insensitive look up.
-            Dictionary<string, object> caseInsensitiveJsonDictionary = new Dictionary<string, object>(jsonObject.ToObject<Dictionary<string, object>>(), StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, object> caseInsensitiveJsonDictionary =
+                new Dictionary<string, object>(jsonObject.ToObject<Dictionary<string, object>>(), StringComparer.OrdinalIgnoreCase);
             if (caseInsensitiveJsonDictionary.ContainsKey(RECIPIENTS_KEY) && caseInsensitiveJsonDictionary[RECIPIENTS_KEY] != null)
                 returnDictionary[RECIPIENTS_KEY] = ((JArray)caseInsensitiveJsonDictionary[RECIPIENTS_KEY]).ToObject<List<string>>();
             if (caseInsensitiveJsonDictionary.ContainsKey(NOTES_KEY) && caseInsensitiveJsonDictionary[NOTES_KEY] != null)
