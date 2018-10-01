@@ -114,6 +114,7 @@ namespace Services.Test
                                                string packageId, int priority,
                                                string expectedException)
         {
+            // Arrange
             var depModel = new DeploymentServiceModel()
             {
                 Name = deploymentName,
@@ -157,9 +158,12 @@ namespace Services.Test
                     c.Labels[DEPLOYMENT_PACKAGE_ID_LABEL] == packageId)))
                 .ReturnsAsync(newConfig);
 
+            // Act
             if (string.IsNullOrEmpty(expectedException))
             {
                 var createdDeployment = await this.deployments.CreateAsync(depModel);
+
+                // Assert
                 Assert.False(string.IsNullOrEmpty(createdDeployment.Id));
                 Assert.Equal(deploymentName, createdDeployment.Name);
                 Assert.Equal(packageId, createdDeployment.PackageId);
@@ -191,6 +195,7 @@ namespace Services.Test
         [InlineData(5)]
         public async Task GetDeploymentsTest(int numDeployments)
         {
+            // Arrange
             var configurations = new List<Configuration>();
             for (int i = numDeployments - 1; i >= 0; i--)
             {
@@ -199,7 +204,10 @@ namespace Services.Test
 
             this.registry.Setup(r => r.GetConfigurationsAsync(20)).ReturnsAsync(configurations);
 
+            // Act
             var returnedDeployments = await this.deployments.ListAsync();
+
+            // Assert
             Assert.Equal(numDeployments, returnedDeployments.Items.Count);
 
             // verify deployments are ordered by name
@@ -212,6 +220,7 @@ namespace Services.Test
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public async Task GetDeploymentsWithDeviceStatusTest()
         {
+            // Arrange
             var configuration = this.CreateConfiguration(0, true);
             var deploymentId = configuration.Id;
             this.registry.Setup(r => r.GetConfigurationAsync(deploymentId)).ReturnsAsync(configuration);
@@ -219,18 +228,22 @@ namespace Services.Test
             IQuery queryResult = new ResultQuery(3);
             this.registry.Setup(r => r.CreateQuery(It.IsAny<string>())).Returns(queryResult);
 
+            // Act
             var returnedDeployment = await this.deployments.GetAsync(deploymentId);
-            var deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceWithStatus;
+            var deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
+
+            // Assert
             Assert.Null(deviceStatuses);
 
             returnedDeployment = await this.deployments.GetAsync(deploymentId, true);
-            deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceWithStatus;
+            deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
             Assert.Equal(3, deviceStatuses.Count);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public async Task FilterOutNonRmDeploymentsTest()
         {
+            // Arrange
             var configurations = new List<Configuration>
             {
                 this.CreateConfiguration(0, true),
@@ -240,7 +253,10 @@ namespace Services.Test
             this.registry.Setup(r => r.GetConfigurationsAsync(20))
                 .ReturnsAsync(configurations);
 
+            // Act
             var returnedDeployments = await this.deployments.ListAsync();
+
+            // Assert
             Assert.Single(returnedDeployments.Items);
             Assert.Equal("deployment0", returnedDeployments.Items[0].Name);
         }

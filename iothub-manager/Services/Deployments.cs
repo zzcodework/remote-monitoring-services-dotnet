@@ -43,6 +43,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private const string PACKAGE_ID_PARAM = "packageId";
         private const string PRIORITY_PARAM = "priority";
         private const string DEVICE_ID_KEY = "DeviceId";
+        private const string EDGE_MANIFEST_SCHEMA = "schemaVersion";
 
         private const string APPLIED_DEVICES_QUERY =
             "select deviceId from devices.modules where moduleId = '$edgeAgent'" + 
@@ -194,7 +195,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             {
                 DeploymentMetrics =
                 {
-                    DeviceWithStatus = includeDeviceStatus ? this.GetDeviceStatuses(deploymentId) : null
+                    DeviceStatuses = includeDeviceStatus ? this.GetDeviceStatuses(deploymentId) : null
                 }
             };
         }
@@ -222,11 +223,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             var edgeConfiguration = new Configuration(deploymentId);
 
             // TODO: Remove workaround for .net sdk issue which doesn't handle null schemaVersion
-            var schemaVersion = JToken.Parse(package.Content)["schemaVersion"];
+            var schemaVersion = JToken.Parse(package.Content)[EDGE_MANIFEST_SCHEMA];
             if (schemaVersion == null)
             {
                 var packageJson = JToken.Parse(package.Content);
-                packageJson["schemaVersion"] = "1.0";
+                packageJson[EDGE_MANIFEST_SCHEMA] = "1.0";
                 package.Content = packageJson.ToString();
             }
             var packageEdgeConfiguration = JsonConvert.DeserializeObject<Configuration>(package.Content);
