@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
         [JsonProperty(PropertyName = "ActionType")]
         public string ActionType { get; set; } = string.Empty;
 
-        // Parameters dictionary is case-insensitive.
+        // Note: Parameters dictionary should always be initialized as case-insensitive.
         [JsonProperty(PropertyName = "Parameters")]
         public IDictionary<string, object> Parameters { get; set; }
 
@@ -39,13 +40,19 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
             this.Parameters = action.Parameters;
         }
 
-        public ActionApiModel() { }
+        public ActionApiModel()
+        {
+            this.ActionType = Services.Models.Actions.ActionType.Email.ToString();
+            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        }
 
         public IActionItem ToServiceModel()
         {
             if (!Enum.TryParse(this.ActionType, true, out ActionType action))
             {
-                throw new InvalidInputException($"The action type {this.ActionType} is not valid");
+                var validActionsList = string.Join(", ", Enum.GetNames(typeof(ActionType)).ToList());
+                throw new InvalidInputException($"The action type '{this.ActionType}' is not valid." +
+                                                $"Valid action types: [{validActionsList}]");
             }
 
             switch (action)
@@ -53,7 +60,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
                 case Services.Models.Actions.ActionType.Email:
                     return new EmailActionItem(this.Parameters);
                 default:
-                    throw new InvalidInputException($"The action type {this.ActionType} is not valid");
+                    var validActionsList = string.Join(", ", Enum.GetNames(typeof(ActionType)).ToList());
+                    throw new InvalidInputException($"The action type '{this.ActionType}' is not valid" +
+                                                    $"Valid action types: [{validActionsList}]");
             }
         }
     }
