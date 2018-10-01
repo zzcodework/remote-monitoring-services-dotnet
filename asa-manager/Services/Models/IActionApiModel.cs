@@ -10,7 +10,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
     {
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty("Type")]
-        Type ActionType { get; set; }
+        Type Type { get; set; }
 
         [JsonProperty("Parameters")]
         IDictionary<string, object> Parameters { get; set; }

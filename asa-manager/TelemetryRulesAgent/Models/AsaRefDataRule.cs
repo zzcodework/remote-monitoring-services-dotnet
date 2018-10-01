@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Newtonsoft.Json;
 
@@ -93,13 +92,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
             internal string Operator { get; set; }
             internal string Value { get; set; }
         }
-
-        private struct ActionItem
-        {
-            internal string ActionType { get; set; }
-            internal IDictionary<string, object> Parameters { get; set; }
-        }
-
+        
         [JsonProperty("Id")]
         public string Id { get; set; }
 

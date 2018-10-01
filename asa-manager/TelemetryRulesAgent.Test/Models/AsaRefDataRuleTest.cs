@@ -9,6 +9,7 @@ using Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models;
 using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Type = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type;
 
 namespace TelemetryRulesAgent.Test.Models
 {
@@ -76,14 +77,14 @@ namespace TelemetryRulesAgent.Test.Models
             // Assert
             var expectedJSON = JsonConvert.SerializeObject(new
             {
-                Id = (string)null,
-                Name = (string)null,
-                Description = (string)null,
-                GroupId = (string)null,
-                Severity = (string)null,
-                AggregationWindow = (string)null,
+                Id = (string) null,
+                Name = (string) null,
+                Description = (string) null,
+                GroupId = (string) null,
+                Severity = (string) null,
+                AggregationWindow = (string) null,
                 Fields = new string[] { },
-                Actions = new List<object>() { },
+                Actions = new List<object>(),
                 __rulefilterjs = "return true;"
             });
             Assert.Equal(expectedJSON, json);
@@ -376,11 +377,11 @@ namespace TelemetryRulesAgent.Test.Models
         {
             return new EmailActionApiModel()
             {
-                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
+                Type = Type.Email,
                 Parameters = new Dictionary<string, object>()
                 {
-                    {"Template", "This is a new email" },
-                    {"Email", new List<string>(){"azureTest2@gmail.com", "azureTest@gmail.com"} }
+                    {"Notes", "This is a new email" },
+                    {"Recipients", new List<string>(){"azureTest2@gmail.com", "azureTest@gmail.com"} }
                 }
             };
         }

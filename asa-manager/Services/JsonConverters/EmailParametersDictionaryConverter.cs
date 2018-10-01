@@ -9,13 +9,13 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 {
     public class EmailParametersDictionaryConverter : JsonConverter
     {
-        private const string SUBJECT_KEY = "Subject";
-        private const string NOTES_KEY = "Notes";
-        private const string RECIPIENTS_KEY = "Recipients";
-
         public override bool CanWrite => false;
 
         public override bool CanRead => true;
+
+        private const string SUBJECT_KEY = "Subject";
+        private const string NOTES_KEY = "Notes";
+        private const string RECIPIENTS_KEY = "Recipients";
 
         public override bool CanConvert(Type objectType)
         {
@@ -26,8 +26,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
         {
             var returnDictionary = new Dictionary<string, object>();
             JObject jsonObject = JObject.Load(reader);
-            // Casting to proper types.
-            // Converting this to a case-insensitive dictionary for case insensitive look up.
+
+            // Convert to a case-insensitive dictionary for case insensitive look up.
             Dictionary<string, object> caseInsensitiveJsonDictionary = new Dictionary<string, object>(jsonObject.ToObject<Dictionary<string, object>>(), StringComparer.OrdinalIgnoreCase);
             if (caseInsensitiveJsonDictionary.ContainsKey(RECIPIENTS_KEY) && caseInsensitiveJsonDictionary[RECIPIENTS_KEY] != null)
                 returnDictionary[RECIPIENTS_KEY] = ((JArray)caseInsensitiveJsonDictionary[RECIPIENTS_KEY]).ToObject<List<string>>();

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters;
 using Newtonsoft.Json;
 
@@ -61,7 +60,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                     return false;
                 }
             }
-            
+
             for (int i = 0; i < this.Actions.Count; i++)
             {
                 if (!this.Actions[i].Equals(x.Actions[i]))

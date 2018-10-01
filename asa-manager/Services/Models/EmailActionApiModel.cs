@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters;
@@ -10,13 +12,11 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
     public class EmailActionApiModel : IActionApiModel
     {
         [JsonConverter(typeof(StringEnumConverter))]
-        public Type ActionType { get; set; }
+        public Type Type { get; set; }
 
         // Parameters dictionary is case-insensitive.
         [JsonConverter(typeof(EmailParametersDictionaryConverter))]
         public IDictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-
-        public EmailActionApiModel() { }
 
         public override bool Equals(object obj)
         {
@@ -25,13 +25,13 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                 return false;
             }
 
-            return this.ActionType.Equals(otherApiModel.ActionType)
+            return this.Type.Equals(otherApiModel.Type)
                 && this.IsEqualDictionary(otherApiModel.Parameters);
         }
 
         public override int GetHashCode()
         {
-            var hashCode = this.ActionType.GetHashCode();
+            var hashCode = this.Type.GetHashCode();
             hashCode = (hashCode * 397) ^ (this.Parameters != null ? this.Parameters.GetHashCode() : 0);
             return hashCode;
         }

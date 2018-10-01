@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System;
 using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Newtonsoft.Json;
@@ -9,135 +8,134 @@ using Xunit;
 
 namespace Services.Test.Models
 {
-    public class ActionApiModelTest
+    public class EmailActionApiModelTest
     {
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void EmptyInstancesAreEqual()
+        public void EmptyActionsAreEqual()
         {
             // Arrange
-            var x = new EmailActionApiModel();
-            var y = new EmailActionApiModel();
+            var action = new EmailActionApiModel();
+            var action2 = new EmailActionApiModel();
 
             // Assert
-            Assert.True(x.Equals(y));
+            Assert.Equal(action, action2);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void NonEmptyInstancesWithSameDataAreEqual()
+        public void ActionsWithSameDataAreEqual()
         {
             // Arrange: action without parameters
-            var x = new EmailActionApiModel()
+            var action = new EmailActionApiModel()
             {
-                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email
+                Type = Type.Email
             };
 
-            var y = Clone(x);
+            var action2 = Clone(action);
 
             // Assert
-            Assert.True(x.Equals(y));
+            Assert.Equal(action, action2);
 
             // Arrange: action with parameters
-            x = new EmailActionApiModel()
+            action = new EmailActionApiModel()
             {
-                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
+                Type = Type.Email,
                 Parameters = this.CreateSampleParameters()
             };
-            y = Clone(x);
+            action2 = Clone(action);
 
             // Assert
-            Assert.True(x.Equals(y));
+            Assert.Equal(action, action2);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InstancesWithDifferentDataAreDifferent()
+        public void ActionsWithDifferentDataAreDifferent()
         {
             // Arrange
-            var x = new EmailActionApiModel()
+            var action = new EmailActionApiModel()
             {
-                ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
+                Type = Type.Email,
                 Parameters = this.CreateSampleParameters()
             };
 
-            var y2 = Clone(x);
-            var y3 = Clone(x);
+            var action2 = Clone(action);
+            var action3 = Clone(action);
 
-            y2.Parameters.Add("key1", "x");
-            y3.Parameters["Notes"] += "sample string";
+            action2.Parameters.Add("key1", "x");
+            action3.Parameters["Notes"] += "sample string";
 
             // Assert
-            Assert.False(x.Equals(y2));
-            Assert.False(x.Equals(y3));
-            Assert.False(x.Equals(null));
+            Assert.NotEqual(action, action2);
+            Assert.NotEqual(action, action3);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InstancesWithDifferentKeysAreDifferent()
+        public void ActionsWithDifferentKeysAreDifferent()
         {
             // Arrange: different number of key-value pairs in Parameters.
-            var x = new EmailActionApiModel()
+            var action = new EmailActionApiModel()
             {
                 Parameters = this.CreateSampleParameters()
             };
 
-            var y = Clone(x);
-            y.Parameters.Add("Key1", "Value1");
+            var action2 = Clone(action);
+            action2.Parameters.Add("Key1", "Value1");
 
             // Assert
-            Assert.False(x.Equals(y));
+            Assert.NotEqual(action, action2);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InstancesWithDifferentKayValuesAreDifferent()
+        public void ActionsWithDifferentKayValuesAreDifferent()
         {
             // Arrange: different template
-            var x = new EmailActionApiModel()
+            var action = new EmailActionApiModel()
             {
                 Parameters = this.CreateSampleParameters()
             };
 
-            var y = Clone(x);
-            y.Parameters["Notes"] = "Changing note";
+            var action2 = Clone(action);
+            action2.Parameters["Notes"] = "Changing note";
 
             // Assert
-            Assert.False(x.Equals(y));
+            Assert.NotEqual(action, action2);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InstancesWithDifferentKeyValueOfTypeListAreDifferent()
+        public void ActionsWithDifferentRecipeintsAreDifferent()
         {
             //Arrange: Differet list of email
-            var x = new EmailActionApiModel()
+            var action = new EmailActionApiModel()
             {
                 Parameters = this.CreateSampleParameters()
             };
 
-            var y = Clone(x);
-            ((List<string>)y.Parameters["Recipients"]).Add("y");
+            var action2 = Clone(action);
+            ((List<string>)action2.Parameters["Recipients"]).Add("y");
 
             // Assert
-            Assert.False(x.Equals(y));
+            Assert.NotEqual(action, action2);
 
             // Arrange: Different list of email, same length
-            x.Parameters = this.CreateSampleParameters();
-            y.Parameters = new Dictionary<string, object>()
+            action.Parameters = this.CreateSampleParameters();
+            action2.Parameters = new Dictionary<string, object>()
                 {
                     {"Notes", "Sample Note" },
                     {"Recipients", new List<string>() {"anotherEmail1@gmail.com", "anotherEmail2@gmail.com"} }
                 };
 
             // Assert
-            Assert.False(x.Equals(y));
+            Assert.NotEqual(action, action2);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InstancesWithSameKeyValueOfTypeListAreSame()
+        public void ActionsWithSameRecipientsAreSame()
         {
             // Arrange: Same list of email different order.
-            var x = new EmailActionApiModel()
+            var action = new EmailActionApiModel()
             {
                 Parameters = this.CreateSampleParameters()
             };
-            var y = new EmailActionApiModel()
+            var action2 = new EmailActionApiModel()
             {
                 Parameters = new Dictionary<string, object>()
                 {
@@ -147,22 +145,22 @@ namespace Services.Test.Models
             };
 
             // Assert
-            Assert.True(x.Equals(y));
+            Assert.Equal(action, action2);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void InstancesWithSameKeyValuePairCaseInsensitiveAreSame()
+        public void ActionComparisonIsCaseInsensitive()
         {
             // Arrange: Same list of email different order.
-            var tempDictionary = new Dictionary<string, object>()
+            var actionDict = new Dictionary<string, object>()
             {
-                {"ActionType", "Email"},
+                {"Type", "Email"},
                 {"Parameters", this.CreateSampleParameters()}
             };
 
-            var tempDictionary2 = new Dictionary<string, object>()
+            var actionDict2 = new Dictionary<string, object>()
             {
-                {"ActionType", "Email"},
+                {"Type", "Email"},
                 {"Parameters", new Dictionary<string, object>()
                 {
                     {"noTeS", "Sample Note" },
@@ -170,11 +168,11 @@ namespace Services.Test.Models
                 } }
             };
 
-            var a = JsonConvert.SerializeObject(tempDictionary);
-            var b = JsonConvert.SerializeObject(tempDictionary2);
-            var c = JsonConvert.DeserializeObject<EmailActionApiModel>(a);
-            var d = JsonConvert.DeserializeObject<EmailActionApiModel>(b);
-            Assert.True(c.Equals(d));
+            var jsonAction = JsonConvert.SerializeObject(actionDict);
+            var jsonAction2 = JsonConvert.SerializeObject(actionDict2);
+            var action = JsonConvert.DeserializeObject<EmailActionApiModel>(jsonAction);
+            var action2 = JsonConvert.DeserializeObject<EmailActionApiModel>(jsonAction2);
+            Assert.Equal(action, action2);
         }
 
         private static T Clone<T>(T o)
