@@ -77,16 +77,9 @@ namespace Services.Test
             // Assert
             Assert.NotEmpty(list);
 
-            // Assert action has been read.
-            bool isActionReadCorrect = true;
             foreach (Rule rule in list)
             {
-                if (rule.Actions == null)
-                {
-                    isActionReadCorrect = false;
-                    break;
-                }
-                Assert.True(isActionReadCorrect);
+                Assert.NotNull(rule.Actions);
             }
         }
 

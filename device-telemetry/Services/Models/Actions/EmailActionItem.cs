@@ -14,12 +14,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
     public class EmailActionItem : IActionItem
     {
         private const string SUBJECT = "Subject";
-        private const string TEMPLATE = "Template";
-        private const string EMAIL = "Email";
+        private const string NOTES = "Notes";
+        private const string RECIPIENTS = "Recipients";
 
         [JsonConverter(typeof(StringEnumConverter))]
         public ActionType ActionType { get; set; }
 
+        // Note: Parameters should always be initialized as a case-insensitive dictionary
         public IDictionary<string, object> Parameters { get; set; }
 
         public EmailActionItem()
@@ -33,37 +34,26 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
             this.ActionType = ActionType.Email;
             this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-            // convert input to case-insensitive dictionary
+            // Ensure input is in case-insensitive dictionary
             parameters = new Dictionary<string, object>(parameters, StringComparer.OrdinalIgnoreCase);
 
-            if (!(parameters.ContainsKey(TEMPLATE) &&
+            if (!(parameters.ContainsKey(NOTES) &&
                   parameters.ContainsKey(SUBJECT) &&
-                  parameters.ContainsKey(EMAIL)))
+                  parameters.ContainsKey(RECIPIENTS)))
             {
-                throw new InvalidInputException("Error, missing parameter for email action. " +
-                                                $"Required fields are: {SUBJECT}, {TEMPLATE}, and {EMAIL}.");
+                throw new InvalidInputException("Error, missing parameter for email action. Required fields are: " +
+                                                $"'{SUBJECT}', '{NOTES}', and '{RECIPIENTS}'.");
             }
 
-            if (parameters.ContainsKey(TEMPLATE))
-            {
-                this.Parameters[TEMPLATE] = parameters[TEMPLATE];
-            }
-
-            if (parameters.ContainsKey(SUBJECT))
-            {
-                this.Parameters[SUBJECT] = parameters[SUBJECT];
-            }
-
-            if (parameters.ContainsKey(EMAIL))
-            {
-                this.Parameters[EMAIL] = this.ValidateAndConvertEmails(parameters[EMAIL]);
-            }
+            this.Parameters[NOTES] = parameters[NOTES];
+            this.Parameters[SUBJECT] = parameters[SUBJECT];
+            this.Parameters[RECIPIENTS] = this.ValidateAndConvertRecipientEmails(parameters[RECIPIENTS]);
         }
 
         /// <summary>
-        /// Validates email address list and converts to a list
+        /// Validates recipient email addresses and converts to a list of email strings
         /// </summary>
-        private List<string> ValidateAndConvertEmails(Object emails)
+        private List<string> ValidateAndConvertRecipientEmails(Object emails)
         {
             List<string> result = new List<string>();
 
@@ -73,28 +63,31 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
             }
             catch (Exception e)
             {
-                var msg = "Emails provided should be an array of valid email addresses as strings.";
-                throw new InvalidInputException(msg, e);
+                throw new InvalidInputException("Error converting recipient emails to list for action type 'Email'. " +
+                                                "Recipient emails provided should be an array of valid email addresses" +
+                                                "as strings.");
             }
 
             if (!result.Any())
             {
-                throw new InvalidInputException("Error, email list for action ActionType Email is empty. " +
-                                                "Must provide at least one valid email address.");
+                throw new InvalidInputException("Error, recipient email list for action type 'Email' is empty. " +
+                                                "Please provide at least one valid email address.");
             }
 
             foreach (var email in result)
             {
                 try
                 {
+                    // validate with attempt to create MailAddress type from string
                     var address = new MailAddress(email);
                 }
                 catch (Exception e)
                 {
-                    throw new InvalidInputException("Error, with email format. Invlaid email provided " +
-                              "for email Action. Must provide at least one valid email address.");
+                    throw new InvalidInputException("Error with recipient email format for action type 'Email'." +
+                                                    "Invlaid email provided. Please ensure at least one recipient " +
+                                                    "email address is provided and that all recipient email addresses " +
+                                                    "are valid.");
                 }
-                
             }
 
             return result;
