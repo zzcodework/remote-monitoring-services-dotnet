@@ -17,10 +17,10 @@
                 "DeleteRules",
                 "CreateJobs",
                 "UpdateSimManagement",
-                "CreateDeployment",
-                "DeleteDeployment",
-                "CreatePackage",
-                "DeletePackage"
+                "CreateDeployments",
+                "DeleteDeployments",
+                "CreatePackages",
+                "DeletePackages"
             ]
         },
         {
