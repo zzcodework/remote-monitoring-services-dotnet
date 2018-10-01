@@ -428,8 +428,9 @@ namespace Services.Test
                 new EmailActionItem(
                     new Dictionary<string, object>
                     {
-                        {"email", new Newtonsoft.Json.Linq.JArray(){"sampleEmail@gmail.com", "sampleEmail2@gmail.com"}},
-                        {"subject", "Test Email"}
+                        { "recipients", new Newtonsoft.Json.Linq.JArray(){ "sampleEmail@gmail.com", "sampleEmail2@gmail.com" } },
+                        { "subject", "Test Email" },
+                        { "notes", "Test Email Notes." }
                     })
             };
 
