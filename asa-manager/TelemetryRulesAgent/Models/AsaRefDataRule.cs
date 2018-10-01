@@ -92,7 +92,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
             internal string Operator { get; set; }
             internal string Value { get; set; }
         }
-        
+
         [JsonProperty("Id")]
         public string Id { get; set; }
 

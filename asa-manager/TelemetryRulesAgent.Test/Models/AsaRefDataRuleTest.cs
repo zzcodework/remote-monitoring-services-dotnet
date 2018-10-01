@@ -77,12 +77,12 @@ namespace TelemetryRulesAgent.Test.Models
             // Assert
             var expectedJSON = JsonConvert.SerializeObject(new
             {
-                Id = (string) null,
-                Name = (string) null,
-                Description = (string) null,
-                GroupId = (string) null,
-                Severity = (string) null,
-                AggregationWindow = (string) null,
+                Id = (string)null,
+                Name = (string)null,
+                Description = (string)null,
+                GroupId = (string)null,
+                Severity = (string)null,
+                AggregationWindow = (string)null,
                 Fields = new string[] { },
                 Actions = new List<object>(),
                 __rulefilterjs = "return true;"
