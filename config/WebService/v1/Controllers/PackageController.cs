@@ -41,6 +41,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpPost]
+        [Authorize("CreatePackages")]
         public async Task<PackageApiModel> PostAsync(string type, IFormFile package)
         {
             if (string.IsNullOrEmpty(type))
@@ -76,6 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize("DeletePackages")]
         public async Task DeleteAsync(string id)
         {
             if (string.IsNullOrEmpty(id))

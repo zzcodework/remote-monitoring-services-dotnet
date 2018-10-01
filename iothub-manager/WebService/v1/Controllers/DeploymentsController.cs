@@ -23,6 +23,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="deployment">Deployment information</param>
         /// <returns>Deployment information and initial success metrics</returns>
         [HttpPost]
+        [Authorize("CreateDeployments")]
         public async Task<DeploymentApiModel> PostAsync([FromBody] DeploymentApiModel deployment)
         {
             if (string.IsNullOrWhiteSpace(deployment.DeviceGroupId))
@@ -66,6 +67,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize("DeleteDeployments")]
         public async Task DeleteAsync(string id)
         {
             await this.deployments.DeleteAsync(id);
