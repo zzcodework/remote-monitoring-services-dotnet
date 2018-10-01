@@ -84,7 +84,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
                 catch (Exception e)
                 {
                     throw new InvalidInputException("Error with recipient email format for action type 'Email'." +
-                                                    "Invlaid email provided. Please ensure at least one recipient " +
+                                                    "Invalid email provided. Please ensure at least one recipient " +
                                                     "email address is provided and that all recipient email addresses " +
                                                     "are valid.");
                 }
