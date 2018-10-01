@@ -9,9 +9,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 {
     public class EmailParametersDictionaryConverter : JsonConverter
     {
-        private const string EMAIL_KEY = "Email";
-        private const string TEMPLATE_KEY = "Template";
         private const string SUBJECT_KEY = "Subject";
+        private const string NOTES_KEY = "Notes";
+        private const string RECIPIENTS_KEY = "Recipients";
 
         public override bool CanWrite => false;
 
@@ -29,10 +29,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
             // Casting to proper types.
             // Converting this to a case-insensitive dictionary for case insensitive look up.
             Dictionary<string, object> caseInsensitiveJsonDictionary = new Dictionary<string, object>(jsonObject.ToObject<Dictionary<string, object>>(), StringComparer.OrdinalIgnoreCase);
-            if (caseInsensitiveJsonDictionary.ContainsKey(EMAIL_KEY) && caseInsensitiveJsonDictionary[EMAIL_KEY] != null)
-                returnDictionary[EMAIL_KEY] = ((JArray)caseInsensitiveJsonDictionary[EMAIL_KEY]).ToObject<List<string>>();
-            if (caseInsensitiveJsonDictionary.ContainsKey(TEMPLATE_KEY) && caseInsensitiveJsonDictionary[TEMPLATE_KEY] != null)
-                returnDictionary[TEMPLATE_KEY] = caseInsensitiveJsonDictionary[TEMPLATE_KEY];
+            if (caseInsensitiveJsonDictionary.ContainsKey(RECIPIENTS_KEY) && caseInsensitiveJsonDictionary[RECIPIENTS_KEY] != null)
+                returnDictionary[RECIPIENTS_KEY] = ((JArray)caseInsensitiveJsonDictionary[RECIPIENTS_KEY]).ToObject<List<string>>();
+            if (caseInsensitiveJsonDictionary.ContainsKey(NOTES_KEY) && caseInsensitiveJsonDictionary[NOTES_KEY] != null)
+                returnDictionary[NOTES_KEY] = caseInsensitiveJsonDictionary[NOTES_KEY];
             if (caseInsensitiveJsonDictionary.ContainsKey(SUBJECT_KEY) && caseInsensitiveJsonDictionary[SUBJECT_KEY] != null)
                 returnDictionary[SUBJECT_KEY] = caseInsensitiveJsonDictionary[SUBJECT_KEY];
             return returnDictionary;

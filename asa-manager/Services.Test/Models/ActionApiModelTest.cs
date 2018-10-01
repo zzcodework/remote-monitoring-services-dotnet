@@ -40,11 +40,7 @@ namespace Services.Test.Models
             x = new EmailActionApiModel()
             {
                 ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
-                Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                }
+                Parameters = this.CreateSampleParameters()
             };
             y = Clone(x);
 
@@ -59,18 +55,14 @@ namespace Services.Test.Models
             var x = new EmailActionApiModel()
             {
                 ActionType = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type.Email,
-                Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                }
+                Parameters = this.CreateSampleParameters()
             };
 
             var y2 = Clone(x);
             var y3 = Clone(x);
 
             y2.Parameters.Add("key1", "x");
-            y3.Parameters["Template"] += "sample string";
+            y3.Parameters["Notes"] += "sample string";
 
             // Assert
             Assert.False(x.Equals(y2));
@@ -84,11 +76,7 @@ namespace Services.Test.Models
             // Arrange: different number of key-value pairs in Parameters.
             var x = new EmailActionApiModel()
             {
-                Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                }
+                Parameters = this.CreateSampleParameters()
             };
 
             var y = Clone(x);
@@ -104,15 +92,11 @@ namespace Services.Test.Models
             // Arrange: different template
             var x = new EmailActionApiModel()
             {
-                Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                }
+                Parameters = this.CreateSampleParameters()
             };
 
             var y = Clone(x);
-            y.Parameters["Template"] = "Changing template";
+            y.Parameters["Notes"] = "Changing note";
 
             // Assert
             Assert.False(x.Equals(y));
@@ -124,29 +108,21 @@ namespace Services.Test.Models
             //Arrange: Differet list of email
             var x = new EmailActionApiModel()
             {
-                Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                }
+                Parameters = this.CreateSampleParameters()
             };
 
             var y = Clone(x);
-            ((List<string>)y.Parameters["Email"]).Add("y");
+            ((List<string>)y.Parameters["Recipients"]).Add("y");
 
             // Assert
             Assert.False(x.Equals(y));
 
             // Arrange: Different list of email, same length
-            x.Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                };
+            x.Parameters = this.CreateSampleParameters();
             y.Parameters = new Dictionary<string, object>()
                 {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() {"anotherEmail1@gmail.com", "anotherEmail2@gmail.com"} }
+                    {"Notes", "Sample Note" },
+                    {"Recipients", new List<string>() {"anotherEmail1@gmail.com", "anotherEmail2@gmail.com"} }
                 };
 
             // Assert
@@ -159,18 +135,14 @@ namespace Services.Test.Models
             // Arrange: Same list of email different order.
             var x = new EmailActionApiModel()
             {
-                Parameters = new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com"} }
-                }
+                Parameters = this.CreateSampleParameters()
             };
             var y = new EmailActionApiModel()
             {
                 Parameters = new Dictionary<string, object>()
                 {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
+                    {"Notes", "Sample Note" },
+                    {"Recipients", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
                 }
             };
 
@@ -185,11 +157,7 @@ namespace Services.Test.Models
             var tempDictionary = new Dictionary<string, object>()
             {
                 {"ActionType", "Email"},
-                {"Parameters", new Dictionary<string, object>()
-                {
-                    {"Template", "Sample Template" },
-                    {"Email", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
-                } }
+                {"Parameters", this.CreateSampleParameters()}
             };
 
             var tempDictionary2 = new Dictionary<string, object>()
@@ -197,8 +165,8 @@ namespace Services.Test.Models
                 {"ActionType", "Email"},
                 {"Parameters", new Dictionary<string, object>()
                 {
-                    {"tEmplate", "Sample Template" },
-                    {"eMail", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
+                    {"noTeS", "Sample Note" },
+                    {"REcipienTs", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
                 } }
             };
 
@@ -214,6 +182,15 @@ namespace Services.Test.Models
             var a = JsonConvert.SerializeObject(o);
             return JsonConvert.DeserializeObject<T>(
                 JsonConvert.SerializeObject(o));
+        }
+
+        private Dictionary<string, object> CreateSampleParameters()
+        {
+            return new Dictionary<string, object>()
+            {
+                { "Notes", "Sample Note" },
+                { "Recipients", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com" } }
+            };
         }
     }
 }

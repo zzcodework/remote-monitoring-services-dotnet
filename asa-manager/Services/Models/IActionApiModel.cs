@@ -9,7 +9,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
     public interface IActionApiModel
     {
         [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("Type")]
         Type ActionType { get; set; }
+
+        [JsonProperty("Parameters")]
         IDictionary<string, object> Parameters { get; set; }
     }
 
