@@ -34,7 +34,7 @@ namespace WebService.Test.v1.Controllers
         public async Task GetDeploymentTest()
         {
             // Arrange
-            this.deploymentsMock.Setup(x => x.GetAsync(DEPLOYMENT_ID)).ReturnsAsync(new DeploymentServiceModel()
+            this.deploymentsMock.Setup(x => x.GetAsync(DEPLOYMENT_ID, false)).ReturnsAsync(new DeploymentServiceModel()
             {
                 Name = DEPLOYMENT_NAME,
                 DeviceGroupId = DEVICE_GROUP_ID,

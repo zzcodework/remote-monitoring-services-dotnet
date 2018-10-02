@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -47,7 +49,26 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.PackageId = serviceModel.PackageId;
             this.Priority = serviceModel.Priority;
             this.Type = serviceModel.Type;
-            this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics);
+            this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
+            {
+                DeviceStatuses = serviceModel.DeploymentMetrics?.DeviceStatuses
+            };
+        }
+
+        public DeploymentApiModel(DeploymentServiceModel serviceModel,
+                                  IDictionary<string, DeploymentStatus> deviceStatuses)
+        {
+            this.CreatedDateTimeUtc = serviceModel.CreatedDateTimeUtc;
+            this.DeploymentId = serviceModel.Id;
+            this.DeviceGroupId = serviceModel.DeviceGroupId;
+            this.Name = serviceModel.Name;
+            this.PackageId = serviceModel.PackageId;
+            this.Priority = serviceModel.Priority;
+            this.Type = serviceModel.Type;
+            this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
+            {
+                DeviceStatuses = deviceStatuses
+            };
         }
 
         public DeploymentServiceModel ToServiceModel()

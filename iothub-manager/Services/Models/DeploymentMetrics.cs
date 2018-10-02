@@ -11,10 +11,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
     public class DeploymentMetrics
     {
         public IDictionary<string, long> Metrics { get; set; }
+        public IDictionary<string, DeploymentStatus> DeviceStatuses { get; set; }
 
         public DeploymentMetrics(ConfigurationMetrics systemMetrics, ConfigurationMetrics customMetrics)
         {
             this.Metrics = new Dictionary<string, long>();
+            this.DeviceStatuses = new Dictionary<string, DeploymentStatus>();
 
             if (systemMetrics?.Results?.Count > 0)
             {
