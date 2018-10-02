@@ -9,7 +9,6 @@ using Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models;
 using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
-using Type = Microsoft.Azure.IoTSolutions.AsaManager.Services.Models.Type;
 
 namespace TelemetryRulesAgent.Test.Models
 {
@@ -377,7 +376,7 @@ namespace TelemetryRulesAgent.Test.Models
         {
             return new EmailActionApiModel()
             {
-                Type = Type.Email,
+                Type = ActionType.Email,
                 Parameters = new Dictionary<string, object>()
                 {
                     {"Notes", "This is a new email" },

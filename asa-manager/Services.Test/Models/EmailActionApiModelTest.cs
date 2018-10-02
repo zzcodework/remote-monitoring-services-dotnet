@@ -27,7 +27,7 @@ namespace Services.Test.Models
             // Arrange: action without parameters
             var action = new EmailActionApiModel()
             {
-                Type = Type.Email
+                Type = ActionType.Email
             };
 
             var action2 = Clone(action);
@@ -38,7 +38,7 @@ namespace Services.Test.Models
             // Arrange: action with parameters
             action = new EmailActionApiModel()
             {
-                Type = Type.Email,
+                Type = ActionType.Email,
                 Parameters = this.CreateSampleParameters()
             };
             action2 = Clone(action);
@@ -53,7 +53,7 @@ namespace Services.Test.Models
             // Arrange
             var action = new EmailActionApiModel()
             {
-                Type = Type.Email,
+                Type = ActionType.Email,
                 Parameters = this.CreateSampleParameters()
             };
 
@@ -101,16 +101,22 @@ namespace Services.Test.Models
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void ActionsWithDifferentRecipeintsAreDifferent()
+        public void ActionsWithDifferentRecipientsAreDifferent()
         {
             //Arrange: Differet list of email
-            var action = new EmailActionApiModel()
+            var action = new EmailActionApiModel
             {
                 Parameters = this.CreateSampleParameters()
             };
 
-            var action2 = Clone(action);
-            ((List<string>)action2.Parameters["Recipients"]).Add("y");
+            var action2 = new EmailActionApiModel
+            {
+                Parameters = new Dictionary<string, object>
+                {
+                    { "Notes", "Sample Note" },
+                    { "Recipients", new List<string> { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com", "samleEmail3@gmail.com" } }
+                }
+            };
 
             // Assert
             Assert.NotEqual(action, action2);
@@ -187,7 +193,7 @@ namespace Services.Test.Models
             return new Dictionary<string, object>()
             {
                 { "Notes", "Sample Note" },
-                { "Recipients", new List<string>() { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com" } }
+                { "Recipients", new List<string> { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com" } }
             };
         }
     }

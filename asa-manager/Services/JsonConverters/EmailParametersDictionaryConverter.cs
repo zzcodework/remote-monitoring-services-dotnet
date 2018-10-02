@@ -13,29 +13,26 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 
         public override bool CanRead => true;
 
-        private const string SUBJECT_KEY = "Subject";
-        private const string NOTES_KEY = "Notes";
         private const string RECIPIENTS_KEY = "Recipients";
 
         public override bool CanConvert(Type objectType)
         {
-            return false;
+            return objectType == typeof(Dictionary<string, object>);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var returnDictionary = new Dictionary<string, object>();
             JObject jsonObject = JObject.Load(reader);
 
             // Convert to a case-insensitive dictionary for case insensitive look up.
-            Dictionary<string, object> caseInsensitiveJsonDictionary =
+            Dictionary<string, object> returnDictionary =
                 new Dictionary<string, object>(jsonObject.ToObject<Dictionary<string, object>>(), StringComparer.OrdinalIgnoreCase);
-            if (caseInsensitiveJsonDictionary.ContainsKey(RECIPIENTS_KEY) && caseInsensitiveJsonDictionary[RECIPIENTS_KEY] != null)
-                returnDictionary[RECIPIENTS_KEY] = ((JArray)caseInsensitiveJsonDictionary[RECIPIENTS_KEY]).ToObject<List<string>>();
-            if (caseInsensitiveJsonDictionary.ContainsKey(NOTES_KEY) && caseInsensitiveJsonDictionary[NOTES_KEY] != null)
-                returnDictionary[NOTES_KEY] = caseInsensitiveJsonDictionary[NOTES_KEY];
-            if (caseInsensitiveJsonDictionary.ContainsKey(SUBJECT_KEY) && caseInsensitiveJsonDictionary[SUBJECT_KEY] != null)
-                returnDictionary[SUBJECT_KEY] = caseInsensitiveJsonDictionary[SUBJECT_KEY];
+
+            if (returnDictionary.ContainsKey(RECIPIENTS_KEY) && returnDictionary[RECIPIENTS_KEY] != null)
+            {
+                returnDictionary[RECIPIENTS_KEY] = ((JArray)returnDictionary[RECIPIENTS_KEY]).ToObject<List<string>>();
+            }
+
             return returnDictionary;
         }
 

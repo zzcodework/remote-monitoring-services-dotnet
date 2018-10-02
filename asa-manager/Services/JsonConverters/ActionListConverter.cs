@@ -8,19 +8,13 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 {
-    class ActionConverter : JsonConverter
+    class ActionListConverter : JsonConverter
     {
         public override bool CanWrite => false;
         public override bool CanRead => true;
 
-        // Maps Types of actions to their Service layer class.
-        private static readonly IDictionary<Models.Type, Func<IActionApiModel>> actionMapping
-            = new Dictionary<Models.Type, Func<IActionApiModel>>()
-                {
-                    { Models.Type.Email, () => new EmailActionApiModel() }
-                };
-
         private const string TYPE_KEY = "Type";
+        private const string EMAIL_KEY = "Email";
 
         public override bool CanConvert(System.Type objectType)
         {
@@ -30,15 +24,20 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
         public override object ReadJson(JsonReader reader, System.Type objectType, object existingValue, JsonSerializer serializer)
         {
             var jsonArray = JArray.Load(reader);
-            IList<IActionApiModel> actionItemList = new List<IActionApiModel>();
+            IList<IActionApiModel> actionList = new List<IActionApiModel>();
             foreach (var jsonObject in jsonArray)
             {
-                Enum.TryParse(jsonObject[TYPE_KEY].Value<string>(), true, out Models.Type action);
-                var actionItem = actionMapping[action]();
-                serializer.Populate(jsonObject.CreateReader(), actionItem);
-                actionItemList.Add(actionItem);
+                var actionType = default(EmailActionApiModel);
+                switch (jsonObject[TYPE_KEY].Value<string>())
+                {
+                    case EMAIL_KEY:
+                        actionType = new EmailActionApiModel();
+                        break;
+                }
+                serializer.Populate(jsonObject.CreateReader(), actionType);
+                actionList.Add(actionType);
             }
-            return actionItemList;
+            return actionList;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

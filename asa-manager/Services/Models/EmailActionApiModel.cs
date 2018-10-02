@@ -12,7 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
     public class EmailActionApiModel : IActionApiModel
     {
         [JsonConverter(typeof(StringEnumConverter))]
-        public Type Type { get; set; }
+        public ActionType Type { get; set; }
 
         // Parameters dictionary is case-insensitive.
         [JsonConverter(typeof(EmailParametersDictionaryConverter))]

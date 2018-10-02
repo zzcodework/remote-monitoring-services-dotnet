@@ -10,13 +10,13 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
     {
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty("Type")]
-        Type Type { get; set; }
+        ActionType Type { get; set; }
 
         [JsonProperty("Parameters")]
         IDictionary<string, object> Parameters { get; set; }
     }
 
-    public enum Type
+    public enum ActionType
     {
         Email
     }

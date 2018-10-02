@@ -42,7 +42,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         [JsonProperty("TimePeriod")]
         public long TimePeriod { get; set; }
 
-        [JsonConverter(typeof(ActionConverter))]
+        [JsonConverter(typeof(ActionListConverter))]
         [JsonProperty(PropertyName = "Actions")]
         public List<IActionApiModel> Actions { get; set; }
 
