@@ -108,26 +108,14 @@ namespace Services.Test.Models
             {
                 Parameters = this.CreateSampleParameters()
             };
-
-            var action2 = new EmailActionApiModel
-            {
-                Parameters = new Dictionary<string, object>
-                {
-                    { "Notes", "Sample Note" },
-                    { "Recipients", new List<string> { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com", "samleEmail3@gmail.com" } }
-                }
-            };
+            var action2 = Clone(action);
+            action2.Parameters["Recipients"] = new List<string> { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com", "samleEmail3@gmail.com" };
 
             // Assert
             Assert.NotEqual(action, action2);
 
             // Arrange: Different list of email, same length
-            action.Parameters = this.CreateSampleParameters();
-            action2.Parameters = new Dictionary<string, object>()
-                {
-                    {"Notes", "Sample Note" },
-                    {"Recipients", new List<string>() {"anotherEmail1@gmail.com", "anotherEmail2@gmail.com"} }
-                };
+            action2.Parameters["Recipients"] = new List<string>() { "anotherEmail1@gmail.com", "anotherEmail2@gmail.com" };
 
             // Assert
             Assert.NotEqual(action, action2);
@@ -141,14 +129,8 @@ namespace Services.Test.Models
             {
                 Parameters = this.CreateSampleParameters()
             };
-            var action2 = new EmailActionApiModel()
-            {
-                Parameters = new Dictionary<string, object>()
-                {
-                    {"Notes", "Sample Note" },
-                    {"Recipients", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
-                }
-            };
+            var action2 = Clone(action);
+            action2.Parameters["Recipients"] = new List<string>() { "sampleEmail2@gmail.com", "sampleEmail1@gmail.com" };
 
             // Assert
             Assert.Equal(action, action2);

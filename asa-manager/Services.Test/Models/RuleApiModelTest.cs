@@ -61,6 +61,24 @@ namespace Services.Test.Models
 
             // Assert
             Assert.True(x.Equals(y));
+
+            // Arrange: rule with actions
+            x.Actions = new List<IActionApiModel>
+            {
+                new EmailActionApiModel
+                {
+                    Type = ActionType.Email,
+                    Parameters = new Dictionary<string, object>
+                    {
+                        { "Notes", "Sample Note" },
+                        { "Recipients", new List<string> { "sampleEmail1@gmail.com", "sampleEmail2@gmail.com" } }
+                    }
+                }
+            };
+            y = Clone(x);
+
+            // Assert
+            Assert.True(x.Equals(y));
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]

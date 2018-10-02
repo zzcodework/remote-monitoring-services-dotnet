@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
@@ -51,19 +52,24 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         {
             if (!(obj is RuleApiModel x)) return false;
 
-            for (int i = 0; i < this.Conditions.Count; i++)
+            if (this.Conditions.Count != x.Conditions.Count
+                || this.Actions.Count != x.Actions.Count)
             {
-                if (!this.Conditions[i].Equals(x.Conditions[i]))
-                {
-                    return false;
-                }
+                return false;
+            }
+
+            if (this.Conditions.Except(x.Conditions).Any())
+            {
+                return false;
             }
 
             for (int i = 0; i < this.Actions.Count; i++)
             {
-                if (!this.Actions[i].Equals(x.Actions[i]))
                 {
-                    return false;
+                    if (!this.Actions[i].Equals(x.Actions[i]))
+                    {
+                        return false;
+                    }
                 }
             }
 
