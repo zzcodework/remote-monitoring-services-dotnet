@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,7 +36,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new InvalidOperationException("Use default serialization");
+            throw new NotImplementedException("Use default implementation for writing to the field.");
         }
     }
 }
