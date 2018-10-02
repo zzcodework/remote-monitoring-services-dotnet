@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 {
-    class ActionListConverter : JsonConverter
+    class ActionConverter : JsonConverter
     {
         public override bool CanWrite => false;
         public override bool CanRead => true;
@@ -23,21 +23,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 
         public override object ReadJson(JsonReader reader, System.Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var jsonArray = JArray.Load(reader);
-            IList<IActionApiModel> actionList = new List<IActionApiModel>();
-            foreach (var jsonObject in jsonArray)
+            var jsonObject = JObject.Load(reader);
+            var actionType = default(EmailActionApiModel);
+            switch (jsonObject[TYPE_KEY].Value<string>())
             {
-                var actionType = default(EmailActionApiModel);
-                switch (jsonObject[TYPE_KEY].Value<string>())
-                {
-                    case EMAIL_KEY:
-                        actionType = new EmailActionApiModel();
-                        break;
-                }
-                serializer.Populate(jsonObject.CreateReader(), actionType);
-                actionList.Add(actionType);
+                case EMAIL_KEY:
+                    actionType = new EmailActionApiModel();
+                    break;
             }
-            return actionList;
+            serializer.Populate(jsonObject.CreateReader(), actionType);
+            return actionType;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

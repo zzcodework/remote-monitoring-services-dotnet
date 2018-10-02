@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
@@ -42,7 +41,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         [JsonProperty("TimePeriod")]
         public long TimePeriod { get; set; }
 
-        [JsonConverter(typeof(ActionListConverter))]
         [JsonProperty(PropertyName = "Actions")]
         public List<IActionApiModel> Actions { get; set; }
 
