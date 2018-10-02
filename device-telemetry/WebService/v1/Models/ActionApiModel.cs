@@ -11,8 +11,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
 {
     public class ActionApiModel
     {
-        [JsonProperty(PropertyName = "ActionType")]
-        public string ActionType { get; set; } = string.Empty;
+        [JsonProperty(PropertyName = "Type")]
+        public string Type { get; set; } = string.Empty;
 
         // Note: Parameters dictionary should always be initialized as case-insensitive.
         [JsonProperty(PropertyName = "Parameters")]
@@ -20,7 +20,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
 
         public ActionApiModel(string action, Dictionary<string, object> parameters)
         {
-            this.ActionType = action;
+            this.Type = action;
 
             try
             {
@@ -28,40 +28,40 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
             }
             catch (Exception e)
             {
-                var msg = $"Error, duplicate parameters provided for the {this.ActionType} action. " +
+                var msg = $"Error, duplicate parameters provided for the {this.Type} action. " +
                           "Parameters are case-insensitive.";
                 throw new InvalidInputException(msg, e);
             }
         }
 
-        public ActionApiModel(IActionItem action)
+        public ActionApiModel(IAction action)
         {
-            this.ActionType = action.ActionType.ToString();
+            this.Type = action.Type.ToString();
             this.Parameters = action.Parameters;
         }
 
         public ActionApiModel()
         {
-            this.ActionType = Services.Models.Actions.ActionType.Email.ToString();
+            this.Type = Services.Models.Actions.ActionType.Email.ToString();
             this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public IActionItem ToServiceModel()
+        public IAction ToServiceModel()
         {
-            if (!Enum.TryParse(this.ActionType, true, out ActionType action))
+            if (!Enum.TryParse(this.Type, true, out ActionType action))
             {
                 var validActionsList = string.Join(", ", Enum.GetNames(typeof(ActionType)).ToList());
-                throw new InvalidInputException($"The action type '{this.ActionType}' is not valid." +
+                throw new InvalidInputException($"The action type '{this.Type}' is not valid." +
                                                 $"Valid action types: [{validActionsList}]");
             }
 
             switch (action)
             {
                 case Services.Models.Actions.ActionType.Email:
-                    return new EmailActionItem(this.Parameters);
+                    return new EmailAction(this.Parameters);
                 default:
                     var validActionsList = string.Join(", ", Enum.GetNames(typeof(ActionType)).ToList());
-                    throw new InvalidInputException($"The action type '{this.ActionType}' is not valid" +
+                    throw new InvalidInputException($"The action type '{this.Type}' is not valid" +
                                                     $"Valid action types: [{validActionsList}]");
             }
         }

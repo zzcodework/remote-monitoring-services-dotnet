@@ -102,7 +102,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
         public Rule ToServiceModel()
         {
             var conditions = new List<Condition>();
-            var actions = new List<IActionItem>();
+            var actions = new List<IAction>();
 
             foreach (var condition in this.Conditions)
             {

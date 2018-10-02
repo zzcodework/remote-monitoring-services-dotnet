@@ -423,9 +423,9 @@ namespace Services.Test
                 }
             };
 
-            var sampleActions = new List<IActionItem>
+            var sampleActions = new List<IAction>
             {
-                new EmailActionItem(
+                new EmailAction(
                     new Dictionary<string, object>
                     {
                         { "recipients", new Newtonsoft.Json.Linq.JArray(){ "sampleEmail@gmail.com", "sampleEmail2@gmail.com" } },

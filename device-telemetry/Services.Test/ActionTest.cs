@@ -38,10 +38,10 @@ namespace Services.Test
             };
 
             // Act 
-            var result = new EmailActionItem(parameters);
+            var result = new EmailAction(parameters);
 
             // Assert 
-            Assert.Equal(ActionType.Email, result.ActionType);
+            Assert.Equal(ActionType.Email, result.Type);
             Assert.Equal(PARAM_NOTES, result.Parameters[PARAM_NOTES_KEY]);
             Assert.Equal(this.emailArray, result.Parameters[PARAM_RECIPIENTS_KEY]);
         }
@@ -58,7 +58,7 @@ namespace Services.Test
             };
 
             // Act and Assert
-            Assert.Throws<InvalidInputException>(() => new EmailActionItem(parameters));
+            Assert.Throws<InvalidInputException>(() => new EmailAction(parameters));
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -72,7 +72,7 @@ namespace Services.Test
             };
 
             // Act and Assert
-            Assert.Throws<InvalidInputException>(() => new EmailActionItem(parameters));
+            Assert.Throws<InvalidInputException>(() => new EmailAction(parameters));
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -87,7 +87,7 @@ namespace Services.Test
             };
 
             // Act and Assert
-            Assert.Throws<InvalidInputException>(() => new EmailActionItem(parameters));
+            Assert.Throws<InvalidInputException>(() => new EmailAction(parameters));
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -102,10 +102,10 @@ namespace Services.Test
             };
 
             // Act 
-            var result = new EmailActionItem(parameters);
+            var result = new EmailAction(parameters);
 
             // Assert 
-            Assert.Equal(ActionType.Email, result.ActionType);
+            Assert.Equal(ActionType.Email, result.Type);
             Assert.Equal(PARAM_NOTES, result.Parameters[PARAM_NOTES_KEY]);
             Assert.Equal(this.emailArray, result.Parameters[PARAM_RECIPIENTS_KEY]);
         }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Converters;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -11,27 +12,28 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
 {
-    public class EmailActionItem : IActionItem
+    public class EmailAction : IAction
     {
         private const string SUBJECT = "Subject";
         private const string NOTES = "Notes";
         private const string RECIPIENTS = "Recipients";
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public ActionType ActionType { get; set; }
+        public ActionType Type { get; set; }
 
         // Note: Parameters should always be initialized as a case-insensitive dictionary
+        [JsonConverter(typeof(EmailParametersConverter))]
         public IDictionary<string, object> Parameters { get; set; }
 
-        public EmailActionItem()
+        public EmailAction()
         {
-            this.ActionType = ActionType.Email;
+            this.Type = ActionType.Email;
             this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public EmailActionItem(IDictionary<string, object> parameters)
+        public EmailAction(IDictionary<string, object> parameters)
         {
-            this.ActionType = ActionType.Email;
+            this.Type = ActionType.Email;
             this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
             // Ensure input is in case-insensitive dictionary
