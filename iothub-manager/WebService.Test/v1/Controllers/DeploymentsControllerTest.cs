@@ -20,7 +20,8 @@ namespace WebService.Test.v1.Controllers
         private readonly Mock<IDeployments> deploymentsMock;
         private const string DEPLOYMENT_NAME = "depname";
         private const string DEVICE_GROUP_ID = "dvcGroupId";
-        private const string PACKAGE_ID = "packageId";
+        private const string DEVICE_GROUP_QUERY = "dvcGroupQuery";
+        private const string PACKAGE_CONTENT = "{}";
         private const string DEPLOYMENT_ID = "dvcGroupId-packageId";
         private const int PRIORITY = 10;
 
@@ -38,7 +39,8 @@ namespace WebService.Test.v1.Controllers
             {
                 Name = DEPLOYMENT_NAME,
                 DeviceGroupId = DEVICE_GROUP_ID,
-                PackageId = PACKAGE_ID,
+                DeviceGroupQuery = DEVICE_GROUP_QUERY,
+                PackageContent = PACKAGE_CONTENT,
                 Priority = PRIORITY,
                 Id = DEPLOYMENT_ID,
                 Type = DeploymentType.EdgeManifest,
@@ -51,7 +53,7 @@ namespace WebService.Test.v1.Controllers
             // Assert
             Assert.Equal(DEPLOYMENT_ID, result.DeploymentId);
             Assert.Equal(DEPLOYMENT_NAME, result.Name);
-            Assert.Equal(PACKAGE_ID, result.PackageId);
+            Assert.Equal(PACKAGE_CONTENT, result.PackageContent);
             Assert.Equal(DEVICE_GROUP_ID, result.DeviceGroupId);
             Assert.Equal(PRIORITY, result.Priority);
             Assert.Equal(DeploymentType.EdgeManifest, result.Type);
@@ -72,7 +74,8 @@ namespace WebService.Test.v1.Controllers
                 {
                     Name = DEPLOYMENT_NAME + i,
                     DeviceGroupId = DEVICE_GROUP_ID + i,
-                    PackageId = PACKAGE_ID + i,
+                    DeviceGroupQuery = DEVICE_GROUP_QUERY + i,
+                    PackageContent = PACKAGE_CONTENT + i,
                     Priority = PRIORITY + i,
                     Id = DEPLOYMENT_ID + i,
                     Type = DeploymentType.EdgeManifest,
@@ -94,8 +97,9 @@ namespace WebService.Test.v1.Controllers
                 var result = results.Items[i];
                 Assert.Equal(DEPLOYMENT_ID + i, result.DeploymentId);
                 Assert.Equal(DEPLOYMENT_NAME + i, result.Name);
-                Assert.Equal(PACKAGE_ID + i, result.PackageId);
+                Assert.Equal(DEVICE_GROUP_QUERY + i, result.DeviceGroupQuery);
                 Assert.Equal(DEVICE_GROUP_ID + i, result.DeviceGroupId);
+                Assert.Equal(PACKAGE_CONTENT + i, result.PackageContent);
                 Assert.Equal(PRIORITY + i, result.Priority);
                 Assert.Equal(DeploymentType.EdgeManifest, result.Type);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
@@ -103,20 +107,21 @@ namespace WebService.Test.v1.Controllers
         }
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        [InlineData("depName", "dvcGroupId", "pkgId", 10, false)]
-        [InlineData("", "dvcGroupId", "pkgId", 10, true)]
-        [InlineData("depName", "", "pkgId", 10, true)]
-        [InlineData("depName", "dvcGroupId", "", 10, true)]
-        [InlineData("depName", "dvcGroupId", "pkgId", -1, true)]
+        [InlineData("depName", "dvcGroupId", "dvcQuery", "pkgContent", 10, false)]
+        [InlineData("", "dvcGroupId", "dvcQuery", "pkgContent", 10, true)]
+        [InlineData("depName", "", "dvcQuery", "pkgContent", 10, true)]
+        [InlineData("depName", "dvcGroupId", "", "pkgContent", 10, true)]
+        [InlineData("depName", "dvcGroupId", "dvcQuery", "", 10, true)]
+        [InlineData("depName", "dvcGroupId", "dvcQuery", "pkgContent", -1, true)]
         public async Task PostDeploymentTest(string name, string deviceGroupId,
-                                             string packageId, int priority,
-                                             bool throwsException)
+                                             string deviceGroupQuery, string packageContent,
+                                             int priority, bool throwsException)
         {
             // Arrange
             var deploymentId = "test-deployment";
             this.deploymentsMock.Setup(x => x.CreateAsync(Match.Create<DeploymentServiceModel>(model =>
                     model.DeviceGroupId == deviceGroupId &&
-                    model.PackageId == packageId &&
+                    model.PackageContent == packageContent &&
                     model.Priority == priority &&
                     model.Name == name &&
                     model.Type == DeploymentType.EdgeManifest)))
@@ -124,7 +129,8 @@ namespace WebService.Test.v1.Controllers
                 {
                     Name = name,
                     DeviceGroupId = deviceGroupId,
-                    PackageId = packageId,
+                    DeviceGroupQuery = deviceGroupQuery,
+                    PackageContent = packageContent,
                     Priority = priority,
                     Id = deploymentId,
                     Type = DeploymentType.EdgeManifest,
@@ -135,7 +141,8 @@ namespace WebService.Test.v1.Controllers
             {
                 Name = name,
                 DeviceGroupId = deviceGroupId,
-                PackageId = packageId,
+                DeviceGroupQuery = deviceGroupQuery,
+                PackageContent = packageContent,
                 Type = DeploymentType.EdgeManifest,
                 Priority = priority
             };
@@ -152,8 +159,9 @@ namespace WebService.Test.v1.Controllers
                 // Assert
                 Assert.Equal(deploymentId, result.DeploymentId);
                 Assert.Equal(name, result.Name);
-                Assert.Equal(packageId, result.PackageId);
                 Assert.Equal(deviceGroupId, result.DeviceGroupId);
+                Assert.Equal(deviceGroupQuery, result.DeviceGroupQuery);
+                Assert.Equal(packageContent, result.PackageContent);
                 Assert.Equal(priority, result.Priority);
                 Assert.Equal(DeploymentType.EdgeManifest, result.Type);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Moq;
 using Xunit;
@@ -16,13 +15,10 @@ namespace Services.Test
     public class DeploymentsTest
     {
         private readonly Deployments deployments;
-        private readonly Mock<IPackageManagementClient> packageClient;
-        private readonly Mock<IDeviceGroupsClient> deviceGroups;
         private readonly Mock<RegistryManager> registry;
 
         private const string DEPLOYMENT_NAME_LABEL = "Name";
         private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
-        private const string DEPLOYMENT_PACKAGE_ID_LABEL = "PackageId";
         private const string RM_CREATED_LABEL = "RMDeployment";
         private const string RESOURCE_NOT_FOUND_EXCEPTION =
             "Microsoft.Azure.IoTSolutions.IotHubManager.Services." +
@@ -95,48 +91,31 @@ namespace Services.Test
 
         public DeploymentsTest()
         {
-            this.packageClient = new Mock<IPackageManagementClient>();
-            this.deviceGroups = new Mock<IDeviceGroupsClient>();
             this.registry = new Mock<RegistryManager>();
-            this.deployments = new Deployments(this.deviceGroups.Object,
-                                               this.packageClient.Object,
-                                               this.registry.Object,
+            this.deployments = new Deployments(this.registry.Object,
                                                "mockIoTHub");
         }
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        [InlineData("depname", "dvcgroupid", "packageid", 10, "")]
-        [InlineData("", "dvcgroupid", "packageid", 10, "System.ArgumentNullException")]
-        [InlineData("depname", "", "packageid", 10, "System.ArgumentNullException")]
-        [InlineData("depname", "dvcgroupid", "", 10, "System.ArgumentNullException")]
-        [InlineData("depname", "dvcgroupid", "packageid", -2, "System.ArgumentOutOfRangeException")]
+        [InlineData("depname", "dvcgroupid", "dvcquery", TEST_PACKAGE_JSON, 10, "")]
+        [InlineData("", "dvcgroupid", "dvcquery", TEST_PACKAGE_JSON, 10, "System.ArgumentNullException")]
+        [InlineData("depname", "", "dvcquery", TEST_PACKAGE_JSON, 10, "System.ArgumentNullException")]
+        [InlineData("depname", "dvcgroupid", "", TEST_PACKAGE_JSON, 10, "System.ArgumentNullException")]
+        [InlineData("depname", "dvcgroupid", "dvcquery", "", 10, "System.ArgumentNullException")]
+        [InlineData("depname", "dvcgroupid", "dvcquery", TEST_PACKAGE_JSON, -1, "System.ArgumentOutOfRangeException")]
         public async Task CreateDeploymentTest(string deploymentName, string deviceGroupId,
-                                               string packageId, int priority,
-                                               string expectedException)
+                                               string deviceGroupQuery, string packageContent,
+                                               int priority, string expectedException)
         {
             // Arrange
             var depModel = new DeploymentServiceModel()
             {
                 Name = deploymentName,
                 DeviceGroupId = deviceGroupId,
-                PackageId = packageId,
+                DeviceGroupQuery = deviceGroupQuery,
+                PackageContent = packageContent,
                 Priority = priority
             };
-
-            this.packageClient.Setup(p => p.GetPackageAsync(It.Is<string>(s => s == packageId)))
-                .ReturnsAsync(new PackageApiModel()
-                {
-                    Id = packageId,
-                    Name = packageId + "Name",
-                    Type = PackageType.EdgeManifest,
-                    Content = TEST_PACKAGE_JSON
-                });
-
-            this.deviceGroups.Setup(d => d.GetDeviceGroupsAsync(It.Is<string>(s => s == deviceGroupId)))
-                .ReturnsAsync(new DeviceGroupApiModel()
-                {
-                    Id = deviceGroupId, DisplayName = deviceGroupId + "Name", ETag = deviceGroupId + "Etag"
-                });
 
             var newConfig = new Configuration("test-config")
             {
@@ -144,18 +123,17 @@ namespace Services.Test
                 {
                     { DEPLOYMENT_NAME_LABEL, deploymentName },
                     { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
-                    { DEPLOYMENT_PACKAGE_ID_LABEL, packageId },
-                    { RM_CREATED_LABEL, Boolean.TrueString },
+                    { RM_CREATED_LABEL, bool.TrueString },
                 }, Priority = priority
             };
 
             this.registry.Setup(r => r.AddConfigurationAsync(It.Is<Configuration>(c =>
                     c.Labels.ContainsKey(DEPLOYMENT_NAME_LABEL) &&
                     c.Labels.ContainsKey(DEPLOYMENT_GROUP_ID_LABEL) &&
-                    c.Labels.ContainsKey(DEPLOYMENT_PACKAGE_ID_LABEL) &&
+                    c.Labels.ContainsKey(RM_CREATED_LABEL) &&
                     c.Labels[DEPLOYMENT_NAME_LABEL] == deploymentName &&
                     c.Labels[DEPLOYMENT_GROUP_ID_LABEL] == deviceGroupId &&
-                    c.Labels[DEPLOYMENT_PACKAGE_ID_LABEL] == packageId)))
+                    c.Labels[RM_CREATED_LABEL] == bool.TrueString)))
                 .ReturnsAsync(newConfig);
 
             // Act
@@ -166,7 +144,6 @@ namespace Services.Test
                 // Assert
                 Assert.False(string.IsNullOrEmpty(createdDeployment.Id));
                 Assert.Equal(deploymentName, createdDeployment.Name);
-                Assert.Equal(packageId, createdDeployment.PackageId);
                 Assert.Equal(deviceGroupId, createdDeployment.DeviceGroupId);
                 Assert.Equal(priority, createdDeployment.Priority);
             }
@@ -268,8 +245,7 @@ namespace Services.Test
                 Labels = new Dictionary<string, string>()
                 {
                     { DEPLOYMENT_NAME_LABEL, "deployment" + idx },
-                    { DEPLOYMENT_GROUP_ID_LABEL, "dvcGroupId" + idx },
-                    { DEPLOYMENT_PACKAGE_ID_LABEL, "packageId" + idx }
+                    { DEPLOYMENT_GROUP_ID_LABEL, "dvcGroupId" + idx }
                 }, Priority = 10
             };
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.IotHubManager.Services.External;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
@@ -36,11 +35,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private const int MAX_DEPLOYMENTS = 20;
         private const string DEPLOYMENT_NAME_LABEL = "Name";
         private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
-        private const string DEPLOYMENT_PACKAGE_ID_LABEL = "PackageId";
         private const string RM_CREATED_LABEL = "RMDeployment";
         private const string DEVICE_GROUP_ID_PARAM = "deviceGroupId";
+        private const string DEVICE_GROUP_QUERY_PARAM = "deviceGroupQuery";
         private const string NAME_PARAM = "name";
-        private const string PACKAGE_ID_PARAM = "packageId";
+        private const string PACKAGE_CONTENT_PARAM = "packageContent";
         private const string PRIORITY_PARAM = "priority";
         private const string DEVICE_ID_KEY = "DeviceId";
         private const string EDGE_MANIFEST_SCHEMA = "schemaVersion";
@@ -59,14 +58,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         private RegistryManager registry;
         private string ioTHubHostName;
-        private readonly IDeviceGroupsClient deviceGroupsClient;
-        private readonly IPackageManagementClient packageClient;
         private readonly ILogger log;
 
         public Deployments(
             IServicesConfig config,
-            IDeviceGroupsClient deviceGroupsClient,
-            IPackageManagementClient packageClient,
             ILogger logger)
         {
             if (config == null)
@@ -80,19 +75,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 this.ioTHubHostName = IotHubConnectionStringBuilder.Create(conn).HostName;
             });
 
-            this.deviceGroupsClient = deviceGroupsClient;
-            this.packageClient = packageClient;
             this.log = logger;
         }
 
         public Deployments(
-            IDeviceGroupsClient deviceGroupsClient,
-            IPackageManagementClient packageClient,
             RegistryManager registry,
             string ioTHubHostName)
         {
-            this.deviceGroupsClient = deviceGroupsClient;
-            this.packageClient = packageClient;
             this.registry = registry;
             this.ioTHubHostName = ioTHubHostName;
         }
@@ -108,14 +97,19 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException(DEVICE_GROUP_ID_PARAM);
             }
 
+            if (string.IsNullOrEmpty(model.DeviceGroupQuery))
+            {
+                throw new ArgumentNullException(DEVICE_GROUP_QUERY_PARAM);
+            }
+
             if (string.IsNullOrEmpty(model.Name))
             {
                 throw new ArgumentNullException(NAME_PARAM);
             }
 
-            if (string.IsNullOrEmpty(model.PackageId))
+            if (string.IsNullOrEmpty(model.PackageContent))
             {
-                throw new ArgumentNullException(PACKAGE_ID_PARAM);
+                throw new ArgumentNullException(PACKAGE_CONTENT_PARAM);
             }
 
             if (model.Priority < 0)
@@ -125,20 +119,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                     "The priority provided should be 0 or greater");
             }
 
-            var getDeviceGroup = this.deviceGroupsClient.GetDeviceGroupsAsync(model.DeviceGroupId);
-            var getPackage = this.packageClient.GetPackageAsync(model.PackageId);
-
-            try
-            {
-                Task.WaitAll(getDeviceGroup, getPackage);
-            }
-            catch (AggregateException ae)
-            {
-                throw ae.InnerException ?? ae;
-            }
-
-            var edgeConfiguration = this.CreateEdgeConfiguration(model.Name, getDeviceGroup.Result,
-                                                                 getPackage.Result, model.Priority);
+            var edgeConfiguration = this.CreateEdgeConfiguration(model);
             return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(edgeConfiguration));
         }
 
@@ -214,40 +195,33 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             await this.registry.RemoveConfigurationAsync(deploymentId);
         }
 
-        private Configuration CreateEdgeConfiguration(string name,
-                                                      DeviceGroupApiModel deviceGroup, 
-                                                      PackageApiModel package, 
-                                                      int priority)
+        private Configuration CreateEdgeConfiguration(DeploymentServiceModel model)
         {
+            var packageContent = model.PackageContent;
             var deploymentId = Guid.NewGuid().ToString().ToLower();
             var edgeConfiguration = new Configuration(deploymentId);
 
             // TODO: Remove workaround for .net sdk issue which doesn't handle null schemaVersion
-            var schemaVersion = JToken.Parse(package.Content)[EDGE_MANIFEST_SCHEMA];
+            var schemaVersion = JToken.Parse(packageContent)[EDGE_MANIFEST_SCHEMA];
             if (schemaVersion == null)
             {
-                var packageJson = JToken.Parse(package.Content);
+                var packageJson = JToken.Parse(packageContent);
                 packageJson[EDGE_MANIFEST_SCHEMA] = "1.0";
-                package.Content = packageJson.ToString();
+                packageContent = packageJson.ToString();
             }
-            var packageEdgeConfiguration = JsonConvert.DeserializeObject<Configuration>(package.Content);
+            var packageEdgeConfiguration = JsonConvert.DeserializeObject<Configuration>(packageContent);
             edgeConfiguration.Content = packageEdgeConfiguration.Content;
 
-            var query = JsonConvert.SerializeObject(deviceGroup.Conditions);
-            query = QueryConditionTranslator.ToQueryString(query);
-            query = string.IsNullOrEmpty(query) ? "*" : query;
-
-            edgeConfiguration.TargetCondition = query;
-            edgeConfiguration.Priority = priority;
+            edgeConfiguration.TargetCondition = QueryConditionTranslator.ToQueryString(model.DeviceGroupQuery);
+            edgeConfiguration.Priority = model.Priority;
             edgeConfiguration.ETag = string.Empty;
 
             if(edgeConfiguration.Labels == null)
             {
                 edgeConfiguration.Labels = new Dictionary<string, string>();
             }
-            edgeConfiguration.Labels.Add(DEPLOYMENT_NAME_LABEL, name);
-            edgeConfiguration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, deviceGroup.Id);
-            edgeConfiguration.Labels.Add(DEPLOYMENT_PACKAGE_ID_LABEL, package.Id);
+            edgeConfiguration.Labels.Add(DEPLOYMENT_NAME_LABEL, model.Name);
+            edgeConfiguration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);
             edgeConfiguration.Labels.Add(RM_CREATED_LABEL, bool.TrueString);
 
             return edgeConfiguration;
