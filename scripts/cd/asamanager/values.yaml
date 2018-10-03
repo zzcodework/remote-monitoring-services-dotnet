@@ -4,9 +4,9 @@
 fullnameOverride: asamanager
 replicaCount: 1
 image:
-  repository: azureiotpcsdev/asa-manager-dotnet 
-  tag: latest
-  pullPolicy: IfNotPresent
+  repository: azureiotpcs/asa-manager-dotnet 
+  tag: testing
+  pullPolicy: Always
 imagePullSecrets: []
   # Optionally specify an array of imagePullSecrets.
   # Secrets must be manually created in the namespace.
