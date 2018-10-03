@@ -12,10 +12,10 @@ spec:
     servicePort: 10080
   tls:
   - hosts:
-    - rmcd-staging.eastus.cloudapp.azure.com 
+    - DNSGIVENNAME.REGION.cloudapp.azure.com 
     secretName: tls-secret
   rules:
-  - host: rmcd-staging.eastus.cloudapp.azure.com
+  - host: DNSGIVENNAME.REGION.cloudapp.azure.com
     http:
       paths:
       - path: /storageadapter/(.*)

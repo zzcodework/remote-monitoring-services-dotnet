@@ -5,13 +5,13 @@ metadata:
 spec:
   secretName: tls-secret
   dnsNames:
-  - rmcd-staging.eastus.cloudapp.azure.com 
+  - DNSGIVENNAME.REGION.cloudapp.azure.com 
   acme:
     config:
     - http01:
         ingressClass: nginx
       domains:
-      - rmcd-staging.eastus.cloudapp.azure.com
+      - DNSGIVENNAME.REGION.cloudapp.azure.com
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

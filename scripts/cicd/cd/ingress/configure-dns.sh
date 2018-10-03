@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Public IP address of your ingress controller
-IP="40.117.62.39"
+IP="NGINXIP"
 
 # Name to associate with public IP address
-DNSNAME="rmcd-staging"
+DNSNAME="DNSGIVENNAME"
 
 # Get the resource-id of the public ip
 PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
