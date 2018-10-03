@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
 {
-    class ActionConverter : JsonConverter
+    public class ActionConverter : JsonConverter
     {
         public override bool CanWrite => false;
         public override bool CanRead => true;
