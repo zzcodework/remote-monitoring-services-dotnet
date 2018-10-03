@@ -22,7 +22,7 @@ namespace Services.Test.Models
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void ActionsWithSameDataAreEqual()
+        public void ActionsAreEqual_WithNoParameters()
         {
             // Arrange: action without parameters
             var action = new EmailActionApiModel()
@@ -34,19 +34,22 @@ namespace Services.Test.Models
 
             // Assert
             Assert.Equal(action, action2);
+        }
 
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void ActionsAreEqual_WithParameters()
+        {
             // Arrange: action with parameters
-            action = new EmailActionApiModel()
+            var action = new EmailActionApiModel()
             {
                 Type = ActionType.Email,
                 Parameters = this.CreateSampleParameters()
             };
-            action2 = Clone(action);
+            var action2 = Clone(action);
 
             // Assert
             Assert.Equal(action, action2);
         }
-
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public void ActionsWithDifferentDataAreDifferent()
         {
@@ -142,17 +145,17 @@ namespace Services.Test.Models
             // Arrange: Same list of email different order.
             var actionDict = new Dictionary<string, object>()
             {
-                {"Type", "Email"},
-                {"Parameters", this.CreateSampleParameters()}
+                { "Type", "Email" },
+                { "Parameters", this.CreateSampleParameters() }
             };
 
             var actionDict2 = new Dictionary<string, object>()
             {
-                {"Type", "Email"},
-                {"Parameters", new Dictionary<string, object>()
+                { "Type", "Email" },
+                { "Parameters", new Dictionary<string, object>()
                 {
-                    {"noTeS", "Sample Note" },
-                    {"REcipienTs", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
+                    { "noTeS", "Sample Note" },
+                    { "REcipienTs", new List<string>() {"sampleEmail2@gmail.com", "sampleEmail1@gmail.com"} }
                 } }
             };
 

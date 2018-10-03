@@ -379,8 +379,8 @@ namespace TelemetryRulesAgent.Test.Models
                 Type = ActionType.Email,
                 Parameters = new Dictionary<string, object>()
                 {
-                    {"Notes", "This is a new email" },
-                    {"Recipients", new List<string>(){"azureTest2@gmail.com", "azureTest@gmail.com"} }
+                    { "Notes", "This is a new email" },
+                    { "Recipients", new List<string>(){"azureTest2@gmail.com", "azureTest@gmail.com"} }
                 }
             };
         }

@@ -14,6 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         [JsonProperty("Type")]
         ActionType Type { get; set; }
 
+        // Dictionary should always be initialized as a case-insensitive dictionary
         [JsonProperty("Parameters")]
         IDictionary<string, object> Parameters { get; set; }
     }

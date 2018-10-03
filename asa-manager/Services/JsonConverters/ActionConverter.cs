@@ -13,25 +13,30 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.JsonConverters
         public override bool CanRead => true;
 
         private const string TYPE_KEY = "Type";
-        private const string EMAIL_KEY = "Email";
 
-        public override bool CanConvert(System.Type objectType)
+        public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(IActionApiModel);
         }
 
-        public override object ReadJson(JsonReader reader, System.Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var jsonObject = JObject.Load(reader);
-            var actionType = default(EmailActionApiModel);
-            switch (jsonObject[TYPE_KEY].Value<string>())
+            var action = default(EmailActionApiModel);
+            var actionType = Enum.Parse(
+                typeof(ActionType),
+                jsonObject.GetValue(TYPE_KEY).Value<string>(),
+                true);
+
+            switch (actionType)
             {
-                case EMAIL_KEY:
-                    actionType = new EmailActionApiModel();
+                case ActionType.Email:
+                    action = new EmailActionApiModel();
                     break;
             }
-            serializer.Populate(jsonObject.CreateReader(), actionType);
-            return actionType;
+
+            serializer.Populate(jsonObject.CreateReader(), action);
+            return action;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
