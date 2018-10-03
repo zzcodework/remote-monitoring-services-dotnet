@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Converters;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,17 +14,10 @@ namespace Services.Test
         private const string PARAM_NOTES = "Chiller pressure is at 250 which is high";
         private const string PARAM_SUBJECT = "Alert Notification";
         private const string PARAM_RECIPIENTS = "sampleEmail@gmail.com";
-        private const string PARAM_SUBJECT_KEY = "Subject";
         private const string PARAM_NOTES_KEY = "Notes";
         private const string PARAM_RECIPIENTS_KEY = "Recipients";
 
-        [JsonConverter(typeof(ActionConverter))]
-        private List<IAction> targetList;
-
-        public ActionConverterTest()
-        {
-            this.targetList = new List<IAction>();
-        }
+        public ActionConverterTest() { }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public void ItReturnsEmailAction_WhenEmailActionJsonPassed()
