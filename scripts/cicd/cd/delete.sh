@@ -21,5 +21,6 @@ helm del --purge auth
 helm del --purge webui
 helm del --purge asamanager
 helm del --purge config
-cat ~/.kube/config
+##################### Delete any other resources
+kubectl delete secret storageadapter-storageadapter
 exit 0

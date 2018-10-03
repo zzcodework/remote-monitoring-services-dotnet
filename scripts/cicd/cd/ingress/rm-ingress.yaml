@@ -4,7 +4,7 @@ metadata:
   name: rm-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
-    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   backend:
@@ -12,17 +12,13 @@ spec:
     servicePort: 10080
   tls:
   - hosts:
-    - DNSGIVENNAME.REGION.cloudapp.azure.com 
+    - rmcd-staging.eastus.cloudapp.azure.com 
     secretName: tls-secret
   rules:
-  - host: DNSGIVENNAME.REGION.cloudapp.azure.com
+  - host: rmcd-staging.eastus.cloudapp.azure.com
     http:
       paths:
-      - path: /party-clippy
-        backend:
-          serviceName: party-clippy
-          servicePort: 80
-      - path: /storageadapter/*
+      - path: /storageadapter/(.*)
         backend:
           serviceName: storageadapter
           servicePort: 80
@@ -30,7 +26,7 @@ spec:
         backend:
           serviceName: iothubmanager
           servicePort: 80
-      - path: /devicetelemetry/*
+      - path: /telemetry/*
         backend:
           serviceName: devicetelemetry
           servicePort: 80
@@ -42,16 +38,16 @@ spec:
         backend:
           serviceName: config
           servicePort: 80
-      - path: /asamanager/*
+      - path: /asamanager/(.*)
         backend:
           serviceName: asamanager
+          servicePort: 80
+      - path: /auth/(.*)
+        backend:
+          serviceName: auth
           servicePort: 80
       - path: /
         backend:
           serviceName: webui
           servicePort: 10080
-      - path: /auth/*
-        backend:
-          serviceName: auth
-          servicePort: 80
 
