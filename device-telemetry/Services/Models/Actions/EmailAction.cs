@@ -29,25 +29,31 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
         {
             this.Type = ActionType.Email;
             this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            this.Parameters[NOTES] = string.Empty;
         }
 
         public EmailAction(IDictionary<string, object> parameters)
         {
             this.Type = ActionType.Email;
             this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            this.Parameters[NOTES] = string.Empty;
 
             // Ensure input is in case-insensitive dictionary
             parameters = new Dictionary<string, object>(parameters, StringComparer.OrdinalIgnoreCase);
 
-            if (!(parameters.ContainsKey(NOTES) &&
-                  parameters.ContainsKey(SUBJECT) &&
+            if (!(parameters.ContainsKey(SUBJECT) &&
                   parameters.ContainsKey(RECIPIENTS)))
             {
                 throw new InvalidInputException("Error, missing parameter for email action. Required fields are: " +
-                                                $"'{SUBJECT}', '{NOTES}', and '{RECIPIENTS}'.");
+                                                $"'{SUBJECT}' and '{RECIPIENTS}'.");
             }
 
-            this.Parameters[NOTES] = parameters[NOTES];
+            // Notes are optional paramters
+            if (parameters.ContainsKey(NOTES))
+            {
+                this.Parameters[NOTES] = parameters[NOTES];
+            }
+            
             this.Parameters[SUBJECT] = parameters[SUBJECT];
             this.Parameters[RECIPIENTS] = this.ValidateAndConvertRecipientEmails(parameters[RECIPIENTS]);
         }

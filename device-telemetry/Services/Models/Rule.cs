@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Converters;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;

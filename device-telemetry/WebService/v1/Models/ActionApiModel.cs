@@ -42,7 +42,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
 
         public ActionApiModel()
         {
-            this.Type = Services.Models.Actions.ActionType.Email.ToString();
+            this.Type = ActionType.Email.ToString();
             this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -57,7 +57,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
 
             switch (action)
             {
-                case Services.Models.Actions.ActionType.Email:
+                case ActionType.Email:
                     return new EmailAction(this.Parameters);
                 default:
                     var validActionsList = string.Join(", ", Enum.GetNames(typeof(ActionType)).ToList());

@@ -52,9 +52,9 @@ namespace Services.Test
             // Arrange
             var parameters = new Dictionary<string, object>()
             {
-                {PARAM_SUBJECT_KEY, PARAM_SUBJECT},
-                {PARAM_NOTES_KEY, PARAM_NOTES},
-                {PARAM_RECIPIENTS_KEY, new Newtonsoft.Json.Linq.JArray() { "sampleEmailgmail.com"} }
+                { PARAM_SUBJECT_KEY, PARAM_SUBJECT },
+                { PARAM_NOTES_KEY, PARAM_NOTES },
+                { PARAM_RECIPIENTS_KEY, new JArray() { "sampleEmailgmail.com"} }
             };
 
             // Act and Assert
@@ -62,13 +62,13 @@ namespace Services.Test
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        public void Should_Throw_InvalidInputException_WhenActionTypeIsEmailAndNoEmailField()
+        public void Should_Throw_InvalidInputException_WhenActionTypeIsEmailAndNoRecipients()
         {
             // Arrange
             var parameters = new Dictionary<string, object>()
             {
-                {PARAM_SUBJECT_KEY, PARAM_SUBJECT},
-                {PARAM_NOTES_KEY, PARAM_NOTES}
+                { PARAM_SUBJECT_KEY, PARAM_SUBJECT },
+                { PARAM_NOTES_KEY, PARAM_NOTES }
             };
 
             // Act and Assert
@@ -81,9 +81,9 @@ namespace Services.Test
             // Arrange
             var parameters = new Dictionary<string, object>()
             {
-                {PARAM_SUBJECT_KEY, PARAM_SUBJECT},
-                {PARAM_NOTES_KEY, PARAM_NOTES},
-                {PARAM_RECIPIENTS_KEY, PARAM_RECIPIENTS}
+                { PARAM_SUBJECT_KEY, PARAM_SUBJECT },
+                { PARAM_NOTES_KEY, PARAM_NOTES },
+                { PARAM_RECIPIENTS_KEY, PARAM_RECIPIENTS }
             };
 
             // Act and Assert
@@ -107,6 +107,25 @@ namespace Services.Test
             // Assert 
             Assert.Equal(ActionType.Email, result.Type);
             Assert.Equal(PARAM_NOTES, result.Parameters[PARAM_NOTES_KEY]);
+            Assert.Equal(this.emailArray, result.Parameters[PARAM_RECIPIENTS_KEY]);
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void Should_CreateAction_When_OptionalNotesAreMissing()
+        {
+            // Arrange
+            var parameters = new Dictionary<string, object>()
+            {
+                { PARAM_SUBJECT_KEY, PARAM_SUBJECT },
+                { PARAM_RECIPIENTS_KEY, this.emailArray }
+            };
+
+            // Act 
+            var result = new EmailAction(parameters);
+
+            // Assert 
+            Assert.Equal(ActionType.Email, result.Type);
+            Assert.Equal(string.Empty, result.Parameters[PARAM_NOTES_KEY]);
             Assert.Equal(this.emailArray, result.Parameters[PARAM_RECIPIENTS_KEY]);
         }
     }
