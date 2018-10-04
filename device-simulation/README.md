@@ -65,3 +65,4 @@ there are several ways to manage environment variables.
 
 [iothub-url]: https://azure.microsoft.com/services/iot-hub
 [storageadapter-url]: https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter
+[iothubconnstring-url]: https://blogs.msdn.microsoft.com/iotdev/2017/05/09/understand-different-connection-strings-in-azure-iot-hub
