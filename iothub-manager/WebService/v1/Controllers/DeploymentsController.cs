@@ -26,19 +26,24 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         [Authorize("CreateDeployments")]
         public async Task<DeploymentApiModel> PostAsync([FromBody] DeploymentApiModel deployment)
         {
-            if (string.IsNullOrWhiteSpace(deployment.DeviceGroupId))
-            {
-                throw new InvalidInputException("DeviceGroupId must be provided");
-            }
-
             if (string.IsNullOrWhiteSpace(deployment.Name))
             {
                 throw new InvalidInputException("Name must be provided");
             }
 
-            if (string.IsNullOrWhiteSpace(deployment.PackageId))
+            if (string.IsNullOrWhiteSpace(deployment.DeviceGroupId))
             {
-                throw new InvalidInputException("PackageId must be provided");
+                throw new InvalidInputException("DeviceGroupId must be provided");
+            }
+
+            if (string.IsNullOrWhiteSpace(deployment.DeviceGroupQuery))
+            {
+                throw new InvalidInputException("DeviceGroupQuery must be provided");
+            }
+
+            if (string.IsNullOrWhiteSpace(deployment.PackageContent))
+            {
+                throw new InvalidInputException("PackageContent must be provided");
             }
 
             if (deployment.Priority < 0)
