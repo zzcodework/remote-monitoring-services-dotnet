@@ -120,6 +120,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             var edgeConfiguration = this.CreateEdgeConfiguration(model);
+
+            // TODO: Add specific exception handling when exception types are exposed
+            // https://github.com/Azure/azure-iot-sdk-csharp/issues/649
             return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(edgeConfiguration));
         }
 
