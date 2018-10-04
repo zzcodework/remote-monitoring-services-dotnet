@@ -30,7 +30,7 @@ How to use the microservice
 ## Configuration and Environment variables
 
 The service configuration is accessed via ASP.NET Core configuration
-adapters, and stored in [appsettings.ini](WebService/appsettings.ini).
+adapters, and stored in [appsettings.ini](https://github.com/Azure/device-simulation-dotnet/blob/master/WebService/appsettings.ini).
 The INI format allows to store values in a readable format, with comments.
 
 The configuration also supports references to environment variables, e.g. to
