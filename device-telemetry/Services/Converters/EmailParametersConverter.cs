@@ -25,15 +25,15 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Converters
             JObject jsonObject = JObject.Load(reader);
 
             // Convert to a case-insensitive dictionary for case insensitive look up.
-            Dictionary<string, object> returnDictionary =
+            Dictionary<string, object> result =
                 new Dictionary<string, object>(jsonObject.ToObject<Dictionary<string, object>>(), StringComparer.OrdinalIgnoreCase);
 
-            if (returnDictionary.ContainsKey(RECIPIENTS_KEY) && returnDictionary[RECIPIENTS_KEY] != null)
+            if (result.ContainsKey(RECIPIENTS_KEY) && result[RECIPIENTS_KEY] != null)
             {
-                returnDictionary[RECIPIENTS_KEY] = ((JArray)returnDictionary[RECIPIENTS_KEY]).ToObject<List<string>>();
+                result[RECIPIENTS_KEY] = ((JArray)result[RECIPIENTS_KEY]).ToObject<List<string>>();
             }
 
-            return returnDictionary;
+            return result;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
