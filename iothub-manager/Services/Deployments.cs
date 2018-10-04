@@ -33,14 +33,19 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     public class Deployments : IDeployments
     {
         private const int MAX_DEPLOYMENTS = 20;
+
         private const string DEPLOYMENT_NAME_LABEL = "Name";
         private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
+        private const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
+        private const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
         private const string RM_CREATED_LABEL = "RMDeployment";
+
         private const string DEVICE_GROUP_ID_PARAM = "deviceGroupId";
         private const string DEVICE_GROUP_QUERY_PARAM = "deviceGroupQuery";
         private const string NAME_PARAM = "name";
         private const string PACKAGE_CONTENT_PARAM = "packageContent";
         private const string PRIORITY_PARAM = "priority";
+
         private const string DEVICE_ID_KEY = "DeviceId";
         private const string EDGE_MANIFEST_SCHEMA = "schemaVersion";
 
@@ -223,9 +228,21 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             {
                 edgeConfiguration.Labels = new Dictionary<string, string>();
             }
+
+            // Required labels
             edgeConfiguration.Labels.Add(DEPLOYMENT_NAME_LABEL, model.Name);
             edgeConfiguration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);
             edgeConfiguration.Labels.Add(RM_CREATED_LABEL, bool.TrueString);
+
+            // Add optional labels
+            if (model.DeviceGroupName != null)
+            {
+                edgeConfiguration.Labels.Add(DEPLOYMENT_GROUP_NAME_LABEL, model.DeviceGroupName);
+            }
+            if (model.PackageName != null)
+            {
+                edgeConfiguration.Labels.Add(DEPLOYMENT_PACKAGE_NAME_LABEL, model.PackageName);
+            }
 
             return edgeConfiguration;
         }

@@ -19,6 +19,8 @@ namespace Services.Test
 
         private const string DEPLOYMENT_NAME_LABEL = "Name";
         private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
+        private const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
+        private const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
         private const string RM_CREATED_LABEL = "RMDeployment";
         private const string RESOURCE_NOT_FOUND_EXCEPTION =
             "Microsoft.Azure.IoTSolutions.IotHubManager.Services." +
@@ -215,6 +217,60 @@ namespace Services.Test
             returnedDeployment = await this.deployments.GetAsync(deploymentId, true);
             deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
             Assert.Equal(3, deviceStatuses.Count);
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task VerifyGroupAndPackageNameLabelsTest()
+        {
+            // Arrange
+            var deviceGroupId = "dvcGroupId";
+            var deviceGroupName = "dvcGroupName";
+            var deviceGroupQuery = "dvcGroupQuery";
+            var packageName = "packageName";
+            var deploymentName = "depName";
+            var priority = 10;
+            var depModel = new DeploymentServiceModel()
+            {
+                Name = deploymentName,
+                DeviceGroupId = deviceGroupId,
+                DeviceGroupName = deviceGroupName,
+                DeviceGroupQuery = deviceGroupQuery,
+                PackageContent = TEST_PACKAGE_JSON,
+                PackageName = packageName,
+                Priority = priority
+            };
+
+            var newConfig = new Configuration("test-config")
+            {
+                Labels = new Dictionary<string, string>()
+                {
+                    { DEPLOYMENT_NAME_LABEL, deploymentName },
+                    { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
+                    { RM_CREATED_LABEL, bool.TrueString },
+                    { DEPLOYMENT_GROUP_NAME_LABEL, deviceGroupName },
+                    { DEPLOYMENT_PACKAGE_NAME_LABEL, packageName }
+                },
+                Priority = priority
+            };
+
+            this.registry.Setup(r => r.AddConfigurationAsync(It.Is<Configuration>(c =>
+                    c.Labels.ContainsKey(DEPLOYMENT_NAME_LABEL) &&
+                    c.Labels.ContainsKey(DEPLOYMENT_GROUP_ID_LABEL) &&
+                    c.Labels.ContainsKey(RM_CREATED_LABEL) &&
+                    c.Labels[DEPLOYMENT_NAME_LABEL] == deploymentName &&
+                    c.Labels[DEPLOYMENT_GROUP_ID_LABEL] == deviceGroupId &&
+                    c.Labels[RM_CREATED_LABEL] == bool.TrueString)))
+                .ReturnsAsync(newConfig);
+
+            var createdDeployment = await this.deployments.CreateAsync(depModel);
+
+            // Assert
+            Assert.False(string.IsNullOrEmpty(createdDeployment.Id));
+            Assert.Equal(deploymentName, createdDeployment.Name);
+            Assert.Equal(deviceGroupId, createdDeployment.DeviceGroupId);
+            Assert.Equal(priority, createdDeployment.Priority);
+            Assert.Equal(deviceGroupName, createdDeployment.DeviceGroupName);
+            Assert.Equal(packageName, createdDeployment.PackageName);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]

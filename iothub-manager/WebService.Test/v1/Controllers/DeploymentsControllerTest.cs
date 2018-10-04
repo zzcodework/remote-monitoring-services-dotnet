@@ -20,8 +20,10 @@ namespace WebService.Test.v1.Controllers
         private readonly Mock<IDeployments> deploymentsMock;
         private const string DEPLOYMENT_NAME = "depname";
         private const string DEVICE_GROUP_ID = "dvcGroupId";
+        private const string DEVICE_GROUP_NAME = "dvcGroupName";
         private const string DEVICE_GROUP_QUERY = "dvcGroupQuery";
         private const string PACKAGE_CONTENT = "{}";
+        private const string PACKAGE_NAME = "packageName";
         private const string DEPLOYMENT_ID = "dvcGroupId-packageId";
         private const int PRIORITY = 10;
 
@@ -39,6 +41,40 @@ namespace WebService.Test.v1.Controllers
             {
                 Name = DEPLOYMENT_NAME,
                 DeviceGroupId = DEVICE_GROUP_ID,
+                DeviceGroupName = DEVICE_GROUP_NAME,
+                DeviceGroupQuery = DEVICE_GROUP_QUERY,
+                PackageContent = PACKAGE_CONTENT,
+                PackageName = PACKAGE_NAME,
+                Priority = PRIORITY,
+                Id = DEPLOYMENT_ID,
+                Type = DeploymentType.EdgeManifest,
+                CreatedDateTimeUtc = DateTime.UtcNow
+            });
+
+            // Act
+            var result = await this.deploymentsController.GetAsync(DEPLOYMENT_ID);
+
+            // Assert
+            Assert.Equal(DEPLOYMENT_ID, result.DeploymentId);
+            Assert.Equal(DEPLOYMENT_NAME, result.Name);
+            Assert.Equal(PACKAGE_CONTENT, result.PackageContent);
+            Assert.Equal(PACKAGE_NAME, result.PackageName);
+            Assert.Equal(DEVICE_GROUP_ID, result.DeviceGroupId);
+            Assert.Equal(DEVICE_GROUP_NAME, result.DeviceGroupName);
+            Assert.Equal(PRIORITY, result.Priority);
+            Assert.Equal(DeploymentType.EdgeManifest, result.Type);
+            Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task VerifyGroupAndPackageNameLabelsTest()
+        {
+            // Arrange
+            this.deploymentsMock.Setup(x => x.GetAsync(DEPLOYMENT_ID, false)).ReturnsAsync(new DeploymentServiceModel()
+            {
+                Name = DEPLOYMENT_NAME,
+                DeviceGroupId = DEVICE_GROUP_ID,
+                DeviceGroupName = DEVICE_GROUP_NAME,
                 DeviceGroupQuery = DEVICE_GROUP_QUERY,
                 PackageContent = PACKAGE_CONTENT,
                 Priority = PRIORITY,

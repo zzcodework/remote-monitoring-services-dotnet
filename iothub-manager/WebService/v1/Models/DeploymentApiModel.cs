@@ -23,12 +23,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "DeviceGroupId")]
         public string DeviceGroupId { get; set; }
 
+        [JsonProperty(PropertyName = "DeviceGroupName")]
+        public string DeviceGroupName { get; set; }
+
         [JsonProperty(PropertyName = "DeviceGroupQuery")]
         public string DeviceGroupQuery { get; set; }
 
         [JsonProperty(PropertyName = "PackageContent")]
         public string PackageContent { get; set; }
-        
+
+        [JsonProperty(PropertyName = "PackageName")]
+        public string PackageName { get; set; }
+
         [JsonProperty(PropertyName = "Priority")]
         public int Priority { get; set; }
 
@@ -48,9 +54,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.CreatedDateTimeUtc = serviceModel.CreatedDateTimeUtc;
             this.DeploymentId = serviceModel.Id;
             this.DeviceGroupId = serviceModel.DeviceGroupId;
+            this.DeviceGroupName = serviceModel.DeviceGroupName;
             this.DeviceGroupQuery = serviceModel.DeviceGroupQuery;
             this.Name = serviceModel.Name;
             this.PackageContent = serviceModel.PackageContent;
+            this.PackageName = serviceModel.PackageName;
             this.Priority = serviceModel.Priority;
             this.Type = serviceModel.Type;
             this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
@@ -77,12 +85,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public DeploymentServiceModel ToServiceModel()
         {
             return new DeploymentServiceModel() {
-                 DeviceGroupId = this.DeviceGroupId,
-                 DeviceGroupQuery = this.DeviceGroupQuery,
-                 Name = this.Name,
-                 PackageContent = this.PackageContent,
-                 Priority = this.Priority,
-                 Type = this.Type
+                DeviceGroupId = this.DeviceGroupId,
+                DeviceGroupName = this.DeviceGroupName,
+                DeviceGroupQuery = this.DeviceGroupQuery,
+                Name = this.Name,
+                PackageContent = this.PackageContent,
+                PackageName = this.PackageName,
+                Priority = this.Priority,
+                Type = this.Type
             };
         }
     }
