@@ -36,13 +36,17 @@ spec:
             httpGet:
               path: /v1/status
               port: http
-              periodSeconds: 120
+              periodSeconds: 300
+              timeoutSeconds: 10
+              successThreshold: 3
               initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: /v1/status
               port: http
-              periodSeconds: 120
+              periodSeconds: 300
+              timeoutSeconds: 10
+              successThreshold: 3	  
               initialDelaySeconds: 300
 	  {{- end }}
           env:
