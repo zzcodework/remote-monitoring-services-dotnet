@@ -38,7 +38,7 @@ spec:
               port: http
               periodSeconds: 600
               timeoutSeconds: 10
-              successThreshold: 3
+              successThreshold: 5
               initialDelaySeconds: 300
           readinessProbe:
             httpGet:
