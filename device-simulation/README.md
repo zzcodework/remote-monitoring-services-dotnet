@@ -62,3 +62,6 @@ there are several ways to manage environment variables.
      * https://stackoverflow.com/questions/13046624/how-to-permanently-export-a-variable-in-linux
      * https://stackoverflow.com/questions/135688/setting-environment-variables-in-os-x
      * https://help.ubuntu.com/community/EnvironmentVariables
+
+[iothub-url]: https://azure.microsoft.com/services/iot-hub
+[storageadapter-url]: https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter
