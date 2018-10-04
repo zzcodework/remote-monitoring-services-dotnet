@@ -29,24 +29,24 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 9004
+              containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
 	  {{- if not .Values.disableProbes }}
           livenessProbe:
             httpGet:
               path: /v1/status
               port: http
-              periodSeconds: 300
-              timeoutSeconds: 10
-              successThreshold: 3
-              initialDelaySeconds: 300
+              periodSeconds: 900
+              timeoutSeconds: 300
+              successThreshold: 60
+              initialDelaySeconds: 900
           readinessProbe:
             httpGet:
               path: /v1/status
               port: http
-              periodSeconds: 300
-              timeoutSeconds: 10	  
-              initialDelaySeconds: 300
+              periodSeconds: 900
+              timeoutSeconds: 300 
+              initialDelaySeconds: 900
 	  {{- end }}
           env:
             {{- $root := . }}
