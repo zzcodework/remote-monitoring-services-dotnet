@@ -9,7 +9,12 @@
                 "env": {
                     // Note: Any setting made in this file will override the operating system environment variable of that name.
                     // See https://docs.microsoft.com/aspnet/core/fundamentals/environments
-                    "ASPNETCORE_ENVIRONMENT": "Development"
+                    "ASPNETCORE_ENVIRONMENT": "Development",
+                    "PCS_APPLICATION_SECRET": "${env:PCS_APPLICATION_SECRET}",
+                    "PCS_AUTH_ISSUER": "${env:PCS_AUTH_ISSUER}",
+                    "PCS_AUTH_AUDIENCE": "${env:PCS_AUTH_AUDIENCE}",
+                    "PCS_AUTH_REQUIRED": "${env:PCS_AUTH_REQUIRED}",
+                    "PCS_CORS_WHITELIST": "${env:PCS_CORS_WHITELIST}"
                     // Environment variables used in appsettings.ini.  
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                 },
@@ -58,6 +63,11 @@
                     "PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX": "${env:PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX}",
                     "PCS_EVENTHUB_CONNSTRING": "${env:PCS_EVENTHUB_CONNSTRING}",
                     "PCS_EVENTHUB_NAME": "${env:PCS_EVENTHUB_NAME}",
+                    "PCS_APPLICATION_SECRET": "${env:PCS_APPLICATION_SECRET}",
+                    "PCS_AUTH_ISSUER": "${env:PCS_AUTH_ISSUER}",
+                    "PCS_AUTH_AUDIENCE": "${env:PCS_AUTH_AUDIENCE}",
+                    "PCS_AUTH_REQUIRED": "${env:PCS_AUTH_REQUIRED}",
+                    "PCS_CORS_WHITELIST": "${env:PCS_CORS_WHITELIST}",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                     "PCS_LOG_LEVEL": "Debug"
                 },
@@ -106,8 +116,10 @@
                     "PCS_AAD_APPID": "${env:PCS_AAD_APPID}",
                     "PCS_AAD_APPSECRET": "${env:PCS_AAD_APPSECRET}",
                     "PCS_AUTH_REQUIRED": "${env:PCS_AUTH_REQUIRED}",
-                    "PCS_AUTH_ISSUER": "fake",
-                    "PCS_AUTH_AUDIENCE": "fake",
+                    "PCS_APPLICATION_SECRET": "${env:PCS_APPLICATION_SECRET}",
+                    "PCS_AUTH_ISSUER": "${env:PCS_AUTH_ISSUER}",
+                    "PCS_AUTH_AUDIENCE": "${env:PCS_AUTH_AUDIENCE}",
+                    "PCS_CORS_WHITELIST": "${env:PCS_CORS_WHITELIST}",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                     "PCS_LOG_LEVEL": "Debug"
                 },
@@ -149,9 +161,11 @@
                     "PCS_IOTHUB_CONNSTRING": "${env:PCS_IOTHUB_CONNSTRING}",
                     "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1",
                     "PCS_AUTH_WEBSERVICE_URL": "http://localhost:9001/v1",
+                    "PCS_APPLICATION_SECRET": "${env:PCS_APPLICATION_SECRET}",
+                    "PCS_AUTH_ISSUER": "${env:PCS_AUTH_ISSUER}",
+                    "PCS_AUTH_AUDIENCE": "${env:PCS_AUTH_AUDIENCE}",
                     "PCS_AUTH_REQUIRED": "${env:PCS_AUTH_REQUIRED}",
-                    "PCS_AUTH_ISSUER": "fake",
-                    "PCS_AUTH_AUDIENCE": "fake",
+                    "PCS_CORS_WHITELIST": "${env:PCS_CORS_WHITELIST}",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                     "PCS_LOG_LEVEL": "Debug"
                 },
@@ -193,11 +207,16 @@
                     "PCS_AZUREMAPS_KEY": "${env:PCS_AZUREMAPS_KEY}",
                     "PCS_DEVICESIMULATION_WEBSERVICE_URL": "http://localhost:9003/v1",
                     "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1",
+                    "PCS_TELEMETRY_WEBSERVICE_URL": "http://telemetry:9004/v1",
                     "PCS_AUTH_REQUIRED": "${env:PCS_AUTH_REQUIRED}",
                     "PCS_SEED_TEMPLATE": "default",
                     "PCS_SOLUTION_TYPE": "remotemonitoring",
+                    "PCS_APPLICATION_SECRET": "${env:PCS_APPLICATION_SECRET}",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                     "PCS_AUTH_WEBSERVICE_URL": "http://localhost:9001/v1",
+                    "PCS_AUTH_ISSUER": "${env:PCS_AUTH_ISSUER}",
+                    "PCS_AUTH_AUDIENCE": "${env:PCS_AUTH_AUDIENCE}",
+                    "PCS_CORS_WHITELIST": "${env:PCS_CORS_WHITELIST}"
                 },
                 "stopAtEntry": false,
                 "justMyCode": false,
@@ -238,6 +257,11 @@
                     // Required Settings. 
                     "PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING":  "${env:PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING}",
                     // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
+                    "PCS_APPLICATION_SECRET": "${env:PCS_APPLICATION_SECRET}",
+                    "PCS_AUTH_ISSUER": "${env:PCS_AUTH_ISSUER}",
+                    "PCS_AUTH_AUDIENCE": "${env:PCS_AUTH_AUDIENCE}",
+                    "PCS_AUTH_REQUIRED": "${env:PCS_AUTH_REQUIRED}",
+                    "PCS_CORS_WHITELIST": "${env:PCS_CORS_WHITELIST}"
                 },
                 "stopAtEntry": false,
                 "justMyCode": false,

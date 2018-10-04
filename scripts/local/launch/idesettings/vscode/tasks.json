@@ -14,10 +14,7 @@
             "presentation": {
                 "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "build-telemetry",
@@ -31,9 +28,6 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
             "options": {
                 "env": {
                     "PCS_AUTH_ISSUER": "fake",
@@ -53,9 +47,6 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
             "options": {
                 "env": {
                     "PCS_AUTH_ISSUER": "fake",
@@ -74,10 +65,7 @@
             "presentation": {
                 "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "build-config",
@@ -90,10 +78,7 @@
             "presentation": {
                 "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "build-storageadapter",
@@ -104,18 +89,14 @@
             "type": "shell",
             "group": "build",
             "presentation": {
-                "reveal": "silent",
+                "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "device-simulation-launch",
             "command": "${workspaceFolder}/scripts/local/launch/start-device-simulation.sh",
             "windows": {
-                //Separate file for windows
                 "command": "${workspaceFolder}\\scripts\\local\\launch\\start-device-simulation.cmd"
             },
             "type": "shell",
@@ -123,13 +104,23 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "build",
-            "dependsOn": ["build-storage-adapter", "build-config", "build-auth", "build-iothub-manager", "build-telemetry", "build-asa-manager"]
+            "label": "Build All",
+            "dependsOn": [
+                "build-storage-adapter",
+                "build-config",
+                "build-auth",
+                "build-iothub-manager",
+                "build-telemetry",
+                "build-asa-manager"
+            ],
+            "problemMatcher": []
         },
         {
             "label": "build-config-start-simulation",
-            "dependsOn": ["device-simulation-launch", "build-config"]
+            "dependsOn": [
+                "device-simulation-launch",
+                "build-config"
+            ]
         }
-
     ]
 }
