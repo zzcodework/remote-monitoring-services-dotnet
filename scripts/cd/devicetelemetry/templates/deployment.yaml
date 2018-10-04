@@ -45,8 +45,7 @@ spec:
               path: /v1/status
               port: http
               periodSeconds: 300
-              timeoutSeconds: 10
-              successThreshold: 3	  
+              timeoutSeconds: 10	  
               initialDelaySeconds: 300
 	  {{- end }}
           env:
