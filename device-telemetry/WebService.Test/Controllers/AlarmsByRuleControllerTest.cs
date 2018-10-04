@@ -76,7 +76,7 @@ namespace WebService.Test.Controllers
         public void ProvideAlarmsByRuleResult()
         {
             // Act
-            var response = this.controller.ListAsync(null, null, "asc", null, null, null);
+            var response = this.controller.GetAsync(null, null, "asc", null, null, null);
 
             // Assert
             Assert.NotEmpty(response.Result.Metadata);
