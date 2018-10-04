@@ -7,7 +7,7 @@
             "label": "build-asa-manager",
             "command": "${workspaceFolder}/asa-manager/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\asa-manager\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
@@ -23,7 +23,7 @@
             "label": "build-telemetry",
             "command": "${workspaceFolder}/device-telemetry/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\device-telemetry\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
@@ -39,7 +39,7 @@
             "label": "build-iothub-manager",
             "command": "${workspaceFolder}/iothub-manager/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\iothub-manager\\scripts/build.cmd"
             },
             "type": "shell",
             "group": "build",
@@ -55,7 +55,7 @@
             "label": "build-auth",
             "command": "${workspaceFolder}/auth/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\auth\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
@@ -71,7 +71,7 @@
             "label": "build-config",
             "command": "${workspaceFolder}/config/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\config\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
@@ -87,7 +87,7 @@
             "label": "build-storage-adapter",
             "command": "${workspaceFolder}/storage-adapter/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\storage-adapter\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
