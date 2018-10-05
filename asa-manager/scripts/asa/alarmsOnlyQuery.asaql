@@ -122,6 +122,7 @@ CombineAggregatedMeasurementsAndRules AS (
         FA.__lastReceivedTime,
         R.Description as __description,
         R.Severity as __severity,
+        R.Actions as __actions,
         R.__rulefilterjs as __rulefilterjs
     FROM
         FlatAggregatedMeasurements FA PARTITION BY PartitionId
@@ -175,6 +176,7 @@ CombineInstantMeasurementsAndRules as
         FI.__aggregates,
         R.Description as __description,
         R.Severity as __severity,
+        R.Actions as __actions,
         R.__rulefilterjs as __rulefilterjs
     FROM
         FlatInstantMeasurements FI PARTITION BY PartitionId
@@ -201,6 +203,7 @@ CombineAlarms as
         DATEDIFF(millisecond, '1970-01-01T00:00:00Z', System.Timestamp) as modified,
         AA.__description as [rule.description],
         AA.__severity as [rule.severity],
+        AA.__actions as [rule.actions],
         AA.__ruleid as [rule.id],
         AA.__deviceId as [device.id],
         AA.__aggregates,
@@ -219,6 +222,7 @@ CombineAlarms as
         DATEDIFF(millisecond, '1970-01-01T00:00:00Z', System.Timestamp) as modified,
         AI.__description as [rule.description],
         AI.__severity as [rule.severity],
+        AA.__actions as [rule.actions],
         AI.__ruleid as [rule.id],
         AI.__deviceId as [device.id],
         AI.__aggregates,
@@ -229,8 +233,33 @@ CombineAlarms as
 
 -- Output alarm events
 SELECT
-    CA.*
+    [doc.schemaVersion],
+    [doc.schema],
+    [status],
+    [logic],
+    [created],
+    [modified],
+    [rule.description],
+    [rule.severity],
+    [rule.id],
+    [device.id],
+    [device.msg.received]
 INTO
     Alarms
 FROM
     CombineAlarms CA PARTITION BY PartitionId
+
+-- Output action events
+SELECT
+    [created],
+    [modified],
+    [rule.description],
+    [rule.severity],
+    [rule.id],
+    [rule.actions],
+    [device.id],
+    [device.msg.received]
+INTO
+    Actions
+FROM
+    CombineAlarms CN PARTITION BY __partitionid
