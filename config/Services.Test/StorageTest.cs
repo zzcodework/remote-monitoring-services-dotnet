@@ -24,6 +24,69 @@ namespace Services.Test
         private readonly Storage storage;
         private readonly Random rand;
         private const string PACKAGES_COLLECTION_ID = "packages";
+        private const string TEST_PACKAGE_JSON =
+                @"{
+                    ""id"": ""tempid"",
+                    ""schemaVersion"": ""1.0"",
+                    ""content"": {
+                        ""modulesContent"": {
+                        ""$edgeAgent"": {
+                            ""properties.desired"": {
+                            ""schemaVersion"": ""1.0"",
+                            ""runtime"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                ""loggingOptions"": """",
+                                ""minDockerVersion"": ""v1.25""
+                                }
+                            },
+                            ""systemModules"": {
+                                ""edgeAgent"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                    ""image"": ""mcr.microsoft.com/azureiotedge-agent:1.0"",
+                                    ""createOptions"": ""{}""
+                                }
+                                },
+                                ""edgeHub"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                    ""image"": ""mcr.microsoft.com/azureiotedge-hub:1.0"",
+                                    ""createOptions"": ""{}""
+                                },
+                                ""status"": ""running"",
+                                ""restartPolicy"": ""always""
+                                }
+                            },
+                            ""modules"": {}
+                            }
+                        },
+                        ""$edgeHub"": {
+                            ""properties.desired"": {
+                            ""schemaVersion"": ""1.0"",
+                            ""routes"": {
+                                ""route"": ""FROM /messages/* INTO $upstream""
+                            },
+                            ""storeAndForwardConfiguration"": {
+                                ""timeToLiveSecs"": 7200
+                            }
+                            }
+                        }
+                        }
+                    },
+                    ""targetCondition"": ""*"",
+                    ""priority"": 30,
+                    ""labels"": {
+                        ""Name"": ""Test""
+                    },
+                    ""createdTimeUtc"": ""2018-08-20T18:05:55.482Z"",
+                    ""lastUpdatedTimeUtc"": ""2018-08-20T18:05:55.482Z"",
+                    ""etag"": null,
+                    ""metrics"": {
+                        ""results"": {},
+                        ""queries"": {}
+                    }
+                 }";
 
         public StorageTest()
         {
@@ -611,7 +674,7 @@ namespace Services.Test
                 Id = string.Empty,
                 Name = key,
                 Type = PackageType.EdgeManifest,
-                Content = "SomeContent"
+                Content = TEST_PACKAGE_JSON
             };
             var value = JsonConvert.SerializeObject(pkg);
 
@@ -629,6 +692,21 @@ namespace Services.Test
             Assert.Equal(pkg.Name, result.Name);
             Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
+        }
+
+        [Fact]
+        public async Task InvalidPackageThrowsTest()
+        {
+            var pkg = new Package
+            {
+                Id = string.Empty,
+                Name = "testpackage",
+                Type = PackageType.EdgeManifest,
+                Content = "InvalidPackage"
+            };
+
+            await Assert.ThrowsAsync<InvalidInputException>(async () => 
+                await this.storage.AddPackageAsync(pkg));
         }
 
         [Fact]

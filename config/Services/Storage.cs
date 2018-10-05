@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Devices;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
@@ -184,6 +185,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         public async Task<Package> AddPackageAsync(Package package)
         {
+            try
+            {
+                JsonConvert.DeserializeObject<Configuration>(package.Content);
+            }
+            catch (Exception)
+            {
+                throw new InvalidInputException("Package provided is not a valid deployment manifest");
+            }
+
             package.DateCreated = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
             var value = JsonConvert.SerializeObject(package,
                                                     Formatting.Indented,
