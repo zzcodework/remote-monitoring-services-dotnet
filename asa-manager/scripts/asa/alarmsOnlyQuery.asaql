@@ -222,7 +222,7 @@ CombineAlarms as
         DATEDIFF(millisecond, '1970-01-01T00:00:00Z', System.Timestamp) as modified,
         AI.__description as [rule.description],
         AI.__severity as [rule.severity],
-        AA.__actions as [rule.actions],
+        AI.__actions as [rule.actions],
         AI.__ruleid as [rule.id],
         AI.__deviceId as [device.id],
         AI.__aggregates,
