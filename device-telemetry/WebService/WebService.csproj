@@ -20,5 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Services\Services.csproj" />
+    <ProjectReference Include="..\ActionsAgent\ActionsAgent.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Azure.EventHubs.Processor">
+      <HintPath>..\..\..\..\..\.nuget\packages\microsoft.azure.eventhubs.processor\2.2.0\lib\netstandard2.0\Microsoft.Azure.EventHubs.Processor.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

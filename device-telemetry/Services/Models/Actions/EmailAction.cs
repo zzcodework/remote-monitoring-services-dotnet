@@ -58,6 +58,26 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
             this.Parameters[RECIPIENTS] = this.ValidateAndConvertRecipientEmails(parameters[RECIPIENTS]);
         }
 
+        public string GetNotes()
+        {
+            if (this.Parameters.ContainsKey(NOTES))
+            {
+                return this.Parameters[NOTES].ToString();
+            }
+
+            return "";
+        }
+
+        public string GetSubject()
+        {
+            return this.Parameters[SUBJECT].ToString();
+        }
+
+        public List<string> GetRecipients()
+        {
+            return (List<String>)this.Parameters[RECIPIENTS];
+        }
+
         /// <summary>
         /// Validates recipient email addresses and converts to a list of email strings
         /// </summary>

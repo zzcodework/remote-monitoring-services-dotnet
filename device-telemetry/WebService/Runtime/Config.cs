@@ -73,6 +73,14 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
 
+        private const string ACTIONS_KEY = "Actions:";
+        private const string ACTIONS_EVENTHUB_NAME = ACTIONS_KEY + "eventHubName";
+        private const string ACTIONS_EVENTHUB_CONNSTRING = ACTIONS_KEY + "eventHubConnectionString";
+        private const string ACTIONS_LOGICAPP_ENDPOINTURL = ACTIONS_KEY + "logicAppEndpointUrl";
+        private const string ACTIONS_AZUREBLOB_CONNSTRING = ACTIONS_KEY + "blobStorageConnectionString";
+        private const string ACTIONS_AZUREBLOB_CONTAINER = ACTIONS_KEY + "blobStorageContainer";
+        private const string SOLUTION_NAME = ACTIONS_KEY + "solutionName";
+
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }
         public IClientAuthConfig ClientAuthConfig { get; }
@@ -106,7 +114,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
                 ActiveDirectoryAppId = configData.GetString(AAD_APP_ID),
                 ActiveDirectoryAppSecret = configData.GetString(AAD_APP_SECRET),
                 DiagnosticsApiUrl = configData.GetString(DIAGNOSTICS_URL_KEY),
-                DiagnosticsMaxLogRetries = configData.GetInt(DIAGNOSTICS_MAX_LOG_RETRIES)
+                DiagnosticsMaxLogRetries = configData.GetInt(DIAGNOSTICS_MAX_LOG_RETRIES),
+                ActionsEventHubConnectionString = configData.GetString(ACTIONS_EVENTHUB_CONNSTRING),
+                ActionsEventHubName = configData.GetString(ACTIONS_EVENTHUB_NAME),
+                LogicAppEndpointUrl = configData.GetString(ACTIONS_LOGICAPP_ENDPOINTURL),
+                BlobStorageConnectionString = configData.GetString(ACTIONS_AZUREBLOB_CONNSTRING),
+                ActionsBlobStorageContainer = configData.GetString(ACTIONS_AZUREBLOB_CONTAINER),
+                SolutionName = configData.GetString(SOLUTION_NAME)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

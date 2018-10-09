@@ -3,6 +3,8 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.Azure.EventHubs.Processor;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.EventHub;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
@@ -50,6 +52,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
             // Auto-wire additional assemblies
             assembly = typeof(IServicesConfig).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+
+            assembly = typeof(ActionsAgent.IAgent).GetTypeInfo().Assembly;
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
         }
 
         /// <summary>Setup Custom rules overriding autowired ones.</summary>
@@ -89,6 +94,12 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
             //builder.RegisterType<CLASS_NAME>().As<INTERFACE_NAME>().SingleInstance();
             builder.RegisterType<UserManagementClient>().As<IUserManagementClient>().SingleInstance();
             builder.RegisterType<DiagnosticsClient>().As<IDiagnosticsClient>().SingleInstance();
+
+            // Event Hub Classes
+            IEventProcessorHostWrapper eventProcessorHostWrapper = new EventProcessorHostWrapper();
+            builder.RegisterInstance(eventProcessorHostWrapper).As<IEventProcessorHostWrapper>().SingleInstance();
+            IEventProcessorFactory eventProcessorFactory = new ActionsEventProcessorFactory(logger, config.ServicesConfig, httpClient);
+            builder.RegisterInstance(eventProcessorFactory).As<IEventProcessorFactory>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)
