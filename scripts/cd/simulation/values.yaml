@@ -60,6 +60,11 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+  #
+probes:
+  enabled: false
+
+
 nodeSelector: {}
 
 tolerations: []
