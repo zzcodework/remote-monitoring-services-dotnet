@@ -5,8 +5,7 @@ Starting Microservices on local environment
 1) Run the [start.cmd or start.sh](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/) script  (depending on your OS) located under launch *(scripts/local/launch)* folder.
 2) Run the following script to set environment variables. The script is located under *(scripts/local/launch/os)* folder.\
     i. [set-env-uri.cmd or set-env-uri.sh](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)\
-![start](https://user-images.githubusercontent.com/39531904/44435771-6ab08280-a566-11e8-93c9-e6f35e5df247.PNG)
-
+![start_new](https://user-images.githubusercontent.com/39531904/46452369-514b4a80-c750-11e8-8fab-6b6351d98f2b.PNG)
 **Please Note:**
 1) *If you have cloned azure-iot-pcs-remote-monitoring-dotnet repository, the scripts folder is present under services submodule (folder).*
 2) *The start script requires **Node.js** to execute, please install latest stable Node 8 (donot use Node 10) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install [pcs-cli](https://github.com/Azure/pcs-cli) a cli interface for remote-monitoring deployments.*
@@ -18,7 +17,9 @@ For users who have already created the required azure resources, please do one o
 2) **VS Code:** Set the environment variables in the launch configurations of the IDE i.e. launch.json
 3) **Visual Studio:** Set the environment variables for WebService project of the microservices by adding it to Properties → Debug → Environment variables
 
-*Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
+**Please Note:**
+1) *Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
+2) *Build tasks depend upon env variables. If env variables are being set in IDE configurations OR in appsettings file, the tasks may not work. You will have to build services separately by settings env variables.*
 
 ### Walk through for importing new Solution into the IDE
 ##### VS Code 
