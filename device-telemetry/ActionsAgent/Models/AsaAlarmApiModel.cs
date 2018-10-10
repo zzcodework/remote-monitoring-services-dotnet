@@ -9,10 +9,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Models
     public class AsaAlarmApiModel
     {
         [JsonProperty(PropertyName = "created")]
-        public string DateCreated { get; set; }
+        public long DateCreated { get; set; }
 
         [JsonProperty(PropertyName = "modified")]
-        public string DateModified { get; set; }
+        public long DateModified { get; set; }
 
         [JsonProperty(PropertyName = "rule.description")]
         public string RuleDescription { get; set; }

@@ -44,6 +44,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.EventHub
                     await this.actionManager.ExecuteAlarmActions(data);
                 }
             }
+
+            await context.CheckpointAsync();
         }
 
         public async Task ProcessErrorAsync(PartitionContext context, Exception error)

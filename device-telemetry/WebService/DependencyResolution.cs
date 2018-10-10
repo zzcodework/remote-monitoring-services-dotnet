@@ -5,7 +5,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Azure.EventHubs.Processor;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.EventHub;
-using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.External;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;

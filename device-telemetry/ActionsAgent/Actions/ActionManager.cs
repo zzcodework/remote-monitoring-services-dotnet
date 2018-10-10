@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
     public class ActionManager : IActionManager
     {
         private readonly ILogger logger;
-        private readonly EmailActionExecutor emailActionExecutor;
+        private readonly IEmailActionExecutor emailActionExecutor;
 
         public ActionManager(ILogger logger, IServicesConfig servicesConfig, IHttpClient httpClient)
         {
@@ -27,7 +27,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
             this.emailActionExecutor = new EmailActionExecutor(
                 servicesConfig.LogicAppEndpointUrl,
                 httpClient,
-                servicesConfig.SolutionName);
+                servicesConfig.SolutionName,
+                this.logger);
         }
 
         public async Task ExecuteAlarmActions(string alarms)
