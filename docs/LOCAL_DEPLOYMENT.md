@@ -19,7 +19,7 @@ For users who have already created the required azure resources, please do one o
 
 **Please Note:**
 1) *Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
-2) *Build tasks depend upon env variables. If env variables are being set in IDE configurations OR in appsettings file, the tasks may not work. You will have to build services separately by settings env variables.*
+2) *Build tasks depend upon env variables. If env variables are being set in IDE configurations OR in appsettings file, the tasks may not work. You will have to build services separately by settings env variables in a shell.*
 
 ### Walk through for importing new Solution into the IDE
 ##### VS Code 
