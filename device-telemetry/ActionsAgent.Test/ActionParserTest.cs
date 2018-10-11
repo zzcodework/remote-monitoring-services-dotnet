@@ -13,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
 {
     public class ActionParserTest
     {
-        private Mock<ILogger> loggerMock;
+        private readonly Mock<ILogger> loggerMock;
 
         public ActionParserTest()
         {

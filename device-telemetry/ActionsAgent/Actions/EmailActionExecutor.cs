@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
@@ -26,8 +24,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
         private readonly ILogger logger;
 
         public EmailActionExecutor(
-            string logicAppEndpointUrl, 
-            IHttpClient httpClient, 
+            string logicAppEndpointUrl,
+            IHttpClient httpClient,
             string solutionName,
             ILogger logger)
         {
@@ -37,6 +35,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
             this.logger = logger;
         }
 
+        /**
+         * Execute the given email action for the given alarm.
+         * Sends a post request to Logic App with alarm information
+         */
         public async Task Execute(EmailAction emailAction, AsaAlarmApiModel alarm)
         {
             try
@@ -60,22 +62,26 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
             }
         }
 
+        /**
+         * Generate email payload for given alarm and email action.
+         * Creates subject, recipients, and body based on action and alarm
+         */
         private string GeneratePayload(EmailAction emailAction, AsaAlarmApiModel alarm)
         {
-            string emailHeader = "<head><style>.email-body {{ font-family:\"Segoe UI\";width: 300px;margin: auto;color: #3e4145;}}</style></head>";
+            string emailHeader = "<head><style>.email-body {{ font-family:\"Segoe UI\";color: #3e4145;}}</style></head>";
             string emailBody = "<body class=\"email-body\"><h1>{0}</h1><h2>Details</h2><p><b>Time Triggered:</b> {1}</p><p><b>Rule Id:</b> {2}</p>" +
-                               "<p><b>Rule Description:</b> {3}</p><p><b>Severity:</b> {4}</p><p><b>Device Id:</b> {5}</p>" + 
+                               "<p><b>Rule Description:</b> {3}</p><p><b>Severity:</b> {4}</p><p><b>Device Id:</b> {5}</p>" +
                                "<h2>Notes</h2><p>{6}</p><p>See alert and device details <a href=\"{7}\">here</a></p></body>";
             string emailFormatString = emailHeader + emailBody;
             string alarmDate = DateTimeOffset.FromUnixTimeMilliseconds(alarm.DateCreated).ToString("r");
-            string emailContent = String.Format(emailFormatString, 
-                emailAction.GetSubject(), 
-                alarmDate, 
-                alarm.RuleId, 
-                alarm.RuleDescription, 
+            string emailContent = String.Format(emailFormatString,
+                emailAction.GetSubject(),
+                alarmDate,
+                alarm.RuleId,
+                alarm.RuleDescription,
                 alarm.RuleSeverity,
                 alarm.DeviceId,
-                emailAction.GetNotes(), 
+                emailAction.GetNotes(),
                 this.GenerateRuleDetailUrl(alarm.RuleId));
 
             EmailActionPayload payload = new EmailActionPayload()
@@ -88,23 +94,12 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
             return JsonConvert.SerializeObject(payload);
         }
 
+        /**
+         * Generate URL to direct to maintenance dashboard for specific rule
+         */
         private string GenerateRuleDetailUrl(string ruleId)
         {
             return "https://" + this.solutionName + ".azurewebsites.net/maintenance/rule/" + ruleId;
         }
-
-        private class EmailActionPayload
-        {
-            [JsonProperty(PropertyName = "recipients")]
-            public List<string> Recipients { get; set; }
-
-            [JsonProperty(PropertyName = "body")]
-            public string Body { get; set; }
-
-            [JsonProperty(PropertyName = "subject")]
-            public string Subject { get; set; }
-        }
-
-
     }
 }

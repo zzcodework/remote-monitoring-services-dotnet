@@ -28,15 +28,19 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
         public EmailAction()
         {
             this.Type = ActionType.Email;
-            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            this.Parameters[NOTES] = string.Empty;
+            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
+            {
+                [NOTES] = string.Empty
+            };
         }
 
         public EmailAction(IDictionary<string, object> parameters)
         {
             this.Type = ActionType.Email;
-            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            this.Parameters[NOTES] = string.Empty;
+            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
+            {
+                [NOTES] = string.Empty
+            };
 
             // Ensure input is in case-insensitive dictionary
             parameters = new Dictionary<string, object>(parameters, StringComparer.OrdinalIgnoreCase);
@@ -53,7 +57,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
             {
                 this.Parameters[NOTES] = parameters[NOTES];
             }
-            
+
             this.Parameters[SUBJECT] = parameters[SUBJECT];
             this.Parameters[RECIPIENTS] = this.ValidateAndConvertRecipientEmails(parameters[RECIPIENTS]);
         }
@@ -83,13 +87,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
         /// </summary>
         private List<string> ValidateAndConvertRecipientEmails(Object emails)
         {
-            List<string> result = new List<string>();
+            List<string> result;
 
             try
             {
                 result = ((JArray)emails).ToObject<List<string>>();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new InvalidInputException("Error converting recipient emails to list for action type 'Email'. " +
                                                 "Recipient emails provided should be an array of valid email addresses" +
@@ -109,7 +113,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
                     // validate with attempt to create MailAddress type from string
                     var address = new MailAddress(email);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     throw new InvalidInputException("Error with recipient email format for action type 'Email'." +
                                                     "Invalid email provided. Please ensure at least one recipient " +

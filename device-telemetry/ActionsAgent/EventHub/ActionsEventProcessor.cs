@@ -34,6 +34,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.EventHub
             await context.CheckpointAsync();
         }
         
+        /**
+         * Processes all alarms and executes any actions associated with the alarms
+         */
         public async Task ProcessEventsAsync(PartitionContext context, IEnumerable<EventData> messages)
         {
             foreach (EventData eventData in messages)

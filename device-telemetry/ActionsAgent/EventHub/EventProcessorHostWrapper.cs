@@ -25,10 +25,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.EventHub
             string leaseContainerName)
         {
             return new EventProcessorHost(
-                eventHubPath, 
-                PartitionReceiver.DefaultConsumerGroupName, 
-                eventHubConnectionString, 
-                storageConnectionString, 
+                eventHubPath,
+                PartitionReceiver.DefaultConsumerGroupName,
+                eventHubConnectionString,
+                storageConnectionString,
                 leaseContainerName);
         }
 

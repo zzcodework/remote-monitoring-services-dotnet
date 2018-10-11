@@ -31,6 +31,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
                 this.logger);
         }
 
+        /**
+         * Given a string of alarms in format {AsaAlarmApiModel1}...{AsaAlarmApiModelN}
+         * For each alarm with an action, execute that action
+         */
         public async Task ExecuteAlarmActions(string alarms)
         {
             IEnumerable<AsaAlarmApiModel> alarmList = ActionParser.ParseAlarmList(alarms, this.logger);
