@@ -2,14 +2,13 @@ Starting Microservices on local environment
 =====
 ### Steps to create Azure resources
 #### New Users
-1) Run the [start.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/) script located under launch *(scripts/local/launch)* folder.
+1) Run the [start.cmd or start.sh](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/) script  (depending on your OS) located under launch *(scripts/local/launch)* folder.
 2) Run the following script to set environment variables. The script is located under *(scripts/local/launch/os)* folder.\
-    i. [set-env-uri.(cmd|sh)](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)\
-![start](https://user-images.githubusercontent.com/39531904/44435771-6ab08280-a566-11e8-93c9-e6f35e5df247.PNG)
-
+    i. [set-env-uri.cmd or set-env-uri.sh](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/scripts/local/launch/os)\
+![start_new](https://user-images.githubusercontent.com/39531904/46452369-514b4a80-c750-11e8-8fab-6b6351d98f2b.PNG)
 **Please Note:**
 1) *If you have cloned azure-iot-pcs-remote-monitoring-dotnet repository, the scripts folder is present under services submodule (folder).*
-2) *This script requires **Node.js** to execute, please install Node (version < 8.11.2) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install [pcs-cli](https://github.com/Azure/pcs-cli) a cli interface for remote-monitoring deployments.*
+2) *The start script requires **Node.js** to execute, please install latest stable Node 8 (donot use Node 10) before using this script. Also, this script might require administartive privileges or sudo permission as it tries to install [pcs-cli](https://github.com/Azure/pcs-cli) a cli interface for remote-monitoring deployments.*
 &nbsp; 
 
 #### Existing Users 
@@ -18,7 +17,9 @@ For users who have already created the required azure resources, please do one o
 2) **VS Code:** Set the environment variables in the launch configurations of the IDE i.e. launch.json
 3) **Visual Studio:** Set the environment variables for WebService project of the microservices by adding it to Properties → Debug → Environment variables
 
-*Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
+**Please Note:**
+1) *Although not recommended, environment variables can also be set in appsettings.ini file present under WebService folder for each of the microservices.*
+2) *Build tasks depend upon env variables. If env variables are being set in IDE configurations OR in appsettings file, the tasks may not work. You will have to build services separately by settings env variables.*
 
 ### Walk through for importing new Solution into the IDE
 ##### VS Code 
@@ -26,9 +27,9 @@ The preconfigured launch & task configuration(s) for VS code are included in the
 
 ##### Steps to import launch settings
 1) Import this repository OR the services submodule from the azure-iot-pcs-remote-monitoring-dotnet.
-2) Click the Add Configuration under present under debug menu. (This will create .vscode folder) 
+2) Click the Add Configuration present under debug menu. (This will create .vscode folder) 
 ![vs](https://user-images.githubusercontent.com/39531904/44294751-611ad800-a251-11e8-8a14-7fc7bc3c6aed.PNG)
-3) Replace the auto-created launch.json & task.json files under .vscode folder with files under vscode folder located under idesettings. 
+3) Replace the auto-created launch.json & task.json files under .vscode folder with files under vscode folder located under scripts/local/launch/idesettings. 
 4) This will list all the debug/build configuration. 
 
 ##### Visual Studio
@@ -46,7 +47,7 @@ The new repository contains a **start** script and few other scripts to bootstra
 These scripts are located under helpers folder which is under the launch folder. The script create-azure-resources.sh can be independently called to create resources in the cloud.
 ##### Usage:
 1) create Azure resources  
-[create-azure-resources.(sh|cmd)](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/helpers/create-azure-resources.sh)
+[create-azure-resources.sh or create-azure-resources.cmd](https://github.com/Azure/remote-monitoring-services-dotnet/blob/master/scripts/local/launch/helpers/create-azure-resources.sh)
 
 
 Structure of the microservices
