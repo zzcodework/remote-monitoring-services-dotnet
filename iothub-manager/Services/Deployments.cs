@@ -220,7 +220,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             var packageEdgeConfiguration = JsonConvert.DeserializeObject<Configuration>(packageContent);
             edgeConfiguration.Content = packageEdgeConfiguration.Content;
 
-            edgeConfiguration.TargetCondition = QueryConditionTranslator.ToQueryString(model.DeviceGroupQuery);
+            var targetCondition = QueryConditionTranslator.ToQueryString(model.DeviceGroupQuery);
+            edgeConfiguration.TargetCondition = String.IsNullOrEmpty(targetCondition) ? "*" : targetCondition;
             edgeConfiguration.Priority = model.Priority;
             edgeConfiguration.ETag = string.Empty;
 
