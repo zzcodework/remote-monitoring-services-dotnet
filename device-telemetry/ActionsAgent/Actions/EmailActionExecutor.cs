@@ -39,15 +39,24 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
 
         public async Task Execute(EmailAction emailAction, AsaAlarmApiModel alarm)
         {
-            string payload = this.GeneratePayload(emailAction, alarm);
-            HttpRequest httpRequest = new HttpRequest(this.logicAppEndpointUrl);
-            httpRequest.SetContent(payload);
-            
-            this.logger.Debug(DateTimeOffset.FromUnixTimeMilliseconds(alarm.DateCreated).ToString("r"), () => { });
-            IHttpResponse response = await this.httpClient.PostAsync(httpRequest);
-            if (!response.IsSuccess)
+            try
             {
-                this.logger.Error("Could not execute email action against logic app", () => { });
+                string payload = this.GeneratePayload(emailAction, alarm);
+                HttpRequest httpRequest = new HttpRequest(this.logicAppEndpointUrl);
+                httpRequest.SetContent(payload);
+                IHttpResponse response = await this.httpClient.PostAsync(httpRequest);
+                if (!response.IsSuccess)
+                {
+                    this.logger.Error("Could not execute email action against logic app", () => { });
+                }
+            }
+            catch (JsonException e)
+            {
+                this.logger.Error("Could not create email payload to send to logic app,", () => new { e });
+            }
+            catch (Exception e)
+            {
+                this.logger.Error("Could not execute email action against logic app", () => new { e });
             }
         }
 

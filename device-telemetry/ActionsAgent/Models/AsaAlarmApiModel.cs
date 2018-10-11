@@ -30,6 +30,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Models
         public string DeviceId { get; set; }
 
         [JsonProperty(PropertyName = "device.msg.received")]
-        public string MessageReceived { get; set; }
+        public long MessageReceived { get; set; }
     }
 }

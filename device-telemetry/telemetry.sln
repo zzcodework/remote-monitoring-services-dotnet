@@ -81,6 +81,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{B3A8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionsAgent", "ActionsAgent\ActionsAgent.csproj", "{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionsAgent.Test", "ActionsAgent.Test\ActionsAgent.Test.csproj", "{BB60F9AC-6419-40CC-A756-1FBC0882705D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

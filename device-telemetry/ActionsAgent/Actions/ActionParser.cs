@@ -35,7 +35,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
                         }
                         catch (Exception e)
                         {
-                            logger.Info("Exception parsing the json string", () => new { e });
+                            logger.Error("Exception parsing the json string. Expected string in format {alarm}{alarm}...{alarm}", 
+                                () => new { e });
                             break;
                         }
                     }
