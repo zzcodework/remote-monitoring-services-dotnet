@@ -49,6 +49,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string USER_MANAGEMENT_KEY = "UserManagementService:";
         private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "webservice_url";
 
+        private const string ACTIONS_KEY = APPLICATION_KEY + "Actions:";
+        private const string OFFICE365_LOGIC_APP_URL_KEY = ACTIONS_KEY + "office365_logic_app_url";
+
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }
         public IClientAuthConfig ClientAuthConfig { get; }
@@ -65,7 +68,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
                 SolutionType = configData.GetString(SOLUTION_TYPE_KEY),
                 SeedTemplate = configData.GetString(SEED_TEMPLATE_KEY),
                 AzureMapsKey = configData.GetString(AZURE_MAPS_KEY),
-                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY)
+                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY),
+                Office365LogicAppUrl = configData.GetString(OFFICE365_LOGIC_APP_URL_KEY)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

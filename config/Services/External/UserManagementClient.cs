@@ -15,6 +15,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
     public interface IUserManagementClient
     {
         Task<IEnumerable<string>> GetAllowedActionsAsync(string userObjectId, IEnumerable<string> roles);
+
+        Task<string> GetTokenAsync();
     }
 
     public class UserManagementClient : IUserManagementClient

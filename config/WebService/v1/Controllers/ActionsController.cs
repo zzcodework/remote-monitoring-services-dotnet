@@ -21,7 +21,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpGet("action-settings")]
         public async Task<ActionSettingsListApiModel> GetAllAsync()
         {
-            // TODO
             return new ActionSettingsListApiModel();
         }
     }

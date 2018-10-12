@@ -7,30 +7,36 @@ using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
-    public interface IActionSettings
+    public interface IActions
     {
-        Task<List<ActionSettings>> GetListAsync();
+        Task<List<IActionSettings>> GetListAsync();
     }
 
-    public class ActionSettings : IActionSettings
+    public class Actions : IActions
     {
         private readonly ILogger log;
         private readonly IUserManagementClient userManagementClient;
 
-        public ActionSettings(
+        public Actions(
             IUserManagementClient userManagementClient,
             ILogger log)
         {
-
+            this.userManagementClient = userManagementClient;
+            this.log = log;
         }
 
-        public Task <List<ActionSettings>> GetListAsync()
+        public Task <List<IActionSettings>> GetListAsync(string token)
         {
+            var result = new List<IActionSettings>();
 
-            throw new NotImplementedException();
+            // Get Email Action Settings
+            result.Add(await new EmailActionSettings(this.userManagementClient, token));
+
+            return result;
         }
     }
 }

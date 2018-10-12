@@ -40,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             var request = await this.CreateRequest(logicAppTestConnectionUri);
             var response = await this.httpClient.GetAsync(request);
 
-            throw new NotImplementedException();
+            return false;
         }
 
         private async Task<HttpRequest> CreateRequest(string uri, IEnumerable<string> content = null)
