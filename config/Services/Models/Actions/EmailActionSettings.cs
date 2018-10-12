@@ -15,12 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions
         public EmailActionSettings()
         {
             this.Type = ActionType.Email;
-        }
-
-        private string getToken()
-        {
-            // TODO
-            return string.Empty;
+            this.Settings = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
     }
 }

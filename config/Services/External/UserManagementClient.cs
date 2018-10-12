@@ -39,6 +39,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             return JsonConvert.DeserializeObject<IEnumerable<string>>(response.Content);
         }
 
+        public async Task<string> GetTokenAsync()
+        {
+            var request = this.CreateRequest("/token");
+            var response = await this.httpClient.GetAsync(request);
+
+            // TODO dependent on API from auth
+            return string.Empty;
+        }
+
         private HttpRequest CreateRequest(string path, IEnumerable<string> content = null)
         {
             var request = new HttpRequest();
