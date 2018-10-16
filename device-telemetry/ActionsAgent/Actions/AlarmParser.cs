@@ -9,15 +9,14 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
 {
-    public static class ActionParser
+    public static class AlarmParser
     {
-        /**
-         * Parse alarm list emitted by asa into event hub.
-         * Alarms come in format:
-         * {alarm1}{alarm2}...{alarmN}
-         * Returns list of AsaAlarmApiModel objects
-         * 
-         */
+        /// <summary>
+        /// Parse alarm list emitted by asa into event hub.
+        /// Alarms come in format:
+        /// {alarm1}{alarm2}...{alarmN}
+        /// Returns list of AsaAlarmApiModel objects
+        /// </summary>
         public static IEnumerable<AsaAlarmApiModel> ParseAlarmList(string alarms, ILogger logger)
         {
             IList<AsaAlarmApiModel> alarmList = new List<AsaAlarmApiModel>();

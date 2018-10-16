@@ -10,7 +10,6 @@ using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
 using Moq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -27,8 +26,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
             this.httpClientMock = new Mock<IHttpClient>();
             IServicesConfig servicesConfig = new ServicesConfig
             {
-                LogicAppEndpointUrl = "https://prod-21.westeurope.logic.azure.com:443",
-                SolutionName = "test"
+                LogicAppEndpointUrl = "https://azure.com",
+                SolutionUrl = "test",
+                TemplateFolder = ".\\data\\"
             };
 
             this.actionManager = new ActionManager(loggerMock.Object, servicesConfig, this.httpClientMock.Object);
@@ -39,7 +39,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
         public async Task EmailAction_CausesPostToLogicApp()
         {
             // Arrange
-            JArray emailArray = new JArray(new object[] { "solaccdev@microsoft.com" });
+            JArray emailArray = new JArray(new object[] { "sampleEmail@gmail.com" });
             Dictionary<string, object> actionParameters = new Dictionary<string, object>
             {
                 { "Recipients", emailArray },
@@ -62,9 +62,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
             var response = new HttpResponse(HttpStatusCode.OK, "", null);
 
             this.httpClientMock.Setup(x => x.PostAsync(It.IsAny<IHttpRequest>())).ReturnsAsync(response);
+            List<AsaAlarmApiModel> alarmList = new List<AsaAlarmApiModel> { alarm };
 
             // Act
-            await this.actionManager.ExecuteAlarmActions(JsonConvert.SerializeObject(alarm));
+            await this.actionManager.ExecuteAlarmActions(alarmList);
 
             // Assert
             this.httpClientMock.Verify(x => x.PostAsync(It.IsAny<IHttpRequest>()));

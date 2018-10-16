@@ -11,11 +11,11 @@ using Xunit;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
 {
-    public class ActionParserTest
+    public class AlarmParserTest
     {
         private readonly Mock<ILogger> loggerMock;
 
-        public ActionParserTest()
+        public AlarmParserTest()
         {
             this.loggerMock = new Mock<ILogger>();
         }
@@ -24,11 +24,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
         public void CanParse_ProperlyFormattedJson()
         {
             // Arrange
-            string data = "{\"created\":1539035437937,\"modified\":1539035437937,\"rule.description\":\"description\",\"rule.severity\":\"Warning\",\"rule.id\":\"TestRuleId\",\"rule.actions\":[{\"Type\":\"Email\",\"Parameters\":{\"Notes\":\"Test Note\",\"Subject\":\"Test Subject\",\"Recipients\":[\"solaccdev@microsoft.com\"]}}],\"device.id\":\"Test Device Id\",\"device.msg.received\":1539035437937}" +
+            string data = "{\"created\":1539035437937,\"modified\":1539035437937,\"rule.description\":\"description\",\"rule.severity\":\"Warning\",\"rule.id\":\"TestRuleId\",\"rule.actions\":[{\"Type\":\"Email\",\"Parameters\":{\"Notes\":\"Test Note\",\"Subject\":\"Test Subject\",\"Recipients\":[\"sampleEmail@gmail.com\"]}}],\"device.id\":\"Test Device Id\",\"device.msg.received\":1539035437937}" +
                           "{\"created\":1539035437940,\"modified\":1539035437940,\"rule.description\":\"description2\",\"rule.severity\":\"Info\",\"rule.id\":\"1234\",\"device.id\":\"Device Id\",\"device.msg.received\":1539035437940}";
 
             // Act
-            var result = ActionParser.ParseAlarmList(data, this.loggerMock.Object);
+            var result = AlarmParser.ParseAlarmList(data, this.loggerMock.Object);
 
             // Assert
             AsaAlarmApiModel[] resultArray = result.ToArray();
@@ -40,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
             Assert.Equal(ActionType.Email, action.Type);
             var recipients = ((EmailAction)action).GetRecipients();
             Assert.Single(recipients);
-            Assert.Equal("solaccdev@microsoft.com", recipients[0]);
+            Assert.Equal("sampleEmail@gmail.com", recipients[0]);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -51,7 +51,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Test
             string data = "{\"created\":1539035437937\"modified\":1539035437937\"rule.description\":\"description\"\"rule.severity\":\"Warning\"}";
 
             // Act
-            var result = ActionParser.ParseAlarmList(data, this.loggerMock.Object);
+            var result = AlarmParser.ParseAlarmList(data, this.loggerMock.Object);
 
             // Assert
             this.loggerMock.Verify(x => x.Error(It.IsAny<string>(), It.IsAny<Func<object>>()));

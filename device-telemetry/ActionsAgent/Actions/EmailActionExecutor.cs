@@ -1,37 +1,32 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Http;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
 {
-    public interface IEmailActionExecutor
+    public class EmailActionExecutor : IActionExecutor
     {
-        // Execute the given email action for the given alarm
-        Task Execute(EmailAction emailAction, AsaAlarmApiModel alarm);
-    }
-
-    public class EmailActionExecutor : IEmailActionExecutor
-    {
-        private readonly string logicAppEndpointUrl;
+        private readonly IServicesConfig servicesConfig;
         private readonly IHttpClient httpClient;
-        private readonly string solutionName;
         private readonly ILogger logger;
 
+        private const string EMAIL_TEMPLATE_FILE_NAME = "EmailTemplate.txt";
+
         public EmailActionExecutor(
-            string logicAppEndpointUrl,
+            IServicesConfig servicesConfig,
             IHttpClient httpClient,
-            string solutionName,
             ILogger logger)
         {
-            this.logicAppEndpointUrl = logicAppEndpointUrl;
+            this.servicesConfig = servicesConfig;
             this.httpClient = httpClient;
-            this.solutionName = solutionName;
             this.logger = logger;
         }
 
@@ -39,12 +34,22 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
          * Execute the given email action for the given alarm.
          * Sends a post request to Logic App with alarm information
          */
-        public async Task Execute(EmailAction emailAction, AsaAlarmApiModel alarm)
+        public async Task Execute(IAction action, object metadata)
         {
+            if (metadata.GetType() != typeof(AsaAlarmApiModel) 
+                || action.GetType() != typeof(EmailAction))
+            {
+                this.logger.Error("Email action expects metadata to be alarm and action to be EmailAction, will not send email", 
+                    () => {});
+                return;
+            }
+
             try
             {
+                AsaAlarmApiModel alarm = (AsaAlarmApiModel) metadata;
+                EmailAction emailAction = (EmailAction) action;
                 string payload = this.GeneratePayload(emailAction, alarm);
-                HttpRequest httpRequest = new HttpRequest(this.logicAppEndpointUrl);
+                HttpRequest httpRequest = new HttpRequest(this.servicesConfig.LogicAppEndpointUrl);
                 httpRequest.SetContent(payload);
                 IHttpResponse response = await this.httpClient.PostAsync(httpRequest);
                 if (!response.IsSuccess)
@@ -68,12 +73,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
          */
         private string GeneratePayload(EmailAction emailAction, AsaAlarmApiModel alarm)
         {
-            string emailHeader = "<head><style>.email-body {{ font-family:\"Segoe UI\";color: #3e4145;}}</style></head>";
-            string emailBody = "<body class=\"email-body\"><h1>{0}</h1><h2>Details</h2><p><b>Time Triggered:</b> {1}</p><p><b>Rule Id:</b> {2}</p>" +
-                               "<p><b>Rule Description:</b> {3}</p><p><b>Severity:</b> {4}</p><p><b>Device Id:</b> {5}</p>" +
-                               "<h2>Notes</h2><p>{6}</p><p>See alert and device details <a href=\"{7}\">here</a></p></body>";
-            string emailFormatString = emailHeader + emailBody;
+            string emailFormatString = File.ReadAllText(this.servicesConfig.TemplateFolder + EMAIL_TEMPLATE_FILE_NAME);
             string alarmDate = DateTimeOffset.FromUnixTimeMilliseconds(alarm.DateCreated).ToString("r");
+
             string emailContent = String.Format(emailFormatString,
                 emailAction.GetSubject(),
                 alarmDate,
@@ -84,7 +86,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
                 emailAction.GetNotes(),
                 this.GenerateRuleDetailUrl(alarm.RuleId));
 
-            EmailActionPayload payload = new EmailActionPayload()
+            EmailActionPayload payload = new EmailActionPayload
             {
                 Recipients = emailAction.GetRecipients(),
                 Subject = emailAction.GetSubject(),
@@ -99,7 +101,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
          */
         private string GenerateRuleDetailUrl(string ruleId)
         {
-            return "https://" + this.solutionName + ".azurewebsites.net/maintenance/rule/" + ruleId;
+            return this.servicesConfig.SolutionUrl + "/maintenance/rule/" + ruleId;
         }
     }
 }

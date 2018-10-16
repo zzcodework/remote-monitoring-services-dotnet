@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.EventHubs.Processor;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.EventHub
@@ -44,7 +45,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.EventHub
                 if (eventData.Body.Array != null)
                 {
                     string data = Encoding.UTF8.GetString(eventData.Body.Array);
-                    await this.actionManager.ExecuteAlarmActions(data);
+                    IEnumerable<AsaAlarmApiModel> alarms = AlarmParser.ParseAlarmList(data, this.logger);
+                        await this.actionManager.ExecuteAlarmActions(alarms);
                 }
             }
 

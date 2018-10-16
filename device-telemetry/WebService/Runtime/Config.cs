@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.IO;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Auth;
 
@@ -74,12 +75,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
 
         private const string ACTIONS_KEY = "Actions:";
-        private const string ACTIONS_EVENTHUB_NAME = ACTIONS_KEY + "eventHubName";
-        private const string ACTIONS_EVENTHUB_CONNSTRING = ACTIONS_KEY + "eventHubConnectionString";
-        private const string ACTIONS_LOGICAPP_ENDPOINTURL = ACTIONS_KEY + "logicAppEndpointUrl";
-        private const string ACTIONS_AZUREBLOB_CONNSTRING = ACTIONS_KEY + "blobStorageConnectionString";
-        private const string ACTIONS_AZUREBLOB_CONTAINER = ACTIONS_KEY + "blobStorageContainer";
-        private const string SOLUTION_NAME = ACTIONS_KEY + "solutionName";
+        private const string ACTIONS_EVENTHUB_NAME = ACTIONS_KEY + "event_hub_name";
+        private const string ACTIONS_EVENTHUB_CONNSTRING = ACTIONS_KEY + "event_hub_connection_string";
+        private const string ACTIONS_LOGICAPP_ENDPOINTURL = ACTIONS_KEY + "logic_app_endpoint_url";
+        private const string ACTIONS_AZUREBLOB_CONNSTRING = ACTIONS_KEY + "blob_storage_connection_string";
+        private const string ACTIONS_AZUREBLOB_CONTAINER = ACTIONS_KEY + "blob_storage_container";
+        private const string SOLUTION_URL = ACTIONS_KEY + "solution_url";
+        private const string TEMPLATE_FOLDER = ACTIONS_KEY + "template_folder";
 
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }
@@ -120,7 +122,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
                 LogicAppEndpointUrl = configData.GetString(ACTIONS_LOGICAPP_ENDPOINTURL),
                 BlobStorageConnectionString = configData.GetString(ACTIONS_AZUREBLOB_CONNSTRING),
                 ActionsBlobStorageContainer = configData.GetString(ACTIONS_AZUREBLOB_CONTAINER),
-                SolutionName = configData.GetString(SOLUTION_NAME)
+                SolutionUrl = configData.GetString(SOLUTION_URL),
+                TemplateFolder = AppContext.BaseDirectory + Path.DirectorySeparatorChar + configData.GetString(TEMPLATE_FOLDER)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

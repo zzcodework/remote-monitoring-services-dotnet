@@ -13,32 +13,29 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
 {
     public interface IActionManager
     {
-        Task ExecuteAlarmActions(string alarms);
+        Task ExecuteAlarmActions(IEnumerable<AsaAlarmApiModel> alarms);
     }
 
     public class ActionManager : IActionManager
     {
-        private readonly ILogger logger;
-        private readonly IEmailActionExecutor emailActionExecutor;
+        private readonly IActionExecutor emailActionExecutor;
 
         public ActionManager(ILogger logger, IServicesConfig servicesConfig, IHttpClient httpClient)
         {
-            this.logger = logger;
             this.emailActionExecutor = new EmailActionExecutor(
-                servicesConfig.LogicAppEndpointUrl,
+                servicesConfig,
                 httpClient,
-                servicesConfig.SolutionName,
-                this.logger);
+                logger);
         }
 
         /**
          * Given a string of alarms in format {AsaAlarmApiModel1}...{AsaAlarmApiModelN}
          * For each alarm with an action, execute that action
          */
-        public async Task ExecuteAlarmActions(string alarms)
+        public async Task ExecuteAlarmActions(IEnumerable<AsaAlarmApiModel> alarms)
         {
-            IEnumerable<AsaAlarmApiModel> alarmList = ActionParser.ParseAlarmList(alarms, this.logger);
-            alarmList = alarmList.Where(x => x.Actions != null && x.Actions.Count > 0);
+            IEnumerable<AsaAlarmApiModel> alarmList = alarms.Where(x => x.Actions != null && x.Actions.Count > 0);
+            List<Task> actionList = new List<Task>();
             foreach (var alarm in alarmList)
             {
                 foreach (var action in alarm.Actions)
@@ -46,11 +43,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
                     switch (action.Type)
                     {
                         case ActionType.Email:
-                            await this.emailActionExecutor.Execute((EmailAction)action, alarm);
+                            actionList.Add(this.emailActionExecutor.Execute((EmailAction)action, alarm));
                             break;
                     }
                 }
             }
+
+            await Task.WhenAll(actionList);
         }
     }
 }

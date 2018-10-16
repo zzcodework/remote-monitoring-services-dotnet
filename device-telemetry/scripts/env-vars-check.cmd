@@ -80,8 +80,8 @@ IF "%PCS_AZUREBLOB_CONNSTRING%" == "" (
     exit /B 1
 )
 
-IF "%PCS_SOLUTION_NAME%" == "" (
-    echo Error: the PCS_SOLUTION_NAME environment variable is not defined.
+IF "%SOLUTION_WEBSITE_URL%" == "" (
+    echo Error: the SOLUTION_WEBSITE_URL environment variable is not defined.
     exit /B 1
 )
 

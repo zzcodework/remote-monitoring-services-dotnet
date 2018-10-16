@@ -54,5 +54,5 @@ SETX PCS_LOGICAPP_ENDPOINT_URL "{Enter endpoint here}"
 :: See Azure Portal => Your resource group => Your Storage Account => Access keys => Connection String
 SETX PCS_AZUREBLOB_CONNSTRING "{Enter connection string here}"
 
-:: Name of your solution--i.e., your resource group name
-SETX PCS_SOLUTION_NAME "{Enter solution name}"
+:: Url of your solution
+SETX SOLUTION_WEBSITE_URL "{Enter solution url}"

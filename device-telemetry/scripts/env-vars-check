@@ -90,8 +90,8 @@ if [[ -z "$PCS_AZUREBLOB_CONNSTRING" ]]; then
     exit -1
 fi
 
-if [[ -z "$PCS_SOLUTION_NAME" ]]; then
-    echo "Error: the PCS_SOLUTION_NAME environment variable is not defined."
+if [[ -z "$SOLUTION_WEBSITE_URL" ]]; then
+    echo "Error: the SOLUTION_WEBSITE_URL environment variable is not defined."
     exit -1
 fi
 
