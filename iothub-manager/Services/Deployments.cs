@@ -205,23 +205,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         private Configuration CreateEdgeConfiguration(DeploymentServiceModel model)
         {
-            var packageContent = model.PackageContent;
             var deploymentId = Guid.NewGuid().ToString().ToLower();
             var edgeConfiguration = new Configuration(deploymentId);
-
-            // TODO: Remove workaround for .net sdk issue which doesn't handle null schemaVersion
-            var schemaVersion = JToken.Parse(packageContent)[EDGE_MANIFEST_SCHEMA];
-            if (schemaVersion == null)
-            {
-                var packageJson = JToken.Parse(packageContent);
-                packageJson[EDGE_MANIFEST_SCHEMA] = "1.0";
-                packageContent = packageJson.ToString();
-            }
-            var packageEdgeConfiguration = JsonConvert.DeserializeObject<Configuration>(packageContent);
+            var packageEdgeConfiguration = JsonConvert.DeserializeObject<Configuration>(model.PackageContent);
             edgeConfiguration.Content = packageEdgeConfiguration.Content;
 
             var targetCondition = QueryConditionTranslator.ToQueryString(model.DeviceGroupQuery);
-            edgeConfiguration.TargetCondition = String.IsNullOrEmpty(targetCondition) ? "*" : targetCondition;
+            edgeConfiguration.TargetCondition = string.IsNullOrEmpty(targetCondition) ? "*" : targetCondition;
             edgeConfiguration.Priority = model.Priority;
             edgeConfiguration.ETag = string.Empty;
 

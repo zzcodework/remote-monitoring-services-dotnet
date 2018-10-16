@@ -33,16 +33,21 @@ namespace Services.Test
         {
             if (throwsException)
             {
+                // Act & Assert
                 await Assert.ThrowsAsync<InvalidInputException>(async () =>
                     await this.devices.GetModuleTwinAsync(deviceId, moduleId));
             }
             else
             {
+                // Arrange
                 this.registryMock
                     .Setup(x => x.GetTwinAsync(deviceId, moduleId))
                     .ReturnsAsync(DevicesTest.CreateTestTwin(0));
 
+                // Act
                 var twinSvcModel = await this.devices.GetModuleTwinAsync(deviceId, moduleId);
+
+                // Assert
                 Assert.Equal("value0", twinSvcModel.ReportedProperties["test"].ToString());
                 Assert.Equal("value0", twinSvcModel.DesiredProperties["test"].ToString());
             }

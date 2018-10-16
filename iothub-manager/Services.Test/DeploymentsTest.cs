@@ -159,11 +159,13 @@ namespace Services.Test
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         public async Task InvalidRmConfigurationTest()
         {
+            // Arrange
             var configuration = this.CreateConfiguration(0, false);
 
             this.registry.Setup(r => r.GetConfigurationAsync(It.IsAny<string>()))
                 .ReturnsAsync(configuration);
 
+            // Act & Assert
             await Assert.ThrowsAsync(Type.GetType(RESOURCE_NOT_FOUND_EXCEPTION),
                     async () => await this.deployments.GetAsync(configuration.Id));
         }
@@ -262,6 +264,7 @@ namespace Services.Test
                     c.Labels[RM_CREATED_LABEL] == bool.TrueString)))
                 .ReturnsAsync(newConfig);
 
+            // Act
             var createdDeployment = await this.deployments.CreateAsync(depModel);
 
             // Assert

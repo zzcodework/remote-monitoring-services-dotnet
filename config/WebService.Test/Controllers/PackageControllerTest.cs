@@ -70,6 +70,7 @@ namespace WebService.Test.Controllers
         [Fact]
         public async Task GetPackageTest()
         {
+            // Arrange
             const string id = "packageId";
             const string name = "packageName";
             const PackageType type = PackageType.EdgeManifest;
@@ -87,8 +88,10 @@ namespace WebService.Test.Controllers
                     DateCreated = dateCreated
                 });
 
+            // Act
             var pkg = await this.controller.GetAsync(id);
 
+            // Assert
             this.mockStorage
                 .Verify(x => x.GetPackageAsync(id), Times.Once);
 
@@ -102,6 +105,7 @@ namespace WebService.Test.Controllers
         [Fact]
         public async Task GetAllPackageTest()
         {
+            // Arrange
             const string id = "packageId";
             const string name = "packageName";
             const PackageType type = PackageType.EdgeManifest;
@@ -122,8 +126,10 @@ namespace WebService.Test.Controllers
                 .Setup(x => x.GetPackagesAsync())
                 .ReturnsAsync(packages);
 
+            // Act
             var resultPackages = await this.controller.GetAllAsync();
 
+            // Assert
             this.mockStorage
                 .Verify(x => x.GetPackagesAsync(), Times.Once);
 

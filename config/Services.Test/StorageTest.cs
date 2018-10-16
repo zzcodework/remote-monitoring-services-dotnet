@@ -667,6 +667,7 @@ namespace Services.Test
         [Fact]
         public async Task AddPackageTest()
         {
+            // Arrange
             const string collectionId = "packages";
             const string key = "package name";
             var pkg = new Package
@@ -688,7 +689,10 @@ namespace Services.Test
                     Data = value
                 });
 
+            // Act
             var result = await this.storage.AddPackageAsync(pkg);
+
+            // Assert
             Assert.Equal(pkg.Name, result.Name);
             Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
@@ -697,6 +701,7 @@ namespace Services.Test
         [Fact]
         public async Task InvalidPackageThrowsTest()
         {
+            // Arrange
             var pkg = new Package
             {
                 Id = string.Empty,
@@ -705,6 +710,7 @@ namespace Services.Test
                 Content = "InvalidPackage"
             };
 
+            // Act & Assert
             await Assert.ThrowsAsync<InvalidInputException>(async () => 
                 await this.storage.AddPackageAsync(pkg));
         }
@@ -712,6 +718,7 @@ namespace Services.Test
         [Fact]
         public async Task DeletePackageAsyncTest()
         {
+            // Arrange
             var packageId = this.rand.NextString();
 
             this.mockClient
@@ -719,8 +726,10 @@ namespace Services.Test
                                           It.Is<string>(s => s == packageId)))
                 .Returns(Task.FromResult(0));
 
+            // Act
             await this.storage.DeletePackageAsync(packageId);
 
+            // Assert
             this.mockClient
                 .Verify(x => x.DeleteAsync(
                         It.Is<string>(s => s == PACKAGES_COLLECTION_ID),
