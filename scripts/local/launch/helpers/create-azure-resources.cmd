@@ -3,6 +3,10 @@
 :: For more info on pcs-cli visit ().
 @echo off
 
+:: strlen of /scripts/local/launch/helpers/ => 30
+SET APP_HOME=%~dp0
+SET APP_HOME=%APP_HOME:~0,-30%
+
 :main 
     call :check_dependencies
     if %errorlevel% == 1 (
@@ -20,7 +24,7 @@ call :main
     :: Login to Azure Subscription
     echo Creating Azure resources ... This operation might fail if you are not logged in. Please login and try again.
     : Creating RM resources in Azure Subscription
-    call pcs -t remotemonitoring -s local --setLocalEnvironments .env
+    call pcs -t remotemonitoring -s local
 GOTO:EOF
 
 :install_cli
@@ -34,7 +38,7 @@ GOTO:EOF
     call npm install 
     call npm start
     call npm link > Nul 2>&1
-    cd ..\remote-monitoring-services-dotnet\scripts\local\launch
+    cd %APP_HOME%\scripts\local\launch
 GOTO:EOF
 
 :check_dependencies
@@ -66,9 +70,9 @@ GOTO:EOF
 GOTO:EOF
 
 :check_node_version
-    node -v >tmp.txt
+    node -v > tmp.txt
     set /p NODE_VER=<tmp.txt
-    call  :compare_installed_versions 8.11.3 %NODE_VER%
+    call  :compare_installed_versions 8.0.0 %NODE_VER%
     if %errorlevel% == 1 set `%~1=1`
     if %errorlevel% == -1 set set `%~1=-1`
 
