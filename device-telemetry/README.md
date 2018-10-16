@@ -63,9 +63,17 @@ for more information. More information on environment variables
     * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Settings => Passwords
   * `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
     * Allowed values: ["cosmosdb", "tsi"]. Default is "tsi"
-  * `PCS_TSI_FQDN`= {Time Series FQDN}
+  * `PCS_TSI_FQDN` = {Time Series FQDN}
     * see: Azure Portal => Your Resource Group => Time Series Insights Environment => Data Access FQDN
   * `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
+  * `PCS_ACTION_EVENTHUB_NAME` = {Event hub name}
+  * `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
+    * see: Azure Portal => Your resource group => your event hub namespace => Shared access policies
+  * `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
+    * see: Azure Portal => Your resource group => Your Logic App => Logic App Designer => When a Http Request is received => HTTP POST URL
+  * `PCS_AZUREBLOB_CONNSTRING` = {connection string}
+    * see: Azure Portal => Your resource group => Your Storage Account => Access keys => Connection String
+  * `SOLUTION_WEBSITE_URL` = {Solution Url}
 
 ## Running the service with Visual Studio or VS Code
 
@@ -83,6 +91,14 @@ for more information. More information on environment variables
    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
    1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
    1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
+   1. `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
+   1. `PCS_TSI_FQDN` = {Time Series FQDN}
+   1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
+   1. `PCS_ACTION_EVENTHUB_NAME` = {Event hub name}
+   1. `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
+   1. `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
+   1. `PCS_AZUREBLOB_CONNSTRING` = {connection string}
+   1. `SOLUTION_WEBSITE_URL` = {Solution Url}
 1. Start the WebService project (e.g. press F5).
 1. Using an HTTP client like [Postman][postman-url], use the
 [RESTful API][project-wiki] to test out the service.
@@ -97,6 +113,14 @@ More information on environment variables
     1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
     1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
     1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
+    1. `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
+    1. `PCS_TSI_FQDN` = {Time Series FQDN}
+    1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
+    1. `PCS_ACTION_EVENTHUB_NAME` = {Event hub name}
+    1. `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
+    1. `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
+    1. `PCS_AZUREBLOB_CONNSTRING` = {connection string}
+   1. `SOLUTION_WEBSITE_URL` = {Solution Url}
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    * `build`: compile all the projects and run the tests.
    * `compile`: compile all the projects.

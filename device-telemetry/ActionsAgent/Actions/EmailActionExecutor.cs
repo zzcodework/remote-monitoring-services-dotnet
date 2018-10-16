@@ -19,6 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
         private readonly ILogger logger;
 
         private const string EMAIL_TEMPLATE_FILE_NAME = "EmailTemplate.txt";
+        private const string DATE_FORMAT_STRING = "r";
 
         public EmailActionExecutor(
             IServicesConfig servicesConfig,
@@ -30,24 +31,25 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
             this.logger = logger;
         }
 
-        /**
-         * Execute the given email action for the given alarm.
-         * Sends a post request to Logic App with alarm information
-         */
+        /// <summary>
+        /// Execute the given email action for the given alarm.
+        /// Sends a post request to Logic App with alarm information
+        /// </summary>
         public async Task Execute(IAction action, object metadata)
         {
-            if (metadata.GetType() != typeof(AsaAlarmApiModel) 
+            if (metadata.GetType() != typeof(AsaAlarmApiModel)
                 || action.GetType() != typeof(EmailAction))
             {
-                this.logger.Error("Email action expects metadata to be alarm and action to be EmailAction, will not send email", 
-                    () => {});
+                string errorMessage = "Email action expects metadata to be alarm and action" + 
+                                      " to be EmailAction, will not send email";
+                this.logger.Error(errorMessage, () => { });
                 return;
             }
 
             try
             {
-                AsaAlarmApiModel alarm = (AsaAlarmApiModel) metadata;
-                EmailAction emailAction = (EmailAction) action;
+                AsaAlarmApiModel alarm = (AsaAlarmApiModel)metadata;
+                EmailAction emailAction = (EmailAction)action;
                 string payload = this.GeneratePayload(emailAction, alarm);
                 HttpRequest httpRequest = new HttpRequest(this.servicesConfig.LogicAppEndpointUrl);
                 httpRequest.SetContent(payload);
@@ -74,7 +76,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
         private string GeneratePayload(EmailAction emailAction, AsaAlarmApiModel alarm)
         {
             string emailFormatString = File.ReadAllText(this.servicesConfig.TemplateFolder + EMAIL_TEMPLATE_FILE_NAME);
-            string alarmDate = DateTimeOffset.FromUnixTimeMilliseconds(alarm.DateCreated).ToString("r");
+            string alarmDate = DateTimeOffset.FromUnixTimeMilliseconds(alarm.DateCreated).ToString(DATE_FORMAT_STRING);
 
             string emailContent = String.Format(emailFormatString,
                 emailAction.GetSubject(),
