@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
@@ -13,12 +14,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty("$metadata")]
         public Dictionary<string, string> Metadata { get; set; }
 
-        public ActionSettingsListApiModel()
+        public ActionSettingsListApiModel(List<IActionSettings> actionSettingsList)
         {
+            foreach (var actionSettings in actionSettingsList)
+            {
+                this.Items.Add(new ActionSettingsApiModel(actionSettings));
+            }
+
             this.Metadata = new Dictionary<string, string>
             {
                 { "$type", $"ActionSettingsList;{Version.NUMBER}" },
-                { "$url", $"/{Version.PATH}/action-settings" }
+                { "$url", $"/{Version.PATH}/solution-settings/actions" }
             };
         }
     }

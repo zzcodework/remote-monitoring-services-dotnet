@@ -8,6 +8,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
@@ -18,23 +19,31 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
     public class Actions : IActions
     {
+        private readonly ILogicAppClient logicAppClient;
+        private readonly IServicesConfig servicesConfig;
         private readonly ILogger log;
-        private readonly IUserManagementClient userManagementClient;
 
         public Actions(
-            IUserManagementClient userManagementClient,
+            ILogicAppClient logicAppClient,
+            IServicesConfig servicesConfig,
             ILogger log)
         {
-            this.userManagementClient = userManagementClient;
+            this.logicAppClient = logicAppClient;
+            this.servicesConfig = servicesConfig;
             this.log = log;
         }
 
-        public Task <List<IActionSettings>> GetListAsync(string token)
+        public async Task <List<IActionSettings>> GetListAsync()
         {
             var result = new List<IActionSettings>();
 
-            // Get Email Action Settings
-            result.Add(await new EmailActionSettings(this.userManagementClient, token));
+            // Add Email Action Settings
+            var emailActionSettings = new EmailActionSettings(
+                this.logicAppClient,
+                this.servicesConfig,
+                this.log);
+            await emailActionSettings.InitializeAsync();
+            result.Add(emailActionSettings);
 
             return result;
         }

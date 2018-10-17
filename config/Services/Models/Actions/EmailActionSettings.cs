@@ -15,38 +15,40 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions
         private const string IS_ENABLED_KEY = "IsEnabled";
         private const string OFFICE365_CONNECTOR_URL_KEY = "Office365ConnectorUrl";
 
+        private readonly ILogicAppClient logicAppClient;
+        private readonly IServicesConfig servicesConfig;
+        private readonly ILogger log;
+
         public ActionType Type { get; }
 
         public IDictionary<string, object> Settings { get; set; }
 
         // Use the Factory Pattern to create instance of Email Action Settings
         // because of the asynchronous calls to get Logic App Status.
-        private EmailActionSettings()
+        public EmailActionSettings(
+            ILogicAppClient logicAppClient,
+            IServicesConfig servicesConfig,
+            ILogger log)
         {
+            this.logicAppClient = logicAppClient;
+            this.servicesConfig = servicesConfig;
+            this.log = log;
+
             this.Type = ActionType.Email;
             this.Settings = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public static async Task<IActionSettings> CreateAsync(
-            IUserManagementClient userManagementClient,
-            ILogicAppClient logicAppClient,
-            IServicesConfig config,
-            ILogger log)
+        public async Task InitializeAsync()
         {
-
-            var result = new EmailActionSettings();
-
             // Check signin status of Office 365 Logic App Connector
-            var office365IsEnabled = await logicAppClient.Office365IsEnabledAsync();
-            result.Settings.Add(IS_ENABLED_KEY, office365IsEnabled);
+            var office365IsEnabled = await this.logicAppClient.Office365IsEnabledAsync();
+            this.Settings.Add(IS_ENABLED_KEY, office365IsEnabled);
 
             // Get Url for Office 365 Logic App Connector setup in portal
             // for display on the webui for one-time setup.
-            result.Settings.Add(OFFICE365_CONNECTOR_URL_KEY, config.Office365LogicAppUrl);
+            this.Settings.Add(OFFICE365_CONNECTOR_URL_KEY, this.servicesConfig.Office365LogicAppUrl);
 
-            log.Debug("Email Action Settings Retrieved. Email setup status: " + office365IsEnabled, () => new { result });
-
-            return result;
+            this.log.Debug("Email Action Settings Retrieved. Email setup status: " + office365IsEnabled, () => new { this.Settings });
         }
     }
 }

@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
@@ -17,6 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
     {
         private readonly IHttpClient httpClient;
         private readonly IUserManagementClient userManagementClient;
+        private readonly IServicesConfig config;
 
         public LogicAppClient(
             IHttpClient httpClient,
@@ -25,20 +28,25 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         {
             this.httpClient = httpClient;
             this.userManagementClient = userManagementClient;
+            this.config = config;
         }
 
         public async Task<bool> Office365IsEnabledAsync()
         {
-            string subscription = "skdf";
-            string resourceGroup = "sdkfj";
-            string logicAppTestConnectionUri = "https://management.azure.com/subscriptions/" +
-                                               $"{subscription}/resourceGroups/{resourceGroup}/" +
+            var logicAppTestConnectionUri = "https://management.azure.com/" + 
+                                               $"subscriptions/{this.config.SubscriptionId}/" +
+                                               $"resourceGroups/{this.config.ResourceGroup}/" +
                                                "providers/Microsoft.Web/connections/" +
                                                "office365-connector/extensions/proxy/testconnection?" +
                                                "api-version=2016-06-01";
+            var armToken = await this.userManagementClient.GetTokenAsync();
 
             var request = await this.CreateRequest(logicAppTestConnectionUri);
+            request.Headers.Add("Authorization", "Bearer " + armToken);
+
             var response = await this.httpClient.GetAsync(request);
+
+            // TODO parse response and return
 
             return false;
         }

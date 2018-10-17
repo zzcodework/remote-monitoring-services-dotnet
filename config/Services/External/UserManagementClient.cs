@@ -24,6 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         private readonly IHttpClient httpClient;
         private readonly ILogger log;
         private readonly string serviceUri;
+        private const string DEFAULT_USER_ID = "default";
 
         public UserManagementClient(IHttpClient httpClient, IServicesConfig config, ILogger logger)
         {
@@ -43,11 +44,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 
         public async Task<string> GetTokenAsync()
         {
-            var request = this.CreateRequest("/token");
+            var request = this.CreateRequest($"users/{DEFAULT_USER_ID}/token");
+
             var response = await this.httpClient.GetAsync(request);
 
+            // TODO parse resposne to token object
+            JsonConvert.DeserializeObject<TokenApiModel>(response.Content);
+
             // TODO dependent on API from auth
-            return string.Empty;
+            return "TOKEN";
         }
 
         private HttpRequest CreateRequest(string path, IEnumerable<string> content = null)

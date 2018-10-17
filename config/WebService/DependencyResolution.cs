@@ -80,6 +80,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             builder.RegisterInstance(httpClient).As<IHttpClient>().SingleInstance();
 
             builder.RegisterType<UserManagementClient>().As<IUserManagementClient>().SingleInstance();
+
+            builder.RegisterType<LogicAppClient>().As<ILogicAppClient>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)
