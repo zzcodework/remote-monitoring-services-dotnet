@@ -55,4 +55,4 @@ SETX PCS_LOGICAPP_ENDPOINT_URL "{Enter endpoint here}"
 SETX PCS_AZUREBLOB_CONNSTRING "{Enter connection string here}"
 
 :: Url of your solution
-SETX SOLUTION_WEBSITE_URL "{Enter solution url}"
+SETX PCS_SOLUTION_WEBSITE_URL "{Enter solution url}"

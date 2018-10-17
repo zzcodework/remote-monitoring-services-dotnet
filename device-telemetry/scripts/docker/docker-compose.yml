@@ -28,7 +28,7 @@ services:
       - PCS_ACTION_EVENTHUB_CONNSTRING
       - PCS_ACTION_EVENTHUB_NAME
       - PCS_LOGICAPP_ENDPOINT_URL
-      - SOLUTION_WEBSITE_URL
+      - PCS_SOLUTION_WEBSITE_URL
 
   auth:
     image: azureiotpcs/pcs-auth-dotnet:testing

@@ -73,7 +73,7 @@ for more information. More information on environment variables
     * see: Azure Portal => Your resource group => Your Logic App => Logic App Designer => When a Http Request is received => HTTP POST URL
   * `PCS_AZUREBLOB_CONNSTRING` = {connection string}
     * see: Azure Portal => Your resource group => Your Storage Account => Access keys => Connection String
-  * `SOLUTION_WEBSITE_URL` = {Solution Url}
+  * `PCS_SOLUTION_WEBSITE_URL` = {Solution Url}
 
 ## Running the service with Visual Studio or VS Code
 
@@ -98,7 +98,7 @@ for more information. More information on environment variables
    1. `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
    1. `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
    1. `PCS_AZUREBLOB_CONNSTRING` = {connection string}
-   1. `SOLUTION_WEBSITE_URL` = {Solution Url}
+   1. `PCS_SOLUTION_WEBSITE_URL` = {Solution Url}
 1. Start the WebService project (e.g. press F5).
 1. Using an HTTP client like [Postman][postman-url], use the
 [RESTful API][project-wiki] to test out the service.
@@ -120,7 +120,7 @@ More information on environment variables
     1. `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
     1. `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
     1. `PCS_AZUREBLOB_CONNSTRING` = {connection string}
-   1. `SOLUTION_WEBSITE_URL` = {Solution Url}
+    1. `PCS_SOLUTION_WEBSITE_URL` = {Solution Url}
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    * `build`: compile all the projects and run the tests.
    * `compile`: compile all the projects.

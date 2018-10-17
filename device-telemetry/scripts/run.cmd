@@ -77,7 +77,7 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
         -e "PCS_ACTION_EVENTHUB_CONNSTRING" ^
         -e "PCS_ACTION_EVENTHUB_NAME" ^
         -e "PCS_LOGICAPP_ENDPOINT_URL" ^
-        -e "SOLUTION_WEBSITE_URL" ^
+        -e "PCS_SOLUTION_WEBSITE_URL" ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^

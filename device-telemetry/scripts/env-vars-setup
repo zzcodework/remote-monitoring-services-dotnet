@@ -63,4 +63,4 @@ export PCS_LOGICAPP_ENDPOINT_URL="{Enter endpoint here}"
 export PCS_AZUREBLOB_CONNSTRING="{Enter connection string here}"
 
 # Url of your solution
-export SOLUTION_WEBSITE_URL="{Enter solution url}"
+export PCS_SOLUTION_WEBSITE_URL="{Enter solution url}"
