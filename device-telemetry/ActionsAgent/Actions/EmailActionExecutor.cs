@@ -18,7 +18,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
         private readonly IHttpClient httpClient;
         private readonly ILogger logger;
 
-        private const string EMAIL_TEMPLATE_FILE_NAME = "EmailTemplate.txt";
+        private const string EMAIL_TEMPLATE_FILE_NAME = "EmailTemplate.html";
         private const string DATE_FORMAT_STRING = "r";
 
         public EmailActionExecutor(
@@ -75,24 +75,24 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.ActionsAgent.Actions
          */
         private string GeneratePayload(EmailAction emailAction, AsaAlarmApiModel alarm)
         {
-            string emailFormatString = File.ReadAllText(this.servicesConfig.TemplateFolder + EMAIL_TEMPLATE_FILE_NAME);
+            string emailTemplate = File.ReadAllText(this.servicesConfig.TemplateFolder + EMAIL_TEMPLATE_FILE_NAME);
             string alarmDate = DateTimeOffset.FromUnixTimeMilliseconds(alarm.DateCreated).ToString(DATE_FORMAT_STRING);
-
-            string emailContent = String.Format(emailFormatString,
-                emailAction.GetSubject(),
-                alarmDate,
-                alarm.RuleId,
-                alarm.RuleDescription,
-                alarm.RuleSeverity,
-                alarm.DeviceId,
-                emailAction.GetNotes(),
-                this.GenerateRuleDetailUrl(alarm.RuleId));
+            emailTemplate = emailTemplate.Replace("${subject}", emailAction.GetSubject());
+            emailTemplate = emailTemplate.Replace(
+                "${alarmDate}", 
+                DateTimeOffset.FromUnixTimeMilliseconds(alarm.DateCreated).ToString(DATE_FORMAT_STRING));
+            emailTemplate = emailTemplate.Replace("${ruleId}", alarm.RuleId);
+            emailTemplate = emailTemplate.Replace("${ruleDescription}", alarm.RuleDescription);
+            emailTemplate = emailTemplate.Replace("${ruleSeverity}", alarm.RuleSeverity);
+            emailTemplate = emailTemplate.Replace("${deviceId}", alarm.DeviceId);
+            emailTemplate = emailTemplate.Replace("${notes}", emailAction.GetNotes());
+            emailTemplate = emailTemplate.Replace("${alarmUrl}", this.GenerateRuleDetailUrl(alarm.RuleId));
 
             EmailActionPayload payload = new EmailActionPayload
             {
                 Recipients = emailAction.GetRecipients(),
                 Subject = emailAction.GetSubject(),
-                Body = emailContent
+                Body = emailTemplate
             };
 
             return JsonConvert.SerializeObject(payload);
