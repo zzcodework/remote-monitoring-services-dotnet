@@ -233,17 +233,17 @@ CombineAlarms as
 
 -- Output alarm events
 SELECT
-    [doc.schemaVersion],
-    [doc.schema],
-    [status],
-    [logic],
-    [created],
-    [modified],
-    [rule.description],
-    [rule.severity],
-    [rule.id],
-    [device.id],
-    [device.msg.received]
+    CA.[doc.schemaVersion],
+    CA.[doc.schema],
+    CA.[status],
+    CA.[logic],
+    CA.[created],
+    CA.[modified],
+    CA.[rule.description],
+    CA.[rule.severity],
+    CA.[rule.id],
+    CA.[device.id],
+    CA.[device.msg.received]
 INTO
     Alarms
 FROM
@@ -251,15 +251,17 @@ FROM
 
 -- Output action events
 SELECT
-    [created],
-    [modified],
-    [rule.description],
-    [rule.severity],
-    [rule.id],
-    [rule.actions],
-    [device.id],
-    [device.msg.received]
+    CA.[created],
+    CA.[modified],
+    CA.[rule.description],
+    CA.[rule.severity],
+    CA.[rule.id],
+    CA.[rule.actions],
+    CA.[device.id],
+    CA.[device.msg.received]
 INTO
     Actions
 FROM
-    CombineAlarms CN PARTITION BY __partitionid
+    CombineAlarms CA PARTITION BY __partitionid
+WHERE
+    CA.[rule.actions] IS NOT NULL
