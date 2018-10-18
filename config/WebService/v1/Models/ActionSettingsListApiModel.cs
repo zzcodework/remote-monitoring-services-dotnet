@@ -16,6 +16,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
         public ActionSettingsListApiModel(List<IActionSettings> actionSettingsList)
         {
+            this.Items = new List<ActionSettingsApiModel>();
+
             foreach (var actionSettings in actionSettingsList)
             {
                 this.Items.Add(new ActionSettingsApiModel(actionSettings));

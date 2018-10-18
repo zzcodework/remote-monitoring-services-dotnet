@@ -15,15 +15,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty("Settings")]
         public IDictionary<string, object> Settings { get; set; }
 
-        public ActionSettingsApiModel(ActionType type, IDictionary<string, object> settings)
+        public ActionSettingsApiModel()
         {
-            this.Type = type.ToString();
-            this.Settings = settings;
+            this.Type = ActionType.Email.ToString();
+            this.Settings = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public ActionSettingsApiModel() : this(ActionType.Email, new Dictionary<string, object>()) { }
-
-        public ActionSettingsApiModel(IActionSettings actionSettings) :
-            this(actionSettings.Type, actionSettings.Settings) { }
+        public ActionSettingsApiModel(IActionSettings actionSettings)
+        {
+            this.Type = actionSettings.Type.ToString();
+            this.Settings = actionSettings.Settings;
+        }
     }
 }
