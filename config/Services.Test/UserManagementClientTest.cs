@@ -104,5 +104,38 @@ namespace Services.Test
             await Assert.ThrowsAsync<HttpRequestException>(async () =>
                 await this.client.GetAllowedActionsAsync(userObjectId, roles));
         }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task GetToken_ReturnsValue()
+        {
+            // Arrange
+            var token = new TokenApiModel()
+            {
+                AccessToken = "1234ExampleToken",
+                AccessTokenType = "Bearer",
+                Audience = "https://management.azure.com/",
+                Authority = "https://login.microsoftonline.com/12345/"
+            };
+
+            var response = new HttpResponse
+            {
+                StatusCode = HttpStatusCode.OK,
+                IsSuccessStatusCode = true,
+                Content = JsonConvert.SerializeObject(token)
+            };
+
+            this.mockHttpClient
+                .Setup(x => x.GetAsync(It.IsAny<IHttpRequest>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await this.client.GetTokenAsync();
+
+            // Assert
+            this.mockHttpClient
+                .Verify(x => x.GetAsync(It.Is<IHttpRequest>(r => r.Check($"{MOCK_SERVICE_URI}/users/default/token"))), Times.Once);
+
+            Assert.Equal(token.AccessToken, result);
+        }
     }
 }
