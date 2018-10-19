@@ -33,6 +33,12 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
         // The required audience
         string JwtAudience { get; set; }
 
+        // The audience's secret
+        string JwtAudienceSecret { get; set; }
+
+        // Azure resource manager endpoint url
+        string ArmEndpointUrl { get; set; }
+
         // Clock skew allowed when validating tokens expiration
         // Default: 2 minutes
         TimeSpan JwtClockSkew { get; set; }
@@ -48,6 +54,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
         public IEnumerable<string> JwtAllowedAlgos { get; set; }
         public string JwtIssuer { get; set; }
         public string JwtAudience { get; set; }
+        public string JwtAudienceSecret { get; set; }
+        public string ArmEndpointUrl { get; set; }
         public TimeSpan JwtClockSkew { get; set; }
     }
 }

@@ -16,7 +16,8 @@
                 "UpdateRules",
                 "DeleteRules",
                 "CreateJobs",
-                "UpdateSimManagement"
+                "UpdateSimManagement",
+                "AcquireToken"
             ]
         },
         {
