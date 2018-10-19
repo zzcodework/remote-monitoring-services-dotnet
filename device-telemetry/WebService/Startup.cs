@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Threading;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
         // Initialized in `ConfigureServices`
         public IContainer ApplicationContainer { get; private set; }
 
+        private ActionsAgent.IAgent actionsAgent;
+        private readonly CancellationTokenSource agentsRunState;
+
         // Invoked by `Program.cs`
         public Startup(IHostingEnvironment env)
         {
@@ -29,6 +33,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
                 .SetBasePath(env.ContentRootPath)
                 .AddIniFile("appsettings.ini", optional: false, reloadOnChange: true);
             this.Configuration = builder.Build();
+            this.agentsRunState = new CancellationTokenSource();
         }
 
         // This is where you register dependencies, add services to the
@@ -72,6 +77,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
 
             app.UseMvc();
 
+            // Start agent threads
+            appLifetime.ApplicationStarted.Register(this.StartAgents);
+            appLifetime.ApplicationStopping.Register(this.StopAgents);
+
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
@@ -81,6 +90,17 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService
         {
             var log = container.Resolve<ILogger>();
             log.Info("Web service started", () => new { Uptime.ProcessId });
+        }
+
+        private void StartAgents()
+        {
+            this.actionsAgent = this.ApplicationContainer.Resolve<ActionsAgent.IAgent>();
+            this.actionsAgent.RunAsync(this.agentsRunState.Token);
+        }
+
+        private void StopAgents()
+        {
+            this.agentsRunState.Cancel();
         }
     }
 }
