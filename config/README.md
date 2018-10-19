@@ -78,6 +78,11 @@ variables [here](#configuration-and-environment-variables).
 * `PCS_AUTH_WEBSERVICE_URL` = the url for
   the [Auth Webservice](https://github.com/Azure/pcs-auth-dotnet)
   used for key value storage
+* `PCS_OFFICE365_CONNECTION_URL` (Optional) = the url for the Office 365 Logic App connector
+* `PCS_SOLUTION_NAME` (Optional) = The name of the resource group for the solution. Used only if
+  using logic apps for actions.
+* `PCS_SUBSCRIPTION_ID`(Optional) = The subscription id for the solution. Used only if
+  using logic apps for actions.
 
 ## Running the service with Visual Studio or VS Code
 
