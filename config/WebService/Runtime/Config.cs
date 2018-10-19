@@ -53,6 +53,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string OFFICE365_LOGIC_APP_URL_KEY = ACTIONS_KEY + "office365_logic_app_url";
         private const string RESOURCE_GROUP_KEY = ACTIONS_KEY + "resource_group";
         private const string SUBSCRIPTION_ID_KEY = ACTIONS_KEY + "subscription_id";
+        private const string MANAGEMENT_API_VERSION_KEY = ACTIONS_KEY + "management_api_version";
+        private const string ARM_ENDPOINT_URL_KEY = ACTIONS_KEY + "arm_endpoint_url";
 
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }
@@ -73,7 +75,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
                 UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY),
                 Office365LogicAppUrl = configData.GetString(OFFICE365_LOGIC_APP_URL_KEY),
                 ResourceGroup = configData.GetString(RESOURCE_GROUP_KEY),
-                SubscriptionId = configData.GetString(SUBSCRIPTION_ID_KEY)
+                SubscriptionId = configData.GetString(SUBSCRIPTION_ID_KEY),
+                ManagementApiVersion = configData.GetString(MANAGEMENT_API_VERSION_KEY),
+                ArmEndpointUrl = configData.GetString(ARM_ENDPOINT_URL_KEY)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

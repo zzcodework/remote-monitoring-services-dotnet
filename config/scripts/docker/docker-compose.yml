@@ -23,6 +23,7 @@ services:
       - PCS_OFFICE365_CONNECTION_URL
       - PCS_SOLUTION_NAME
       - PCS_SUBSCRIPTION_ID
+      - PCS_ARM_ENDPOINT_URL
 
   auth:
     image: azureiotpcs/pcs-auth-dotnet:testing

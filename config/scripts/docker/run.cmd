@@ -26,6 +26,7 @@ docker run -it -p 9005:9005 ^
     -e PCS_OFFICE365_CONNECTION_URL ^
     -e PCS_SOLUTION_NAME ^
     -e PCS_SUBSCRIPTION_ID ^
+    -e PCS_ARM_ENDPOINT_URL ^
     %DOCKER_IMAGE%:testing
 
 :: - - - - - - - - - - - - - -

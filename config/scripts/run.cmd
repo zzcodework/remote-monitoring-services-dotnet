@@ -67,6 +67,7 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
         -e PCS_OFFICE365_CONNECTION_URL ^
         -e PCS_SOLUTION_NAME ^
         -e PCS_SUBSCRIPTION_ID ^
+        -e PCS_ARM_ENDPOINT_URL ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^

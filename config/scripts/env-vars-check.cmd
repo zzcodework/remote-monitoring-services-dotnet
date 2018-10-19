@@ -38,4 +38,8 @@ IF "%PCS_SUBSCRIPTION_ID%" == "" (
     echo Warning: the PCS_SUBSCRIPTION_ID environment variable is not defined.
 )
 
+IF "%PCS_ARM_ENDPOINT_URL%" == "" (
+    echo Warning: the PCS_ARM_ENDPOINT_URL environment variable is not defined.
+)
+
 endlocal

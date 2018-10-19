@@ -22,8 +22,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions
 
         public IDictionary<string, object> Settings { get; set; }
 
-        // Use the Factory Pattern to create instance of Email Action Settings
-        // because of the asynchronous calls to get Logic App Status.
+        // In order to initialize all settings, call InitializeAsync
+        // to retrieve all settings due to async call to logic app
         public EmailActionSettings(
             ILogicAppClient logicAppClient,
             IServicesConfig servicesConfig,

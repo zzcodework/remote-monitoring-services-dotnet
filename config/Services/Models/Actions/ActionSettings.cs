@@ -9,6 +9,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions
     {
         ActionType Type { get; }
 
+        // Note: This should always be initialized as a case-insensitive dictionary
         IDictionary<string, object> Settings { get; set; }
     }
 }

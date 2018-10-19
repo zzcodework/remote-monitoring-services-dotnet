@@ -14,6 +14,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         string Office365LogicAppUrl { get; }
         string ResourceGroup { get; }
         string SubscriptionId { get; }
+        string ManagementApiVersion { get; }
+        string ArmEndpointUrl { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -28,5 +30,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         public string Office365LogicAppUrl { get; set; }
         public string ResourceGroup { get; set; }
         public string SubscriptionId { get; set; }
+        public string ManagementApiVersion { get; set; }
+        public string ArmEndpointUrl { get; set; }
     }
 }

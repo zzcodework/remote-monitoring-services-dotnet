@@ -24,7 +24,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         public ActionSettingsApiModel(IActionSettings actionSettings)
         {
             this.Type = actionSettings.Type.ToString();
-            this.Settings = actionSettings.Settings;
+
+            this.Settings = new Dictionary<string, object>(
+                actionSettings.Settings,
+                StringComparer.OrdinalIgnoreCase); 
         }
     }
 }

@@ -50,3 +50,6 @@ if [[ -z "$PCS_SUBSCRIPTION_ID" ]]; then
     echo "Warning: the PCS_SUBSCRIPTION_ID environment variable is not defined."
 fi
 
+if [[ -z "$PCS_ARM_ENDPOINT_URL" ]]; then
+    echo "Warning: the PCS_ARM_ENDPOINT_URL environment variable is not defined."
+fi
