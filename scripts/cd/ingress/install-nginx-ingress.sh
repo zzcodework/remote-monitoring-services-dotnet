@@ -27,7 +27,7 @@ rm -rf configure-dns.sh.bak1
 
 echo "Installing cert manager"
 
-helm install stable/cert-manager --set ingressShim.defaultIssuerName=letsencrypt-staging --set ingressShim.defaultIssuerKind=ClusterIssuer
+helm install stable/cert-manager --set ingressShim.defaultIssuerName=letsencrypt --set ingressShim.defaultIssuerKind=ClusterIssuer
 
 echo "Creating SSL cert issuer in cluster ..."
 
