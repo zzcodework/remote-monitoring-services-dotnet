@@ -1,8 +1,12 @@
+# This is the docker-compose script for local development.
+# For the latest version of the docker images see:
+# https://github.com/Azure/pcs-cli/blob/master/remotemonitoring/single-vm/docker-compose.dotnet.yml
+#
 # Usage:
 # - install Docker Compose, see https://docs.docker.com/compose/install
 # - open a console and `cd` into the folder that contains this file
-# - note how the file references many environment variables, either set
-#   them in your system or edit this file adding the values here
+# - note how this file references many environment variables, either set
+#   them in the .env file or edit this file adding the values here
 # - run `docker-compose up`
 # - open the browser at http://127.0.0.1:10443
 #
@@ -13,7 +17,7 @@ version: "3"
 
 services:
   reverseproxy:
-    image: azureiotpcs/remote-monitoring-nginx:1.0.0
+    image: azureiotpcs/remote-monitoring-nginx:1.0.2
     ports:
       - "10443:443"
     depends_on:
@@ -27,7 +31,7 @@ services:
       - /app/certs:/app/certs:ro
 
   webui:
-    image: azureiotpcs/pcs-remote-monitoring-webui:1.0.0
+    image: azureiotpcs/pcs-remote-monitoring-webui:1.0.2
     ports:
       - "443:443"
     depends_on:
@@ -36,90 +40,121 @@ services:
       - devicesimulation
       - telemetry
       - config
+      - diagnostics
+  # NOTE: Volumes disabled for local development, uncomment if enabling auth
     volumes:
       - /app/webui-config.js:/app/build/config.js:ro
 
   auth:
-    image: azureiotpcs/pcs-auth-dotnet:1.0.0
+    image: azureiotpcs/pcs-auth-dotnet:1.0.2
     ports:
       - "9001:9001"
     environment:
       - PCS_AUTH_ISSUER
       - PCS_AUTH_AUDIENCE
+      - PCS_AUTH_REQUIRED
+      - PCS_CORS_WHITELIST
       - PCS_APPLICATION_SECRET
 
   iothubmanager:
-    image: azureiotpcs/iothub-manager-dotnet:1.0.0
-    depends_on:
-      - storageadapter
+    image: azureiotpcs/iothub-manager-dotnet:1.0.2
     ports:
       - "9002:9002"
+    depends_on:
+      - auth
+      - storageadapter
     environment:
+      - PCS_AUTH_WEBSERVICE_URL=http://auth:9001/v1
       - PCS_IOTHUB_CONNSTRING
+      - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
       - PCS_AUTH_ISSUER
       - PCS_AUTH_AUDIENCE
+      - PCS_AUTH_REQUIRED
+      - PCS_CORS_WHITELIST
       - PCS_APPLICATION_SECRET
-      - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
 
   devicesimulation:
-    image: azureiotpcs/device-simulation-dotnet:1.0.0
-    depends_on:
-      - storageadapter
+    image: azureiotpcs/device-simulation-dotnet:DS-1.0.2
     ports:
       - "9003:9003"
-    environment:
-      - PCS_IOTHUB_CONNSTRING
-      - PCS_AUTH_ISSUER
-      - PCS_AUTH_AUDIENCE
-      - PCS_APPLICATION_SECRET
-      - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
-      # This could be used to mount custom device models into the simulation
-      #volumes:
-      #- ./custom-data:/app/data:ro
-
-  telemetry:
-    image: azureiotpcs/telemetry-dotnet:1.0.0
     depends_on:
       - storageadapter
+    environment:
+      - PCS_IOTHUB_CONNSTRING
+      - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
+      - PCS_AUTH_ISSUER
+      - PCS_AUTH_AUDIENCE
+      - PCS_AUTH_REQUIRED
+      - PCS_CORS_WHITELIST
+      - PCS_APPLICATION_SECRET
+  # How one could mount custom device models
+  # NOTE: Volumes disabled for local development
+  # volumes:
+  #   - ./my-device-models:/app/data:ro
+
+  telemetry:
+    image: azureiotpcs/telemetry-dotnet:1.0.2
     ports:
       - "9004:9004"
+    depends_on:
+      - auth
+      - storageadapter
     environment:
+      - PCS_AUTH_WEBSERVICE_URL=http://auth:9001/v1
+      - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
+      - PCS_DIAGNOSTICS_WEBSERVICE_URL=http://diagnostics:9006/v1
       - PCS_TELEMETRY_DOCUMENTDB_CONNSTRING
       - PCS_AUTH_ISSUER
       - PCS_AUTH_AUDIENCE
+      - PCS_AUTH_REQUIRED
+      - PCS_CORS_WHITELIST
       - PCS_APPLICATION_SECRET
-      - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
+      - PCS_AAD_TENANT
+      - PCS_AAD_APPID
+      - PCS_AAD_APPSECRET
+      - PCS_TELEMETRY_STORAGE_TYPE
+      - PCS_TSI_FQDN
 
   config:
-    image: azureiotpcs/pcs-config-dotnet:1.0.0
-    depends_on:
-      - storageadapter
-      - telemetry
-      - devicesimulation
+    image: azureiotpcs/pcs-config-dotnet:1.0.2
     ports:
       - "9005:9005"
+    depends_on:
+      - auth
+      - storageadapter
+      - devicesimulation
+      - telemetry
     environment:
-      - PCS_AZUREMAPS_KEY
-      - PCS_AUTH_ISSUER
-      - PCS_AUTH_AUDIENCE
-      - PCS_APPLICATION_SECRET
+      - PCS_AUTH_WEBSERVICE_URL=http://auth:9001/v1
       - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
       - PCS_DEVICESIMULATION_WEBSERVICE_URL=http://devicesimulation:9003/v1
       - PCS_TELEMETRY_WEBSERVICE_URL=http://telemetry:9004/v1
+      - PCS_SOLUTION_TYPE
+      - PCS_AZUREMAPS_KEY
+      - PCS_AUTH_ISSUER
+      - PCS_AUTH_AUDIENCE
+      - PCS_AUTH_REQUIRED
+      - PCS_CORS_WHITELIST
+      - PCS_APPLICATION_SECRET
+      - PCS_SEED_TEMPLATE
 
   storageadapter:
-    image: azureiotpcs/pcs-storage-adapter-dotnet:1.0.0
+    image: azureiotpcs/pcs-storage-adapter-dotnet:1.0.2
     ports:
       - "9022:9022"
     environment:
       - PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING
       - PCS_AUTH_ISSUER
       - PCS_AUTH_AUDIENCE
+      - PCS_AUTH_REQUIRED
+      - PCS_CORS_WHITELIST
       - PCS_APPLICATION_SECRET
 
   asamanager:
-    image: azureiotpcs/asa-manager-dotnet:1.0.0
-    depends_on: 
+    image: azureiotpcs/asa-manager-dotnet:1.0.2
+    ports:
+      - "9024:9024"
+    depends_on:
       - telemetry
       - iothubmanager
       - config
@@ -138,3 +173,25 @@ services:
       - PCS_AUTH_ISSUER
       - PCS_AUTH_AUDIENCE
       - PCS_APPLICATION_SECRET
+      - PCS_TELEMETRY_STORAGE_TYPE
+
+  diagnostics:
+    image: azureiotpcs/pcs-diagnostics-dotnet:1.0.2
+    ports:
+      - "9006:9006"
+    depends_on:
+      - config
+    environment:
+      - PCS_LOG_LEVEL
+      - PCS_AUTH_ISSUER
+      - PCS_AUTH_AUDIENCE
+      - PCS_AUTH_REQUIRED
+      - PCS_CORS_WHITELIST
+      - PCS_CLOUD_TYPE
+      - PCS_SUBSCRIPTION_ID
+      - PCS_SOLUTION_TYPE
+      - PCS_SOLUTION_NAME
+      - PCS_DEPLOYMENT_ID
+      - PCS_IOTHUB_NAME
+      - PCS_DIAGNOSTICS_ENDPOINT_URL
+      - PCS_CONFIG_WEBSERVICE_URL=http://config:9005/v1

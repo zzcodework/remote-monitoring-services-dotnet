@@ -30,7 +30,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.Properties = new TwinPropertiesApiModel();
         }
 
-        public JobUpdateTwinApiModel(string deviceId, DeviceTwinServiceModel deviceTwin)
+        public JobUpdateTwinApiModel(string deviceId, TwinServiceModel deviceTwin)
         {
             if (deviceTwin != null)
             {
@@ -42,9 +42,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             }
         }
 
-        public DeviceTwinServiceModel ToServiceModel()
+        public TwinServiceModel ToServiceModel()
         {
-            return new DeviceTwinServiceModel
+            return new TwinServiceModel
             (
                 etag: this.ETag,
                 deviceId: this.DeviceId,

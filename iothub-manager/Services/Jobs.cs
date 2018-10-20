@@ -42,7 +42,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         Task<JobServiceModel> ScheduleTwinUpdateAsync(
             string jobId,
             string queryCondition,
-            DeviceTwinServiceModel twin,
+            TwinServiceModel twin,
             DateTimeOffset startTimeUtc,
             long maxExecutionTimeInSeconds);
     }
@@ -132,7 +132,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         public async Task<JobServiceModel> ScheduleTwinUpdateAsync(
             string jobId,
             string queryCondition,
-            DeviceTwinServiceModel twin,
+            TwinServiceModel twin,
             DateTimeOffset startTimeUtc,
             long maxExecutionTimeInSeconds)
         {

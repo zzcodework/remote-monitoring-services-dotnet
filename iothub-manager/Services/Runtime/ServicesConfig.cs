@@ -18,7 +18,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
         public string IoTHubConnString { get; set; }
         public string StorageAdapterApiUrl { get; set; }
         public string UserManagementApiUrl { get; set; }
-        public string ConfigServiceUri { get; set; }
         public string DevicePropertiesWhiteList { get; set; }
         public long DevicePropertiesTTL { get; set; }
         public long DevicePropertiesRebuildTimeout { get; set; }
