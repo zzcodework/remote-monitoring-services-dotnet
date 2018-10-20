@@ -1,28 +1,5 @@
 #!/bin/bash
 source .env
-####### helm release
-#helm delete storageadapter
-#helm delete telemetry
-#helm delete iothubmanager
-#helm delete simulation
-#helm delete auth
-#helm delete webui
-#helm delete asamanager
-
-
-
-############################ 10
-
-####### helm purge release
-#helm del --purge storageadapter
-#helm del --purge telemetry
-#helm del --purge iothubmanager
-#helm del --purge simulation 
-#helm del --purge auth
-#helm del --purge webui 
-#helm del --purge asamanager 
-########################### 5
-
 ####### Install helm charts
 install() {
 #	helm install --name storageadapter storageadapter/charts/storageadapter/ --set secrets.storageadapter.PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING} --set-string secrets.storageadapter.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED}
