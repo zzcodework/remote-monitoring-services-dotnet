@@ -37,7 +37,6 @@ install() {
 
 	helm install --name asamanager asamanager/charts/asamanager/ --set secrets.asamanager.PCS_ASA_DATA_AZUREBLOB_ACCOUNT=${PCS_ASA_DATA_AZUREBLOB_ACCOUNT} --set secrets.asamanager.PCS_ASA_DATA_AZUREBLOB_KEY=${PCS_ASA_DATA_AZUREBLOB_KEY} --set secrets.asamanager.PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX=${PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX} --set secrets.asamanager.PCS_EVENTHUB_CONNSTRING=${PCS_EVENTHUB_CONNSTRING} --set secrets.asamanager.PCS_EVENTHUB_NAME=${PCS_EVENTHUB_NAME} --set secrets.asamanager.PCS_TELEMETRY_DOCUMENTDB_CONNSTRING=${PCS_TELEMETRY_DOCUMENTDB_CONNSTRING} --set secrets.asamanager.PCS_TELEMETRY_WEBSERVICE_URL=${PCS_TELEMETRY_WEBSERVICE_URL} --set secrets.asamanager.PCS_CONFIG_WEBSERVICE_URL=${PCS_CONFIG_WEBSERVICE_URL} --set secrets.asamanager.PCS_IOTHUBMANAGER_WEBSERVICE_URL=${PCS_IOTHUBMANAGER_WEBSERVICE_URL} --set secrets.asamanager.PCS_TELEMETRY_STORAGE_TYPE=${PCS_TELEMETRY_STORAGE_TYPE} --set-string secrets.asamanager.PCS_AUTH_REQUIRED=${PCS_AUTH_REQUIRED} --debug
 
-
 	helm install --name auth auth/charts/auth/ --set secrets.auth.PCS_AUTH_AUDIENCE=${PCS_AUTH_AUDIENCE} --set secrets.auth.PCS_AUTH_ISSUER=${PCS_AUTH_ISSUER}
 
 	helm install --name webui webui/charts/webui/ --set REACT_APP_BASE_SERVICE_URL=${REACT_APP_BASE_SERVICE_URL}
