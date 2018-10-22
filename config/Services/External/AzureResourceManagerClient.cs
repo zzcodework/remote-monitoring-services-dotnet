@@ -8,18 +8,18 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {
-    public interface ILogicAppClient
+    public interface IAzureResourceManagerClient
     {
-        Task<bool> Office365IsEnabledAsync();
+        Task<bool> IsOffice365EnabledAsync();
     }
 
-    public class LogicAppClient : ILogicAppClient
+    public class AzureResourceManagerClient : IAzureResourceManagerClient
     {
         private readonly IHttpClient httpClient;
         private readonly IUserManagementClient userManagementClient;
         private readonly IServicesConfig config;
 
-        public LogicAppClient(
+        public AzureResourceManagerClient(
             IHttpClient httpClient,
             IServicesConfig config,
             IUserManagementClient userManagementClient)
@@ -29,7 +29,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             this.config = config;
         }
 
-        public async Task<bool> Office365IsEnabledAsync()
+        public async Task<bool> IsOffice365EnabledAsync()
         {
             if (string.IsNullOrEmpty(this.config.SubscriptionId) ||
                 string.IsNullOrEmpty(this.config.ResourceGroup) ||

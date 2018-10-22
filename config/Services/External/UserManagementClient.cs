@@ -44,6 +44,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 
         public async Task<string> GetTokenAsync()
         {
+            // Note: The DEFAULT_USER_ID is set to any value. The user management service doesn't 
+            // currently use the user ID information, but if this API is updated in the future, we 
+            // will need to grab the user ID from the request JWT token and pass in here.
             var request = this.CreateRequest($"users/{DEFAULT_USER_ID}/token");
 
             var response = await this.httpClient.GetAsync(request);

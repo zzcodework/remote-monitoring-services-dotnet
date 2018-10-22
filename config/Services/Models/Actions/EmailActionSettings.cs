@@ -14,7 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions
         private const string IS_ENABLED_KEY = "IsEnabled";
         private const string OFFICE365_CONNECTOR_URL_KEY = "Office365ConnectorUrl";
 
-        private readonly ILogicAppClient logicAppClient;
+        private readonly IAzureResourceManagerClient resourceManagerClient;
         private readonly IServicesConfig servicesConfig;
         private readonly ILogger log;
 
@@ -25,11 +25,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions
         // In order to initialize all settings, call InitializeAsync
         // to retrieve all settings due to async call to logic app
         public EmailActionSettings(
-            ILogicAppClient logicAppClient,
+            IAzureResourceManagerClient resourceManagerClient,
             IServicesConfig servicesConfig,
             ILogger log)
         {
-            this.logicAppClient = logicAppClient;
+            this.resourceManagerClient = resourceManagerClient;
             this.servicesConfig = servicesConfig;
             this.log = log;
 
@@ -40,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions
         public async Task InitializeAsync()
         {
             // Check signin status of Office 365 Logic App Connector
-            var office365IsEnabled = await this.logicAppClient.Office365IsEnabledAsync();
+            var office365IsEnabled = await this.resourceManagerClient.IsOffice365EnabledAsync();
             this.Settings.Add(IS_ENABLED_KEY, office365IsEnabled);
 
             // Get Url for Office 365 Logic App Connector setup in portal

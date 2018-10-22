@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers;
 using Moq;
 using WebService.Test.helpers;
@@ -17,6 +20,8 @@ namespace WebService.Test.Controllers
     {
         private readonly Mock<IStorage> mockStorage;
         private readonly Mock<IActions> mockActions;
+        private readonly Mock<ILogger> mockLogger;
+        private readonly Mock<IAzureResourceManagerClient> mockResourceManagementClient;
         private readonly SolutionSettingsController controller;
         private readonly Random rand;
 
@@ -24,6 +29,8 @@ namespace WebService.Test.Controllers
         {
             this.mockStorage = new Mock<IStorage>();
             this.mockActions = new Mock<IActions>();
+            this.mockLogger = new Mock<ILogger>();
+            this.mockResourceManagementClient = new Mock<IAzureResourceManagerClient>();
             this.controller = new SolutionSettingsController(
                 this.mockStorage.Object,
                 this.mockActions.Object);
@@ -219,12 +226,12 @@ namespace WebService.Test.Controllers
             {
                 this.controller.ControllerContext.HttpContext = mockContext.Object;
 
-                var actionMock = new Mock<IActionSettings>();
+                var config = new ServicesConfig();
+                var action = new EmailActionSettings(this.mockResourceManagementClient.Object, config, this.mockLogger.Object);   
                 var actionsList = new List<IActionSettings>
                 {
-                    actionMock.Object
+                    action
                 };
-
                 this.mockActions
                     .Setup(x => x.GetListAsync())
                     .ReturnsAsync(actionsList);
