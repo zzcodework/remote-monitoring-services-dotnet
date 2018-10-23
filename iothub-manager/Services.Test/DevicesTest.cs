@@ -7,9 +7,11 @@ using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Moq;
 using Services.Test.helpers;
 using Xunit;
+using AuthenticationType = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.AuthenticationType;
 
 namespace Services.Test
 {
@@ -143,6 +145,38 @@ namespace Services.Test
             Assert.True(dvc3.IsEdgeDevice, "Edge device from twin reporting not edge device");
         }
 
+        [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        [InlineData("SelfSigned")]
+        [InlineData("CertificateAuthority")]
+        public async Task InvalidAuthenticationTypeForEdgeDevice(string authTypeString)
+        {
+            // Arrange
+            var authType = Enum.Parse<AuthenticationType>(authTypeString);
+
+            var auth = new AuthenticationMechanismServiceModel()
+            {
+                AuthenticationType = authType
+            };
+
+            DeviceServiceModel model = new DeviceServiceModel
+            (
+                etag: "etag",
+                id: "deviceId",
+                c2DMessageCount: 0,
+                lastActivity: DateTime.Now,
+                connected: true,
+                enabled: true,
+                isEdgeDevice: true,
+                lastStatusUpdated: DateTime.Now,
+                twin: null,
+                ioTHubHostName: this.ioTHubHostName,
+                authentication: auth
+            );
+
+            await Assert.ThrowsAsync<InvalidInputException>(async () =>
+                await this.devices.CreateAsync(model));
+        }
+
         private static Twin CreateTestTwin(int valueToReport, bool isEdgeDevice = false)
         {
             var twin = new Twin()
@@ -161,7 +195,7 @@ namespace Services.Test
             {
                 Authentication = new AuthenticationMechanism
                 {
-                    Type = AuthenticationType.Sas,
+                    Type = Microsoft.Azure.Devices.AuthenticationType.Sas,
                     SymmetricKey = new SymmetricKey
                     {
                         PrimaryKey = Convert.ToBase64String(Encoding.UTF8.GetBytes("SomeTestPrimaryKey")),
