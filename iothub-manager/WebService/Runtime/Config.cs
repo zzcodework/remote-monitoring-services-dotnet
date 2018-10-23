@@ -79,7 +79,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
                 DevicePropertiesTTL = configData.GetInt(DEVICE_PROPERTIES_TTL_KEY),
                 DevicePropertiesRebuildTimeout = configData.GetInt(DEVICE_PROPERTIES_REBUILD_TIMEOUT_KEY),
                 StorageAdapterApiUrl = configData.GetString(STORAGE_ADAPTER_URL_KEY),
-                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY),
+                UserManagementApiUrl = configData.GetString(USER_MANAGEMENT_URL_KEY)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

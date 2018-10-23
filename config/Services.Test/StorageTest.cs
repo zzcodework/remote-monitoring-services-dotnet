@@ -11,6 +11,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Moq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Services.Test.helpers;
 using Xunit;
 
@@ -22,6 +23,70 @@ namespace Services.Test
         private readonly Mock<IStorageAdapterClient> mockClient;
         private readonly Storage storage;
         private readonly Random rand;
+        private const string PACKAGES_COLLECTION_ID = "packages";
+        private const string TEST_PACKAGE_JSON =
+                @"{
+                    ""id"": ""tempid"",
+                    ""schemaVersion"": ""1.0"",
+                    ""content"": {
+                        ""modulesContent"": {
+                        ""$edgeAgent"": {
+                            ""properties.desired"": {
+                            ""schemaVersion"": ""1.0"",
+                            ""runtime"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                ""loggingOptions"": """",
+                                ""minDockerVersion"": ""v1.25""
+                                }
+                            },
+                            ""systemModules"": {
+                                ""edgeAgent"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                    ""image"": ""mcr.microsoft.com/azureiotedge-agent:1.0"",
+                                    ""createOptions"": ""{}""
+                                }
+                                },
+                                ""edgeHub"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                    ""image"": ""mcr.microsoft.com/azureiotedge-hub:1.0"",
+                                    ""createOptions"": ""{}""
+                                },
+                                ""status"": ""running"",
+                                ""restartPolicy"": ""always""
+                                }
+                            },
+                            ""modules"": {}
+                            }
+                        },
+                        ""$edgeHub"": {
+                            ""properties.desired"": {
+                            ""schemaVersion"": ""1.0"",
+                            ""routes"": {
+                                ""route"": ""FROM /messages/* INTO $upstream""
+                            },
+                            ""storeAndForwardConfiguration"": {
+                                ""timeToLiveSecs"": 7200
+                            }
+                            }
+                        }
+                        }
+                    },
+                    ""targetCondition"": ""*"",
+                    ""priority"": 30,
+                    ""labels"": {
+                        ""Name"": ""Test""
+                    },
+                    ""createdTimeUtc"": ""2018-08-20T18:05:55.482Z"",
+                    ""lastUpdatedTimeUtc"": ""2018-08-20T18:05:55.482Z"",
+                    ""etag"": null,
+                    ""metrics"": {
+                        ""results"": {},
+                        ""queries"": {}
+                    }
+                 }";
 
         public StorageTest()
         {
@@ -599,5 +664,98 @@ namespace Services.Test
             return result;
         }
 
+        [Fact]
+        public async Task AddPackageTest()
+        {
+            // Arrange
+            const string collectionId = "packages";
+            const string key = "package name";
+            var pkg = new Package
+            {
+                Id = string.Empty,
+                Name = key,
+                Type = PackageType.EdgeManifest,
+                Content = TEST_PACKAGE_JSON
+            };
+            var value = JsonConvert.SerializeObject(pkg);
+
+            this.mockClient
+                .Setup(x => x.CreateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => this.IsMatchingPackage(i, value))))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+
+            // Act
+            var result = await this.storage.AddPackageAsync(pkg);
+
+            // Assert
+            Assert.Equal(pkg.Name, result.Name);
+            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.Content, result.Content);
+        }
+
+        [Fact]
+        public async Task InvalidPackageThrowsTest()
+        {
+            // Arrange
+            var pkg = new Package
+            {
+                Id = string.Empty,
+                Name = "testpackage",
+                Type = PackageType.EdgeManifest,
+                Content = "InvalidPackage"
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidInputException>(async () => 
+                await this.storage.AddPackageAsync(pkg));
+        }
+
+        [Fact]
+        public async Task DeletePackageAsyncTest()
+        {
+            // Arrange
+            var packageId = this.rand.NextString();
+
+            this.mockClient
+                .Setup(x => x.DeleteAsync(It.Is<string>(s => s == PACKAGES_COLLECTION_ID),
+                                          It.Is<string>(s => s == packageId)))
+                .Returns(Task.FromResult(0));
+
+            // Act
+            await this.storage.DeletePackageAsync(packageId);
+
+            // Assert
+            this.mockClient
+                .Verify(x => x.DeleteAsync(
+                        It.Is<string>(s => s == PACKAGES_COLLECTION_ID),
+                        It.Is<string>(s => s == packageId)),
+                    Times.Once);
+        }
+
+        private bool IsMatchingPackage(string pkgJson, string originalPkgJson)
+        {
+            const string dateCreatedField = "DateCreated";
+            var createdPkg = JObject.Parse(pkgJson);
+            var originalPkg = JObject.Parse(originalPkgJson);
+
+            // To prevent false failures on unit tests we allow a couple of seconds diffence
+            // when verifying the date created.
+            var dateCreated = DateTimeOffset.Parse(createdPkg[dateCreatedField].ToString());
+            var secondsDiff = (DateTimeOffset.UtcNow - dateCreated).TotalSeconds;
+            if (secondsDiff > 3)
+            {
+                return false;
+            }
+
+            createdPkg.Remove(dateCreatedField);
+            originalPkg.Remove(dateCreatedField);
+
+            return JToken.DeepEquals(createdPkg, originalPkg);
+        }
     }
 }
