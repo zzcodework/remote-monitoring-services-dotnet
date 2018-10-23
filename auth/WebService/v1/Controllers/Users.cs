@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.Auth.Services;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.Auth;
@@ -40,6 +41,21 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Controllers
         public IEnumerable<string> GetAllowedActions([FromRoute]string id, [FromBody]IEnumerable<string> roles)
         {
             return this.users.GetAllowedActions(roles);
+        }
+
+        /// <summary>
+        /// This action is used by Web UI and other services to get ARM token for
+        /// the application to perform resource management task.
+        /// </summary>
+        /// <param name="id">user object id</param>
+        /// <param name="audience">audience of the token, use ARM as default audience</param>
+        /// <returns>token for the audience</returns>
+        [HttpGet("{id}/token")]
+        [Authorize("AcquireToken")]
+        public async Task<TokenApiModel> GetToken([FromRoute]string id, [FromQuery]string audience)
+        {
+            var token = await this.users.GetToken(audience);
+            return new TokenApiModel(token);
         }
     }
 }

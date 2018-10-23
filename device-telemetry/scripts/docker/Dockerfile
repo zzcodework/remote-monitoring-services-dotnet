@@ -8,6 +8,8 @@ ARG user=pcsuser
 
 RUN useradd -m -s /bin/bash -U $user
 
+VOLUME ["/app/data"]
+
 ENTRYPOINT ["/bin/bash", "/app/run.sh"]
 
 COPY . /app/

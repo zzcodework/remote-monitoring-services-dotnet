@@ -29,6 +29,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
         private const string JWT_EMAIL_FROM_KEY = APPLICATION_KEY + "extract_email_from";
         private const string JWT_ROLES_FROM_KEY = APPLICATION_KEY + "extract_roles_from";
         private const string POLICIES_FOLDER_KEY = APPLICATION_KEY + "policies_folder";
+        private const string AAD_ENDPOINT_URL = APPLICATION_KEY + "aad_endpoint_url";
+        private const string AAD_TENANT_ID = APPLICATION_KEY + "aad_tenant_id";
+        private const string AAD_APPLICATION_ID = APPLICATION_KEY + "aad_application_id";
+        private const string AAD_APPLICATION_SECRET = APPLICATION_KEY + "aad_application_secret";
+        private const string ARM_ENDPOINT_URL = APPLICATION_KEY + "arm_endpoint_url";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
@@ -39,7 +44,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
         private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
         private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
+
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+
+        public const string DEFAULT_ARM_ENDPOINT_URL = "https://management.azure.com/";
+        public const string DEFAULT_AAD_ENDPOINT_URL = "https://login.microsoftonline.com/";
 
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }
@@ -55,7 +64,12 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
                 JwtNameFrom = configData.GetString(JWT_NAME_FROM_KEY, "given_name,family_name").Split(','),
                 JwtEmailFrom = configData.GetString(JWT_EMAIL_FROM_KEY, "email").Split(','),
                 JwtRolesFrom = configData.GetString(JWT_ROLES_FROM_KEY, "roles"),
-                PoliciesFolder = MapRelativePath(configData.GetString(POLICIES_FOLDER_KEY))
+                PoliciesFolder = MapRelativePath(configData.GetString(POLICIES_FOLDER_KEY)),
+                AadEndpointUrl = configData.GetString(AAD_ENDPOINT_URL, DEFAULT_AAD_ENDPOINT_URL),
+                AadTenantId = configData.GetString(AAD_TENANT_ID, String.Empty),
+                AadApplicationId = configData.GetString(AAD_APPLICATION_ID, String.Empty),
+                AadApplicationSecret = configData.GetString(AAD_APPLICATION_SECRET, String.Empty),
+                ArmEndpointUrl = configData.GetString(ARM_ENDPOINT_URL, DEFAULT_ARM_ENDPOINT_URL),
             };
 
             this.ClientAuthConfig = new ClientAuthConfig
