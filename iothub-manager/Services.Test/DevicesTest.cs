@@ -173,6 +173,7 @@ namespace Services.Test
                 authentication: auth
             );
 
+            // Act & Assert
             await Assert.ThrowsAsync<InvalidInputException>(async () =>
                 await this.devices.CreateAsync(model));
         }
