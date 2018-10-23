@@ -134,15 +134,10 @@ services:
       - PCS_CORS_WHITELIST
       - PCS_APPLICATION_SECRET
       - PCS_SEED_TEMPLATE
-<<<<<<< HEAD
       - PCS_OFFICE365_CONNECTION_URL
       - PCS_SOLUTION_NAME
       - PCS_SUBSCRIPTION_ID
       - PCS_ARM_ENDPOINT_URL
-=======
-      - PCS_ARM_ENDPOINT_URL
-      - PCS_OFFICE365_CONNECTION_URL
->>>>>>> 466e229c2c3fbdeddf487b32fdf29c04d4673513
 
   storageadapter:
     image: azureiotpcs/pcs-storage-adapter-dotnet:testing

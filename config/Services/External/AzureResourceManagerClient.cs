@@ -35,8 +35,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
                 string.IsNullOrEmpty(this.config.ResourceGroup) ||
                 string.IsNullOrEmpty(this.config.ArmEndpointUrl))
             {
-                throw new InvalidConfigurationException("Subscription Id, Resource Group, and Arm Ednpoint Url must be specified" +
-                                                        "in the enviornment variable configuration for this " +
+                throw new InvalidConfigurationException("Subscription Id, Resource Group, and Arm Endpoint Url must be specified" +
+                                                        "in the environment variable configuration for this " +
                                                         "solution in order to use this API.");
             }
 
