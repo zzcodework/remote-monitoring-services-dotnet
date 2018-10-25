@@ -15,6 +15,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
     public interface IUserManagementClient
     {
         Task<IEnumerable<string>> GetAllowedActionsAsync(string userObjectId, IEnumerable<string> roles);
+
+        Task<string> GetTokenAsync();
     }
 
     public class UserManagementClient : IUserManagementClient
@@ -22,6 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         private readonly IHttpClient httpClient;
         private readonly ILogger log;
         private readonly string serviceUri;
+        private const string DEFAULT_USER_ID = "default";
 
         public UserManagementClient(IHttpClient httpClient, IServicesConfig config, ILogger logger)
         {
@@ -37,6 +40,20 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             this.CheckStatusCode(response, request);
 
             return JsonConvert.DeserializeObject<IEnumerable<string>>(response.Content);
+        }
+
+        public async Task<string> GetTokenAsync()
+        {
+            // Note: The DEFAULT_USER_ID is set to any value. The user management service doesn't 
+            // currently use the user ID information, but if this API is updated in the future, we 
+            // will need to grab the user ID from the request JWT token and pass in here.
+            var request = this.CreateRequest($"users/{DEFAULT_USER_ID}/token");
+
+            var response = await this.httpClient.GetAsync(request);
+            this.CheckStatusCode(response, request);
+
+            var tokenResponse = JsonConvert.DeserializeObject<TokenApiModel>(response.Content);
+            return tokenResponse.AccessToken;
         }
 
         private HttpRequest CreateRequest(string path, IEnumerable<string> content = null)

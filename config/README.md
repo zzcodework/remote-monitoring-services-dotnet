@@ -78,6 +78,13 @@ variables [here](#configuration-and-environment-variables).
 * `PCS_AUTH_WEBSERVICE_URL` = the url for
   the [Auth Webservice](https://github.com/Azure/pcs-auth-dotnet)
   used for key value storage
+* `PCS_OFFICE365_CONNECTION_URL` (Optional) = the url for the Office 365 Logic App connector
+* `PCS_SOLUTION_NAME` (Optional) = The name of the resource group for the solution. Used only if
+  using logic apps for actions.
+* `PCS_SUBSCRIPTION_ID`(Optional) = The subscription id for the solution. Used only if
+  using logic apps for actions.
+  * `PCS_ARM_ENDPOINT_URL` (Optional) = the url for the Azure management APIs. Used only if
+  using logic apps for actions.
 
 ## Running the service with Visual Studio or VS Code
 
@@ -96,6 +103,10 @@ variables [here](#configuration-and-environment-variables).
    1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
    1. `PCS_AZUREMAPS_KEY` = static
    1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
+   1. `PCS_OFFICE365_CONNECTION_URL` (Optional)
+   1. `PCS_SOLUTION_NAME` (Optional)
+   1. `PCS_SUBSCRIPTION_ID`(Optional)
+   1. `PCS_ARM_ENDPOINT_URL` (Optional)
 1. Start the WebService project (e.g. press F5).
 1. Use an HTTP client such as [Postman][postman-url], to exercise the
    [RESTful API](https://github.com/Azure/pcs-config-dotnet/wiki/API-Specs).
@@ -111,6 +122,10 @@ More information on environment variables
    1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
    1. `PCS_AZUREMAPS_KEY` = static
    1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
+   1. `PCS_OFFICE365_CONNECTION_URL` (Optional)
+   1. `PCS_SOLUTION_NAME` (Optional)
+   1. `PCS_SUBSCRIPTION_ID`(Optional)
+   1. `PCS_ARM_ENDPOINT_URL` (Optional)
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    *  `build`: compile all the projects and run the tests.
    *  `compile`: compile all the projects.
