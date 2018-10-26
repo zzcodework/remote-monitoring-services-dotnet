@@ -17,10 +17,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
     public interface IAction
     {
         [JsonConverter(typeof(StringEnumConverter))]
-        ActionType Type { get; set; }
+        ActionType Type { get; }
 
         // Note: Parameters should always be initialized as a case-insensitive dictionary
-        IDictionary<string, object> Parameters { get; set; }
+        IDictionary<string, object> Parameters { get; }
     }
 
     public enum ActionType
