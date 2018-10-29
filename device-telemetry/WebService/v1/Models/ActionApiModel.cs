@@ -12,15 +12,15 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Models
     public class ActionApiModel
     {
         [JsonProperty(PropertyName = "Type")]
-        public string Type { get; set; } = string.Empty;
+        public string Type { get; }
 
         // Note: Parameters dictionary should always be initialized as case-insensitive.
         [JsonProperty(PropertyName = "Parameters")]
-        public IDictionary<string, object> Parameters { get; set; }
+        public IDictionary<string, object> Parameters { get; }
 
-        public ActionApiModel(string action, Dictionary<string, object> parameters)
+        public ActionApiModel(string type, Dictionary<string, object> parameters)
         {
-            this.Type = action;
+            this.Type = type;
 
             try
             {

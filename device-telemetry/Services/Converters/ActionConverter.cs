@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,6 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Converters
     public class ActionConverter : JsonConverter
     {
         private const string ACTION_TYPE_KEY = "Type";
+        private const string PARAMETERS_KEY = "Parameters";
 
         public override bool CanWrite => false;
         public override bool CanRead => true;
@@ -25,22 +28,25 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Converters
         {
             JObject jsonObject = JObject.Load(reader);
 
-            // default to email action type
-            IAction result = new EmailAction();
-
             var actionType = Enum.Parse(
                 typeof(ActionType),
                 jsonObject.GetValue(ACTION_TYPE_KEY).Value<string>(),
                 true);
-            
+
+            var parameters = jsonObject.GetValue(PARAMETERS_KEY).ToString();
+
             switch (actionType)
             {
                 case ActionType.Email:
-                    result = new EmailAction();
-                    break;
+                    Dictionary<string, object> emailParameters =
+                        JsonConvert.DeserializeObject<Dictionary<string, object>>(
+                            parameters,
+                            new EmailParametersConverter());
+                    return new EmailAction(emailParameters);
             }
-            serializer.Populate(jsonObject.CreateReader(), result);
-            return result;
+
+            // If could not deserialize, throw exception
+            throw new InvalidInputException($"Could not deseriailize action with type {actionType}");
         }
 
         public override void WriteJson(JsonWriter writer,

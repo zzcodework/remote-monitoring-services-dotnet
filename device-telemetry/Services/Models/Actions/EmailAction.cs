@@ -19,20 +19,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models.Actions
         private const string RECIPIENTS = "Recipients";
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public ActionType Type { get; set; }
+        public ActionType Type { get; }
 
         // Note: Parameters should always be initialized as a case-insensitive dictionary
         [JsonConverter(typeof(EmailParametersConverter))]
-        public IDictionary<string, object> Parameters { get; set; }
-
-        public EmailAction()
-        {
-            this.Type = ActionType.Email;
-            this.Parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
-            {
-                [NOTES] = string.Empty
-            };
-        }
+        public IDictionary<string, object> Parameters { get; }
 
         public EmailAction(IDictionary<string, object> parameters)
         {
