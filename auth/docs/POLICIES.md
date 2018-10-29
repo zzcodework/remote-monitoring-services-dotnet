@@ -27,7 +27,11 @@ Role Policy Example:
                 "DeleteRules",
                 "CreateJobs",
                 "UpdateSimManagement",
-                "AcquireToken"
+                "AcquireToken",
+                "CreateDeployment",
+                "DeleteDeployment",
+                "CreatePackage",
+                "DeletePackage"
             ]
         },
         {

@@ -4,26 +4,23 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-asa-manager",
+            "label": "build-asamanager",
             "command": "${workspaceFolder}/asa-manager/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\asa-manager\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
             "presentation": {
                 "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "build-telemetry",
             "command": "${workspaceFolder}/device-telemetry/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\device-telemetry\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
@@ -31,15 +28,18 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "options": {
+                "env": {
+                    "PCS_AUTH_ISSUER": "fake",
+                    "PCS_AUTH_AUDIENCE": "fake"
+                }
+            }
         },
         {
-            "label": "build-iothub-manager",
+            "label": "build-iothubmanager",
             "command": "${workspaceFolder}/iothub-manager/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\iothub-manager\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
@@ -47,72 +47,80 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "options": {
+                "env": {
+                    "PCS_AUTH_ISSUER": "fake",
+                    "PCS_AUTH_AUDIENCE": "fake"
+                }
+            }
         },
         {
             "label": "build-auth",
             "command": "${workspaceFolder}/auth/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\auth\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
             "presentation": {
                 "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "build-config",
             "command": "${workspaceFolder}/config/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\config\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
             "presentation": {
                 "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
-            "label": "build-storage-adapter",
+            "label": "build-storageadapter",
             "command": "${workspaceFolder}/storage-adapter/scripts/build",
             "windows": {
-                "command": "${workspaceFolder}/asa-manager/scripts/build.cmd"
+                "command": "${workspaceFolder}\\storage-adapter\\scripts\\build.cmd"
             },
             "type": "shell",
             "group": "build",
             "presentation": {
-                "reveal": "silent",
+                "reveal": "silent"
             },
-            "problemMatcher": "$msCompile",
-            //"dependsOn":[
-            //    "source-env"
-            //]
+            "problemMatcher": "$msCompile"
         },
         {
             "label": "device-simulation-launch",
-            "command": "${workspaceFolder}/scripts/local/launch/start_device_simulation.sh",
+            "command": "${workspaceFolder}/scripts/local/launch/start-device-simulation.sh",
             "windows": {
-                //Separate file for windows
-                "command": "${workspaceFolder}\\scripts\\local\\launch\\start_device_simulation.cmd"
+                "command": "${workspaceFolder}\\scripts\\local\\launch\\start-device-simulation.cmd"
             },
             "type": "shell",
             "group": "build",
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "build",
-            "dependsOn": ["build-storage-adapter", "build-config", "build-auth", "build-iothub-manager", "build-telemetry", "build-asa-manager"]
+            "label": "Build All",
+            "dependsOn": [
+                "build-storage-adapter",
+                "build-config",
+                "build-auth",
+                "build-iothub-manager",
+                "build-telemetry",
+                "build-asa-manager"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build-config-start-simulation",
+            "dependsOn": [
+                "device-simulation-launch",
+                "build-config"
+            ]
         }
     ]
 }

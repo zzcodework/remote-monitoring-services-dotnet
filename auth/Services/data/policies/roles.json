@@ -17,7 +17,11 @@
                 "DeleteRules",
                 "CreateJobs",
                 "UpdateSimManagement",
-                "AcquireToken"
+                "AcquireToken",
+                "CreateDeployments",
+                "DeleteDeployments",
+                "CreatePackages",
+                "DeletePackages"
             ]
         },
         {

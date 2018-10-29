@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Devices;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
@@ -25,6 +27,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<DeviceGroup> CreateDeviceGroupAsync(DeviceGroup input);
         Task<DeviceGroup> UpdateDeviceGroupAsync(string id, DeviceGroup input, string etag);
         Task DeleteDeviceGroupAsync(string id);
+        Task<IEnumerable<Package>> GetPackagesAsync();
+        Task<Package> GetPackageAsync(string id);
+        Task<Package> AddPackageAsync(Package package);
+        Task DeletePackageAsync(string id);
     }
 
     public class Storage : IStorage
@@ -37,7 +43,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal const string LOGO_KEY = "logo";
         internal const string USER_COLLECTION_ID = "user-settings";
         internal const string DEVICE_GROUP_COLLECTION_ID = "devicegroups";
+        internal const string PACKAGES_COLLECTION_ID = "packages";
         private const string AZURE_MAPS_KEY = "AzureMapsKey";
+        private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
         public Storage(
             IStorageAdapterClient client,
@@ -169,11 +177,57 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             await this.client.DeleteAsync(DEVICE_GROUP_COLLECTION_ID, id);
         }
 
+        public async Task<IEnumerable<Package>> GetPackagesAsync()
+        {
+            var response = await this.client.GetAllAsync(PACKAGES_COLLECTION_ID);
+            return response.Items.AsParallel().Select(this.CreatePackageServiceModel);
+        }
+
+        public async Task<Package> AddPackageAsync(Package package)
+        {
+            try
+            {
+                JsonConvert.DeserializeObject<Configuration>(package.Content);
+            }
+            catch (Exception)
+            {
+                throw new InvalidInputException("Package provided is not a valid deployment manifest");
+            }
+
+            package.DateCreated = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
+            var value = JsonConvert.SerializeObject(package,
+                                                    Formatting.Indented,
+                                                    new JsonSerializerSettings {
+                                                        NullValueHandling = NullValueHandling.Ignore
+                                                    });
+
+            var response = await this.client.CreateAsync(PACKAGES_COLLECTION_ID, value);
+            return this.CreatePackageServiceModel(response);
+        }
+
+        public async Task DeletePackageAsync(string id)
+        {
+            await this.client.DeleteAsync(PACKAGES_COLLECTION_ID, id);
+        }
+
+        public async Task<Package> GetPackageAsync(string id)
+        {
+            var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, id);
+            return this.CreatePackageServiceModel(response);
+        }
+
         private DeviceGroup CreateGroupServiceModel(ValueApiModel input)
         {
             var output = JsonConvert.DeserializeObject<DeviceGroup>(input.Data);
             output.Id = input.Key;
             output.ETag = input.ETag;
+            return output;
+        }
+
+        private Package CreatePackageServiceModel(ValueApiModel input)
+        {
+            var output = JsonConvert.DeserializeObject<Package>(input.Data);
+            output.Id = input.Key;
             return output;
         }
     }
