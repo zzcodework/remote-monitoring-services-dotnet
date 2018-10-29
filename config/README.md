@@ -197,7 +197,6 @@ Licensed under the [MIT](LICENSE) License.
 [rm-arch-url]:https://docs.microsoft.com/en-us/azure/iot-suite/iot-suite-remote-monitoring-sample-walkthrough
 [run-with-docker-url]:https://docs.microsoft.com/azure/iot-suite/iot-suite-remote-monitoring-deploy-local#run-the-microservices-in-docker
 [postman-url]: https://www.getpostman.com
-
 [dotnet-install]: https://www.microsoft.com/net/learn/get-started
 [vs-install-url]: https://www.visualstudio.com/downloads
 [dotnetcore-tools-url]: https://www.microsoft.com/net/core#windowsvs2017
