@@ -29,7 +29,7 @@ compile() {
     dotnet restore
 
     header "Compiling code..."
-    dotnet build --configuration $CONFIGURATION
+    dotnet build -v d --configuration $CONFIGURATION
 }
 
 run_tests() {
@@ -40,7 +40,7 @@ run_tests() {
     PROJECTS=$(dotnet sln list | grep 'csproj$' | grep '\.Test')
     for PROJ in $PROJECTS; do
         echo "-- $PROJ"
-        dotnet test --configuration $CONFIGURATION $PROJ
+        dotnet test -v d --configuration $CONFIGURATION $PROJ
     done
 }
 
