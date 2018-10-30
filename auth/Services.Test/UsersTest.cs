@@ -177,8 +177,12 @@ namespace Services.Test
                 "UpdateRules",
                 "DeleteRules",
                 "CreateJobs",
-                "UpdateSimManagement",
-                "AcquireToken"
+                "UpdateSIMManagement",
+                "AcquireToken",
+                "CreateDeployments",
+                "DeleteDeployments",
+                "CreatePackages",
+                "DeletePackages"
             };
 
             return new Policy()
@@ -201,8 +205,12 @@ namespace Services.Test
                 "CreateRules",
                 "UpdateRules",
                 "CreateJobs",
-                "UpdateSimManagement",
-                "AcquireToken"
+                "UpdateSIMManagement",
+                "AcquireToken",
+                "CreateDeployments",
+                "DeleteDeployments",
+                "CreatePackages",
+                "DeletePackages"
             };
 
             return new Policy()
