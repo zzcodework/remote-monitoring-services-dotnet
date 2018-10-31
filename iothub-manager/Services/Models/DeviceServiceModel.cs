@@ -14,6 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public DateTime LastActivity { get; set; }
         public bool Connected { get; set; }
         public bool Enabled { get; set; }
+        public bool IsEdgeDevice { get; set; }
         public DateTime LastStatusUpdated { get; set; }
         public TwinServiceModel Twin { get; set; }
         public string IoTHubHostName { get; set; }
@@ -26,6 +27,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             DateTime lastActivity,
             bool connected,
             bool enabled,
+            bool isEdgeDevice,
             DateTime lastStatusUpdated,
             TwinServiceModel twin,
             AuthenticationMechanismServiceModel authentication,
@@ -37,13 +39,17 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.LastActivity = lastActivity;
             this.Connected = connected;
             this.Enabled = enabled;
+            this.IsEdgeDevice = isEdgeDevice;
             this.LastStatusUpdated = lastStatusUpdated;
             this.Twin = twin;
             this.IoTHubHostName = ioTHubHostName;
             this.Authentication = authentication;
         }
 
-        public DeviceServiceModel(Device azureDevice, TwinServiceModel twin, string ioTHubHostName) :
+        public DeviceServiceModel(Device azureDevice,
+                                  TwinServiceModel twin,
+                                  string ioTHubHostName,
+                                  bool isEdgeDevice) :
             this(
                 etag: azureDevice.ETag,
                 id: azureDevice.Id,
@@ -51,6 +57,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 lastActivity: azureDevice.LastActivityTime,
                 connected: azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected),
                 enabled: azureDevice.Status.Equals(DeviceStatus.Enabled),
+                isEdgeDevice: isEdgeDevice,
                 lastStatusUpdated: azureDevice.StatusUpdatedTime,
                 twin: twin,
                 ioTHubHostName: ioTHubHostName,
@@ -59,7 +66,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         }
 
         public DeviceServiceModel(Device azureDevice, Twin azureTwin, string ioTHubHostName) :
-            this(azureDevice, new TwinServiceModel(azureTwin), ioTHubHostName)
+            this(
+                azureDevice,
+                new TwinServiceModel(azureTwin),
+                ioTHubHostName,
+                azureDevice.Capabilities?.IotEdge ?? azureTwin.Capabilities?.IotEdge ?? false)
         {
         }
 
@@ -69,7 +80,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 ETag = ignoreEtag ? null : this.Etag,
                 Status = Enabled ? DeviceStatus.Enabled : DeviceStatus.Disabled,
-                Authentication = this.Authentication == null ? null : this.Authentication.ToAzureModel()
+                Authentication = this.Authentication == null ? null : this.Authentication.ToAzureModel(),
+                Capabilities = this.IsEdgeDevice ? new DeviceCapabilities()
+                {
+                    IotEdge = this.IsEdgeDevice
+                } : null
             };
 
             return device;
