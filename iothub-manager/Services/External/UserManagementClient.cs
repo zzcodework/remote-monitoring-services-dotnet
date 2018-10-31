@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -15,6 +16,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
     public interface IUserManagementClient
     {
         Task<IEnumerable<string>> GetAllowedActionsAsync(string userObjectId, IEnumerable<string> roles);
+        Task<Tuple<bool, string>> PingAsync();
     }
 
     public class UserManagementClient : IUserManagementClient
@@ -37,6 +39,32 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
             this.CheckStatusCode(response, request);
 
             return JsonConvert.DeserializeObject<IEnumerable<string>>(response.Content);
+        }
+
+        public async Task<Tuple<bool, string>> PingAsync()
+        {
+            var isHealthy = false;
+            var message = "Auth check failed";
+            try
+            {
+                var response = await this.httpClient.GetAsync(this.CreateRequest($"status"));
+                if (!response.IsSuccessStatusCode)
+                {
+                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
+                }
+                else
+                {
+                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+                    message = data["Message"].ToString();
+                    isHealthy = Convert.ToBoolean(data["IsHealthy"]);
+                }
+            }
+            catch (Exception e)
+            {
+                this.log.Error(message, () => new { e });
+            }
+
+            return new Tuple<bool, string>(isHealthy, message);
         }
 
         private HttpRequest CreateRequest(string path, IEnumerable<string> content = null)

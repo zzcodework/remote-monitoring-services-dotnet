@@ -18,6 +18,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
     public interface IAgent
     {
         Task RunAsync(CancellationToken runState);
+        bool IsEventHubSetupSuccessful();
+        Task<Tuple<bool, string>> PingEventHubAsync();
     }
 
     public class Agent : IAgent
@@ -36,6 +38,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
         private readonly Dictionary<string, string> deviceGroupDefinitionDictionary;
         private readonly IThreadWrapper thread;
         private Dictionary<string, IEnumerable<string>> mostRecentMapping;
+        private bool eventHubSetupSuccessful;
 
         public Agent(
            IDeviceGroupsWriter deviceGroupsWriter,
@@ -72,9 +75,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             // again a minute after changes have been seen,
             // to ensures if there are updates they are not missed.
             bool previousEventHubSeenChanges = this.eventHubStatus.SeenChanges;
-            
+
             await this.SetupEventHub(runState);
-            
+
             this.mostRecentMapping = null;
 
             while (!runState.IsCancellationRequested)
@@ -126,6 +129,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
                         storageConnectionString,
                         this.blobStorageConfig.EventHubContainer);
                     await this.eventProcessorHostWrapper.RegisterEventProcessorFactoryAsync(eventProcessorHost, this.deviceEventProcessorFactory);
+                    this.eventHubSetupSuccessful = true;
                 }
                 catch (Exception e)
                 {
@@ -227,6 +231,35 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             }
 
             return true;
+        }
+
+        public bool IsEventHubSetupSuccessful()
+        {
+            return eventHubSetupSuccessful;
+        }
+
+        public async Task<Tuple<bool, string>> PingEventHubAsync()
+        {
+            var isHealthy = false;
+            var message = "EventHub check failed";
+
+            var connectionStringBuilder = new EventHubsConnectionStringBuilder(this.servicesConfig.EventHubConnectionString)
+            {
+                EntityPath = this.servicesConfig.EventHubName
+            };
+
+            EventHubClient eventHubClient = EventHubClient.CreateFromConnectionString(connectionStringBuilder.ToString());
+            try
+            {
+                await eventHubClient.GetRuntimeInformationAsync();
+                message = "Alive and well!";
+                isHealthy = true;
+            }
+            catch (Exception e)
+            {
+                this.log.Error(message, () => new { e });
+            }
+            return new Tuple<bool, string>(isHealthy, message);
         }
     }
 }

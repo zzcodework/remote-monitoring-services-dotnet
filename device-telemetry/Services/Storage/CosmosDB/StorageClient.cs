@@ -188,23 +188,28 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB
         public Tuple<bool, string> Ping()
         {
             Uri response = null;
+            var isHealthy = false;
+            var message = "Storage check failed";
 
-            if (this.client != null)
+            try
             {
-                // make generic call to see if storage client can be reached
-                response = this.client.ReadEndpoint;
-            }
+                if (this.client != null)
+                {
+                    // Make generic call to see if storage can be reached
+                    response = this.client.ReadEndpoint;
+                }
 
-            if (response != null)
-            {
-                return new Tuple<bool, string>(true, "OK: Alive and well");
+                if (response != null)
+                {
+                    isHealthy = true;
+                    message = "Alive and Well!";
+                }
             }
-            else
+            catch (Exception e)
             {
-                return new Tuple<bool, string>(false,
-                    "Could not reach storage service. " +
-                    "Check connection string");
+                this.log.Error(message, () => new { e });
             }
+            return new Tuple<bool, string>(isHealthy, message);
         }
 
         public List<Document> QueryDocuments(

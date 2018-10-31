@@ -52,6 +52,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private const string TAG_PREFIX = "Tags.";
         private const string REPORTED_PREFIX = "Properties.Reported.";
 
+        private DateTime DevicePropertiesLastUpdated;
+
         /// <summary>
         /// The constructor.
         /// </summary>
@@ -171,6 +173,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                         });
                     if (updated)
                     {
+                        this.DevicePropertiesLastUpdated = DateTime.Now;
                         return true;
                     }
                 }

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
 using Newtonsoft.Json;
 
@@ -14,8 +15,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty(PropertyName = "Name", Order = 10)]
         public string Name => "Config";
 
-        [JsonProperty(PropertyName = "Status", Order = 20)]
-        public string Status { get; set; }
+        [JsonProperty(PropertyName = "IsHealthy", Order = 20)]
+        public bool IsHealthy = true;
+
+        [JsonProperty(PropertyName = "Message", Order = 25)]
+        public string Message = "Alive and well!";
 
         [JsonProperty(PropertyName = "CurrentTime", Order = 30)]
         public string CurrentTime => DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
@@ -36,11 +40,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
         /// <summary>A property bag with details about the service</summary>
         [JsonProperty(PropertyName = "Properties", Order = 70)]
-        public Dictionary<string, string> Properties => new Dictionary<string, string>();
+        public Dictionary<string, string> Properties = new Dictionary<string, string>();
 
         /// <summary>A property bag with details about the internal dependencies</summary>
         [JsonProperty(PropertyName = "Dependencies", Order = 80)]
-        public Dictionary<string, string> Dependencies => new Dictionary<string, string>();
+        public Dictionary<string, StatusModel> Dependencies = new Dictionary<string, StatusModel>();
 
         [JsonProperty(PropertyName = "$metadata", Order = 1000)]
         public Dictionary<string, string> Metadata => new Dictionary<string, string>
@@ -48,14 +52,5 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             { "$type", "Status;" + Version.NUMBER },
             { "$uri", "/" + Version.PATH + "/status" }
         };
-
-        public StatusApiModel(bool isOk, string msg)
-        {
-            this.Status = isOk ? "OK" : "ERROR";
-            if (!string.IsNullOrEmpty(msg))
-            {
-                this.Status += ":" + msg;
-            }
-        }
     }
 }

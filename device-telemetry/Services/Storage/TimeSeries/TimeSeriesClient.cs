@@ -94,32 +94,40 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         /// </summary>
         public async Task<Tuple<bool, string>> PingAsync()
         {
+            var isHealthy = false;
+            var message = "TimeSeries check failed";
+
             // Acquire an access token.
-            string accessToken;
+            string accessToken = "";
             try
             {
                 accessToken = await this.AcquireAccessTokenAsync();
+
+                // Prepare request
+                HttpRequest request = this.PrepareRequest(
+                    AVAILABILITY_KEY,
+                    accessToken,
+                    new[] { TIME_SERIES_TIMEOUT_PREFIX + "=" + this.timeout });
+
+                var response = await this.httpClient.GetAsync(request);
+
+                // Return status
+                if (!response.IsError)
+                {
+                    isHealthy = true;
+                    message = "Alive and well!";
+                }
+                else
+                {
+                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
+                }
+
             }
             catch (Exception e)
             {
-                return new Tuple<bool, string>(false, "Unable to acquire access token. " + e.Message);
+                this.log.Error(message, () => new { e });
             }
-
-            // Prepare request
-            HttpRequest request = this.PrepareRequest(
-                AVAILABILITY_KEY,
-                accessToken,
-                new[] { TIME_SERIES_TIMEOUT_PREFIX + "=" + this.timeout });
-
-            var response = await this.httpClient.GetAsync(request);
-
-            // Return status
-            if (response.IsError)
-            {
-                return new Tuple<bool, string>(false, "Status code: " + response.StatusCode);
-            }
-
-            return new Tuple<bool, string>(true, "Time Series Insights alive and well!");
+            return new Tuple<bool, string>(isHealthy, message);
         }
 
         public async Task<MessageList> QueryEventsAsync(

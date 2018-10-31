@@ -1,4 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -71,6 +73,32 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             var request = this.CreateRequest($"collections/{collectionId}/values/{key}");
             var response = await this.httpClient.DeleteAsync(request);
             this.CheckStatusCode(response, request);
+        }
+
+        public async Task<Tuple<bool, string>> PingAsync()
+        {
+            var isHealthy = false;
+            var message = "Storage adapter check failed";
+            try
+            {
+                var response = await this.httpClient.GetAsync(this.CreateRequest($"status"));
+                if (!response.IsSuccessStatusCode)
+                {
+                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
+                }
+                else
+                {
+                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
+                    message = data["Message"].ToString();
+                    isHealthy = Convert.ToBoolean(data["IsHealthy"]);
+                }
+            }
+            catch (Exception e)
+            {
+                this.log.Error(message, () => new { e });
+            }
+
+            return new Tuple<bool, string>(isHealthy, message);
         }
 
         private HttpRequest CreateRequest(string path, ValueApiModel content = null)

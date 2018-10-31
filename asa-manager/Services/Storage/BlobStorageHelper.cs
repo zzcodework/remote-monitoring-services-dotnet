@@ -12,6 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
     public interface IBlobStorageHelper
     {
         Task WriteBlobFromFileAsync(string blobName, string fileName);
+        Task<Tuple<bool, string>> PingAsync();
     }
 
     public class BlobStorageHelper : IBlobStorageHelper
@@ -64,6 +65,29 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             {
                 this.logger.Error("Unable to upload reference data to blob", () => new { e });
             }
+        }
+
+        public async Task<Tuple<bool, string>> PingAsync()
+        {
+            var isHealthy = false;
+            var message = "Blob check failed";
+
+            try
+            {
+                await this.InitializeBlobStorage();
+                var response = await cloudBlobContainer.ExistsAsync();
+                if (response)
+                {
+                    message = "Alive and well!";
+                    isHealthy = true;
+                }
+            }
+            catch (Exception e)
+            {
+                this.logger.Error(message, () => new { e });
+            }
+
+            return new Tuple<bool, string>(isHealthy, message);
         }
     }
 }
