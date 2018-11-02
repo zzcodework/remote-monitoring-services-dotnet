@@ -56,6 +56,6 @@ namespace Microsoft.Azure.IoTSolutions.StorageAdapter.Services
         /// <summary>
         /// Ping DB
         /// </summary>
-        Tuple<bool, string> Ping();
+        Task<StatusResultServiceModel> PingAsync();
     }
 }
