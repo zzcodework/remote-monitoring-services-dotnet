@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.StorageAdapter.Services
 {
-    class StatusService: IStatusService
+    class StatusService : IStatusService
     {
         private readonly ILogger log;
         private readonly IKeyValueContainer keyValueContainer;
@@ -37,9 +37,16 @@ namespace Microsoft.Azure.IoTSolutions.StorageAdapter.Services
             result.Properties.Add("StorageType", this.servicesConfig.StorageType);
             this.log.Info(
                 "Service status request",
-                () => new {
-                    Healthy = result.Status.IsHealthy, result.Status.Message
+                () => new
+                {
+                    Healthy = result.Status.IsHealthy,
+                    result.Status.Message
                 });
+
+            if (errors.Count > 0)
+            {
+                result.Status.Message = string.Join("; ", errors);
+            }
             return result;
         }
 

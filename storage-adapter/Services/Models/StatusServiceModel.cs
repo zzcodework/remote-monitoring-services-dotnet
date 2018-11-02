@@ -1,15 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Models
 {
     public class StatusServiceModel
-    {        
+    {
+        [JsonProperty(PropertyName = "Status")]
         public StatusResultServiceModel Status { get; set; }
 
+        [JsonProperty(PropertyName = "Properties")]
         public Dictionary<string, string> Properties { get; set; }
-        
+
+        [JsonProperty(PropertyName = "Dependencies")]
         public Dictionary<string, StatusResultServiceModel> Dependencies { get; set; }
 
         public StatusServiceModel(bool isHealthy, string message)
