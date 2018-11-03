@@ -54,7 +54,7 @@ namespace WebService.Test.Controllers
             try
             {
                 // Act
-                var package = await this.controller.PostAsync(type, file);
+                var package = await this.controller.PostAsync(type, null, file);
 
                 // Assert
                 Assert.False(expectException);

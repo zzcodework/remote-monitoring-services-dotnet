@@ -33,6 +33,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<Package> AddPackageAsync(Package package);
         Task DeletePackageAsync(string id);
         Task UpdateConfigurationsAsync(string customConfigType);
+        Task<PackageConfigurations> GetAllConfigurationsAsync();
     }
 
     public class Storage : IStorage
@@ -218,6 +219,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         private Boolean ValidatePackage(Package package)
         {
             IPackageValidator validator = PackageValidatorFactory.GetValidator(package.Type, package.Config);
+            if (validator == null)
+            {
+                return true;//Bypass validation for custom config type
+            }
             return validator.Validate();
         }
 
@@ -232,10 +237,34 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             return this.CreatePackageServiceModel(response);
         }
 
+        public async Task<PackageConfigurations> GetAllConfigurationsAsync()
+        {
+            try
+            {
+                var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY);
+                return JsonConvert.DeserializeObject<PackageConfigurations>(response.Data);
+            }
+            catch (Exception)
+            {
+                //TODO: Logging
+            }
+            return new PackageConfigurations(); //Return empty response 
+            
+        }
+
         public async Task UpdateConfigurationsAsync(string customConfigType)
         {
-            var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY);
-            var list = JsonConvert.DeserializeObject<PackageConfigListApiModel>(response.Data);
+            PackageConfigurations list;
+            try
+            {
+                var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY);
+                list = JsonConvert.DeserializeObject<PackageConfigurations>(response.Data);
+            }
+            catch (Exception)
+            {
+                //TODO: logging
+                list = new PackageConfigurations();
+            }
             list.add(customConfigType);
             await this.client.UpdateAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY, JsonConvert.SerializeObject(list), "*");
         }

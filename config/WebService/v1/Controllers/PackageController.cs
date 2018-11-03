@@ -40,6 +40,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             return new PackageApiModel(await this.storage.GetPackageAsync(id));
         }
 
+        [HttpGet]
+        [Route("configurations")]
+        public async Task<PackageConfigListApiModel> GetListAsync()
+        {
+            return new PackageConfigListApiModel(await this.storage.GetAllConfigurationsAsync());
+        }
+
         [HttpPost]
         [Authorize("CreatePackages")]
         public async Task<PackageApiModel> PostAsync(string type, string config, IFormFile package, string customConfigType=null)
@@ -86,7 +93,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 CustomConfig = customConfigType
             };
 
-            if (!string.IsNullOrEmpty(customConfigType))
+            if (uploadedConfigType.Equals(ConfigType.Custom))
             {
                 await this.storage.UpdateConfigurationsAsync(customConfigType);
             }

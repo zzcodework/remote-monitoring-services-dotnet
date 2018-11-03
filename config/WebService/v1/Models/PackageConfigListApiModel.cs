@@ -1,19 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
+namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
-    class ConfigListApiModel
+    public class PackageConfigListApiModel
     {
-        private HashSet<String> customConfigTypes = new HashSet<String>();
+        [JsonProperty("Configurations")]
+        public string[] packageConfigurations{ get; set; }
 
-        public List<String> configurations
+        public PackageConfigListApiModel(PackageConfigurations packageConfigurations)
         {
-            set
+            var customConfigs = packageConfigurations.configurations.ToList<String>();
+
+            foreach (ConfigType type in Enum.GetValues(typeof(ConfigType)))
             {
-                value.ForEach(c => customConfigTypes.Add(c));
+                if (!(type.Equals(ConfigType.Custom)))
+                {
+                    customConfigs.Insert(0,type.ToString());
+                }
             }
+
+            this.packageConfigurations = customConfigs.ToArray<String>();
         }
 
     }
