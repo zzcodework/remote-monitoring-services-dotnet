@@ -24,7 +24,7 @@ namespace Services.Test
         {
             var config = new Mock<IServicesConfig>();
             config.Setup(x => x.RulesWebServiceTimeout).Returns(1000);
-            config.Setup(x => x.RulesWebServiceUrl).Returns("http://127.0.0.1/v1/rules");
+            config.Setup(x => x.RulesWebServiceUrl).Returns("http://127.0.0.1/v1");
 
             this.httpClient = new Mock<IHttpClient>();
             this.log = new Mock<ILogger>();

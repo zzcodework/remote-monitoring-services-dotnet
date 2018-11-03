@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
@@ -12,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
     {
         void Initialize(AsaOutputStorageType outputStorageType, CosmosDbTableConfiguration config);
         Task SetupOutputStorageAsync();
-        Task<Tuple<bool, string>> PingAsync();
+        Task<StatusResultServiceModel> PingAsync();
     }
 
     public class AsaStorage : IAsaStorage
@@ -73,10 +74,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             throw new NotImplementedException();
         }
 
-        public async Task<Tuple<bool, string>> PingAsync()
+        public async Task<StatusResultServiceModel> PingAsync()
         {
-            var isHealthy = false;
-            var message = "Storage check failed";
+            var result = new StatusResultServiceModel(false, "Storage check failed");
 
             try
             {
@@ -84,16 +84,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
                 {
                     var storage = this.factory.Resolve<ICosmosDbSql>().Initialize(this.cosmosDbConfig);
                     await storage.CreateDatabaseAndCollectionsIfNotExistAsync();
-                    isHealthy = true;
-                    message = "Alive and well!";
+                    result.IsHealthy = true;
+                    result.Message = "Alive and well!";
                 }
             }
             catch (Exception e)
             {
-                this.log.Error(message, () => new { e });
+                this.log.Error(result.Message, () => new { e });
             }
 
-            return new Tuple<bool, string>(isHealthy, message);
+            return result;
         }
     }
 }

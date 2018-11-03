@@ -20,9 +20,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
 
         // Compare two list of rules
         bool RulesAreEquivalent(IList<RuleApiModel> newRules, IList<RuleApiModel> rules);
-
-        // Ping Device Telemetry Service
-        Task<Tuple<bool, string>> PingAsync();
     }
 
     public class Rules : IRules
@@ -39,42 +36,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
         {
             this.log = logger;
             this.httpClient = httpClient;
-            this.rulesWebServiceUrl = config.RulesWebServiceUrl;
+            this.rulesWebServiceUrl = config.RulesWebServiceUrl + "/rules";
             this.rulesWebServiceTimeout = config.RulesWebServiceTimeout;
-        }
-
-        // Ping DevioceTelemetry service for status check
-        public async Task<Tuple<bool, string>> PingAsync()
-        {
-            var isHealthy = false;
-            var message = "Telemetry service check failed";
-            var request = new HttpRequest();
-            string telemetryStatusServiceUrl = this.rulesWebServiceUrl.Replace("/rules", "/status");
-            request.SetUriFromString(telemetryStatusServiceUrl);
-            request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("Cache-Control", "no-cache");
-            request.Headers.Add("User-Agent", "ASA Manager");
-
-            try
-            {
-                var response = await this.httpClient.GetAsync(request);
-                if (response.IsError)
-                {
-                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
-                }
-                else
-                {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
-                    message = data["Message"].ToString();
-                    isHealthy = Convert.ToBoolean(data["IsHealthy"]);
-                }
-            }
-            catch (Exception e)
-            {
-                this.log.Error(message, () => new { e });
-            }
-
-            return new Tuple<bool, string>(isHealthy, message);
         }
 
         public async Task<IList<RuleApiModel>> GetActiveRulesSortedByIdAsync()

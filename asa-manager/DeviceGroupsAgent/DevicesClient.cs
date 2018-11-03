@@ -16,7 +16,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
     public interface IDevicesClient
     {
         Task<IEnumerable<string>> GetListAsync(IEnumerable<DeviceGroupConditionApiModel> conditions);
-        Task<Tuple<bool, string>> PingAsync();
     }
 
     public class DevicesClient : IDevicesClient
@@ -34,40 +33,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             this.logger = logger;
             this.httpClient = httpClient;
             this.baseUrl = $"{config.IotHubManagerServiceUrl}/devices";
-        }
-
-        // Ping IotHubManager service for status check
-        public async Task<Tuple<bool, string>> PingAsync()
-        {
-            var isHealthy = false;
-            var message = "IotHubManager service check failed";
-            var request = new HttpRequest();
-            var IotHubManagerUrl = this.baseUrl.Replace("/devices", "/status");
-            request.SetUriFromString(IotHubManagerUrl);
-            request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("Cache-Control", "no-cache");
-            request.Headers.Add("User-Agent", "ASA Manager");
-
-            try
-            {
-                var response = await this.httpClient.GetAsync(request);
-                if (response.IsError)
-                {
-                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
-                }
-                else
-                {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
-                    message = data["Message"].ToString();
-                    isHealthy = Convert.ToBoolean(data["IsHealthy"]);
-                }
-            }
-            catch (Exception e)
-            {
-                this.logger.Error(message, () => new { e });
-            }
-
-            return new Tuple<bool, string>(isHealthy, message);
         }
 
         /**

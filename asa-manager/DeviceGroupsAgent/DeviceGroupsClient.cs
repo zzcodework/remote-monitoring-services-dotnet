@@ -10,7 +10,6 @@ using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
-using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
 {
@@ -18,7 +17,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
     {
         Task<Dictionary<string, IEnumerable<string>>> GetGroupToDevicesMappingAsync(DeviceGroupListApiModel deviceGroupList);
         Task<DeviceGroupListApiModel> GetDeviceGroupsAsync();
-        Task<Tuple<bool, string>> PingAsync();
     }
 
     public class DeviceGroupsClient : IDeviceGroupsClient
@@ -43,39 +41,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             this.baseUrl = $"{servicesConfig.ConfigServiceUrl}/devicegroups";
             this.servicesConfig = servicesConfig;
             this.thread = thread;
-        }
-
-        // Ping config service for status check
-        public async Task<Tuple<bool, string>> PingAsync()
-        {
-            var isHealthy = false;
-            var message = "Config service check failed";
-            var request = new HttpRequest();
-            request.SetUriFromString($"{this.servicesConfig.ConfigServiceUrl}/status");
-            request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("Cache-Control", "no-cache");
-            request.Headers.Add("User-Agent", "ASA Manager");
-
-            try
-            {
-                var response = await this.httpClient.GetAsync(request);
-                if (response.IsError)
-                {
-                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
-                }
-                else
-                {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
-                    message = data["Message"].ToString();
-                    isHealthy = Convert.ToBoolean(data["IsHealthy"]);
-                }
-            }
-            catch (Exception e)
-            {
-                this.logger.Error(message, () => new { e });
-            }
-
-            return new Tuple<bool, string>(isHealthy, message);
         }
 
         /**

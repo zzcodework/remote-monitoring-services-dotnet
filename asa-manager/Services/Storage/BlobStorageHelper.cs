@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -12,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
     public interface IBlobStorageHelper
     {
         Task WriteBlobFromFileAsync(string blobName, string fileName);
-        Task<Tuple<bool, string>> PingAsync();
+        Task<StatusResultServiceModel> PingAsync();
     }
 
     public class BlobStorageHelper : IBlobStorageHelper
@@ -67,10 +68,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             }
         }
 
-        public async Task<Tuple<bool, string>> PingAsync()
+        public async Task<StatusResultServiceModel> PingAsync()
         {
-            var isHealthy = false;
-            var message = "Blob check failed";
+            var result = new StatusResultServiceModel(false, "Blob check failed");
 
             try
             {
@@ -78,16 +78,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
                 var response = await cloudBlobContainer.ExistsAsync();
                 if (response)
                 {
-                    message = "Alive and well!";
-                    isHealthy = true;
+                    result.Message = "Alive and well!";
+                    result.IsHealthy = true;
                 }
             }
             catch (Exception e)
             {
-                this.logger.Error(message, () => new { e });
+                this.logger.Error(result.Message, () => new { e });
             }
 
-            return new Tuple<bool, string>(isHealthy, message);
+            return result;
         }
     }
 }
