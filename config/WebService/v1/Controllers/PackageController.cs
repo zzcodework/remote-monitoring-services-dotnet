@@ -42,17 +42,28 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 
         [HttpPost]
         [Authorize("CreatePackages")]
-        public async Task<PackageApiModel> PostAsync(string type, IFormFile package)
+        public async Task<PackageApiModel> PostAsync(string type, string config, IFormFile package, string customConfigType=null)
         {
             if (string.IsNullOrEmpty(type))
             {
                 throw new InvalidInputException("Package type must be provided");
             }
 
+            if (string.IsNullOrEmpty(config))
+            {
+                config = null;
+            }
+
             bool isValidPackageType = Enum.TryParse(type, true, out PackageType uploadedPackageType);
             if (!isValidPackageType)
             {
                 throw new InvalidInputException($"Provided package type {type} is not valid.");
+            }
+
+            bool isValidConfigType = Enum.TryParse(config, true, out ConfigType uploadedConfigType);
+            if (!isValidConfigType)
+            {
+                throw new InvalidInputException($"Provided config type {type} is not valid.");
             }
 
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))
@@ -70,8 +81,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             {
                 Content = packageContent,
                 Name = package.FileName,
-                Type = uploadedPackageType
+                Type = uploadedPackageType, 
+                Config = uploadedConfigType,
+                CustomConfig = customConfigType
             };
+
+            if (!string.IsNullOrEmpty(customConfigType))
+            {
+                await this.storage.UpdateConfigurationsAsync(customConfigType);
+            }
 
             return new PackageApiModel(await this.storage.AddPackageAsync(packageToAdd));
         }

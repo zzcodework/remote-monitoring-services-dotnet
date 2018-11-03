@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidation;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Newtonsoft.Json;
@@ -31,6 +32,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<Package> GetPackageAsync(string id);
         Task<Package> AddPackageAsync(Package package);
         Task DeletePackageAsync(string id);
+        Task UpdateConfigurationsAsync(string customConfigType);
     }
 
     public class Storage : IStorage
@@ -44,6 +46,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal const string USER_COLLECTION_ID = "user-settings";
         internal const string DEVICE_GROUP_COLLECTION_ID = "devicegroups";
         internal const string PACKAGES_COLLECTION_ID = "packages";
+        internal const string PACKAGES_CONFIGURATIONS_KEY = "configurations";
         private const string AZURE_MAPS_KEY = "AzureMapsKey";
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
@@ -185,6 +188,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         public async Task<Package> AddPackageAsync(Package package)
         {
+            bool isValidPackage = ValidatePackage(package);
+            if (!isValidPackage)
+            {
+                throw new InvalidInputException($"Package provided is not a valid deployment manifest " +
+                    $"for type {package.Type} and config type {package.Config}");
+            }
+
             try
             {
                 JsonConvert.DeserializeObject<Configuration>(package.Content);
@@ -205,6 +215,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             return this.CreatePackageServiceModel(response);
         }
 
+        private Boolean ValidatePackage(Package package)
+        {
+            IPackageValidator validator = PackageValidatorFactory.GetValidator(package.Type, package.Config);
+            return validator.Validate();
+        }
+
         public async Task DeletePackageAsync(string id)
         {
             await this.client.DeleteAsync(PACKAGES_COLLECTION_ID, id);
@@ -214,6 +230,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, id);
             return this.CreatePackageServiceModel(response);
+        }
+
+        public async Task UpdateConfigurationsAsync(string customConfigType)
+        {
+            var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY);
+            var list = JsonConvert.DeserializeObject<PackageConfigListApiModel>(response.Data);
+            list.add(customConfigType);
+            await this.client.UpdateAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY, JsonConvert.SerializeObject(list), "*");
         }
 
         private DeviceGroup CreateGroupServiceModel(ValueApiModel input)
