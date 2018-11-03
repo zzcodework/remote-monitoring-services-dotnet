@@ -9,6 +9,5 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
     {
         Task<ValueApiModel> GetAsync(string collectionId, string key);
         Task<ValueApiModel> UpdateAsync(string collectionId, string key, string value, string etag);
-        Task<Tuple<bool, string>> PingAsync();
     }
 }

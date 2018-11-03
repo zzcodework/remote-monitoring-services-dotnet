@@ -48,32 +48,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.External
             return JsonConvert.DeserializeObject<ValueApiModel>(response.Content);
         }
 
-        public async Task<Tuple<bool, string>> PingAsync()
-        {
-            var isHealthy = false;
-            var message = "Storage adapter check failed";
-            try
-            {
-                var response = await this.httpClient.GetAsync(this.CreateRequest($"status"));
-                if (!response.IsSuccessStatusCode)
-                {
-                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
-                }
-                else
-                {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
-                    message = data["Message"].ToString();
-                    isHealthy = Convert.ToBoolean(data["IsHealthy"]);
-                }
-            }
-            catch (Exception e)
-            {
-                this.log.Error(message, () => new { e });
-            }
-
-            return new Tuple<bool, string>(isHealthy, message);
-        }
-
         private HttpRequest CreateRequest(string path, ValueApiModel content = null)
         {
             var request = new HttpRequest();
