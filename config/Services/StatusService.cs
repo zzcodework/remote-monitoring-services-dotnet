@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         private readonly ILogger log;
         private readonly IHttpClient httpClient;
         private readonly IServicesConfig servicesConfig;
-        private readonly int timeoutMS;
+        private readonly int timeoutMS = 10000;
 
         private const bool ALLOW_INSECURE_SSL_SERVER = true;
 
@@ -30,7 +30,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             this.log = logger;
             this.httpClient = httpClient;
             this.servicesConfig = servicesConfig;
-            this.timeoutMS = 10000;
         }
 
         public async Task<StatusServiceModel> GetStatusAsync()

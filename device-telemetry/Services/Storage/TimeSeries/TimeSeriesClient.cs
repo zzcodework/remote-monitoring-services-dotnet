@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 {
     public interface ITimeSeriesClient
     {
-        Task<Tuple<bool, string>> PingAsync();
+        Task<StatusResultServiceModel> PingAsync();
 
         Task<MessageList> QueryEventsAsync(
             DateTimeOffset? from,
@@ -92,10 +92,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         /// that the fqdn provided can reach Time Series Insights.
         /// Returns a tuple with the status [bool isAvailable, string message].
         /// </summary>
-        public async Task<Tuple<bool, string>> PingAsync()
+        public async Task<StatusResultServiceModel> PingAsync()
         {
-            var isHealthy = false;
-            var message = "TimeSeries check failed";
+            var result = new StatusResultServiceModel(false, "TimeSeries check failed");
 
             // Acquire an access token.
             string accessToken = "";
@@ -114,20 +113,20 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
                 // Return status
                 if (!response.IsError)
                 {
-                    isHealthy = true;
-                    message = "Alive and well!";
+                    result.IsHealthy = true;
+                    result.Message = "Alive and well!";
                 }
                 else
                 {
-                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
+                    result.Message = $"Status code: {response.StatusCode}; Response: {response.Content}";
                 }
 
             }
             catch (Exception e)
             {
-                this.log.Error(message, () => new { e });
+                this.log.Error(result.Message, () => new { e });
             }
-            return new Tuple<bool, string>(isHealthy, message);
+            return result;
         }
 
         public async Task<MessageList> QueryEventsAsync(
