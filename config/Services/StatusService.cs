@@ -1,93 +1,78 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.EventHubs;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
+namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
     class StatusService : IStatusService
     {
         private readonly ILogger log;
-        private readonly IBlobStorageHelper blobStorageHelper;
-        private readonly IAsaStorage asaStorage;
         private readonly IHttpClient httpClient;
         private readonly IServicesConfig servicesConfig;
-        private readonly int timeout;
+        private readonly int timeoutMS;
 
         private const bool ALLOW_INSECURE_SSL_SERVER = true;
 
         public StatusService(
             ILogger logger,
             IHttpClient httpClient,
-            IBlobStorageHelper blobStorageHelper,
-            IAsaStorage asaStorage,
             IServicesConfig servicesConfig
             )
         {
             this.log = logger;
             this.httpClient = httpClient;
-            this.blobStorageHelper = blobStorageHelper;
-            this.asaStorage = asaStorage;
             this.servicesConfig = servicesConfig;
-            this.timeout = this.servicesConfig.ConfigServiceTimeout;
+            this.timeoutMS = 10000;
         }
 
         public async Task<StatusServiceModel> GetStatusAsync()
         {
             var result = new StatusServiceModel(true, "Alive and well!");
             var errors = new List<string>();
-            string configName = "Config";
+            string storageAdapterName = "StorageAdapter";
             string deviceTelemetryName = "DeviceTelemetry";
-            string ioTHubManagerName = "IoTHubManager";
+            string deviceSimulationName = "DeviceSimulation";
+            string authName = "Auth";
 
-            // Check access to Config
-            var configResult = await this.PingServiceAsync(configName, this.servicesConfig.ConfigServiceUrl);
-            SetServiceStatus(configName, configResult, result, errors);
+            // Check access to StorageAdapter
+            var storageAdapterResult = await this.PingServiceAsync(
+                storageAdapterName,
+                this.servicesConfig.StorageAdapterApiUrl);
+            SetServiceStatus(storageAdapterName, storageAdapterResult, result, errors);
 
             // Check access to Device Telemetry
             var deviceTelemetryResult = await this.PingServiceAsync(
                 deviceTelemetryName,
-                this.servicesConfig.RulesWebServiceUrl);
+                this.servicesConfig.TelemetryApiUrl);
             SetServiceStatus(deviceTelemetryName, deviceTelemetryResult, result, errors);
 
-            // Check access to IoTHubManager
-            var ioTHubmanagerResult = await this.PingServiceAsync(
-                ioTHubManagerName,
-                this.servicesConfig.IotHubManagerServiceUrl);
-            SetServiceStatus(ioTHubManagerName, ioTHubmanagerResult, result, errors);
+            // Check access to DeviceSimulation
+            var deviceSimulationResult = await this.PingServiceAsync(
+                deviceSimulationName,
+                this.servicesConfig.DeviceSimulationApiUrl);
+            SetServiceStatus(deviceSimulationName, deviceSimulationResult, result, errors);
 
-            // Check access to Blob
-            var blobResult = await this.blobStorageHelper.PingAsync();
-            SetServiceStatus("Blob", blobResult, result, errors);
-
-            // Check access to Storage
-            if (this.servicesConfig.MessagesStorageType.ToString().Equals(
-            "CosmosDbSql", StringComparison.OrdinalIgnoreCase))
-            {
-                var storageResult = await this.asaStorage.PingAsync();
-                SetServiceStatus("Storage", storageResult, result, errors);
-            }
-
-            // Check access to Event
-            var eventHubResult = await this.PingEventHubAsync();
-            SetServiceStatus("EventHub", eventHubResult, result, errors);
+            // Check access to Auth
+            var authResult = await this.PingServiceAsync(
+                authName,
+                this.servicesConfig.DeviceSimulationApiUrl);
+            SetServiceStatus(authName, authResult, result, errors);
 
             // Add properties
-            result.Properties.Add("ConfigServiceUrl", this.servicesConfig?.ConfigServiceUrl);
-            result.Properties.Add("IotHubManagerServiceUrl", this.servicesConfig?.IotHubManagerServiceUrl);
-            result.Properties.Add("TelemetryServiceUrl", this.servicesConfig?.RulesWebServiceUrl);
-            result.Properties.Add("EventHubName", this.servicesConfig?.EventHubName);
-            result.Properties.Add("MessagesStorageType", this.servicesConfig?.MessagesStorageType.ToString());
-            result.Properties.Add("AlarmsStorageType", this.servicesConfig?.AlarmsStorageType.ToString());
+            result.Properties.Add("DeviceSimulationApiUrl", this.servicesConfig?.DeviceSimulationApiUrl);
+            result.Properties.Add("StorageAdapterApiUrl", this.servicesConfig?.StorageAdapterApiUrl);
+            result.Properties.Add("UserManagementApiUrl", this.servicesConfig?.UserManagementApiUrl);
+            result.Properties.Add("TelemetryApiUrl", this.servicesConfig?.TelemetryApiUrl);
+            result.Properties.Add("SeedTemplate", this.servicesConfig?.SeedTemplate);
+            result.Properties.Add("SolutionType", this.servicesConfig?.SolutionType);
 
             this.log.Info(
                 "Service status request",
@@ -127,7 +112,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             try
             {
                 var response = await this.httpClient.GetAsync(this.PrepareRequest($"{serviceURL}/status"));
-                if (response.IsError)
+                if (!response.IsSuccessStatusCode)
                 {
                     result.Message = $"Status code: {response.StatusCode}; Response: {response.Content}";
                 }
@@ -145,30 +130,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             return result;
         }
 
-        private async Task<StatusResultServiceModel> PingEventHubAsync()
-        {
-            var result = new StatusResultServiceModel(false, "EventHub check failed");
-            var connectionStringBuilder = new EventHubsConnectionStringBuilder(
-                this.servicesConfig.EventHubConnectionString)
-            {
-                EntityPath = this.servicesConfig.EventHubName
-            };
-
-            EventHubClient eventHubClient = EventHubClient.CreateFromConnectionString(
-                connectionStringBuilder.ToString());
-            try
-            {
-                await eventHubClient.GetRuntimeInformationAsync();
-                result.Message = "Alive and well!";
-                result.IsHealthy = true;
-            }
-            catch (Exception e)
-            {
-                this.log.Error(result.Message, () => new { e });
-            }
-            return result;
-        }
-
         private HttpRequest PrepareRequest(string path)
         {
             var request = new HttpRequest();
@@ -177,7 +138,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             request.AddHeader(HttpRequestHeader.Referer.ToString(), "ASA Manager " + this.GetType().FullName);
             request.SetUriFromString(path);
             request.Options.EnsureSuccess = false;
-            request.Options.Timeout = this.timeout;
+            request.Options.Timeout = this.timeoutMS;
             if (path.ToLowerInvariant().StartsWith("https:"))
             {
                 request.Options.AllowInsecureSSLServer = ALLOW_INSECURE_SSL_SERVER;

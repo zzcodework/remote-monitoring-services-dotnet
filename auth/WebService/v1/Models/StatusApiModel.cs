@@ -13,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Models
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
         [JsonProperty(PropertyName = "Name", Order = 10)]
-        public string Name => "StorageAdapter";
+        public string Name => "Auth";
 
         [JsonProperty(PropertyName = "Status", Order = 20)]
         public StatusResultApiModel Status { get; set; }
