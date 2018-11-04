@@ -134,7 +134,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             var request = new HttpRequest();
             request.AddHeader(HttpRequestHeader.Accept.ToString(), "application/json");
             request.AddHeader(HttpRequestHeader.CacheControl.ToString(), "no-cache");
-            request.AddHeader(HttpRequestHeader.Referer.ToString(), "ASA Manager " + this.GetType().FullName);
+            request.AddHeader(HttpRequestHeader.Referer.ToString(), "IoTHubManager " + this.GetType().FullName);
             request.SetUriFromString(path);
             request.Options.EnsureSuccess = false;
             request.Options.Timeout = this.timeoutMS;
