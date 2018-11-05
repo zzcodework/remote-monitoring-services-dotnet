@@ -96,12 +96,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
                     "&tid=" + this.servicesConfig.ActiveDirectoryTenant;
                 result.Properties.Add(TIME_SERIES_EXPLORER_URL_KEY, explorerUrl);
             }
-            else
-            {
-                // Check access to Storage
-                var storageResult = await this.storageClient.PingAsync();
-                SetServiceStatus(storageAdapterName, storageResult, result, errors);
-            }
+
+            // Check access to Storage
+            var storageResult = await this.storageClient.PingAsync();
+            SetServiceStatus(storageAdapterName, storageResult, result, errors);
 
             if (errors.Count > 0)
             {
@@ -139,7 +137,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
             result.Dependencies.Add(dependencyName, statusResultServiceModel);
         }
-        
+
         private async Task<StatusResultServiceModel> PingServiceAsync(string serviceName, string serviceURL)
         {
             var result = new StatusResultServiceModel(false, $"{serviceName} check failed");
