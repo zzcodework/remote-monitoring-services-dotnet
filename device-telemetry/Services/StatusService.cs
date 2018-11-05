@@ -129,7 +129,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             List<string> errors
             )
         {
-            var StatusResultServiceModel = new StatusResultServiceModel(serviceResult);
+            var statusResultServiceModel = new StatusResultServiceModel(serviceResult);
 
             if (!serviceResult.IsHealthy)
             {
@@ -137,7 +137,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
                 result.Status.IsHealthy = false;
             }
 
-            result.Dependencies.Add(dependencyName, StatusResultServiceModel);
+            result.Dependencies.Add(dependencyName, statusResultServiceModel);
         }
         
         private async Task<StatusResultServiceModel> PingServiceAsync(string serviceName, string serviceURL)
