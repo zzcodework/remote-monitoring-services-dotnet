@@ -13,6 +13,7 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using AuthenticationType = Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models.AuthenticationType;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
@@ -120,6 +121,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         public async Task<DeviceServiceModel> CreateAsync(DeviceServiceModel device)
         {
+            if (device.IsEdgeDevice &&
+                device.Authentication != null &&
+                !device.Authentication.AuthenticationType.Equals(AuthenticationType.Sas))
+            {
+                throw new InvalidInputException("Edge devices only support symmetric key authentication.");
+            }
+
             // auto generate DeviceId, if missing
             if (string.IsNullOrEmpty(device.Id))
             {

@@ -71,6 +71,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.LastActivity = device.LastActivity;
             this.Connected = device.Connected;
             this.Enabled = device.Enabled;
+            this.IsEdgeDevice = device.IsEdgeDevice;
             this.LastStatusUpdated = device.LastStatusUpdated;
             this.IoTHubHostName = device.IoTHubHostName;
             this.Authentication = new AuthenticationMechanismApiModel(device.Authentication);
@@ -80,7 +81,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 this.ETag = $"{this.ETag}|{device.Twin.ETag}";
                 this.Properties = new TwinPropertiesApiModel(device.Twin.DesiredProperties, device.Twin.ReportedProperties);
                 this.Tags = device.Twin.Tags;
-                this.IsEdgeDevice = device.Twin.IsEdgeDevice;
                 this.IsSimulated = device.Twin.IsSimulated;
             }
         }
@@ -128,8 +128,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 desiredProperties: this.Properties?.Desired,
                 reportedProperties: this.Properties?.Reported,
                 tags: this.Tags,
-                isSimulated: this.IsSimulated,
-                isEdgeDevice: this.IsEdgeDevice
+                isSimulated: this.IsSimulated
             );
 
             return new DeviceServiceModel
@@ -140,6 +139,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 lastActivity: this.LastActivity,
                 connected: this.Connected,
                 enabled: this.Enabled,
+                isEdgeDevice: this.IsEdgeDevice,
                 lastStatusUpdated: this.LastStatusUpdated,
                 twin: twinModel,
                 ioTHubHostName: this.IoTHubHostName,
