@@ -18,9 +18,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent
 
     public class Agent : IAgent
     {
-        // Check if rules have been modified every 10 seconds
-        // (not too frequently, but frequently enough to provide a good UX)
-        private const int CHECK_INTERVAL_MSECS = 10000;
+        // Check if rules have been modified every 60 seconds
+        // Can only write reference data at most once a minute, or may lose changes
+        private const int CHECK_INTERVAL_MSECS = 60000;
 
         private readonly ILogger log;
         private readonly IRules rulesService;
