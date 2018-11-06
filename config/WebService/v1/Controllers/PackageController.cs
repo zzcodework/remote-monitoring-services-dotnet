@@ -29,6 +29,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             return new PackageListApiModel(await this.storage.GetPackagesAsync());
         }
 
+        [HttpGet("{type}/{config}")]
+        public async Task<PackageListApiModel> GetAllAsync(string type, string config)
+        {
+            return new PackageListApiModel(await this.storage.GetPackagesAsync(), type, config);
+        }
+
         [HttpGet("{id}")]
         public async Task<PackageApiModel> GetAsync(string id)
         {
@@ -49,7 +55,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 
         [HttpPost]
         [Authorize("CreatePackages")]
-        public async Task<PackageApiModel> PostAsync(string type, string config, IFormFile package, string customConfigType=null)
+        public async Task<PackageApiModel> PostAsync(string type, string config, IFormFile package, string customConfig=null)
         {
             if (string.IsNullOrEmpty(type))
             {
@@ -78,27 +84,29 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 throw new InvalidInputException("Package uploaded is missing or invalid.");
             }
 
+            if (config.Equals(ConfigType.Custom.ToString()))
+            {
+                config = appendCustomConfig(config, customConfig);
+            }
+
             string packageContent;
             using (var streamReader = new StreamReader(package.OpenReadStream()))
             {
                 packageContent = await streamReader.ReadToEndAsync();
             }
 
-            var packageToAdd = new Package()
-            {
-                Content = packageContent,
-                Name = package.FileName,
-                Type = uploadedPackageType, 
-                Config = uploadedConfigType,
-                CustomConfig = customConfigType
-            };
+            var packageToAdd = new PackageApiModel(
+                packageContent,
+                package.FileName,
+                uploadedPackageType, 
+                config);
 
             if (uploadedConfigType.Equals(ConfigType.Custom))
             {
-                await this.storage.UpdateConfigurationsAsync(customConfigType);
+                await this.storage.UpdateConfigurationsAsync(customConfig);
             }
 
-            return new PackageApiModel(await this.storage.AddPackageAsync(packageToAdd));
+            return new PackageApiModel(await this.storage.AddPackageAsync(packageToAdd.ToServiceModel()));
         }
 
         [HttpDelete("{id}")]
@@ -111,6 +119,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             }
 
             await this.storage.DeletePackageAsync(id);
+        }
+
+        private string appendCustomConfig(string config, string customConfig)
+        {
+            return config.ToString() + " - " + customConfig.ToString();
         }
     }
 }

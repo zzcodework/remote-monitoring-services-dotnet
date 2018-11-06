@@ -7,17 +7,19 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
 {
     public static class PackageValidatorFactory 
     {
-        public static IPackageValidator GetValidator(PackageType packageType, ConfigType configType)
+        public static IPackageValidator GetValidator(PackageType packageType, string configType)
         {
             if (packageType.Equals(PackageType.EdgeManifest))
             {
                 return new EdgePackageValidator();
             }
-            switch (configType) {
-                case ConfigType.FirmwareUpdateMxChip:
-                    return new FirmwareUpdateMxChipValidator();
-                default:
-                    return null;
+            if (configType.Equals(ConfigType.FirmwareUpdateMxChip.ToString()))
+            {
+                return new FirmwareUpdateMxChipValidator();
+            }
+            else
+            {
+                return null;
             }
         }
     }

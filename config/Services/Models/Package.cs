@@ -14,15 +14,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         [JsonConverter(typeof(StringEnumConverter))]
         public PackageType Type { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ConfigType Config { get; set; }
-
-        public string CustomConfig { get; set; }
+        public string Config { get; set; }
 
         public string Content { get; set; }
 
         public string DateCreated { get; set; }
-
+        
     }
 
     public enum PackageType

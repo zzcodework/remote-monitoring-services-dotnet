@@ -24,6 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<Logo> GetLogoAsync();
         Task<Logo> SetLogoAsync(Logo model);
         Task<IEnumerable<DeviceGroup>> GetAllDeviceGroupsAsync();
+        Task<PackageConfigurations> GetAllConfigurationsAsync();
         Task<DeviceGroup> GetDeviceGroupAsync(string id);
         Task<DeviceGroup> CreateDeviceGroupAsync(DeviceGroup input);
         Task<DeviceGroup> UpdateDeviceGroupAsync(string id, DeviceGroup input, string etag);
@@ -33,7 +34,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<Package> AddPackageAsync(Package package);
         Task DeletePackageAsync(string id);
         Task UpdateConfigurationsAsync(string customConfigType);
-        Task<PackageConfigurations> GetAllConfigurationsAsync();
     }
 
     public class Storage : IStorage
@@ -260,7 +260,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY);
                 list = JsonConvert.DeserializeObject<PackageConfigurations>(response.Data);
             }
-            catch (Exception)
+            catch (Exception) 
             {
                 //TODO: logging
                 list = new PackageConfigurations();
