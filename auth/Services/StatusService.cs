@@ -16,7 +16,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
         public StatusService(
             ILogger logger,
             IServicesConfig servicesConfig
-            )
+        )
         {
             this.log = logger;
             this.servicesConfig = servicesConfig;
@@ -41,6 +41,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
             {
                 result.Status.Message = string.Join("; ", errors);
             }
+
             return result;
         }
 
@@ -49,13 +50,14 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
             StatusResultServiceModel serviceResult,
             StatusServiceModel result,
             List<string> errors
-            )
+        )
         {
-             (!serviceResult.IsHealthy)
+            if (!serviceResult.IsHealthy)
             {
                 errors.Add(dependencyName + " check failed");
                 result.Status.IsHealthy = false;
             }
+
             result.Dependencies.Add(dependencyName, serviceResult);
         }
     }
