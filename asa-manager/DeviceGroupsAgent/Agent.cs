@@ -36,7 +36,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
         private readonly Dictionary<string, string> deviceGroupDefinitionDictionary;
         private readonly IThreadWrapper thread;
         private Dictionary<string, IEnumerable<string>> mostRecentMapping;
-        private bool eventHubSetupSuccessful;
 
         public Agent(
            IDeviceGroupsWriter deviceGroupsWriter,
@@ -127,7 +126,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
                         storageConnectionString,
                         this.blobStorageConfig.EventHubContainer);
                     await this.eventProcessorHostWrapper.RegisterEventProcessorFactoryAsync(eventProcessorHost, this.deviceEventProcessorFactory);
-                    this.eventHubSetupSuccessful = true;
                 }
                 catch (Exception e)
                 {

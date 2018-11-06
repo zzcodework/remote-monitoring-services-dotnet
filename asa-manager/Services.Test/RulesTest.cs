@@ -23,8 +23,8 @@ namespace Services.Test
         public RulesTest(ITestOutputHelper log)
         {
             var config = new Mock<IServicesConfig>();
-            config.Setup(x => x.RulesWebServiceTimeout).Returns(1000);
-            config.Setup(x => x.RulesWebServiceUrl).Returns("http://127.0.0.1/v1");
+            config.Setup(x => x.DeviceTelemetryWebServiceTimeout).Returns(1000);
+            config.Setup(x => x.DeviceTelemetryWebServiceUrl).Returns("http://127.0.0.1/v1");
 
             this.httpClient = new Mock<IHttpClient>();
             this.log = new Mock<ILogger>();

@@ -56,7 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             // Check access to Device Telemetry
             var deviceTelemetryResult = await this.PingServiceAsync(
                 deviceTelemetryName,
-                this.servicesConfig.RulesWebServiceUrl);
+                this.servicesConfig.DeviceTelemetryWebServiceUrl);
             SetServiceStatus(deviceTelemetryName, deviceTelemetryResult, result, errors);
 
             // Check access to IoTHubManager
@@ -84,7 +84,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             // Add properties
             result.Properties.Add("ConfigServiceUrl", this.servicesConfig?.ConfigServiceUrl);
             result.Properties.Add("IotHubManagerServiceUrl", this.servicesConfig?.IotHubManagerServiceUrl);
-            result.Properties.Add("TelemetryServiceUrl", this.servicesConfig?.RulesWebServiceUrl);
+            result.Properties.Add("TelemetryServiceUrl", this.servicesConfig?.DeviceTelemetryWebServiceUrl);
             result.Properties.Add("EventHubName", this.servicesConfig?.EventHubName);
             result.Properties.Add("MessagesStorageType", this.servicesConfig?.MessagesStorageType.ToString());
             result.Properties.Add("AlarmsStorageType", this.servicesConfig?.AlarmsStorageType.ToString());
