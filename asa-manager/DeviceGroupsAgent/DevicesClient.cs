@@ -23,7 +23,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
         private readonly ILogger logger;
         private readonly IHttpClient httpClient;
         private readonly string baseUrl;
-        private readonly IServicesConfig config;
 
         public DevicesClient(
             IHttpClient httpClient,
