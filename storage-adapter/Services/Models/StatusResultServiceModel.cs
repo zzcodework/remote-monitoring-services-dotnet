@@ -12,12 +12,6 @@ namespace Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Models
         [JsonProperty(PropertyName = "Message")]
         public string Message { get; set; }
 
-        public StatusResultServiceModel(StatusResultServiceModel result)
-        {
-            IsHealthy = result.IsHealthy;
-            Message = result.Message;
-        }
-
         [JsonConstructor]
         public StatusResultServiceModel(bool isHealthy, string message)
         {

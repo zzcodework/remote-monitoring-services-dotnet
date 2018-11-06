@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
@@ -13,9 +14,12 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
     {
         // Initialize the instance, required before running any other method
         ICosmosDbSql Initialize(CosmosDbTableConfiguration config);
-        
+
         // Create database and collection if required
         Task CreateDatabaseAndCollectionsIfNotExistAsync();
+
+        // Check if database exist
+        Task<StatusResultServiceModel> PingAsync();
     }
 
     public class CosmosDbSql : ICosmosDbSql
@@ -71,6 +75,24 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
 
             await this.cosmosSqlWrapper.CreateDatabaseIfNotExistsAsync(uri, authKey, cLevel, this.database);
             await this.cosmosSqlWrapper.CreateDocumentCollectionIfNotExistsAsync(uri, authKey, cLevel, this.database, this.collection, this.RUs);
+        }
+
+        // Check if database exist
+        public async Task<StatusResultServiceModel> PingAsync()
+        {
+            var result = new StatusResultServiceModel(false, "Storage check failed");
+
+            try
+            {
+                this.ParseConnectionString(out var uri, out var authKey);
+                await this.cosmosSqlWrapper.IfDatabaseExistsAsync(uri, authKey, this.database);
+            }
+            catch (Exception e)
+            {
+                this.log.Error(result.Message, () => new { e });
+            }
+
+            return result;
         }
 
         // Parse the connection string and extract URI and Auth Key

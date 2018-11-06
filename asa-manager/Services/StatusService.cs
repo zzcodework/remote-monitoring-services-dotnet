@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Http;
@@ -18,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
     {
         private readonly ILogger log;
         private readonly IBlobStorageHelper blobStorageHelper;
-        private readonly IAsaStorage asaStorage;
+        private readonly ICosmosDbSql cosmosDbSql;
         private readonly IHttpClient httpClient;
         private readonly IServicesConfig servicesConfig;
         private readonly int timeout;
@@ -29,14 +30,14 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             ILogger logger,
             IHttpClient httpClient,
             IBlobStorageHelper blobStorageHelper,
-            IAsaStorage asaStorage,
+            ICosmosDbSql cosmosDbSql,
             IServicesConfig servicesConfig
             )
         {
             this.log = logger;
             this.httpClient = httpClient;
             this.blobStorageHelper = blobStorageHelper;
-            this.asaStorage = asaStorage;
+            this.cosmosDbSql = cosmosDbSql;
             this.servicesConfig = servicesConfig;
             this.timeout = this.servicesConfig.ConfigServiceTimeout;
         }
@@ -70,12 +71,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
             SetServiceStatus("Blob", blobResult, result, errors);
 
             // Check access to Storage
-            if (this.servicesConfig.MessagesStorageType.ToString().Equals(
-            "CosmosDbSql", StringComparison.OrdinalIgnoreCase))
-            {
-                var storageResult = await this.asaStorage.PingAsync();
-                SetServiceStatus("Storage", storageResult, result, errors);
-            }
+            var alarmsCosmosDb = this.cosmosDbSql.Initialize(this.servicesConfig.AlarmsCosmosDbConfig);
+            var storageResult = await alarmsCosmosDb.PingAsync();
+            SetServiceStatus("Storage", storageResult, result, errors);
 
             // Check access to Event
             var eventHubResult = await this.PingEventHubAsync();

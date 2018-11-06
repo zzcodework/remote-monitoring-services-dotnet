@@ -16,7 +16,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter
 {
     public interface IStorageAdapterClient
     {
-        Task<Tuple<bool, string>> PingAsync();
         Task<ValueListApiModel> GetAllAsync(string collectionId);
         Task<ValueApiModel> GetAsync(string collectionId, string key);
         Task<ValueApiModel> CreateAsync(string collectionId, string value);
@@ -44,32 +43,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.StorageAdapter
             this.log = logger;
             this.serviceUri = config.StorageAdapterApiUrl;
             this.timeout = config.StorageAdapterApiTimeout;
-        }
-
-        public async Task<Tuple<bool, string>> PingAsync()
-        {
-            var isHealthy = false;
-            var message = "Storage adapter check failed";
-            try
-            {
-                var response = await this.httpClient.GetAsync(this.PrepareRequest($"status"));
-                if (!response.IsSuccessStatusCode)
-                {
-                    message = "Status code: " + response.StatusCode + "; Response: " + response.Content;
-                }
-                else
-                {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
-                    message = data["Message"].ToString();
-                    isHealthy = Convert.ToBoolean(data["IsHealthy"]);
-                }
-            }
-            catch (Exception e)
-            {
-                this.log.Error(message, () => new { e });
-            }
-
-            return new Tuple<bool, string>(isHealthy, message);
         }
 
         public async Task<ValueListApiModel> GetAllAsync(string collectionId)
