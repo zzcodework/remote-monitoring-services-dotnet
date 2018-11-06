@@ -51,14 +51,12 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
             List<string> errors
             )
         {
-            var statusResultServiceModel = new StatusResultServiceModel(serviceResult);
-
-            if (!serviceResult.IsHealthy)
+             (!serviceResult.IsHealthy)
             {
                 errors.Add(dependencyName + " check failed");
                 result.Status.IsHealthy = false;
             }
-            result.Dependencies.Add(dependencyName, statusResultServiceModel);
+            result.Dependencies.Add(dependencyName, serviceResult);
         }
     }
 }
