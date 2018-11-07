@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
@@ -41,7 +42,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             }
 
             var logicAppTestConnectionUri = this.config.ArmEndpointUrl +
-                                               $"subscriptions/{this.config.SubscriptionId}/" +
+                                               $"/subscriptions/{this.config.SubscriptionId}/" +
                                                $"resourceGroups/{this.config.ResourceGroup}/" +
                                                "providers/Microsoft.Web/connections/" +
                                                "office365-connector/extensions/proxy/testconnection?" +
@@ -50,6 +51,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             var request = await this.CreateRequest(logicAppTestConnectionUri);
 
             var response = await this.httpClient.GetAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new NotAuthorizedException("The application is not authorized and has not been " +
+                                                 "assigned owner permissions for the subscription. Go to the Azure portal and " +
+                                                 "assign the application as an owner in order to retrieve the token.");
+            }
 
             return response.IsSuccessStatusCode;
         }
