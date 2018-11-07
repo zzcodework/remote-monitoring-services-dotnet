@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
@@ -123,13 +124,13 @@ namespace Services.Test
 
             this.registryMock
                 .Setup(x => x.GetDeviceAsync(nonEdgeDevice))
-                .ReturnsAsync(DevicesTest.CreateTestDevice(false));
+                .ReturnsAsync(DevicesTest.CreateTestDevice("nonEdgeDevice", false));
             this.registryMock
                 .Setup(x => x.GetDeviceAsync(edgeDevice))
-                .ReturnsAsync(DevicesTest.CreateTestDevice(true));
+                .ReturnsAsync(DevicesTest.CreateTestDevice("edgeDevice", true));
             this.registryMock
                 .Setup(x => x.GetDeviceAsync(edgeDeviceFromTwin))
-                .ReturnsAsync(DevicesTest.CreateTestDevice(false));
+                .ReturnsAsync(DevicesTest.CreateTestDevice("edgeDeviceFromTwin", false));
 
             // Act
             var dvc1 = await this.devices.GetAsync(nonEdgeDevice);
@@ -143,6 +144,35 @@ namespace Services.Test
             // When using getDevices method which is deprecated it doesn't return IsEdgeDevice
             // capabilities properly so we support grabbing this from the device twin as well.
             Assert.True(dvc3.IsEdgeDevice, "Edge device from twin reporting not edge device");
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task TestConnectedEdgeDevice()
+        {
+            // Arrange
+            this.registryMock
+                .Setup(x => x.CreateQuery(It.Is<string>(s => s.Equals("SELECT * FROM devices"))))
+                .Returns(new ResultQuery(4));
+
+            // Set only 3 of the devices to be marked as connected
+            // The first two are non-edge devices so it shouldn't be listed
+            // as connected in the result
+            this.registryMock
+                .Setup(x => x.CreateQuery(It.Is<string>(s => s.Equals("SELECT * FROM devices.modules where connectionState = 'Connected'"))))
+                .Returns(new ResultQuery(3));
+
+            this.registryMock
+                .Setup(x => x.GetDevicesAsync(1000))
+                .Returns(Task.FromResult(this.CreateTestListOfDevices()));
+
+            // Act
+            var allDevices = await this.devices.GetListAsync("", "");
+
+            // Assert
+            Assert.Equal(4, allDevices.Items.Count);
+            Assert.False(allDevices.Items[0].Connected || allDevices.Items[1].Connected);
+            Assert.True(allDevices.Items[2].Connected);
+            Assert.False(allDevices.Items[3].Connected);
         }
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -190,9 +220,9 @@ namespace Services.Test
             return twin;
         }
 
-        private static Device CreateTestDevice(bool isEdgeDevice)
+        private static Device CreateTestDevice(string deviceId, bool isEdgeDevice)
         {
-            var dvc = new Device
+            var dvc = new Device(deviceId)
             {
                 Authentication = new AuthenticationMechanism
                 {
@@ -206,6 +236,21 @@ namespace Services.Test
                 Capabilities = isEdgeDevice ? new DeviceCapabilities() {IotEdge = true} : null
             };
             return dvc;
+        }
+
+        /// <summary>
+        /// Returns a set of 4 devices the first two being non-edge
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<Device> CreateTestListOfDevices()
+        {
+            return new List<Device>()
+            {
+                DevicesTest.CreateTestDevice("device0", false),
+                DevicesTest.CreateTestDevice("device1", false),
+                DevicesTest.CreateTestDevice("device2", true),
+                DevicesTest.CreateTestDevice("device3", true),
+            };
         }
     }
 }
