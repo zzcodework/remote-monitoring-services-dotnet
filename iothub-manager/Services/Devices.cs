@@ -35,7 +35,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private const int MAX_GET_LIST = 1000;
         private const string QUERY_PREFIX = "SELECT * FROM devices";
         private const string MODULE_QUERY_PREFIX = "SELECT * FROM devices.modules";
-        private string DEVICES_CONNECTED_QUERY = "connectionState = 'Connected'";
+        private const string DEVICES_CONNECTED_QUERY = "connectionState = 'Connected'";
 
         private RegistryManager registry;
         private string ioTHubHostName;
