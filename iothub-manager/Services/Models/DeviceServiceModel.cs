@@ -46,20 +46,27 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.Authentication = authentication;
         }
 
-        public DeviceServiceModel(Device azureDevice,
-                                  TwinServiceModel twin,
-                                  string ioTHubHostName,
-                                  bool isEdgeDevice) :
+        /// <summary>
+        /// Additional constructor which allows passing an additional isConnected field.
+        /// This allows providing a different method of checking whether a device is connected or
+        /// not for edge devices.
+        /// </summary>
+        /// <param name="azureDevice">Device from service</param>
+        /// <param name="azureTwin">Device's twin</param>
+        /// <param name="ioTHubHostName">IoT Hub name</param>
+        /// <param name="isConnected">If this is true OR azureDevice.ConnectionState is Connected
+        /// then the device is said to be connected.</param>
+        public DeviceServiceModel(Device azureDevice, Twin azureTwin, string ioTHubHostName, bool isConnected) :
             this(
                 etag: azureDevice.ETag,
                 id: azureDevice.Id,
                 c2DMessageCount: azureDevice.CloudToDeviceMessageCount,
                 lastActivity: azureDevice.LastActivityTime,
-                connected: azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected),
+                connected: isConnected || azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected),
                 enabled: azureDevice.Status.Equals(DeviceStatus.Enabled),
-                isEdgeDevice: isEdgeDevice,
+                isEdgeDevice: azureDevice.Capabilities?.IotEdge ?? azureTwin.Capabilities?.IotEdge ?? false,
                 lastStatusUpdated: azureDevice.StatusUpdatedTime,
-                twin: twin,
+                twin: new TwinServiceModel(azureTwin),
                 ioTHubHostName: ioTHubHostName,
                 authentication: new AuthenticationMechanismServiceModel(azureDevice.Authentication))
         {
@@ -68,9 +75,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public DeviceServiceModel(Device azureDevice, Twin azureTwin, string ioTHubHostName) :
             this(
                 azureDevice,
-                new TwinServiceModel(azureTwin),
+                azureTwin,
                 ioTHubHostName,
-                azureDevice.Capabilities?.IotEdge ?? azureTwin.Capabilities?.IotEdge ?? false)
+                azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected))
         {
         }
 
