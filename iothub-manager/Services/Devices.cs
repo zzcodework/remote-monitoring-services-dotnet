@@ -35,7 +35,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private const int MAX_GET_LIST = 1000;
         private const string QUERY_PREFIX = "SELECT * FROM devices";
         private const string MODULE_QUERY_PREFIX = "SELECT * FROM devices.modules";
-        private const string DEVICES_CONNECTED_QUERY = "connectionState = 'Connected'";
+        private string DEVICES_CONNECTED_QUERY = "connectionState = 'Connected'";
 
         private RegistryManager registry;
         private string ioTHubHostName;
@@ -314,7 +314,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         /// <returns>True if one of the modules for this device is connected.</returns>
         private async Task<bool> DoesDeviceHaveConnectedModules(string deviceId)
         {
-            var query = $"deviceId={deviceId} AND {DEVICES_CONNECTED_QUERY}";
+            var query = $"deviceId='{deviceId}' AND {DEVICES_CONNECTED_QUERY}";
             var edgeModules = await this.GetModuleTwinsByQueryAsync(query, "");
             return edgeModules.Items.Any();
         }

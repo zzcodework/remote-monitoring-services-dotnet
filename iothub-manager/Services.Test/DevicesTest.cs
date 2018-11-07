@@ -113,6 +113,10 @@ namespace Services.Test
             var edgeDeviceFromTwin = "edgeDeviceFromTwin";
 
             this.registryMock
+                .Setup(x => x.CreateQuery(It.IsAny<string>()))
+                .Returns(new ResultQuery(0));
+
+            this.registryMock
                 .Setup(x => x.GetTwinAsync(nonEdgeDevice))
                 .ReturnsAsync(DevicesTest.CreateTestTwin(0));
             this.registryMock

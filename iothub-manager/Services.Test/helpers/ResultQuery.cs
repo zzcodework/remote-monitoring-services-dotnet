@@ -14,6 +14,12 @@ namespace Services.Test.helpers
         private readonly List<Twin> results;
         private readonly List<string> deviceQueryResults;
 
+        /// <summary>
+        /// Constructs a test set of twin query results. numResults number of
+        /// devices are created with deviceIds starting from deviceId{startIndex}
+        /// </summary>
+        /// <param name="numResults">Number of results to create</param>
+        /// <param name="startIndex">Index used for creating deviceId i.e. deviceId{startIndex}</param>
         public ResultQuery(int numResults, int startIndex = 0)
         {
             this.results = new List<Twin>();
