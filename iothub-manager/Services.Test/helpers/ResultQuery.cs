@@ -19,12 +19,11 @@ namespace Services.Test.helpers
         /// devices are created with deviceIds starting from deviceId{startIndex}
         /// </summary>
         /// <param name="numResults">Number of results to create</param>
-        /// <param name="startIndex">Index used for creating deviceId i.e. deviceId{startIndex}</param>
-        public ResultQuery(int numResults, int startIndex = 0)
+        public ResultQuery(int numResults)
         {
             this.results = new List<Twin>();
             this.deviceQueryResults = new List<string>();
-            for (int i = startIndex; i < numResults + startIndex; i++)
+            for (int i = 0; i < numResults; i++)
             {
                 this.results.Add(ResultQuery.CreateTestTwin(i));
                 this.deviceQueryResults.Add("{" + $"'{DEVICE_ID_KEY}':'device{i}'" + "}");
