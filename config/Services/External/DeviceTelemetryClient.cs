@@ -18,17 +18,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
     public class DeviceTelemetryClient : IDeviceTelemetryClient
     {
         private readonly IHttpClientWrapper httpClient;
-        private readonly IHttpClient statusClient;
         private readonly string serviceUri;
 
         public DeviceTelemetryClient(
             IHttpClientWrapper httpClient,
-            IHttpClient statusClient,
             IServicesConfig config)
         {
             this.httpClient = httpClient;
             this.serviceUri = config.TelemetryApiUrl;
-            this.statusClient = statusClient;
         }
 
         public async Task UpdateRuleAsync(RuleApiModel rule, string etag)

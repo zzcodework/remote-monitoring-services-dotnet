@@ -23,18 +23,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         private readonly IHttpClient httpClient;
         private readonly ILogger log;
         private readonly string serviceUri;
-        private readonly IHttpClient statusClient;
 
         public UserManagementClient(
             IHttpClient httpClient,
             IServicesConfig config,
-            ILogger logger,
-            IHttpClient statusClient)
+            ILogger logger)
         {
             this.httpClient = httpClient;
             this.log = logger;
             this.serviceUri = config.UserManagementApiUrl;
-            this.statusClient = statusClient;
         }
 
         public async Task<IEnumerable<string>> GetAllowedActionsAsync(string userObjectId, IEnumerable<string> roles)

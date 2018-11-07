@@ -21,16 +21,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         private const int DEFAULT_SIMULATION_ID = 1;
         private readonly IHttpClientWrapper httpClient;
         private readonly string serviceUri;
-        private readonly IHttpClient statusClient;
 
         public DeviceSimulationClient(
             IHttpClientWrapper httpClient,
-            IHttpClient statusClient,
             IServicesConfig config)
         {
             this.httpClient = httpClient;
             this.serviceUri = config.DeviceSimulationApiUrl;
-            this.statusClient = statusClient;
         }
 
         public async Task<SimulationApiModel> GetDefaultSimulationAsync()
