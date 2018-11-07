@@ -21,8 +21,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             type = type.ToLower().Trim();
             config = config.ToLower().Trim();
             this.Items = models.Select( m =>  new PackageApiModel(m)).Where(
-                                            package => (package.Type.ToString().ToLower().Equals(type)
-                                                && package.Config.ToString().ToLower().Equals(config)));
+                                            package => (
+                                            package.Config != null
+                                            && package.Type.ToString().ToLower().Equals(type)
+                                            && package.Config.ToString().ToLower().Equals(config)));
 
         }
     }
