@@ -20,10 +20,6 @@ namespace Services.Test
         private const string MOCK_ARM_ENDPOINT_URL = @"https://management.azure.com";
         private const string MOCK_API_VERSION = @"2016-06-01";
 
-        private const string APP_PERMISSIONS_KEY = "ApplicationPermissions";
-        private const string CONTRIBUTOR_PERMISSIONS_KEY = "Contributor";
-        private const string OWNER_PERMISSIONS_KEY = "Owner";
-
         private readonly string logicAppTestConnectionUrl;
 
         private readonly Mock<IHttpClient> mockHttpClient;

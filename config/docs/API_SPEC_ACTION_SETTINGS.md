@@ -5,10 +5,11 @@ API Specification - Action Settings
 
 The list of configuration settings for all action types.
 
-The ApplicationPermissions attribute indicates whether or not the application has
-been given "Owner" permissions in order to make management API calls. If the application
-does not have "Owner" permissions, then users will need to check on resources manually from
-the Azure portal.
+The ApplicationPermissionsAssigned attribute indicates whether or not the application has
+been given "Contributor" permissions in order to make management API calls. If the application
+does not have "Contributor" permissions, then users will need to check on resources manually from
+the Azure portal. This can happen when the user deploying the application does not have "Owner"
+permissions in order to assign the application the necessry permissions.
 
 Request:
 ```
@@ -27,7 +28,7 @@ Content-Type: application/json
             "Type": "Email",
             "Settings": {
                 "IsEnabled": false,
-                "ApplicationPermissions" ["Owner" | "Contributor"]
+                "ApplicationPermissionsAssigned": false
                 "Office365ConnectorUrl": "https://portal.azure.com/#@{tenant}/resource/subscriptions/{subscription}/resourceGroups/{resource-group}/providers/Microsoft.Web/connections/office365-connector/edit"
             }
         }

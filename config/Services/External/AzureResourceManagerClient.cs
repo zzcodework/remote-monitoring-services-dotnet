@@ -55,8 +55,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             if (response.StatusCode == HttpStatusCode.Forbidden)
             {
                 throw new NotAuthorizedException("The application is not authorized and has not been " +
-                                                 "assigned owner permissions for the subscription. Go to the Azure portal and " +
-                                                 "assign the application as an owner in order to retrieve the token.");
+                                                 "assigned contributor permissions for the subscription. Go to the Azure portal and " +
+                                                 "assign the application as a contributor in order to retrieve the token.");
             }
 
             return response.IsSuccessStatusCode;
