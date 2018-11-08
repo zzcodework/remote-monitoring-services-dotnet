@@ -28,7 +28,7 @@ Content-Type: application/json
             "Type": "Email",
             "Settings": {
                 "IsEnabled": false,
-                "ApplicationPermissionsAssigned": false
+                "ApplicationPermissionsAssigned": false,
                 "Office365ConnectorUrl": "https://portal.azure.com/#@{tenant}/resource/subscriptions/{subscription}/resourceGroups/{resource-group}/providers/Microsoft.Web/connections/office365-connector/edit"
             }
         }
