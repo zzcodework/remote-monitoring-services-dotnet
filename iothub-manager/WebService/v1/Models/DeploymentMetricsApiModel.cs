@@ -7,7 +7,15 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 {
-    public class DeploymentMetricsApiModel
+    public interface IDeploymentMetricsApiModel
+    {
+        [JsonProperty(PropertyName = "AppliedCount")]
+        long AppliedCount { get; set; }
+
+        [JsonProperty(PropertyName = "TargetedCount")]
+        long TargetedCount { get; set; }
+    }
+    public class EdgeDeploymentMetricsApiModel : IDeploymentMetricsApiModel
     {
         private const string APPLIED_METRICS_KEY = "appliedCount";
         private const string TARGETED_METRICS_KEY = "targetedCount";
@@ -16,7 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         [JsonProperty(PropertyName = "AppliedCount")]
         public long AppliedCount { get; set; }
-        
+
         [JsonProperty(PropertyName = "FailedCount")]
         public long FailedCount { get; set; }
 
@@ -29,11 +37,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "DeviceStatuses")]
         public IDictionary<string, DeploymentStatus> DeviceStatuses { get; set; }
 
-        public DeploymentMetricsApiModel()
+        public EdgeDeploymentMetricsApiModel()
         {
         }
 
-        public DeploymentMetricsApiModel(DeploymentMetrics metricsServiceModel)
+        public EdgeDeploymentMetricsApiModel(DeploymentMetrics metricsServiceModel, DeploymentType type)
         {
             if (metricsServiceModel == null) return;
 
@@ -43,5 +51,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.SucceededCount = metrics.TryGetValue(SUCCESSFUL_METRICS_KEY, out value) ? value : 0;
             this.FailedCount = metrics.TryGetValue(FAILED_METRICS_KEY, out value) ? value : 0;
         }
+    }
+    public class ADMDeploymentMetricsApiModel : IDeploymentMetricsApiModel
+    {
     }
 }

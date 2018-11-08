@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Azure.Devices;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
@@ -56,7 +59,15 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             }
 
             this.Priority = config.Priority;
-            this.Type = DeploymentType.EdgeManifest;
+
+            if (config?.Content?.ModulesContent?.Count > 0)
+            {
+                this.Type = DeploymentType.EdgeManifest;
+            }
+            else
+            {
+                this.Type = DeploymentType.DeviceConfiguration;
+            }
 
             this.DeploymentMetrics = new DeploymentMetrics(config.SystemMetrics, config.Metrics);
         }
@@ -71,6 +82,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
     }
 
     public enum DeploymentType {
-        EdgeManifest
+        EdgeManifest,
+        DeviceConfiguration
     }
 }

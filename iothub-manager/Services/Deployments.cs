@@ -225,6 +225,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             edgeConfiguration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);
             edgeConfiguration.Labels.Add(RM_CREATED_LABEL, bool.TrueString);
 
+            var systemMetrics = packageEdgeConfiguration.SystemMetrics.Queries;
+            if (systemMetrics != null)
+            {
+                packageEdgeConfiguration.SystemMetrics.Queries = systemMetrics;
+            }
+
+            var customMetrics = packageEdgeConfiguration.Metrics.Queries;
+            if (customMetrics != null)
+            {
+                packageEdgeConfiguration.Metrics.Queries = customMetrics;
+            }
+
             // Add optional labels
             if (model.DeviceGroupName != null)
             {
