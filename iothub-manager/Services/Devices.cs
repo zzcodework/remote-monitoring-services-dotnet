@@ -65,7 +65,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         // Ping the registry to see if the connection is healthy
         public async Task<StatusResultServiceModel> PingRegistryAsync()
         {
-            var result = new StatusResultServiceModel(false, "IotHub check failed.");
+            var result = new StatusResultServiceModel(false, "");
             try
             {
                 await this.registry.GetDeviceAsync("healthcheck");
