@@ -4,7 +4,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage

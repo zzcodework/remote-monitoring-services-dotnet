@@ -21,7 +21,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
             this.config = config;
         }
 
-        // TODO: reduce method complexity, refactor out some logic
         [HttpGet]
         public async Task<StatusApiModel> GetAsync()
         {

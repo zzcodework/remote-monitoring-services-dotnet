@@ -35,8 +35,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             IStorageClient storageClient,
             ITimeSeriesClient timeSeriesClient,
             IHttpClient httpClient,
-            IServicesConfig servicesConfig
-            )
+            IServicesConfig servicesConfig)
         {
             this.log = logger;
             this.storageClient = storageClient;
@@ -124,8 +123,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             string dependencyName,
             StatusResultServiceModel serviceResult,
             StatusServiceModel result,
-            List<string> errors
-            )
+            List<string> errors)
         {
             if (!serviceResult.IsHealthy)
             {

@@ -86,6 +86,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             {
                 this.ParseConnectionString(out var uri, out var authKey);
                 await this.cosmosSqlWrapper.IfDatabaseExistsAsync(uri, authKey, this.database);
+                result.IsHealthy = true;
+                result.Message = "Alive and well!";
             }
             catch (Exception e)
             {

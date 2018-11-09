@@ -24,8 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         public StatusService(
             ILogger logger,
             IHttpClient httpClient,
-            IServicesConfig servicesConfig
-            )
+            IServicesConfig servicesConfig)
         {
             this.log = logger;
             this.httpClient = httpClient;
@@ -92,8 +91,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             string dependencyName,
             StatusResultServiceModel serviceResult,
             StatusServiceModel result,
-            List<string> errors
-            )
+            List<string> errors)
         {
             if (!serviceResult.IsHealthy)
             {

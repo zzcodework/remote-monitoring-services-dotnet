@@ -75,7 +75,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             try
             {
                 await this.InitializeBlobStorage();
-                var response = await cloudBlobContainer.ExistsAsync();
+                var response = await this.cloudBlobContainer.ExistsAsync();
                 if (response)
                 {
                     result.Message = "Alive and well!";
