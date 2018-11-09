@@ -2,6 +2,7 @@
 
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
@@ -18,17 +19,18 @@ namespace Services.Test
         private const string MOCK_RESOURCE_GROUP = @"example-name";
         private const string MOCK_ARM_ENDPOINT_URL = @"https://management.azure.com";
         private const string MOCK_API_VERSION = @"2016-06-01";
+
         private readonly string logicAppTestConnectionUrl;
 
         private readonly Mock<IHttpClient> mockHttpClient;
-        private readonly Mock<IUserManagementClient> mockUserManagementClinet;
+        private readonly Mock<IUserManagementClient> mockUserManagementClient;
 
         private readonly AzureResourceManagerClient client;
 
         public AzureResourceManagerClientTest()
         {
             this.mockHttpClient = new Mock<IHttpClient>();
-            this.mockUserManagementClinet = new Mock<IUserManagementClient>();
+            this.mockUserManagementClient = new Mock<IUserManagementClient>();
             this.client = new AzureResourceManagerClient(
                 this.mockHttpClient.Object,
                 new ServicesConfig
@@ -38,10 +40,10 @@ namespace Services.Test
                     ArmEndpointUrl = MOCK_ARM_ENDPOINT_URL,
                     ManagementApiVersion = MOCK_API_VERSION
                 },
-                this.mockUserManagementClinet.Object);
+                this.mockUserManagementClient.Object);
 
             this.logicAppTestConnectionUrl = $"{MOCK_ARM_ENDPOINT_URL}" +
-                                        $"subscriptions/{MOCK_SUBSCRIPTION_ID}/" +
+                                        $"/subscriptions/{MOCK_SUBSCRIPTION_ID}/" +
                                         $"resourceGroups/{MOCK_RESOURCE_GROUP}/" +
                                         "providers/Microsoft.Web/connections/" +
                                         "office365-connector/extensions/proxy/testconnection?" +
@@ -98,6 +100,18 @@ namespace Services.Test
                     this.logicAppTestConnectionUrl))), Times.Once);
 
             Assert.False(result);
+        }
+
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task GetOffice365IsEnabled_ThrowsIfNotAuthorizd()
+        {
+            // Arrange
+            this.mockUserManagementClient
+                .Setup(x => x.GetTokenAsync())
+                .ThrowsAsync(new NotAuthorizedException());
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NotAuthorizedException>(async () => await this.client.IsOffice365EnabledAsync());
         }
     }
 }
