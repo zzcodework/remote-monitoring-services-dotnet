@@ -39,7 +39,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         {
             var result = new StatusServiceModel(true, "Alive and well!");
             var errors = new List<string>();
-            var explorerUrl = string.Empty;
 
             string storageAdapterName = "StorageAdapter";
             string authName = "Auth";
