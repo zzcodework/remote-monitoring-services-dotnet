@@ -76,7 +76,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.Name = serviceModel.Name;
             this.Priority = serviceModel.Priority;
             this.Type = serviceModel.Type;
-            this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
+            this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics);
             {
                 DeviceStatuses = deviceStatuses
             };
