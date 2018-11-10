@@ -193,7 +193,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             if (!isValidPackage)
             {
                 throw new InvalidInputException($"Package provided is not a valid deployment manifest " +
-                    $"for type {package.Type} and config type {package.Config}");
+                    $"for type {package.Type} and config type {package.ConfigType}");
             }
 
             try
@@ -213,12 +213,18 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                                                     });
 
             var response = await this.client.CreateAsync(PACKAGES_COLLECTION_ID, value);
+
+            if (!Enum.TryParse(package.ConfigType, true, out ConfigType uploadedConfigType))
+            {
+                await this.UpdateConfigurationsAsync(package.ConfigType);
+            }
+
             return this.CreatePackageServiceModel(response);
         }
 
         private Boolean ValidatePackage(Package package)
         {
-            IPackageValidator validator = PackageValidatorFactory.GetValidator(package.Type, package.Config);
+            IPackageValidator validator = PackageValidatorFactory.GetValidator(package.Type, package.ConfigType);
             if (validator == null)
             {
                 return true;//Bypass validation for custom config type

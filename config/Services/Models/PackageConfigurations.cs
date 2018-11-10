@@ -23,7 +23,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 
         internal void add(string customConfig)
         {
-            customConfig = ConfigType.Custom.ToString() + " - " + customConfig;
             customConfigTypes.Add(customConfig.Trim());
         }
 

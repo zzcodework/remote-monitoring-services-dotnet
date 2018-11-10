@@ -19,12 +19,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonConverter(typeof(StringEnumConverter))]
         public PackageType Type { get; set; }
 
-        private ConfigType config { get; set; }
-
-        private string customConfig { get; set; }
-
-        [JsonProperty("Config")]
-        public string Config { get; set; }
+        [JsonProperty("ConfigType")]
+        public string ConfigType { get; set; }
 
         [JsonProperty(PropertyName = "DateCreated")]
         public string DateCreated { get; set; }
@@ -39,18 +35,19 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             this.Type = model.Type;
             this.DateCreated = model.DateCreated;
             this.Content = model.Content;
-            this.Config = model.Config;
+            this.ConfigType = model.ConfigType;
         }
 
-        public PackageApiModel(string Content,
+        public PackageApiModel(
+                string Content,
                 string Name,
                 PackageType Type,
-                string Config)
+                string ConfigType)
         {
             this.Content = Content;
             this.Name = Name;
             this.Type = Type;
-            this.Config = Config;
+            this.ConfigType = ConfigType;
         }
 
         public Package ToServiceModel()
@@ -60,7 +57,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
                 Content = this.Content,
                 Name = this.Name,
                 Type = this.Type,
-                Config = this.Config
+                ConfigType = this.ConfigType
             };
         }
     }

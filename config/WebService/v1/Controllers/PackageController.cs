@@ -55,16 +55,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 
         [HttpPost]
         [Authorize("CreatePackages")]
-        public async Task<PackageApiModel> PostAsync(string type, string config, IFormFile package, string customConfig=null)
+        public async Task<PackageApiModel> PostAsync(string type, string configType, IFormFile package)
         {
             if (string.IsNullOrEmpty(type))
             {
                 throw new InvalidInputException("Package type must be provided");
             }
 
-            if (string.IsNullOrEmpty(config))
+            if (string.IsNullOrEmpty(configType))
             {
-                config = null;
+                throw new InvalidInputException("Package type must be provided");
             }
 
             bool isValidPackageType = Enum.TryParse(type, true, out PackageType uploadedPackageType);
@@ -73,20 +73,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 throw new InvalidInputException($"Provided package type {type} is not valid.");
             }
 
-            bool isValidConfigType = Enum.TryParse(config, true, out ConfigType uploadedConfigType);
+            bool isValidConfigType = Enum.TryParse(configType, true, out ConfigType uploadedConfigType);
             if (!isValidConfigType)
             {
-                throw new InvalidInputException($"Provided config type {type} is not valid.");
+                //TODO log as custom config type
             }
 
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))
             {
                 throw new InvalidInputException("Package uploaded is missing or invalid.");
-            }
-
-            if (config.Equals(ConfigType.Custom.ToString()))
-            {
-                config = appendCustomConfig(config, customConfig);
             }
 
             string packageContent;
@@ -99,11 +94,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 packageContent,
                 package.FileName,
                 uploadedPackageType, 
-                config);
+                configType);
 
-            if (uploadedConfigType.Equals(ConfigType.Custom))
+            if (!isValidConfigType)
             {
-                await this.storage.UpdateConfigurationsAsync(customConfig);
+                //await this.storage.UpdateConfigurationsAsync(configType);
             }
 
             return new PackageApiModel(await this.storage.AddPackageAsync(packageToAdd.ToServiceModel()));

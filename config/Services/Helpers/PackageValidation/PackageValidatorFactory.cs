@@ -7,6 +7,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
 {
     public static class PackageValidatorFactory 
     {
+        //TODO:Return double checked singleton objects
         public static IPackageValidator GetValidator(PackageType packageType, string configType)
         {
             if (packageType.Equals(PackageType.EdgeManifest))

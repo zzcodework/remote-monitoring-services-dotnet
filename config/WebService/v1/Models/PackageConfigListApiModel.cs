@@ -17,10 +17,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
             foreach (ConfigType type in Enum.GetValues(typeof(ConfigType)))
             {
-                if (!(type.Equals(ConfigType.Custom)))
-                {
-                    customConfigs.Insert(0,type.ToString());
-                }
+                customConfigs.Insert(0,type.ToString());
+              
             }
 
             this.packageConfigurations = customConfigs.ToArray<String>();
