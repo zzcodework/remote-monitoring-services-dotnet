@@ -67,20 +67,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             };
         }
 
-        public DeploymentApiModel(DeploymentServiceModel serviceModel,
-                                  IDictionary<string, DeploymentStatus> deviceStatuses)
-        {
-            this.CreatedDateTimeUtc = serviceModel.CreatedDateTimeUtc;
-            this.DeploymentId = serviceModel.Id;
-            this.DeviceGroupId = serviceModel.DeviceGroupId;
-            this.Name = serviceModel.Name;
-            this.Priority = serviceModel.Priority;
-            this.Type = serviceModel.Type;
-            this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics);
-            {
-                DeviceStatuses = deviceStatuses
-            };
-        }
 
         public DeploymentServiceModel ToServiceModel()
         {

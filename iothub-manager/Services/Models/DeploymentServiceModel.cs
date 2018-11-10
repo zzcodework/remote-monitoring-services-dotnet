@@ -32,49 +32,49 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         {
         }
 
-        public DeploymentServiceModel(Configuration config)
+        public DeploymentServiceModel(Configuration deployment)
         {
-            if (string.IsNullOrEmpty(config.Id))
+            if (string.IsNullOrEmpty(deployment.Id))
             {
-                throw new ArgumentException($"Invalid deploymentId provided {config.Id}");
+                throw new ArgumentException($"Invalid deploymentId provided {deployment.Id}");
             }
 
-            this.VerifyConfigurationLabel(config, DEPLOYMENT_NAME_LABEL);
-            this.VerifyConfigurationLabel(config, DEPLOYMENT_GROUP_ID_LABEL);
-            this.VerifyConfigurationLabel(config, RM_CREATED_LABEL);
+            this.VerifyConfigurationLabel(deployment, DEPLOYMENT_NAME_LABEL);
+            this.VerifyConfigurationLabel(deployment, DEPLOYMENT_GROUP_ID_LABEL);
+            this.VerifyConfigurationLabel(deployment, RM_CREATED_LABEL);
 
-            this.Id = config.Id;
-            this.Name = config.Labels[DEPLOYMENT_NAME_LABEL];
-            this.CreatedDateTimeUtc = config.CreatedTimeUtc;
-            this.DeviceGroupId = config.Labels[DEPLOYMENT_GROUP_ID_LABEL];
+            this.Id = deployment.Id;
+            this.Name = deployment.Labels[DEPLOYMENT_NAME_LABEL];
+            this.CreatedDateTimeUtc = deployment.CreatedTimeUtc;
+            this.DeviceGroupId = deployment.Labels[DEPLOYMENT_GROUP_ID_LABEL];
 
-            if (config.Labels.ContainsKey(DEPLOYMENT_GROUP_NAME_LABEL))
+            if (deployment.Labels.ContainsKey(DEPLOYMENT_GROUP_NAME_LABEL))
             {
-                this.DeviceGroupName = config.Labels[DEPLOYMENT_GROUP_NAME_LABEL];
+                this.DeviceGroupName = deployment.Labels[DEPLOYMENT_GROUP_NAME_LABEL];
             }
 
-            if (config.Labels.ContainsKey(DEPLOYMENT_PACKAGE_NAME_LABEL))
+            if (deployment.Labels.ContainsKey(DEPLOYMENT_PACKAGE_NAME_LABEL))
             {
-                this.PackageName = config.Labels[DEPLOYMENT_PACKAGE_NAME_LABEL];
+                this.PackageName = deployment.Labels[DEPLOYMENT_PACKAGE_NAME_LABEL];
             }
 
-            this.Priority = config.Priority;
+            this.Priority = deployment.Priority;
 
-            if (config?.Content?.ModulesContent?.Count > 0)
+            if (deployment.Labels.Values.Contains(DeploymentType.EdgeManifest.ToString()))
             {
                 this.Type = DeploymentType.EdgeManifest;
             }
-            else
+            else if (deployment.Labels.Values.Contains(DeploymentType.DeviceConfiguration.ToString()))
             {
                 this.Type = DeploymentType.DeviceConfiguration;
             }
 
-            this.DeploymentMetrics = new DeploymentMetrics(config.SystemMetrics, config.Metrics);
+            this.DeploymentMetrics = new DeploymentMetrics(deployment.SystemMetrics, deployment.Metrics);
         }
 
-        private void VerifyConfigurationLabel(Configuration config, string labelName)
+        private void VerifyConfigurationLabel(Configuration deployment, string labelName)
         {
-            if (!config.Labels.ContainsKey(labelName))
+            if (!deployment.Labels.ContainsKey(labelName))
             {
                 throw new ArgumentException($"Configuration is missing necessary label {labelName}");
             }

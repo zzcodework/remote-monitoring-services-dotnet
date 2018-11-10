@@ -11,8 +11,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
     {
         private const string APPLIED_METRICS_KEY = "appliedCount";
         private const string TARGETED_METRICS_KEY = "targetedCount";
-        private const string SUCCESSFUL_METRICS_KEY = "reportedSuccessfulCount";
-        private const string FAILED_METRICS_KEY = "reportedFailedCount";
+        //private const string SUCCESSFUL_METRICS_KEY = "reportedSuccessfulCount";
+        //private const string FAILED_METRICS_KEY = "reportedFailedCount";
 
         [JsonProperty(PropertyName = "TargetedCount")]
         public long TargetedCount { get; set; }
@@ -33,6 +33,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public DeploymentMetricsApiModel(DeploymentMetrics metricsServiceModel)
         {
             if (metricsServiceModel == null) return;
+
+            if (this.CustomMetrics == null)
+            {
+                this.CustomMetrics = new Dictionary<string, long>() { };
+            }
 
             var metrics = metricsServiceModel.Metrics;
             this.AppliedCount = metrics.TryGetValue(APPLIED_METRICS_KEY, out var value) ? value : 0;
