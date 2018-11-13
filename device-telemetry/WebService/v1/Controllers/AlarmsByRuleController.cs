@@ -34,6 +34,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<AlarmByRuleListApiModel> GetAsync(
             [FromQuery] string from,
             [FromQuery] string to,
@@ -52,6 +53,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpPost]
+        [Authorize("ReadAll")]
         public async Task<AlarmByRuleListApiModel> PostAsync([FromBody] QueryApiModel body)
         {
             string[] deviceIds = body.Devices == null
@@ -68,6 +70,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize("ReadAll")]
         public AlarmListByRuleApiModel Get(
             [FromRoute] string id,
             [FromQuery] string from,
@@ -87,6 +90,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpPost("{id}")]
+        [Authorize("ReadAll")]
         public AlarmListByRuleApiModel Post(
             [FromRoute] string id,
             [FromBody] QueryApiModel body)
