@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 {
-    public static class ConfigurtionsHelper
+    public static class ConfigurationsHelper
     {
         private const string DEVICE_GROUP_ID_PARAM = "deviceGroupId";
         private const string DEVICE_GROUP_QUERY_PARAM = "deviceGroupQuery";
@@ -45,13 +45,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
             configuration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);
             configuration.Labels.Add(RM_CREATED_LABEL, bool.TrueString);
 
-            var systemMetrics = packageConfiguration.SystemMetrics.Queries;
+            var systemMetrics = packageConfiguration.SystemMetrics?.Queries;
             if (systemMetrics != null)
             {
                 //configuration.SystemMetrics.Queries = systemMetrics;
             }
 
-            var customMetrics = packageConfiguration.Metrics.Queries;
+            var customMetrics = packageConfiguration.Metrics?.Queries;
             if (customMetrics != null)
             {
                 configuration.Metrics.Queries = customMetrics;

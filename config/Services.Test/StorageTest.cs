@@ -24,7 +24,7 @@ namespace Services.Test
         private readonly Storage storage;
         private readonly Random rand;
         private const string PACKAGES_COLLECTION_ID = "packages";
-        private const string TEST_PACKAGE_JSON =
+        private const string EDGE_PACKAGE_JSON =
                 @"{
                     ""id"": ""tempid"",
                     ""schemaVersion"": ""1.0"",
@@ -87,6 +87,47 @@ namespace Services.Test
                         ""queries"": {}
                     }
                  }";
+
+        private const string ADM_PACKAGE_JSON =
+                @"{
+                    ""id"": ""9a9690df-f037-4c3a-8fc0-8eaba687609d"",
+                    ""schemaVersion"": ""1.0"",
+                    ""labels"": {
+                        ""Type"": ""DeviceConfiguration"",
+                        ""Name"": ""Deployment-12"",
+                        ""DeviceGroupId"": ""MxChip"",
+                        ""RMDeployment"": ""True""
+                    },
+                    ""content"": {
+                        ""deviceContent"": {
+                            ""properties.desired.firmware"": {
+                                ""fwVersion"": ""1.0.1"",
+                                ""fwPackageURI"": ""https://cs4c496459d5c79x44d1x97a.blob.core.windows.net/firmware/FirmwareOTA.ino.bin"",
+                                ""fwPackageCheckValue"": ""45cd"",
+                                ""fwSize"": 568648
+                            }
+                        }
+                    },
+                    ""targetCondition"": ""Tags.isVan1='Y'"",
+                    ""createdTimeUtc"": ""2018-11-10T23:50:30.938Z"",
+                    ""lastUpdatedTimeUtc"": ""2018-11-10T23:50:30.938Z"",
+                    ""priority"": 20,
+                    ""systemMetrics"": {
+                        ""results"": {
+                            ""targetedCount"": 2,
+                            ""appliedCount"": 2
+                        },
+                        ""queries"": {
+                            ""Targeted"": ""select deviceId from devices where Tags.isVan1='Y'"",
+                            ""Applied"": ""select deviceId from devices where configurations.[[9a9690df-f037-4c3a-8fc0-8eaba687609d]].status = 'Applied'""
+                        }
+                    },
+                    ""metrics"": {
+                        ""results"": {},
+                        ""queries"": {}
+                    },
+                    ""etag"": ""MQ==""
+                    }";
 
         public StorageTest()
         {
@@ -665,7 +706,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task AddPackageTest()
+        public async Task AddEdgePackageTest()
         {
             // Arrange
             const string collectionId = "packages";
@@ -675,7 +716,8 @@ namespace Services.Test
                 Id = string.Empty,
                 Name = key,
                 Type = PackageType.EdgeManifest,
-                Content = TEST_PACKAGE_JSON
+                ConfigType = string.Empty,
+                Content = EDGE_PACKAGE_JSON
             };
             var value = JsonConvert.SerializeObject(pkg);
 
@@ -697,6 +739,120 @@ namespace Services.Test
             Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
         }
+
+        [Fact]
+        public async Task AddADMPackageTest()
+        {
+            // Arrange
+            const string collectionId = "packages";
+            const string key = "package name";
+            var pkg = new Package
+            {
+                Id = string.Empty,
+                Name = key,
+                Type = PackageType.DeviceConfiguration,
+                Content = ADM_PACKAGE_JSON,
+                ConfigType = ConfigType.FirmwareUpdateMxChip.ToString()
+            };
+            var value = JsonConvert.SerializeObject(pkg);
+
+            this.mockClient
+                .Setup(x => x.CreateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => this.IsMatchingPackage(i, value))))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+
+            // Act
+            var result = await this.storage.AddPackageAsync(pkg);
+
+            // Assert
+            Assert.Equal(pkg.Name, result.Name);
+            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.Content, result.Content);
+            Assert.Equal(pkg.ConfigType, result.ConfigType);
+        }
+
+        [Fact]
+        public async Task AddADMCustomPackageTest()
+        {
+            // Arrange
+            const string collectionId = "packages";
+            const string key = "package name";
+            const string customConfig = "Custom-config";
+
+            var pkg = new Package
+            {
+                Id = string.Empty,
+                Name = key,
+                Type = PackageType.DeviceConfiguration,
+                Content = ADM_PACKAGE_JSON,
+                ConfigType = "Custom-config"
+            };
+            var value = JsonConvert.SerializeObject(pkg);
+
+            this.mockClient
+                .Setup(x => x.CreateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => this.IsMatchingPackage(i, value))))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+            const string configKey = "configurations";
+
+            this.mockClient
+                .Setup(x => x.UpdateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => i == configKey),
+                       It.Is<string>(i => i == customConfig),
+                       It.Is<string>(i => i == "*")))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+
+            this.mockClient
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(i => i == collectionId),
+                    It.Is<string>(i => i == configKey)))
+                .ThrowsAsync(new ResourceNotFoundException());
+
+            // Act
+            var result = await this.storage.AddPackageAsync(pkg);
+
+            // Assert
+            Assert.Equal(pkg.Name, result.Name);
+            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.Content, result.Content);
+            Assert.Equal(pkg.ConfigType, result.ConfigType);
+        }
+
+        [Fact]
+        public async Task ListConfigurationsTest()
+        {
+            const string collectionId = "packages";
+            const string configKey = "configurations";
+
+            // Arrange
+            this.mockClient
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(i => i == collectionId),
+                    It.Is<string>(i => i == configKey)))
+                .ThrowsAsync(new ResourceNotFoundException());
+
+            // Act
+            var result = await this.storage.GetAllConfigurationsAsync();
+
+            // Assert
+            Assert.Empty(result.configurations);
+        }
+
 
         [Fact]
         public async Task InvalidPackageThrowsTest()

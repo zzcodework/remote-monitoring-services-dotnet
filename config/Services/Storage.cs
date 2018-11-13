@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidation;
@@ -47,7 +48,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal const string USER_COLLECTION_ID = "user-settings";
         internal const string DEVICE_GROUP_COLLECTION_ID = "devicegroups";
         internal const string PACKAGES_COLLECTION_ID = "packages";
-        internal const string PACKAGES_CONFIGURATIONS_KEY = "configurations";
+        internal const string PACKAGES_CONFIGURATION_TYPE_KEY = "configurations";
         private const string AZURE_MAPS_KEY = "AzureMapsKey";
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
@@ -214,7 +215,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
             var response = await this.client.CreateAsync(PACKAGES_COLLECTION_ID, value);
 
-            if (!Enum.TryParse(package.ConfigType, true, out ConfigType uploadedConfigType))
+            if (!Enum.TryParse(package.ConfigType, true, out ConfigType uploadedConfigType)
+                && package.Type.Equals(PackageType.DeviceConfiguration))
             {
                 await this.UpdateConfigurationsAsync(package.ConfigType);
             }
@@ -247,15 +249,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             try
             {
-                var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY);
+                var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATION_TYPE_KEY);
                 return JsonConvert.DeserializeObject<PackageConfigurations>(response.Data);
             }
-            catch (Exception)
+            catch (ResourceNotFoundException)
             {
-                //TODO: Logging
+                return new PackageConfigurations(); //Return empty Package Configurations 
             }
-            return new PackageConfigurations(); //Return empty response 
-            
         }
 
         public async Task UpdateConfigurationsAsync(string customConfigType)
@@ -263,16 +263,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             PackageConfigurations list;
             try
             {
-                var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY);
+                var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATION_TYPE_KEY);
                 list = JsonConvert.DeserializeObject<PackageConfigurations>(response.Data);
             }
-            catch (Exception) 
+            catch (ResourceNotFoundException) 
             {
                 //TODO: logging
                 list = new PackageConfigurations();
             }
             list.add(customConfigType);
-            await this.client.UpdateAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATIONS_KEY, JsonConvert.SerializeObject(list), "*");
+            await this.client.UpdateAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATION_TYPE_KEY, JsonConvert.SerializeObject(list), "*");
         }
 
         private DeviceGroup CreateGroupServiceModel(ValueApiModel input)

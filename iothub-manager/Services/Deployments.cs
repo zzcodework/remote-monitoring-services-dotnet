@@ -124,11 +124,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                     "The priority provided should be 0 or greater");
             }
 
-            var edgeConfiguration = ConfigurtionsHelper.ToHubConfiguration(model);
+            var configuration = ConfigurationsHelper.ToHubConfiguration(model);
             
             // TODO: Add specific exception handling when exception types are exposed
             // https://github.com/Azure/azure-iot-sdk-csharp/issues/649
-            return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(edgeConfiguration));
+            return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(configuration));
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                                                         created externally and therefore not supported");
             }
 
-            includeDeviceStatus = includeDeviceStatus && ConfigurtionsHelper.IsEdgeDeployment(deployment);
+            includeDeviceStatus = includeDeviceStatus && ConfigurationsHelper.IsEdgeDeployment(deployment);
 
             return new DeploymentServiceModel(deployment)
             {

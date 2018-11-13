@@ -62,9 +62,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 throw new InvalidInputException("Package type must be provided");
             }
 
-            if (string.IsNullOrEmpty(configType))
+            if (configType == null)
             {
-                throw new InvalidInputException("Package type must be provided");
+                throw new InvalidInputException("Package config type must be provided");
             }
 
             bool isValidPackageType = Enum.TryParse(type, true, out PackageType uploadedPackageType);
@@ -74,9 +74,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             }
 
             bool isValidConfigType = Enum.TryParse(configType, true, out ConfigType uploadedConfigType);
-            if (!isValidConfigType)
+            if (!isValidConfigType && type.Equals(PackageType.DeviceConfiguration))
             {
-                //TODO log as custom config type
+                //TODO Log that user has selected a Custom config Type rather than pre-defined type. 
             }
 
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))
@@ -95,11 +95,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 package.FileName,
                 uploadedPackageType, 
                 configType);
-
-            if (!isValidConfigType)
-            {
-                //await this.storage.UpdateConfigurationsAsync(configType);
-            }
 
             return new PackageApiModel(await this.storage.AddPackageAsync(packageToAdd.ToServiceModel()));
         }

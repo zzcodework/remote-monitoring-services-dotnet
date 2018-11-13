@@ -11,6 +11,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\DeviceStatusHelper\" />
+    <Folder Include="Models\DeviceStatusHelper\" />
   </ItemGroup>
 </Project>

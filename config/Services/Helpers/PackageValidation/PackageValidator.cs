@@ -9,13 +9,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
 {
     public interface IPackageValidator
     {
-        JObject GetPackageContent(string package);
+        JObject ParsePackageContent(string package);
         Boolean Validate();
     }
 
     public abstract class PackageValidator : IPackageValidator
     {
-        JObject IPackageValidator.GetPackageContent(string package) {
+        JObject IPackageValidator.ParsePackageContent(string package)
+        {
             try
             {
                 return JObject.Parse(package);

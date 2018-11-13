@@ -12,6 +12,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers;
 using Moq;
 using WebService.Test.helpers;
 using Xunit;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 
 namespace WebService.Test.Controllers
 {
@@ -54,7 +55,7 @@ namespace WebService.Test.Controllers
             try
             {
                 // Act
-                var package = await this.controller.PostAsync(type, null, file);
+                var package = await this.controller.PostAsync(type, string.Empty, file);
 
                 // Assert
                 Assert.False(expectException);
@@ -85,6 +86,7 @@ namespace WebService.Test.Controllers
                     Name = name,
                     Content = content,
                     Type = type,
+                    ConfigType = string.Empty,
                     DateCreated = dateCreated
                 });
 
@@ -109,6 +111,7 @@ namespace WebService.Test.Controllers
             const string id = "packageId";
             const string name = "packageName";
             const PackageType type = PackageType.EdgeManifest;
+            string config = string.Empty;
             const string content = "{}";
             string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
 
@@ -118,7 +121,8 @@ namespace WebService.Test.Controllers
                                          Id = id + i,
                                          Name = name + i,
                                          Content = content + i,
-                                         Type = type + i,
+                                         Type = type,
+                                         ConfigType = config + i,
                                          DateCreated = dateCreated
                                      }).ToList();
 
@@ -143,6 +147,70 @@ namespace WebService.Test.Controllers
                 Assert.Equal(dateCreated, pkg.DateCreated);
             }
         }
+
+        [Fact]
+        public async Task GetPackagesTest()
+        {
+            // Arrange
+            const string id = "packageId";
+            const string name = "packageName";
+            const PackageType type = PackageType.DeviceConfiguration;
+            const string content = "{}";
+            string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
+
+            int[] idx = new int[] { 0, 1, 2 };
+            var packages = idx.Select(i => new Package()
+            {
+                Id = id + i,
+                Name = name + i,
+                Content = content + i,
+                Type = type + i,
+                ConfigType = (i == 0) ? ConfigType.FirmwareUpdateMxChip.ToString() : i.ToString(),
+                DateCreated = dateCreated
+            }).ToList();
+
+            this.mockStorage
+                .Setup(x => x.GetPackagesAsync())
+                .ReturnsAsync(packages);
+
+            // Act
+            var resultPackages = await this.controller.GetAllAsync(
+                                                    PackageType.DeviceConfiguration.ToString(),
+                                                    ConfigType.FirmwareUpdateMxChip.ToString());
+
+            // Assert
+            this.mockStorage
+                .Verify(x => x.GetPackagesAsync(), Times.Once);
+
+            Assert.Single(resultPackages.Items);
+
+            var pkg = resultPackages.Items.ElementAt(0);
+            Assert.Equal(id + 0, pkg.Id);
+            Assert.Equal(name + 0, pkg.Name);
+            Assert.Equal(type, pkg.Type);
+            Assert.Equal(ConfigType.FirmwareUpdateMxChip.ToString(), pkg.ConfigType);
+            Assert.Equal(content + 0, pkg.Content);
+            Assert.Equal(dateCreated, pkg.DateCreated);
+            
+        }
+
+        [Fact]
+        public async Task GetConfigurationsTest()
+        {
+            // Arrange
+
+            this.mockStorage
+                .Setup(x => x.GetAllConfigurationsAsync())
+                .ReturnsAsync(new PackageConfigurations());
+
+            // Act
+            var cfg = await this.controller.GetListAsync();
+
+            // Assert
+            Assert.Single(cfg.packageConfigurations);
+            Assert.Contains(ConfigType.FirmwareUpdateMxChip.ToString(), cfg.packageConfigurations);
+        }
+
 
         private FormFile CreateSampleFile(string filename)
         {
