@@ -79,7 +79,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
                 Id = id,
                 Name = name,
                 Email = email,
-                AllowedActions = allowedActions.ToList()
+                AllowedActions = allowedActions.ToList(),
+                Roles = roles
             };
         }
 
