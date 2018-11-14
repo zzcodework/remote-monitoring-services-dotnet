@@ -57,7 +57,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet]
-        [Route("Items")]
+        [Route("configtypes")]
         public async Task<ConfigTypeListApiModel> GetListAsync()
         {
             return new ConfigTypeListApiModel(await this.storage.GetAllConfigurationsAsync());
