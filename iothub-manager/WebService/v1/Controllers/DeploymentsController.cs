@@ -56,6 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         }
 
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<DeploymentListApiModel> GetAsync()
         {
             return new DeploymentListApiModel(await this.deployments.ListAsync());
