@@ -12,7 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         public string Name { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public PackageType Type { get; set; }
+        public PackageType packageType { get; set; }
 
         public string ConfigType { get; set; }
 
@@ -30,6 +30,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
     //Used for validation, these are pre-defined constants for configuration type 
     public enum ConfigType
     {
+        Custom,
         FirmwareUpdateMxChip
     }
 }

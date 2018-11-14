@@ -46,11 +46,11 @@ namespace WebService.Test.Controllers
             }
 
             this.mockStorage.Setup(x => x.AddPackageAsync(
-                                    It.Is<Package>(p => p.Type.ToString().Equals(type) &&
+                                    It.Is<Package>(p => p.packageType.ToString().Equals(type) &&
                                                         p.Name.Equals(filename))))
                             .ReturnsAsync(new Package() {
                                 Name = filename,
-                                Type = PackageType.EdgeManifest
+                                packageType = PackageType.EdgeManifest
                             });
             try
             {
@@ -60,7 +60,7 @@ namespace WebService.Test.Controllers
                 // Assert
                 Assert.False(expectException);
                 Assert.Equal(filename, package.Name);
-                Assert.Equal(type, package.Type.ToString());
+                Assert.Equal(type, package.packageType.ToString());
             }
             catch (Exception)
             {
@@ -85,7 +85,7 @@ namespace WebService.Test.Controllers
                     Id = id,
                     Name = name,
                     Content = content,
-                    Type = type,
+                    packageType = type,
                     ConfigType = string.Empty,
                     DateCreated = dateCreated
                 });
@@ -99,7 +99,7 @@ namespace WebService.Test.Controllers
 
             Assert.Equal(id, pkg.Id);
             Assert.Equal(name, pkg.Name);
-            Assert.Equal(type, pkg.Type);
+            Assert.Equal(type, pkg.packageType);
             Assert.Equal(content, pkg.Content);
             Assert.Equal(dateCreated, pkg.DateCreated);
         }
@@ -121,7 +121,7 @@ namespace WebService.Test.Controllers
                                          Id = id + i,
                                          Name = name + i,
                                          Content = content + i,
-                                         Type = type,
+                                         packageType = type,
                                          ConfigType = config + i,
                                          DateCreated = dateCreated
                                      }).ToList();
@@ -142,7 +142,7 @@ namespace WebService.Test.Controllers
                 var pkg = resultPackages.Items.ElementAt(i);
                 Assert.Equal(id + i, pkg.Id);
                 Assert.Equal(name + i, pkg.Name);
-                Assert.Equal(type + i, pkg.Type);
+                Assert.Equal(type + i, pkg.packageType);
                 Assert.Equal(content + i, pkg.Content);
                 Assert.Equal(dateCreated, pkg.DateCreated);
             }
@@ -164,7 +164,7 @@ namespace WebService.Test.Controllers
                 Id = id + i,
                 Name = name + i,
                 Content = content + i,
-                Type = type + i,
+                packageType = type + i,
                 ConfigType = (i == 0) ? ConfigType.FirmwareUpdateMxChip.ToString() : i.ToString(),
                 DateCreated = dateCreated
             }).ToList();
@@ -187,7 +187,7 @@ namespace WebService.Test.Controllers
             var pkg = resultPackages.Items.ElementAt(0);
             Assert.Equal(id + 0, pkg.Id);
             Assert.Equal(name + 0, pkg.Name);
-            Assert.Equal(type, pkg.Type);
+            Assert.Equal(type, pkg.packageType);
             Assert.Equal(ConfigType.FirmwareUpdateMxChip.ToString(), pkg.ConfigType);
             Assert.Equal(content + 0, pkg.Content);
             Assert.Equal(dateCreated, pkg.DateCreated);
@@ -201,14 +201,14 @@ namespace WebService.Test.Controllers
 
             this.mockStorage
                 .Setup(x => x.GetAllConfigurationsAsync())
-                .ReturnsAsync(new PackageConfigurations());
+                .ReturnsAsync(new ConfigTypeList());
 
             // Act
             var cfg = await this.controller.GetListAsync();
 
             // Assert
-            Assert.Single(cfg.packageConfigurations);
-            Assert.Contains(ConfigType.FirmwareUpdateMxChip.ToString(), cfg.packageConfigurations);
+            Assert.Single(cfg.Items);
+            Assert.Contains(ConfigType.FirmwareUpdateMxChip.ToString(), cfg.Items);
         }
 
 

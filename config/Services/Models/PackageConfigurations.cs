@@ -5,11 +5,11 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {
-    public class PackageConfigurations
+    public class ConfigTypeList
     {
         private HashSet<String> customConfigTypes = new HashSet<String>();
 
-        public string[] configurations
+        public string[] Items
         {
             get
             {

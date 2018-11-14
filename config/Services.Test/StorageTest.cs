@@ -93,7 +93,7 @@ namespace Services.Test
                     ""id"": ""9a9690df-f037-4c3a-8fc0-8eaba687609d"",
                     ""schemaVersion"": ""1.0"",
                     ""labels"": {
-                        ""Type"": ""DeviceConfiguration"",
+                        ""packageType"": ""DeviceConfiguration"",
                         ""Name"": ""Deployment-12"",
                         ""DeviceGroupId"": ""MxChip"",
                         ""RMDeployment"": ""True""
@@ -119,7 +119,7 @@ namespace Services.Test
                         },
                         ""queries"": {
                             ""Targeted"": ""select deviceId from devices where Tags.isVan1='Y'"",
-                            ""Applied"": ""select deviceId from devices where configurations.[[9a9690df-f037-4c3a-8fc0-8eaba687609d]].status = 'Applied'""
+                            ""Applied"": ""select deviceId from devices where Items.[[9a9690df-f037-4c3a-8fc0-8eaba687609d]].status = 'Applied'""
                         }
                     },
                     ""metrics"": {
@@ -715,7 +715,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = key,
-                Type = PackageType.EdgeManifest,
+                packageType = PackageType.EdgeManifest,
                 ConfigType = string.Empty,
                 Content = EDGE_PACKAGE_JSON
             };
@@ -736,7 +736,7 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.packageType, result.packageType);
             Assert.Equal(pkg.Content, result.Content);
         }
 
@@ -750,7 +750,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = key,
-                Type = PackageType.DeviceConfiguration,
+                packageType = PackageType.DeviceConfiguration,
                 Content = ADM_PACKAGE_JSON,
                 ConfigType = ConfigType.FirmwareUpdateMxChip.ToString()
             };
@@ -771,7 +771,7 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.packageType, result.packageType);
             Assert.Equal(pkg.Content, result.Content);
             Assert.Equal(pkg.ConfigType, result.ConfigType);
         }
@@ -788,7 +788,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = key,
-                Type = PackageType.DeviceConfiguration,
+                packageType = PackageType.DeviceConfiguration,
                 Content = ADM_PACKAGE_JSON,
                 ConfigType = "Custom-config"
             };
@@ -803,7 +803,7 @@ namespace Services.Test
                     Key = key,
                     Data = value
                 });
-            const string configKey = "configurations";
+            const string configKey = "Items";
 
             this.mockClient
                 .Setup(x => x.UpdateAsync(
@@ -828,7 +828,7 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.packageType, result.packageType);
             Assert.Equal(pkg.Content, result.Content);
             Assert.Equal(pkg.ConfigType, result.ConfigType);
         }
@@ -837,7 +837,7 @@ namespace Services.Test
         public async Task ListConfigurationsTest()
         {
             const string collectionId = "packages";
-            const string configKey = "configurations";
+            const string configKey = "Items";
 
             // Arrange
             this.mockClient
@@ -850,7 +850,7 @@ namespace Services.Test
             var result = await this.storage.GetAllConfigurationsAsync();
 
             // Assert
-            Assert.Empty(result.configurations);
+            Assert.Empty(result.Items);
         }
 
 
@@ -862,7 +862,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = "testpackage",
-                Type = PackageType.EdgeManifest,
+                packageType = PackageType.EdgeManifest,
                 Content = "InvalidPackage"
             };
 

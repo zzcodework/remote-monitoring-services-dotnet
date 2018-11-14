@@ -25,7 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<Logo> GetLogoAsync();
         Task<Logo> SetLogoAsync(Logo model);
         Task<IEnumerable<DeviceGroup>> GetAllDeviceGroupsAsync();
-        Task<PackageConfigurations> GetAllConfigurationsAsync();
+        Task<ConfigTypeList> GetAllConfigurationsAsync();
         Task<DeviceGroup> GetDeviceGroupAsync(string id);
         Task<DeviceGroup> CreateDeviceGroupAsync(DeviceGroup input);
         Task<DeviceGroup> UpdateDeviceGroupAsync(string id, DeviceGroup input, string etag);
@@ -48,7 +48,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal const string USER_COLLECTION_ID = "user-settings";
         internal const string DEVICE_GROUP_COLLECTION_ID = "devicegroups";
         internal const string PACKAGES_COLLECTION_ID = "packages";
-        internal const string PACKAGES_CONFIGURATION_TYPE_KEY = "configurations";
+        internal const string PACKAGES_CONFIGURATION_TYPE_KEY = "Items";
         private const string AZURE_MAPS_KEY = "AzureMapsKey";
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
@@ -194,7 +194,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             if (!isValidPackage)
             {
                 throw new InvalidInputException($"Package provided is not a valid deployment manifest " +
-                    $"for type {package.Type} and config type {package.ConfigType}");
+                    $"for type {package.packageType} and config type {package.ConfigType}");
             }
 
             try
@@ -216,7 +216,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             var response = await this.client.CreateAsync(PACKAGES_COLLECTION_ID, value);
 
             if (!Enum.TryParse(package.ConfigType, true, out ConfigType uploadedConfigType)
-                && package.Type.Equals(PackageType.DeviceConfiguration))
+                && package.packageType.Equals(PackageType.DeviceConfiguration))
             {
                 await this.UpdateConfigurationsAsync(package.ConfigType);
             }
@@ -226,7 +226,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         private Boolean ValidatePackage(Package package)
         {
-            IPackageValidator validator = PackageValidatorFactory.GetValidator(package.Type, package.ConfigType);
+            IPackageValidator validator = PackageValidatorFactory.GetValidator(package.packageType, package.ConfigType);
             if (validator == null)
             {
                 return true;//Bypass validation for custom config type
@@ -245,31 +245,31 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             return this.CreatePackageServiceModel(response);
         }
 
-        public async Task<PackageConfigurations> GetAllConfigurationsAsync()
+        public async Task<ConfigTypeList> GetAllConfigurationsAsync()
         {
             try
             {
                 var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATION_TYPE_KEY);
-                return JsonConvert.DeserializeObject<PackageConfigurations>(response.Data);
+                return JsonConvert.DeserializeObject<ConfigTypeList>(response.Data);
             }
             catch (ResourceNotFoundException)
             {
-                return new PackageConfigurations(); //Return empty Package Configurations 
+                return new ConfigTypeList(); //Return empty Package Configurations 
             }
         }
 
         public async Task UpdateConfigurationsAsync(string customConfigType)
         {
-            PackageConfigurations list;
+            ConfigTypeList list;
             try
             {
                 var response = await this.client.GetAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATION_TYPE_KEY);
-                list = JsonConvert.DeserializeObject<PackageConfigurations>(response.Data);
+                list = JsonConvert.DeserializeObject<ConfigTypeList>(response.Data);
             }
             catch (ResourceNotFoundException) 
             {
                 //TODO: logging
-                list = new PackageConfigurations();
+                list = new ConfigTypeList();
             }
             list.add(customConfigType);
             await this.client.UpdateAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIGURATION_TYPE_KEY, JsonConvert.SerializeObject(list), "*");

@@ -15,9 +15,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("Type")]
+        [JsonProperty("packageType")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public PackageType Type { get; set; }
+        public PackageType packageType { get; set; }
 
         [JsonProperty("ConfigType")]
         public string ConfigType { get; set; }
@@ -32,7 +32,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         {
             this.Id = model.Id;
             this.Name = model.Name;
-            this.Type = model.Type;
+            this.packageType = model.packageType;
             this.DateCreated = model.DateCreated;
             this.Content = model.Content;
             this.ConfigType = model.ConfigType;
@@ -46,7 +46,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         {
             this.Content = Content;
             this.Name = Name;
-            this.Type = Type;
+            this.packageType = Type;
             this.ConfigType = ConfigType;
         }
 
@@ -56,7 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             {
                 Content = this.Content,
                 Name = this.Name,
-                Type = this.Type,
+                packageType = this.packageType,
                 ConfigType = this.ConfigType
             };
         }

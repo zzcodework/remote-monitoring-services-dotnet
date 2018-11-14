@@ -6,14 +6,14 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
-    public class PackageConfigListApiModel
+    public class ConfigTypeListApiModel
     {
         [JsonProperty("Configurations")]
-        public string[] packageConfigurations{ get; set; }
+        public string[] Items { get; set; }
 
-        public PackageConfigListApiModel(PackageConfigurations packageConfigurations)
+        public ConfigTypeListApiModel(ConfigTypeList configTypeList)
         {
-            var configTypes = packageConfigurations.configurations.ToList<String>();
+            var configTypes = configTypeList.Items.ToList<String>();
 
             foreach (ConfigType type in Enum.GetValues(typeof(ConfigType)))
             {
@@ -21,7 +21,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
               
             }
 
-            this.packageConfigurations = configTypes.ToArray<String>();
+            this.Items = configTypes.ToArray<String>();
         }
 
     }

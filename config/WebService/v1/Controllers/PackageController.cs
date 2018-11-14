@@ -29,10 +29,20 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             return new PackageListApiModel(await this.storage.GetPackagesAsync());
         }
 
-        [HttpGet("{type}/{config}")]
-        public async Task<PackageListApiModel> GetAllAsync(string type, string config)
+        [HttpGet("{packageType}/{configType}")]
+        public async Task<PackageListApiModel> GetAllAsync(string packageType, string configType)
         {
-            return new PackageListApiModel(await this.storage.GetPackagesAsync(), type, config);
+            if (string.IsNullOrEmpty(packageType))
+            {
+                throw new InvalidInputException("Valid package packageType must be provided");
+            }
+
+            if (string.IsNullOrEmpty(configType))
+            {
+                throw new InvalidInputException("Valid config packageType must be provided");
+            }
+
+            return new PackageListApiModel(await this.storage.GetPackagesAsync(), packageType, configType);
         }
 
         [HttpGet("{id}")]
@@ -47,36 +57,36 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet]
-        [Route("configurations")]
-        public async Task<PackageConfigListApiModel> GetListAsync()
+        [Route("Items")]
+        public async Task<ConfigTypeListApiModel> GetListAsync()
         {
-            return new PackageConfigListApiModel(await this.storage.GetAllConfigurationsAsync());
+            return new ConfigTypeListApiModel(await this.storage.GetAllConfigurationsAsync());
         }
 
         [HttpPost]
         [Authorize("CreatePackages")]
-        public async Task<PackageApiModel> PostAsync(string type, string configType, IFormFile package)
+        public async Task<PackageApiModel> PostAsync(string packageType, string configType, IFormFile package)
         {
-            if (string.IsNullOrEmpty(type))
+            if (string.IsNullOrEmpty(packageType))
             {
-                throw new InvalidInputException("Package type must be provided");
+                throw new InvalidInputException("Package packageType must be provided");
             }
 
             if (configType == null)
             {
-                throw new InvalidInputException("Package config type must be provided");
+                throw new InvalidInputException("Package configType packageType must be provided");
             }
 
-            bool isValidPackageType = Enum.TryParse(type, true, out PackageType uploadedPackageType);
+            bool isValidPackageType = Enum.TryParse(packageType, true, out PackageType uploadedPackageType);
             if (!isValidPackageType)
             {
-                throw new InvalidInputException($"Provided package type {type} is not valid.");
+                throw new InvalidInputException($"Provided package packageType {packageType} is not valid.");
             }
 
             bool isValidConfigType = Enum.TryParse(configType, true, out ConfigType uploadedConfigType);
-            if (!isValidConfigType && type.Equals(PackageType.DeviceConfiguration))
+            if (!isValidConfigType && packageType.Equals(PackageType.DeviceConfiguration))
             {
-                //TODO Log that user has selected a Custom config Type rather than pre-defined type. 
+                //TODO Log that user has selected a Custom configType packageType rather than pre-defined packageType. 
             }
 
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))
