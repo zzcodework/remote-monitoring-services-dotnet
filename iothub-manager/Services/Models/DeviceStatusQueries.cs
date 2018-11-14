@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 {
-    class DeviceStatusQueries
+    abstract class DeviceStatusQueries
     {
+        private abstract const string APPLIED_DEVICES_QUERY;
     }
 }

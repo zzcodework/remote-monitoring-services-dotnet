@@ -15,7 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty("Name")]
         public string Name { get; set; }
 
-        [JsonProperty("packageType")]
+        [JsonProperty("PackageType")]
         [JsonConverter(typeof(StringEnumConverter))]
         public PackageType packageType { get; set; }
 
