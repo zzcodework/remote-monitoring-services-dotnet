@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.IoTSolutions.Auth.Services;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -49,6 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
         private readonly RequestDelegate requestDelegate;
         private readonly IConfigurationManager<OpenIdConnectConfiguration> openIdCfgMan;
         private readonly IClientAuthConfig config;
+        private readonly IUsers usersService;
         private readonly ILogger log;
         private TokenValidationParameters tokenValidationParams;
         private readonly bool authRequired;
@@ -59,11 +61,13 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
             RequestDelegate requestDelegate, // Required by ASP.NET
             IConfigurationManager<OpenIdConnectConfiguration> openIdCfgMan,
             IClientAuthConfig config,
+            IUsers usersService,
             ILogger log)
         {
             this.requestDelegate = requestDelegate;
             this.openIdCfgMan = openIdCfgMan;
             this.config = config;
+            this.usersService = usersService;
             this.log = log;
             this.authRequired = config.AuthRequired;
             this.tokenValidationInitialized = false;
@@ -103,6 +107,9 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
             var header = string.Empty;
             var token = string.Empty;
 
+            // Store this setting to skip validating authorization in the controller if enabled
+            context.Request.SetAuthRequired(this.config.AuthRequired);
+
             if (!context.Request.Headers.ContainsKey(EXT_RESOURCES_HEADER))
             {
                 // This is a service to service request running in the private
@@ -113,8 +120,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
 
                 // Call the next delegate/middleware in the pipeline
                 this.log.Debug("Skipping auth for service to service request", () => { });
+                context.Request.SetExternalRequest(false);
                 return this.requestDelegate(context);
             }
+
+            context.Request.SetExternalRequest(true);
 
             if (!this.authRequired)
             {
@@ -180,6 +190,20 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Auth
                     // Store the user info in the request context, so the authorization
                     // header doesn't need to be parse again later in the User controller.
                     context.Request.SetCurrentUserClaims(jwtToken.Claims);
+
+                    // Store the user allowed actions in the request context to validate
+                    // authorization later in the controller.
+                    var userObjectId = context.Request.GetCurrentUserObjectId();
+                    var roles = context.Request.GetCurrentUserRoleClaim().ToList();
+                    if (roles.Any())
+                    {
+                        var allowedActions = this.usersService.GetAllowedActions(roles);
+                        context.Request.SetCurrentUserAllowedActions(allowedActions);
+                    }
+                    else
+                    {
+                        this.log.Error("JWT token doesn't include any role claims.", () => { });
+                    }
 
                     return true;
                 }

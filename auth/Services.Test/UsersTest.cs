@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.Azure.IoTSolutions.Auth.Services;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Auth.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Models;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
 using Moq;
@@ -90,6 +91,48 @@ namespace Services.Test
             Assert.Empty(readonlyActions);
         }
 
+        [InlineData(null, null, null, null, null, true)]
+        [InlineData("", null, null, null, null, true)]
+        [InlineData("https://login.microsoftonline.com/", null, null, null, null, true)]
+        [InlineData("https://login.microsoftonline.com/", "", null, null, null, true)]
+        [InlineData("https://login.microsoftonline.com/", "tenantId", null, null, null, true)]
+        [InlineData("https://login.microsoftonline.com/", "tenantId", "", null, null, true)]
+        [InlineData("https://login.microsoftonline.com/", "tenantId", "https://management.azure.com/", null, null, true)]
+        [InlineData("https://login.microsoftonline.com/", "tenantId", "https://management.azure.com/", "", null, true)]
+        [InlineData("https://login.microsoftonline.com/", "tenantId", "https://management.azure.com/", "myAppId", null, true)]
+        [InlineData("https://login.microsoftonline.com/", "tenantId", "https://management.azure.com/", "myAppId", "", true)]
+        [InlineData("https://login.microsoftonline.com/", "tenantId", "https://management.azure.com/", "myAppId", "mysecret", true)]
+        [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async void GetToken_ReturnValues(
+            string aadEndpointUrl,
+            string aadTenantId,
+            string audience,
+            string applicationId,
+            string secret,
+            bool exceptionThrown)
+        {
+            // Arrange
+            AccessToken token = null;
+            this.servicesConfig.SetupProperty(x => x.AadEndpointUrl, aadEndpointUrl);
+            this.servicesConfig.SetupProperty(x => x.AadTenantId, aadTenantId);
+            this.servicesConfig.SetupProperty(x => x.AadApplicationId, applicationId);
+            this.servicesConfig.SetupProperty(x => x.AadApplicationSecret, secret);
+
+            // Act
+            try
+            {
+                token = await this.users.GetToken(audience);
+            }
+            catch (InvalidConfigurationException e)
+            {
+                // Assert
+                Assert.True(exceptionThrown);
+                return;
+            }
+
+            Assert.NotNull(token);
+        }
+
         private List<Claim> GetClaimWithUserInfo()
         {
             return new List<Claim>()
@@ -137,7 +180,8 @@ namespace Services.Test
                 "UpdateRules",
                 "DeleteRules",
                 "CreateJobs",
-                "UpdateSimManagement",
+                "UpdateSIMManagement",
+                "AcquireToken",
                 "CreateDeployments",
                 "DeleteDeployments",
                 "CreatePackages",
@@ -164,7 +208,8 @@ namespace Services.Test
                 "CreateRules",
                 "UpdateRules",
                 "CreateJobs",
-                "UpdateSimManagement",
+                "UpdateSIMManagement",
+                "AcquireToken",
                 "CreateDeployments",
                 "DeleteDeployments",
                 "CreatePackages",

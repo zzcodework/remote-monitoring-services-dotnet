@@ -12,6 +12,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Runtime
         IEnumerable<string> JwtEmailFrom { get; set; }
         string JwtRolesFrom { get; set; }
         string PoliciesFolder { get; }
+        string AadEndpointUrl { get; set; }
+        string AadTenantId { get; set; }
+        string AadApplicationId { get; set; }
+        string AadApplicationSecret { get; set; }
+        string ArmEndpointUrl { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -22,6 +27,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Runtime
         public IEnumerable<string> JwtNameFrom { get; set; }
         public IEnumerable<string> JwtEmailFrom { get; set; }
         public string JwtRolesFrom { get; set; }
+        public string AadEndpointUrl { get; set; }
+        public string AadTenantId { get; set; }
+        public string AadApplicationId { get; set; }
+        public string AadApplicationSecret { get; set; }
+        public string ArmEndpointUrl { get; set; }
 
         public ServicesConfig()
         {
