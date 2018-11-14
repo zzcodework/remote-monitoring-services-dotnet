@@ -17,6 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             this.log = logger;
         }
 
+        [Authorize("ReadAll")]
         public StatusApiModel Get()
         {
             // TODO: calculate the actual service status

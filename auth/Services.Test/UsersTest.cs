@@ -60,6 +60,9 @@ namespace Services.Test
             Assert.Equal(claims.FirstOrDefault(k => k.Type == NAME_KEY).Value, result.Name);
             Assert.Equal(claims.FirstOrDefault(k => k.Type == ID_KEY).Value, result.Id);
             Assert.NotEmpty(result.AllowedActions);
+            Assert.NotEmpty(result.Roles);
+            Assert.Contains(ADMIN_ROLE_KEY, result.Roles);
+            Assert.Contains(READONLY_ROLE_KEY, result.Roles);
             foreach (var action in adminPolicy.AllowedActions)
             {
                 Assert.Contains(action, result.AllowedActions);

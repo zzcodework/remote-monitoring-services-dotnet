@@ -32,6 +32,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="to">Optional. The end time of interesting period</param>
         /// <returns>The list of jobs</returns>
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<IEnumerable<JobApiModel>> GetAsync(
             [FromQuery] JobType? jobType,
             [FromQuery] JobStatus? jobStatus,
@@ -51,6 +52,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="deviceJobStatus">The interesting device job status. `null` means no restrict</param>
         /// <returns>The job object</returns>
         [HttpGet("{jobId}")]
+        [Authorize("ReadAll")]
         public async Task<JobApiModel> GetJobAsync(
             string jobId,
             [FromQuery]bool? includeDeviceDetails,
