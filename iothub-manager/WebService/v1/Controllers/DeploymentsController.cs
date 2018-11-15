@@ -67,7 +67,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="includeDeviceStatus">Whether to retrieve additional details regarding device status</param>
         /// <returns>Deployment information with metrics</returns>
         [HttpGet("{id}")]
-        [Authorize("ReadAll")]
         public async Task<DeploymentApiModel> GetAsync(string id, [FromQuery] bool includeDeviceStatus = false)
         {
             return new DeploymentApiModel(await this.deployments.GetAsync(id, includeDeviceStatus));
