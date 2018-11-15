@@ -12,3 +12,5 @@ implementation, we use [Azure AAD tokens](https://docs.microsoft.com/azure/activ
 
 The claims are added to the AAD application manifest so that the token contains the desired information.
 You can learn more about optional token claims [here](https://docs.microsoft.com/azure/active-directory/active-directory-claims-mapping).
+
+We can also get access token for resources by using application's credential so that Azure resource management task can be performed. The current user who has the role which includes 'AcquireToken' will be able to get this token.

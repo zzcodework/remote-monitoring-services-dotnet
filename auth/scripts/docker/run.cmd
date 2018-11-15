@@ -21,6 +21,10 @@ echo Starting Auth ...
 docker run -it -p 9001:9001 ^
     -e PCS_AUTH_ISSUER ^
     -e PCS_AUTH_AUDIENCE ^
+    -e PCS_AAD_ENDPOINT_URL ^
+    -e PCS_AAD_TENANT ^
+    -e PCS_AAD_APPSECRET ^
+    -e PCS_ARM_ENDPOINT_URL ^
     %DOCKER_IMAGE%:testing
 
 :: - - - - - - - - - - - - - -

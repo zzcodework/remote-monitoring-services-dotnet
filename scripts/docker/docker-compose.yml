@@ -114,6 +114,11 @@ services:
       - PCS_AAD_APPSECRET
       - PCS_TELEMETRY_STORAGE_TYPE
       - PCS_TSI_FQDN
+      - PCS_AZUREBLOB_CONNSTRING
+      - PCS_ACTION_EVENTHUB_CONNSTRING
+      - PCS_ACTION_EVENTHUB_NAME
+      - PCS_LOGICAPP_ENDPOINT_URL
+      - PCS_SOLUTION_WEBSITE_URL
 
   config:
     image: azureiotpcs/pcs-config-dotnet:1.0.2
@@ -136,6 +141,10 @@ services:
       - PCS_AUTH_REQUIRED
       - PCS_CORS_WHITELIST
       - PCS_APPLICATION_SECRET
+      - PCS_OFFICE365_CONNECTION_URL
+      - PCS_SOLUTION_NAME
+      - PCS_SUBSCRIPTION_ID
+      - PCS_ARM_ENDPOINT_URL
       - PCS_SEED_TEMPLATE
 
   storageadapter:
