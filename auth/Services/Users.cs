@@ -16,7 +16,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
     public interface IUsers
     {
         User GetUserInfo(IEnumerable<Claim> claims);
-        List<string> GetAllowedActions(IEnumerable<string> roles);
+        IEnumerable<string> GetAllowedActions(IEnumerable<string> roles);
         Task<AccessToken> GetToken(string audience);
     }
 
@@ -83,12 +83,11 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
                 Id = id,
                 Name = name,
                 Email = email,
-                AllowedActions = allowedActions,
-                Roles = roles
+                AllowedActions = allowedActions.ToList()
             };
         }
 
-        public List<string> GetAllowedActions(IEnumerable<string> roles)
+        public IEnumerable<string> GetAllowedActions(IEnumerable<string> roles)
         {
             // ensure only unique values are added to the allowed actions list
             // if duplicate actions are allowed in multiple roles
