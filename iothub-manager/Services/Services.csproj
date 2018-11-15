@@ -10,7 +10,4 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="2.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\DeviceStatusHelper\" />
-  </ItemGroup>
 </Project>

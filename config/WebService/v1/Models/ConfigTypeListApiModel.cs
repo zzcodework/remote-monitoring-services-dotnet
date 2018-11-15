@@ -8,7 +8,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
     public class ConfigTypeListApiModel
     {
-        [JsonProperty("Configurations")]
+        [JsonProperty("Items")]
         public string[] Items { get; set; }
 
         public ConfigTypeListApiModel(ConfigTypeList configTypeList)

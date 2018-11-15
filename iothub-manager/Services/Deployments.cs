@@ -10,9 +10,11 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using static Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.DeviceStatusQueries;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 {
@@ -48,18 +50,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         private const string DEVICE_ID_KEY = "DeviceId";
         private const string EDGE_MANIFEST_SCHEMA = "schemaVersion";
-
-        private const string APPLIED_DEVICES_QUERY =
-            "select deviceId from devices.modules where moduleId = '$edgeAgent'" + 
-            " and configurations.[[{0}]].status = 'Applied'";
-
-        private const string SUCCESSFUL_DEVICES_QUERY = APPLIED_DEVICES_QUERY + 
-            " and properties.desired.$version = properties.reported.lastDesiredVersion" + 
-            " and properties.reported.lastDesiredStatus.code = 200";
-
-        private const string FAILED_DEVICES_QUERY = APPLIED_DEVICES_QUERY +
-            " and properties.desired.$version = properties.reported.lastDesiredVersion" +
-            " and properties.reported.lastDesiredStatus.code != 200";
 
         private RegistryManager registry;
         private string ioTHubHostName;
@@ -180,15 +170,38 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                                                         created externally and therefore not supported");
             }
 
-            includeDeviceStatus = includeDeviceStatus && ConfigurationsHelper.IsEdgeDeployment(deployment);
+            IDictionary<string, DeploymentStatus> deviceStatuses = this.GetDeviceStatuses(deployment);
 
             return new DeploymentServiceModel(deployment)
             {
                 DeploymentMetrics =
                 {
-                    DeviceStatuses = includeDeviceStatus ? this.GetDeviceStatuses(deploymentId) : null
+                    DeviceMetrics = CalculateDeviceMetrics(deviceStatuses),
+                    DeviceStatuses = includeDeviceStatus ? this.GetDeviceStatuses(deployment) : null
                 }
             };
+        }
+
+        private IDictionary<DeploymentStatus, long> CalculateDeviceMetrics(IDictionary<string, DeploymentStatus> deviceStatuses)
+        {
+
+            if (deviceStatuses == null)
+            {
+                return null;
+            }
+
+            IDictionary<DeploymentStatus, long> deviceMetrics = new Dictionary<DeploymentStatus, long>();
+
+            deviceMetrics[DeploymentStatus.Successful] = deviceStatuses.Where(item => 
+                                                            item.Value == DeploymentStatus.Successful).LongCount();
+
+            deviceMetrics[DeploymentStatus.Failed] = deviceStatuses.Where(item =>
+                                                            item.Value == DeploymentStatus.Failed).LongCount();
+
+            deviceMetrics[DeploymentStatus.Pending] = deviceStatuses.Where(item =>
+                                                            item.Value == DeploymentStatus.Pending).LongCount();
+
+            return deviceMetrics;
         }
 
         /// <summary>
@@ -212,11 +225,23 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                    bool.TryParse(conf.Labels[RM_CREATED_LABEL], out var res) && res;
         }
 
-        private IDictionary<string, DeploymentStatus> GetDeviceStatuses(string deploymentId)
+        private IDictionary<string, DeploymentStatus> GetDeviceStatuses(Configuration deployment)
         {
-            var appliedDevices = this.GetDevicesInQuery(APPLIED_DEVICES_QUERY, deploymentId);
-            var successfulDevices = this.GetDevicesInQuery(SUCCESSFUL_DEVICES_QUERY, deploymentId);
-            var failedDevices = this.GetDevicesInQuery(FAILED_DEVICES_QUERY, deploymentId);
+            deployment.Labels.TryGetValue(ConfigurationsHelper.DEPLOYMENT_TYPE_LABEL, out string deploymentType);
+            deployment.Labels.TryGetValue(ConfigurationsHelper.CONFIG_TYPE_LABEL, out string configType);
+
+            IDictionary<QueryType, String> Queries = GetQueries(deploymentType, configType);
+
+            if (Queries == null)
+            {
+                return null;
+            }
+
+            string deploymentId = deployment.Id;
+
+            var appliedDevices = this.GetDevicesInQuery(Queries[QueryType.APPLIED], deploymentId);
+            var successfulDevices = this.GetDevicesInQuery(Queries[QueryType.SUCCESSFUL], deploymentId);
+            var failedDevices = this.GetDevicesInQuery(Queries[QueryType.FAILED], deploymentId);
 
             var deviceWithStatus = new Dictionary<string, DeploymentStatus>();
 

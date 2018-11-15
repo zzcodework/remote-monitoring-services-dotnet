@@ -23,7 +23,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
                 return new EdgePackageValidator();
             }
 
-            return validatorMapping.TryGetValue(ConfigType.FirmwareUpdateMxChip, out IPackageValidator value) ? value : null;
+            Enum.TryParse<ConfigType>(configType, out ConfigType type);
+
+            return validatorMapping.TryGetValue(type, out IPackageValidator value) ? value : null;
         }
     }
 }

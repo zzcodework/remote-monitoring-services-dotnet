@@ -15,12 +15,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
         private const string PACKAGE_CONTENT_PARAM = "packageContent";
         private const string PRIORITY_PARAM = "priority";
 
-        private const string DEPLOYMENT_TYPE_LABEL = "Type";
-        private const string DEPLOYMENT_NAME_LABEL = "Name";
-        private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
-        private const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
-        private const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
+        public const string DEPLOYMENT_TYPE_LABEL = "Type";
+        public const string CONFIG_TYPE_LABEL = "string";
+        public const string DEPLOYMENT_NAME_LABEL = "Name";
+        public const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
+        public const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
+        public const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
         public const string RM_CREATED_LABEL = "RMDeployment";
+
 
         public static Configuration ToHubConfiguration(DeploymentServiceModel model)
         {
@@ -41,15 +43,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 
             // Required labels
             configuration.Labels.Add(DEPLOYMENT_TYPE_LABEL, model.Type.ToString());
+            configuration.Labels.Add(CONFIG_TYPE_LABEL, model.ConfigType);
             configuration.Labels.Add(DEPLOYMENT_NAME_LABEL, model.Name);
             configuration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);
             configuration.Labels.Add(RM_CREATED_LABEL, bool.TrueString);
-
-            var systemMetrics = packageConfiguration.SystemMetrics?.Queries;
-            if (systemMetrics != null)
-            {
-                //configuration.SystemMetrics.Queries = systemMetrics;
-            }
 
             var customMetrics = packageConfiguration.Metrics?.Queries;
             if (customMetrics != null)

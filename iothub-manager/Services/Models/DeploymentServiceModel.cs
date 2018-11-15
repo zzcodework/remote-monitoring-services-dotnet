@@ -5,16 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 {
     public class DeploymentServiceModel
     {
-        private const string DEPLOYMENT_NAME_LABEL = "Name";
-        private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
-        private const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
-        private const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
-        private const string RM_CREATED_LABEL = "RMDeployment";
 
         public DateTime CreatedDateTimeUtc { get; set; }
         public string Id { get; set; }
@@ -27,6 +23,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public string PackageName { get; set; }
         public int Priority { get; set; }
         public DeploymentType Type { get; set; }
+        public string ConfigType { get; set; }
 
         public DeploymentServiceModel()
         {
@@ -39,23 +36,23 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 throw new ArgumentException($"Invalid deploymentId provided {deployment.Id}");
             }
 
-            this.VerifyConfigurationLabel(deployment, DEPLOYMENT_NAME_LABEL);
-            this.VerifyConfigurationLabel(deployment, DEPLOYMENT_GROUP_ID_LABEL);
-            this.VerifyConfigurationLabel(deployment, RM_CREATED_LABEL);
+            this.VerifyConfigurationLabel(deployment, ConfigurationsHelper.DEPLOYMENT_NAME_LABEL);
+            this.VerifyConfigurationLabel(deployment, ConfigurationsHelper.DEPLOYMENT_GROUP_ID_LABEL);
+            this.VerifyConfigurationLabel(deployment, ConfigurationsHelper.RM_CREATED_LABEL);
 
             this.Id = deployment.Id;
-            this.Name = deployment.Labels[DEPLOYMENT_NAME_LABEL];
+            this.Name = deployment.Labels[ConfigurationsHelper.DEPLOYMENT_NAME_LABEL];
             this.CreatedDateTimeUtc = deployment.CreatedTimeUtc;
-            this.DeviceGroupId = deployment.Labels[DEPLOYMENT_GROUP_ID_LABEL];
+            this.DeviceGroupId = deployment.Labels[ConfigurationsHelper.DEPLOYMENT_GROUP_ID_LABEL];
 
-            if (deployment.Labels.ContainsKey(DEPLOYMENT_GROUP_NAME_LABEL))
+            if (deployment.Labels.ContainsKey(ConfigurationsHelper.DEPLOYMENT_GROUP_NAME_LABEL))
             {
-                this.DeviceGroupName = deployment.Labels[DEPLOYMENT_GROUP_NAME_LABEL];
+                this.DeviceGroupName = deployment.Labels[ConfigurationsHelper.DEPLOYMENT_GROUP_NAME_LABEL];
             }
 
-            if (deployment.Labels.ContainsKey(DEPLOYMENT_PACKAGE_NAME_LABEL))
+            if (deployment.Labels.ContainsKey(ConfigurationsHelper.DEPLOYMENT_PACKAGE_NAME_LABEL))
             {
-                this.PackageName = deployment.Labels[DEPLOYMENT_PACKAGE_NAME_LABEL];
+                this.PackageName = deployment.Labels[ConfigurationsHelper.DEPLOYMENT_PACKAGE_NAME_LABEL];
             }
 
             this.Priority = deployment.Priority;
@@ -68,6 +65,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 this.Type = DeploymentType.DeviceConfiguration;
             }
+            else
+            {
+                throw new InvalidOperationException("Incorrect deployment type found.");
+            }
+
+            this.ConfigType = deployment.Labels[ConfigurationsHelper.CONFIG_TYPE_LABEL];
 
             this.DeploymentMetrics = new DeploymentMetrics(deployment.SystemMetrics, deployment.Metrics);
         }
@@ -85,4 +88,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         EdgeManifest,
         DeviceConfiguration
     }
+
+
 }

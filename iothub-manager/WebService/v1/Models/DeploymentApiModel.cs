@@ -42,6 +42,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "Type")]
         public DeploymentType Type { get; set; }
 
+        [JsonProperty(PropertyName = "ConfigType")]
+        public string ConfigType { get; set; }
+
         [JsonProperty(PropertyName = "Metrics", NullValueHandling = NullValueHandling.Ignore)]
         public DeploymentMetricsApiModel Metrics { get; set; }
 
@@ -61,6 +64,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.PackageName = serviceModel.PackageName;
             this.Priority = serviceModel.Priority;
             this.Type = serviceModel.Type;
+            this.ConfigType = serviceModel.ConfigType;
             this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
             {
                 DeviceStatuses = serviceModel.DeploymentMetrics?.DeviceStatuses
@@ -78,7 +82,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 PackageContent = this.PackageContent,
                 PackageName = this.PackageName,
                 Priority = this.Priority,
-                Type = this.Type
+                Type = this.Type,
+                ConfigType = this.ConfigType
+                
             };
         }
     }

@@ -74,7 +74,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 
             if (configType == null)
             {
-                throw new InvalidInputException("Package configType packageType must be provided");
+                configType = string.Empty;
             }
 
             bool isValidPackageType = Enum.TryParse(packageType, true, out PackageType uploadedPackageType);
