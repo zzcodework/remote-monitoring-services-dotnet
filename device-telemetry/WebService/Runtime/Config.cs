@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.IO;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Auth;
 
@@ -73,6 +74,15 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
 
+        private const string ACTIONS_KEY = "Actions:";
+        private const string ACTIONS_EVENTHUB_NAME = ACTIONS_KEY + "event_hub_name";
+        private const string ACTIONS_EVENTHUB_CONNSTRING = ACTIONS_KEY + "event_hub_connection_string";
+        private const string ACTIONS_LOGICAPP_ENDPOINTURL = ACTIONS_KEY + "logic_app_endpoint_url";
+        private const string ACTIONS_AZUREBLOB_CONNSTRING = ACTIONS_KEY + "blob_storage_connection_string";
+        private const string ACTIONS_AZUREBLOB_CONTAINER = ACTIONS_KEY + "blob_storage_container";
+        private const string SOLUTION_URL = ACTIONS_KEY + "solution_url";
+        private const string TEMPLATE_FOLDER = ACTIONS_KEY + "template_folder";
+
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }
         public IClientAuthConfig ClientAuthConfig { get; }
@@ -106,7 +116,14 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
                 ActiveDirectoryAppId = configData.GetString(AAD_APP_ID),
                 ActiveDirectoryAppSecret = configData.GetString(AAD_APP_SECRET),
                 DiagnosticsApiUrl = configData.GetString(DIAGNOSTICS_URL_KEY),
-                DiagnosticsMaxLogRetries = configData.GetInt(DIAGNOSTICS_MAX_LOG_RETRIES)
+                DiagnosticsMaxLogRetries = configData.GetInt(DIAGNOSTICS_MAX_LOG_RETRIES),
+                ActionsEventHubConnectionString = configData.GetString(ACTIONS_EVENTHUB_CONNSTRING),
+                ActionsEventHubName = configData.GetString(ACTIONS_EVENTHUB_NAME),
+                LogicAppEndpointUrl = configData.GetString(ACTIONS_LOGICAPP_ENDPOINTURL),
+                BlobStorageConnectionString = configData.GetString(ACTIONS_AZUREBLOB_CONNSTRING),
+                ActionsBlobStorageContainer = configData.GetString(ACTIONS_AZUREBLOB_CONTAINER),
+                SolutionUrl = configData.GetString(SOLUTION_URL),
+                TemplateFolder = AppContext.BaseDirectory + Path.DirectorySeparatorChar + configData.GetString(TEMPLATE_FOLDER)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

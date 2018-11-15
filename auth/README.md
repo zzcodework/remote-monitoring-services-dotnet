@@ -55,6 +55,10 @@ How to use the microservice
 1. Define environment variables, as needed. See [Configuration and Environment variables](#configuration-and-environment-variables) for detailed information for setting these for your enviroment.
    1. `PCS_AUTH_AUDIENCE` = {your AAD application ID}
    1. `PCS_AUTH_ISSUER` = {your AAD issuer URL}
+   1. `PCS_AAD_ENDPOINT_URL` = {your AAD endpoint URL}
+   1. `PCS_AAD_TENANT` = {your AAD tenant Id}
+   1. `PCS_AAD_APPSECRET` = {your AAD application secret}
+   1. `PCS_ARM_ENDPOINT_URL` = {Azure Resource Manager URL}
 1. Start the WebService project (e.g. press F5).
 1. Use an HTTP client such as [Postman][postman-url], to exercise the
    RESTful API.

@@ -14,3 +14,15 @@ export PCS_AUTH_ISSUER="{enter the token issuer URL here}"
 
 # The intended audience of the tokens, e.g. your Client Id
 export PCS_AUTH_AUDIENCE="{enter the tokens audience here}"
+
+# Azure Active Directory endpoint url, e.g. https://login.microsoftonline.com/
+export PCS_AAD_ENDPOINT_URL="{enter the AAD endpoint URL here}"
+
+# The tenant id of Azure Active Directory
+export PCS_AAD_TENANT="{enter the tenant id of AAD here}"
+
+# The secret of intended application audience
+export PCS_AAD_APPSECRET="{enter the secret of AAD application here}"
+
+# Azure Resource Manager endpoint url, e.g. https://management.azure.com/
+export PCS_ARM_ENDPOINT_URL="{enter the endpoint URL of Azure Resource Manager here}"

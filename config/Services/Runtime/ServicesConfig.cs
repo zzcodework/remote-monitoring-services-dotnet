@@ -11,6 +11,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         string SeedTemplate { get; }
         string AzureMapsKey { get; }
         string UserManagementApiUrl { get; }
+        string Office365LogicAppUrl { get; }
+        string ResourceGroup { get; }
+        string SubscriptionId { get; }
+        string ManagementApiVersion { get; }
+        string ArmEndpointUrl { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -22,5 +27,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         public string SeedTemplate { get; set; }
         public string AzureMapsKey { get; set; }
         public string UserManagementApiUrl { get; set; }
+        public string Office365LogicAppUrl { get; set; }
+        public string ResourceGroup { get; set; }
+        public string SubscriptionId { get; set; }
+        public string ManagementApiVersion { get; set; }
+        public string ArmEndpointUrl { get; set; }
     }
 }

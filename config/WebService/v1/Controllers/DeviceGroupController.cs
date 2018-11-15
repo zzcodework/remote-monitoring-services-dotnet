@@ -19,12 +19,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<DeviceGroupListApiModel> GetAllAsync()
         {
             return new DeviceGroupListApiModel(await this.storage.GetAllDeviceGroupsAsync());
         }
 
         [HttpGet("{id}")]
+        [Authorize("ReadAll")]
         public async Task<DeviceGroupApiModel> GetAsync(string id)
         {
             return new DeviceGroupApiModel(await this.storage.GetDeviceGroupAsync(id));
