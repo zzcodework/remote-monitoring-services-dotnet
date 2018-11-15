@@ -22,6 +22,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<StatusApiModel> GetAsync()
         {
             bool authRequired = this.config.ClientAuthConfig.AuthRequired;

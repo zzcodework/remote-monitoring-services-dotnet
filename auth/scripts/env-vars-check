@@ -32,3 +32,23 @@ if [[ -z "$PCS_AUTH_AUDIENCE" ]]; then
     echo "Error: the PCS_AUTH_AUDIENCE environment variable is not defined."
     exit -1
 fi
+
+if [[ -z "PCS_AAD_ENDPOINT_URL" ]]; then
+    echo "Error: the PCS_AAD_ENDPOINT_URL environment variable is not defined."
+    exit -1
+fi
+
+if [[ -z "PCS_AAD_TENANT" ]]; then
+    echo "Error: the PCS_AAD_TENANT environment variable is not defined."
+    exit -1
+fi
+
+if [[ -z "PCS_AAD_APPSECRET" ]]; then
+    echo "Error: the PCS_AAD_APPSECRET environment variable is not defined."
+    exit -1
+fi
+
+if [[ -z "PCS_ARM_ENDPOINT_URL" ]]; then
+    echo "Error: the PCS_ARM_ENDPOINT_URL environment variable is not defined."
+    exit -1
+fi

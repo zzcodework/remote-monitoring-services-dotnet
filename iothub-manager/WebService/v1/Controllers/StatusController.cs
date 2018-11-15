@@ -21,8 +21,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
             this.config = config;
         }
 
-        // TODO: reduce method complexity, refactor out some logic
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<StatusApiModel> GetAsync()
         {
             bool authRequired = this.config.ClientAuthConfig.AuthRequired;

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters;
+using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
@@ -15,26 +17,32 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
     public class SolutionSettingsController : Controller
     {
         private readonly IStorage storage;
+        private readonly IActions actions;
+
         private static readonly string ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
-        public SolutionSettingsController(IStorage storage)
+        public SolutionSettingsController(IStorage storage, IActions actions)
         {
             this.storage = storage;
+            this.actions = actions;
         }
 
         [HttpGet("solution-settings/theme")]
+        [Authorize("ReadAll")]
         public async Task<object> GetThemeAsync()
         {
             return await this.storage.GetThemeAsync();
         }
 
         [HttpPut("solution-settings/theme")]
+        [Authorize("ReadAll")]
         public async Task<object> SetThemeAsync([FromBody] object theme)
         {
             return await this.storage.SetThemeAsync(theme);
         }
 
         [HttpGet("solution-settings/logo")]
+        [Authorize("ReadAll")]
         public async Task GetLogoAsync()
         {
             var model = await this.storage.GetLogoAsync();
@@ -42,6 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpPut("solution-settings/logo")]
+        [Authorize("ReadAll")]
         public async Task SetLogoAsync()
         {
             MemoryStream memoryStream = new MemoryStream();
@@ -66,6 +75,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         
             var response = await this.storage.SetLogoAsync(model);
             this.SetImageResponse(response);
+        }
+
+        [HttpGet("solution-settings/actions")]
+        public async Task<ActionSettingsListApiModel> GetActionsSettingsAsync()
+        {
+            var actions = await this.actions.GetListAsync();
+            return new ActionSettingsListApiModel(actions);
         }
 
         private void SetImageResponse(Logo model)
