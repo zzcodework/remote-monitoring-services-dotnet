@@ -62,6 +62,10 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
     docker run -it ^
         -e PCS_AUTH_ISSUER=%PCS_AUTH_ISSUER% ^
         -e PCS_AUTH_AUDIENCE=%PCS_AUTH_AUDIENCE% ^
+        -e PCS_AAD_ENDPOINT_URL=%PCS_AAD_ENDPOINT_URL% ^
+        -e PCS_AAD_TENANT=%PCS_AAD_TENANT% ^
+        -e PCS_AAD_APPSECRET=%PCS_AAD_APPSECRET% ^
+        -e PCS_ARM_ENDPOINT_URL=%PCS_ARM_ENDPOINT_URL% ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^

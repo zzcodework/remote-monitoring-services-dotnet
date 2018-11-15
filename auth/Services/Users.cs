@@ -4,9 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Auth.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Models;
 using Microsoft.Azure.IoTSolutions.Auth.Services.Runtime;
+using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.Services
 {
@@ -14,6 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
     {
         User GetUserInfo(IEnumerable<Claim> claims);
         List<string> GetAllowedActions(IEnumerable<string> roles);
+        Task<AccessToken> GetToken(string audience);
     }
 
     public class Users : IUsers
@@ -96,6 +100,44 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services
             }
 
             return allowedActions.ToList();
+        }
+
+        public async Task<AccessToken> GetToken(string audience)
+        {
+            // if no audiene is provided, use Azure Resource Manager endpoint url by default
+            audience = string.IsNullOrEmpty(audience) ? this.config.ArmEndpointUrl : audience;
+
+            if (string.IsNullOrEmpty(this.config.AadTenantId) ||
+                string.IsNullOrEmpty(this.config.AadApplicationId) ||
+                string.IsNullOrEmpty(this.config.AadApplicationSecret))
+            {
+                var message = $"Azure Active Directory properties '{nameof(this.config.AadEndpointUrl)}', '{nameof(this.config.AadTenantId)}'" +
+                    $", '{nameof(this.config.AadApplicationId)}' or '{nameof(this.config.AadApplicationSecret)}' are not set.";
+                this.log.Error(message, () => { });
+                throw new InvalidConfigurationException(message);
+            }
+
+            string authorityUrl = this.config.AadEndpointUrl.EndsWith("/") ?
+                $"{this.config.AadEndpointUrl}{this.config.AadTenantId}" :
+                $"{this.config.AadEndpointUrl}/{this.config.AadTenantId}";
+
+            var authenticationContext = new AuthenticationContext(authorityUrl, TokenCache.DefaultShared);
+            try
+            {
+                AuthenticationResult authenticationResult = await authenticationContext.AcquireTokenAsync(
+                    resource: audience,
+                    clientCredential: new ClientCredential(
+                        clientId: this.config.AadApplicationId,
+                        clientSecret: this.config.AadApplicationSecret));
+                return new AccessToken(audience, authenticationResult);
+            }
+            catch (Exception e)
+            {
+                var message = $"Unable to retrieve token with Azure Active Directory properties '{nameof(this.config.AadEndpointUrl)}', " +
+                    $"'{nameof(this.config.AadTenantId)}', '{nameof(this.config.AadApplicationId)}' or '{nameof(this.config.AadApplicationSecret)}'.";
+                this.log.Error(message, () => { });
+                throw new InvalidConfigurationException(message, e);
+            }
         }
     }
 }
