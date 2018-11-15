@@ -6,7 +6,6 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidation
 {
 
-
     public static class PackageValidatorFactory
     {
         private static Dictionary<ConfigType, IPackageValidator> validatorMapping =

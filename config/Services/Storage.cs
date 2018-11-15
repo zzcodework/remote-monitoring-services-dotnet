@@ -214,8 +214,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                                                     });
 
             var response = await this.client.CreateAsync(PACKAGES_COLLECTION_ID, value);
-
-            if (!Enum.TryParse(package.ConfigType, true, out ConfigType uploadedConfigType)
+            
+            if (!Enum.GetNames(typeof(ConfigType)).Contains(package.ConfigType)
                 && package.packageType.Equals(PackageType.DeviceConfiguration))
             {
                 await this.UpdateConfigurationsAsync(package.ConfigType);
@@ -268,7 +268,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             catch (ResourceNotFoundException) 
             {
-                //TODO: logging
                 list = new ConfigTypeList();
             }
             list.add(customConfigType);

@@ -83,12 +83,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 throw new InvalidInputException($"Provided package packageType {packageType} is not valid.");
             }
 
-            bool isValidConfigType = Enum.TryParse(configType, true, out ConfigType uploadedConfigType);
-            if (!isValidConfigType && packageType.Equals(PackageType.DeviceConfiguration))
-            {
-                //TODO Log that user has selected a Custom configType packageType rather than pre-defined packageType. 
-            }
-
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))
             {
                 throw new InvalidInputException("Package uploaded is missing or invalid.");
