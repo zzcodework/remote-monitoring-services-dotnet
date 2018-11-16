@@ -26,7 +26,7 @@ namespace WebService.Test.v1.Controllers
         private const string PACKAGE_NAME = "packageName";
         private const string DEPLOYMENT_ID = "dvcGroupId-packageId";
         private const int PRIORITY = 10;
-        private const string ConfigType = "edge";
+        private const string CONFIG_TYPE = "Edge";
 
         public DeploymentsControllerTest()
         {
@@ -49,7 +49,7 @@ namespace WebService.Test.v1.Controllers
                 Priority = PRIORITY,
                 Id = DEPLOYMENT_ID,
                 Type = DeploymentType.EdgeManifest,
-                ConfigType = ConfigType,
+                ConfigType = CONFIG_TYPE,
                 CreatedDateTimeUtc = DateTime.UtcNow
             });
 
@@ -65,7 +65,7 @@ namespace WebService.Test.v1.Controllers
             Assert.Equal(DEVICE_GROUP_NAME, result.DeviceGroupName);
             Assert.Equal(PRIORITY, result.Priority);
             Assert.Equal(DeploymentType.EdgeManifest, result.Type);
-            Assert.Equal(ConfigType, result.ConfigType);
+            Assert.Equal(CONFIG_TYPE, result.ConfigType);
             Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
         }
 
@@ -83,7 +83,7 @@ namespace WebService.Test.v1.Controllers
                 Priority = PRIORITY,
                 Id = DEPLOYMENT_ID,
                 Type = DeploymentType.EdgeManifest,
-                ConfigType = ConfigType,
+                ConfigType = CONFIG_TYPE,
                 CreatedDateTimeUtc = DateTime.UtcNow
             });
 
@@ -97,7 +97,7 @@ namespace WebService.Test.v1.Controllers
             Assert.Equal(DEVICE_GROUP_ID, result.DeviceGroupId);
             Assert.Equal(PRIORITY, result.Priority);
             Assert.Equal(DeploymentType.EdgeManifest, result.Type);
-            Assert.Equal(ConfigType, result.ConfigType);
+            Assert.Equal(CONFIG_TYPE, result.ConfigType);
             Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
         }
 
@@ -120,7 +120,7 @@ namespace WebService.Test.v1.Controllers
                     Priority = PRIORITY + i,
                     Id = DEPLOYMENT_ID + i,
                     Type = DeploymentType.EdgeManifest,
-                    ConfigType = ConfigType,
+                    ConfigType = CONFIG_TYPE,
                     CreatedDateTimeUtc = DateTime.UtcNow
                 });
             }
@@ -144,7 +144,7 @@ namespace WebService.Test.v1.Controllers
                 Assert.Equal(PACKAGE_CONTENT + i, result.PackageContent);
                 Assert.Equal(PRIORITY + i, result.Priority);
                 Assert.Equal(DeploymentType.EdgeManifest, result.Type);
-                Assert.Equal(ConfigType, result.ConfigType);
+                Assert.Equal(CONFIG_TYPE, result.ConfigType);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
             }
         }
@@ -168,7 +168,7 @@ namespace WebService.Test.v1.Controllers
                     model.Priority == priority &&
                     model.Name == name &&
                     model.Type == DeploymentType.EdgeManifest &&
-                    model.ConfigType == ConfigType)))
+                    model.ConfigType == CONFIG_TYPE)))
                 .ReturnsAsync(new DeploymentServiceModel()
                 {
                     Name = name,
@@ -178,7 +178,7 @@ namespace WebService.Test.v1.Controllers
                     Priority = priority,
                     Id = deploymentId,
                     Type = DeploymentType.EdgeManifest,
-                    ConfigType = ConfigType,
+                    ConfigType = CONFIG_TYPE,
                     CreatedDateTimeUtc = DateTime.UtcNow
                 });
 
@@ -189,7 +189,7 @@ namespace WebService.Test.v1.Controllers
                 DeviceGroupQuery = deviceGroupQuery,
                 PackageContent = packageContent,
                 Type = DeploymentType.EdgeManifest,
-                ConfigType = ConfigType,
+                ConfigType = CONFIG_TYPE,
                 Priority = priority
             };
 
@@ -210,7 +210,7 @@ namespace WebService.Test.v1.Controllers
                 Assert.Equal(packageContent, result.PackageContent);
                 Assert.Equal(priority, result.Priority);
                 Assert.Equal(DeploymentType.EdgeManifest, result.Type);
-                Assert.Equal(ConfigType, result.ConfigType);
+                Assert.Equal(CONFIG_TYPE, result.ConfigType);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
             }
         }

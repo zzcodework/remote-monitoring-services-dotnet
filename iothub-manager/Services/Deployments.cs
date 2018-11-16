@@ -177,7 +177,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 DeploymentMetrics =
                 {
                     DeviceMetrics = ConfigurationsHelper.IsEdgeDeployment(deployment) ?
-                                                CalculateDeviceMetrics(deviceStatuses) : null,
+                                                null : CalculateDeviceMetrics(deviceStatuses),
                     DeviceStatuses = includeDeviceStatus ? this.GetDeviceStatuses(deployment) : null
                 }
             };
@@ -217,7 +217,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             string deploymentId = deployment.Id;
-
             var appliedDevices = this.GetDevicesInQuery(Queries[QueryType.APPLIED], deploymentId);
             var successfulDevices = this.GetDevicesInQuery(Queries[QueryType.SUCCESSFUL], deploymentId);
             var failedDevices = this.GetDevicesInQuery(Queries[QueryType.FAILED], deploymentId);

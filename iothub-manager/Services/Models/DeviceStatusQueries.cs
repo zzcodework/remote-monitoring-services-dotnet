@@ -7,7 +7,7 @@ using static Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.DeviceStatusQ
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 {
-    public class FrimwareUpdateMxChipStatusQueries
+    public class FirmwareUpdateMxChipStatusQueries
     {
         public static IDictionary<QueryType, string> Queries = new Dictionary<QueryType, string>()
         {
@@ -32,7 +32,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         private static Dictionary<string, IDictionary<QueryType, string>> AdmQueryMapping =
             new Dictionary<string, IDictionary<QueryType, string>>()
         {
-            { "FirmwareUpdateMxChip", FrimwareUpdateMxChipStatusQueries.Queries }
+            { "FirmwareUpdateMxChip", FirmwareUpdateMxChipStatusQueries.Queries }
         };
 
         internal static IDictionary<QueryType, string> GetQueries(string deploymentType, string configType)

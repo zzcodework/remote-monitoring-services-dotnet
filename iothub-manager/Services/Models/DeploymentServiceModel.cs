@@ -88,6 +88,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         }
     }
 
+    //Sync these variables with PackageType in Config 
     public enum DeploymentType {
         EdgeManifest,
         DeviceConfiguration
