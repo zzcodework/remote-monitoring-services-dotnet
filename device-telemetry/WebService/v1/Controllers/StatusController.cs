@@ -44,7 +44,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet]
-        [Authorize("ReadAll")]
         public async Task<StatusApiModel> Get()
         {
             var statusIsOk = true;

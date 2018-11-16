@@ -20,16 +20,12 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Models
         [JsonProperty(PropertyName = "AllowedActions", Order = 40)]
         public List<string> AllowedActions { get; set; }
 
-        [JsonProperty(PropertyName = "Roles", Order = 50)]
-        public List<string> Roles { get; set; }
-
         public UserApiModel(User user)
         {
             this.Id = user.Id;
             this.Email = user.Email;
             this.Name = user.Name;
             this.AllowedActions = user.AllowedActions;
-            this.Roles = user.Roles;
         }
     }
 }

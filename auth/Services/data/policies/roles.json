@@ -21,14 +21,13 @@
                 "CreateDeployments",
                 "DeleteDeployments",
                 "CreatePackages",
-                "DeletePackages",
-                "ReadAll"
+                "DeletePackages"
             ]
         },
         {
             "Id": "e5bbd0f5-128e-4362-9dd1-8f253c6082d7",
             "Role": "readOnly",
-            "AllowedActions": ["ReadAll"]
+            "AllowedActions": []
         }
     ]
 }
