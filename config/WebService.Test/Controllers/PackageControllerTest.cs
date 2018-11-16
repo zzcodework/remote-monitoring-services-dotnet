@@ -142,7 +142,7 @@ namespace WebService.Test.Controllers
                 var pkg = resultPackages.Items.ElementAt(i);
                 Assert.Equal(id + i, pkg.Id);
                 Assert.Equal(name + i, pkg.Name);
-                Assert.Equal(type + i, pkg.packageType);
+                Assert.Equal(type, pkg.packageType);
                 Assert.Equal(content + i, pkg.Content);
                 Assert.Equal(dateCreated, pkg.DateCreated);
             }

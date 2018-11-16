@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
@@ -13,13 +14,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
         public ConfigTypeListApiModel(ConfigTypeList configTypeList)
         {
+            List<String> configType = configTypeList.Items.ToList<String>();
 
             foreach (ConfigType type in Enum.GetValues(typeof(ConfigType)))
             {
-                configTypeList.Items.Prepend(type.ToString());
+                if (!type.Equals(ConfigType.Custom))
+                {
+                    configType.Insert(0, type.ToString());
+                }
             }
 
-            this.Items = configTypeList.Items;
+            this.Items = configType.ToArray<String>();
         }
 
     }
