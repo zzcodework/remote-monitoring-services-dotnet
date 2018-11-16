@@ -28,21 +28,18 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet("solution-settings/theme")]
-        [Authorize("ReadAll")]
         public async Task<object> GetThemeAsync()
         {
             return await this.storage.GetThemeAsync();
         }
 
         [HttpPut("solution-settings/theme")]
-        [Authorize("ReadAll")]
         public async Task<object> SetThemeAsync([FromBody] object theme)
         {
             return await this.storage.SetThemeAsync(theme);
         }
 
         [HttpGet("solution-settings/logo")]
-        [Authorize("ReadAll")]
         public async Task GetLogoAsync()
         {
             var model = await this.storage.GetLogoAsync();
@@ -50,7 +47,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpPut("solution-settings/logo")]
-        [Authorize("ReadAll")]
         public async Task SetLogoAsync()
         {
             MemoryStream memoryStream = new MemoryStream();

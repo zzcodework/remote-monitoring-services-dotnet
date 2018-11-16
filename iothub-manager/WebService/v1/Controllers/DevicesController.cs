@@ -28,7 +28,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <summary>Get a list of devices</summary>
         /// <returns>List of devices</returns>
         [HttpGet]
-        [Authorize("ReadAll")]
         public async Task<DeviceListApiModel> GetDevicesAsync([FromQuery] string query)
         {
             string continuationToken = string.Empty;
@@ -41,7 +40,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         }
 
         [HttpPost("query")]
-        [Authorize("ReadAll")]
         public async Task<DeviceListApiModel> QueryDevicesAsync([FromBody] string query)
         {
             string continuationToken = string.Empty;
@@ -57,7 +55,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         /// <param name="id">Device Id</param>
         /// <returns>Device information</returns>
         [HttpGet("{id}")]
-        [Authorize("ReadAll")]
         public async Task<DeviceRegistryApiModel> GetDeviceAsync(string id)
         {
             return new DeviceRegistryApiModel(await this.devices.GetAsync(id));
