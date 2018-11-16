@@ -24,7 +24,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet]
-        [Authorize("ReadAll")]
         public async Task<PackageListApiModel> GetAllAsync()
         {
             return new PackageListApiModel(await this.storage.GetPackagesAsync());
@@ -42,7 +41,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize("ReadAll")]
         public async Task<PackageApiModel> GetAsync(string id)
         {
             if (string.IsNullOrEmpty(id))

@@ -30,7 +30,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet]
-        [Authorize("ReadAll")]
         public async Task<MessageListApiModel> GetAsync(
             [FromQuery] string from,
             [FromQuery] string to,
@@ -49,7 +48,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpPost]
-        [Authorize("ReadAll")]
         public async Task<MessageListApiModel> PostAsync([FromBody] QueryApiModel body)
         {
             string[] deviceIds = body.Devices == null
