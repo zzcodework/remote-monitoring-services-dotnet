@@ -18,14 +18,24 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
         public PackageListApiModel(IEnumerable<Package> models, string type, string config)
         {
-            type = type.ToLower().Trim();
-            config = config.ToLower().Trim();
-            this.Items = models.Select( m =>  new PackageApiModel(m)).Where(
-                                            package => (
-                                            package.ConfigType != null
-                                            && package.packageType.ToString().ToLower().Equals(type)
-                                            && package.ConfigType.ToString().ToLower().Equals(config)));
-
+            if (string.IsNullOrEmpty(type))
+            {
+                this.Items = models.Select(m => new PackageApiModel(m));
+            }
+            else if (string.IsNullOrEmpty(config))
+            {
+                this.Items = models.Select(m => new PackageApiModel(m)).Where(
+                                                package => (
+                                                package.packageType.ToString().ToLower().Equals(type.ToString().ToLower())));
+            }
+            else
+            {
+                this.Items = models.Select(m => new PackageApiModel(m)).Where(
+                                package => (
+                                package.ConfigType != null
+                                && package.packageType.ToString().ToLower().Equals(type)
+                                && package.ConfigType.ToString().ToLower().Equals(config)));
+            }
         }
     }
 }

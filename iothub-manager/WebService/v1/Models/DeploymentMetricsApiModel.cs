@@ -25,8 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public IDictionary<string, DeploymentStatus> DeviceStatuses { get; set; }
 
         public DeploymentMetricsApiModel()
-        {
-        }
+        {}
 
         public DeploymentMetricsApiModel(DeploymentMetrics metricsServiceModel)
         {
@@ -34,6 +33,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
             this.CustomMetrics = metricsServiceModel.CustomMetrics;
             this.SystemMetrics = metricsServiceModel.SystemMetrics;
+            this.DeviceStatuses = metricsServiceModel.DeviceStatuses;
 
             if (metricsServiceModel.DeviceMetrics != null)
             {

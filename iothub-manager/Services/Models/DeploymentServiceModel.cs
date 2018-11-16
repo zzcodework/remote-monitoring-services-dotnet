@@ -65,9 +65,13 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 this.Type = DeploymentType.DeviceConfiguration;
             }
+            else if (deployment.Content.ModulesContent != null)
+            {
+                this.Type = DeploymentType.EdgeManifest;
+            }
             else
             {
-                throw new InvalidOperationException("Incorrect deployment type found.");
+                this.Type = DeploymentType.DeviceConfiguration;
             }
 
             this.ConfigType = deployment.Labels[ConfigurationsHelper.CONFIG_TYPE_LABEL];

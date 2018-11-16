@@ -176,32 +176,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             {
                 DeploymentMetrics =
                 {
-                    DeviceMetrics = CalculateDeviceMetrics(deviceStatuses),
+                    DeviceMetrics = ConfigurationsHelper.IsEdgeDeployment(deployment) ?
+                                                CalculateDeviceMetrics(deviceStatuses) : null,
                     DeviceStatuses = includeDeviceStatus ? this.GetDeviceStatuses(deployment) : null
                 }
             };
-        }
-
-        private IDictionary<DeploymentStatus, long> CalculateDeviceMetrics(IDictionary<string, DeploymentStatus> deviceStatuses)
-        {
-
-            if (deviceStatuses == null)
-            {
-                return null;
-            }
-
-            IDictionary<DeploymentStatus, long> deviceMetrics = new Dictionary<DeploymentStatus, long>();
-
-            deviceMetrics[DeploymentStatus.Successful] = deviceStatuses.Where(item => 
-                                                            item.Value == DeploymentStatus.Successful).LongCount();
-
-            deviceMetrics[DeploymentStatus.Failed] = deviceStatuses.Where(item =>
-                                                            item.Value == DeploymentStatus.Failed).LongCount();
-
-            deviceMetrics[DeploymentStatus.Pending] = deviceStatuses.Where(item =>
-                                                            item.Value == DeploymentStatus.Pending).LongCount();
-
-            return deviceMetrics;
         }
 
         /// <summary>
@@ -291,6 +270,28 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             return deviceIds;
+        }
+
+        private IDictionary<DeploymentStatus, long> CalculateDeviceMetrics(IDictionary<string, DeploymentStatus> deviceStatuses)
+        {
+
+            if (deviceStatuses == null)
+            {
+                return null;
+            }
+
+            IDictionary<DeploymentStatus, long> deviceMetrics = new Dictionary<DeploymentStatus, long>();
+
+            deviceMetrics[DeploymentStatus.Successful] = deviceStatuses.Where(item =>
+                                                            item.Value == DeploymentStatus.Successful).LongCount();
+
+            deviceMetrics[DeploymentStatus.Failed] = deviceStatuses.Where(item =>
+                                                            item.Value == DeploymentStatus.Failed).LongCount();
+
+            deviceMetrics[DeploymentStatus.Pending] = deviceStatuses.Where(item =>
+                                                            item.Value == DeploymentStatus.Pending).LongCount();
+
+            return deviceMetrics;
         }
     }
 }

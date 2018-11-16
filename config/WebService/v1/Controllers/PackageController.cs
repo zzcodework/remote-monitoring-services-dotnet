@@ -38,11 +38,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 throw new InvalidInputException("Valid package packageType must be provided");
             }
 
-            if (string.IsNullOrEmpty(configType))
-            {
-                throw new InvalidInputException("Valid config packageType must be provided");
-            }
-
             return new PackageListApiModel(await this.storage.GetPackagesAsync(), packageType, configType);
         }
 
