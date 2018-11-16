@@ -55,7 +55,7 @@ namespace WebService.Test.Controllers
             try
             {
                 // Act
-                var package = await this.controller.PostAsync(type, string.Empty, file);
+                var package = await this.controller.PostAsync(type, null, file);
 
                 // Assert
                 Assert.False(expectException);
@@ -149,7 +149,7 @@ namespace WebService.Test.Controllers
         }
 
         [Fact]
-        public async Task GetPackagesTest()
+        public async Task ListPackagesTest()
         {
             // Arrange
             const string id = "packageId";
@@ -182,9 +182,8 @@ namespace WebService.Test.Controllers
             this.mockStorage
                 .Verify(x => x.GetPackagesAsync(), Times.Once);
 
-            Assert.Single(resultPackages.Items);
-
             var pkg = resultPackages.Items.ElementAt(0);
+            Assert.Single(resultPackages.Items);
             Assert.Equal(id + 0, pkg.Id);
             Assert.Equal(name + 0, pkg.Name);
             Assert.Equal(type, pkg.packageType);
@@ -198,7 +197,6 @@ namespace WebService.Test.Controllers
         public async Task GetConfigurationsTest()
         {
             // Arrange
-
             this.mockStorage
                 .Setup(x => x.GetAllConfigurationsAsync())
                 .ReturnsAsync(new ConfigTypeList());

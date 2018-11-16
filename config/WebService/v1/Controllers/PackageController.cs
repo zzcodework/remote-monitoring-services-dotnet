@@ -111,10 +111,5 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 
             await this.storage.DeletePackageAsync(id);
         }
-
-        private string appendCustomConfig(string config, string customConfig)
-        {
-            return config.ToString() + " - " + customConfig.ToString();
-        }
     }
 }

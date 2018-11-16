@@ -226,9 +226,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         private Boolean ValidatePackage(Package package)
         {
             IPackageValidator validator = PackageValidatorFactory.GetValidator(package.packageType, package.ConfigType);
+
+            //Bypass validation for custom config type
             if (validator == null)
             {
-                return true;//Bypass validation for custom config type
+                return true;
             }
             return validator.Validate();
         }
@@ -253,7 +255,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             catch (ResourceNotFoundException)
             {
-                return new ConfigTypeList(); //Return empty Package Configurations 
+                //Return empty Package Configurations 
+                //TODO: Logging - configurations key does not exist in packages.
+                return new ConfigTypeList(); 
             }
         }
 
@@ -267,6 +271,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             catch (ResourceNotFoundException) 
             {
+                //Return empty Package Configurations 
+                //TODO: Logging - configurations key does not exist in packages.
                 list = new ConfigTypeList();
             }
             list.add(customConfigType);

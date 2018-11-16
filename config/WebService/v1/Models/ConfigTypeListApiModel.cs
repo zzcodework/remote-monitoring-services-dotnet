@@ -13,15 +13,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
         public ConfigTypeListApiModel(ConfigTypeList configTypeList)
         {
-            var configTypes = configTypeList.Items.ToList<String>();
 
             foreach (ConfigType type in Enum.GetValues(typeof(ConfigType)))
             {
-                configTypes.Insert(0, type.ToString());
-              
+                configTypeList.Items.Prepend(type.ToString());
             }
 
-            this.Items = configTypes.ToArray<String>();
+            this.Items = configTypeList.Items;
         }
 
     }
