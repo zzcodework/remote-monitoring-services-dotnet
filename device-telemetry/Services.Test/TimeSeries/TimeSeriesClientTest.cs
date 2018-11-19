@@ -51,8 +51,8 @@ namespace Services.Test.TimeSeries
             var result = await this.client.PingAsync();
 
             // Assert
-            Assert.False(result.Item1);
-            Assert.Contains("Unable to acquire access token.", result.Item2);
+            Assert.False(result.IsHealthy);
+            Assert.Contains("TimeSeries check failed", result.Message);
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]

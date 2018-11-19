@@ -1,29 +1,32 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Auth.Services;
+using Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Models;
+using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.Auth.WebService.v1.Controllers
 {
     [Route(Version.PATH + "/[controller]"), TypeFilter(typeof(ExceptionsFilterAttribute))]
     public sealed class StatusController : Controller
     {
-        private readonly ILogger log;
+        private readonly IConfig config;
+        private readonly IStatusService statusService;
 
-        public StatusController(ILogger logger)
+        public StatusController(IConfig config, IStatusService statusService)
         {
-            this.log = logger;
+            this.config = config;
+            this.statusService = statusService;
         }
 
-        public StatusApiModel Get()
+        public async Task<StatusApiModel> GetAsync()
         {
-            // TODO: calculate the actual service status
-            var isOk = true;
-
-            this.log.Info("Service status request", () => new { Healthy = isOk });
-            return new StatusApiModel(isOk, "Alive and well");
+            var result = new StatusApiModel(await this.statusService.GetStatusAsync());
+            result.Properties.Add("AuthRequired", this.config.ClientAuthConfig?.AuthRequired.ToString());
+            result.Properties.Add("Port", this.config.Port.ToString());
+            return result;
         }
     }
 }
