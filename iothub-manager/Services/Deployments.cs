@@ -10,7 +10,6 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
