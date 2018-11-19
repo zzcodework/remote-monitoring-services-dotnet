@@ -26,7 +26,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         private readonly string serviceUri;
         private const string DEFAULT_USER_ID = "default";
 
-        public UserManagementClient(IHttpClient httpClient, IServicesConfig config, ILogger logger)
+        public UserManagementClient(
+            IHttpClient httpClient,
+            IServicesConfig config,
+            ILogger logger)
         {
             this.httpClient = httpClient;
             this.log = logger;

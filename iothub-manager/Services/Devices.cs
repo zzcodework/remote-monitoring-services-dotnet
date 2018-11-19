@@ -28,6 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         Task DeleteAsync(string id);
         Task<TwinServiceModel> GetModuleTwinAsync(string deviceId, string moduleId);
         Task<TwinServiceListModel> GetModuleTwinsByQueryAsync(string query, string continuationToken);
+        Task<StatusResultServiceModel> PingRegistryAsync();
     }
 
     public class Devices : IDevices
@@ -59,6 +60,24 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         {
             this.registry = registry;
             this.ioTHubHostName = ioTHubHostName;
+        }
+
+        // Ping the registry to see if the connection is healthy
+        public async Task<StatusResultServiceModel> PingRegistryAsync()
+        {
+            var result = new StatusResultServiceModel(false, "");
+            try
+            {
+                await this.registry.GetDeviceAsync("healthcheck");
+                result.IsHealthy = true;
+                result.Message = "Alive and Well!";
+            }
+            catch (Exception e)
+            {
+                result.Message = e.Message;
+            }
+
+            return result;
         }
 
         /// <summary>
