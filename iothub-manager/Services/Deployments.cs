@@ -46,6 +46,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
         private const string DEVICE_GROUP_QUERY_PARAM = "deviceGroupQuery";
         private const string NAME_PARAM = "name";
         private const string PACKAGE_CONTENT_PARAM = "packageContent";
+        private const string CONFIG_TYPE_PARAM = "configType";
         private const string PRIORITY_PARAM = "priority";
 
         private const string DEVICE_ID_KEY = "DeviceId";
@@ -107,6 +108,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException(PACKAGE_CONTENT_PARAM);
             }
 
+            if (model.Type.Equals(DeploymentType.DeviceConfiguration) 
+                && string.IsNullOrEmpty(model.ConfigType))
+            {
+                throw new ArgumentNullException(CONFIG_TYPE_PARAM);
+            }
+
             if (model.Priority < 0)
             {
                 throw new ArgumentOutOfRangeException(PRIORITY_PARAM,
@@ -159,6 +166,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             var deployment = await this.registry.GetConfigurationAsync(deploymentId);
+
             if (deployment == null)
             {
                 throw new ResourceNotFoundException($"Deployment with id {deploymentId} not found.");
@@ -178,7 +186,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 {
                     DeviceMetrics = ConfigurationsHelper.IsEdgeDeployment(deployment) ?
                                                 null : CalculateDeviceMetrics(deviceStatuses),
-                    DeviceStatuses = includeDeviceStatus ? this.GetDeviceStatuses(deployment) : null
+                    DeviceStatuses = includeDeviceStatus ? deviceStatuses : null
                 }
             };
         }

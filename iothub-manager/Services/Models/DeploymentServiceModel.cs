@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
@@ -57,24 +58,38 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
             this.Priority = deployment.Priority;
 
-            if (deployment.Labels.Values.Contains(DeploymentType.EdgeManifest.ToString()))
+            if (deployment.Labels.ContainsKey(ConfigurationsHelper.DEPLOYMENT_TYPE_LABEL) &&
+                !(string.IsNullOrEmpty(deployment.Labels[ConfigurationsHelper.DEPLOYMENT_TYPE_LABEL])))
             {
-                this.Type = DeploymentType.EdgeManifest;
-            }
-            else if (deployment.Labels.Values.Contains(DeploymentType.DeviceConfiguration.ToString()))
-            {
-                this.Type = DeploymentType.DeviceConfiguration;
-            }
-            else if (deployment.Content.ModulesContent != null)
-            {
-                this.Type = DeploymentType.EdgeManifest;
+                if (deployment.Labels.Values.Contains(DeploymentType.EdgeManifest.ToString()))
+                {
+                    this.Type = DeploymentType.EdgeManifest;
+                }
+                else if (deployment.Labels.Values.Contains(DeploymentType.DeviceConfiguration.ToString()))
+                {
+                    this.Type = DeploymentType.DeviceConfiguration;
+                }
             }
             else
             {
-                this.Type = DeploymentType.DeviceConfiguration;
+                if (deployment.Content?.ModulesContent != null)
+                {
+                    this.Type = DeploymentType.EdgeManifest;
+                }
+                else if (deployment.Content?.DeviceContent != null)
+                {
+                    this.Type = DeploymentType.DeviceConfiguration;
+                }
             }
 
-            this.ConfigType = deployment.Labels[ConfigurationsHelper.CONFIG_TYPE_LABEL];
+            if (deployment.Labels.ContainsKey(ConfigurationsHelper.CONFIG_TYPE_LABEL))
+            {
+                this.ConfigType = deployment.Labels[ConfigurationsHelper.CONFIG_TYPE_LABEL];
+            }
+            else
+            {
+                this.ConfigType = DeploymentType.EdgeManifest.ToString();
+            }
 
             this.DeploymentMetrics = new DeploymentMetrics(deployment.SystemMetrics, deployment.Metrics);
         }

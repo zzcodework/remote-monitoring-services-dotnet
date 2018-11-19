@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Newtonsoft.Json;
 
@@ -16,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
         private const string PRIORITY_PARAM = "priority";
 
         public const string DEPLOYMENT_TYPE_LABEL = "Type";
-        public const string CONFIG_TYPE_LABEL = "string";
+        public const string CONFIG_TYPE_LABEL = "ConfigType";
         public const string DEPLOYMENT_NAME_LABEL = "Name";
         public const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
         public const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
@@ -26,9 +27,21 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 
         public static Configuration ToHubConfiguration(DeploymentServiceModel model)
         {
+            var packageConfiguration = JsonConvert.DeserializeObject<Configuration>(model.PackageContent);
+
+            if (model.Type.Equals(DeploymentType.EdgeManifest) &&
+                packageConfiguration.Content?.DeviceContent != null)
+            {
+                throw new InvalidInputException("Deployment type does not match with package contents.");
+            }
+            else if (model.Type.Equals(DeploymentType.DeviceConfiguration) &&
+                packageConfiguration.Content?.ModulesContent != null)
+            {
+                throw new InvalidInputException("Deployment type does not match with package contents.");
+            }
+
             var deploymentId = Guid.NewGuid().ToString().ToLower();
             var configuration = new Configuration(deploymentId);
-            var packageConfiguration = JsonConvert.DeserializeObject<Configuration>(model.PackageContent);
             configuration.Content = packageConfiguration.Content;
 
             var targetCondition = QueryConditionTranslator.ToQueryString(model.DeviceGroupQuery);

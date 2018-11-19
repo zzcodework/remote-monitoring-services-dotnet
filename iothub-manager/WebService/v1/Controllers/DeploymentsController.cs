@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 
@@ -45,6 +46,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
             if (string.IsNullOrWhiteSpace(deployment.PackageContent))
             {
                 throw new InvalidInputException("PackageContent must be provided");
+            }
+
+            if ( deployment.Type.Equals(DeploymentType.DeviceConfiguration) 
+                && string.IsNullOrEmpty(deployment.ConfigType))
+            {
+                throw new InvalidInputException("Config type must be provided");
             }
 
             if (deployment.Priority < 0)

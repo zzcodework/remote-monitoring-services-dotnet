@@ -18,11 +18,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public DeploymentMetrics(ConfigurationMetrics systemMetrics, ConfigurationMetrics customMetrics)
         {
-            this.SystemMetrics = systemMetrics.Results;
+            this.SystemMetrics = systemMetrics != null ? systemMetrics.Results : null;
 
             this.CustomMetrics = customMetrics.Results;
-
-            this.DeviceStatuses = new Dictionary<string, DeploymentStatus>();
         }
     }
 }

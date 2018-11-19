@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Devices;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
@@ -146,6 +148,7 @@ namespace WebService.Test.v1.Controllers
                 Assert.Equal(DeploymentType.EdgeManifest, result.Type);
                 Assert.Equal(CONFIG_TYPE, result.ConfigType);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
+                Assert.Equal(5, result.Metrics.SystemMetrics.Count());
             }
         }
 
@@ -213,6 +216,28 @@ namespace WebService.Test.v1.Controllers
                 Assert.Equal(CONFIG_TYPE, result.ConfigType);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
             }
+        }
+
+        [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        [InlineData("depName", "dvcGroupId", "dvcQuery", "pkgContent", -1)]
+        public async Task PostInvalidDeploymentTest(string name, string deviceGroupId,
+                                             string deviceGroupQuery, string packageContent,
+                                             int priority)
+        {
+            // Arrange
+            var depApiModel = new DeploymentApiModel()
+            {
+                Name = name,
+                DeviceGroupId = deviceGroupId,
+                DeviceGroupQuery = deviceGroupQuery,
+                PackageContent = packageContent,
+                Type = DeploymentType.DeviceConfiguration,
+                ConfigType = string.Empty,
+                Priority = priority
+            };
+
+            // Act
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.deploymentsController.PostAsync(depApiModel));    
         }
     }
 }

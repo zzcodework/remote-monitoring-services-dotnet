@@ -29,10 +29,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 
     public class DeviceStatusQueries {
 
+        private const string FirmwareUpdateMxChip = "FirmwareUpdateMxChip";
+
         private static Dictionary<string, IDictionary<QueryType, string>> AdmQueryMapping =
             new Dictionary<string, IDictionary<QueryType, string>>()
         {
-            { "FirmwareUpdateMxChip", FirmwareUpdateMxChipStatusQueries.Queries }
+            { FirmwareUpdateMxChip, FirmwareUpdateMxChipStatusQueries.Queries }
         };
 
         internal static IDictionary<QueryType, string> GetQueries(string deploymentType, string configType)

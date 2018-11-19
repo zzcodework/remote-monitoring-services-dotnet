@@ -29,6 +29,14 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         public DeploymentMetricsApiModel(DeploymentMetrics metricsServiceModel)
         {
+            this.SystemMetrics = new Dictionary<string, long>();
+
+            this.SystemMetrics[APPLIED_METRICS_KEY] = 0;
+            this.SystemMetrics[TARGETED_METRICS_KEY] = 0;
+            this.SystemMetrics[SUCCESSFUL_METRICS_KEY] = 0;
+            this.SystemMetrics[FAILED_METRICS_KEY] = 0;
+            this.SystemMetrics[PENDING_METRICS_KEY] = 0;
+
             if (metricsServiceModel == null) return;
 
             this.CustomMetrics = metricsServiceModel.CustomMetrics;
