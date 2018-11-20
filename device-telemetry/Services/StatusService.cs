@@ -51,6 +51,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             var explorerUrl = string.Empty;
 
             string storageAdapterName = "StorageAdapter";
+            string storageName = "Storage";
             string diagnosticsName = "Diagnostics";
             string authName = "Auth";
 
@@ -85,7 +86,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             {
                 // Check connection to Time Series Insights
                 var timeSeriesResult = await this.timeSeriesClient.PingAsync();
-                SetServiceStatus("Storage", timeSeriesResult, result, errors);
+                SetServiceStatus("TimeSeries", timeSeriesResult, result, errors);
 
                 // Add Time Series Insights explorer url
                 var timeSeriesFqdn = this.servicesConfig.TimeSeriesFqdn;
@@ -98,7 +99,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
             // Check access to Storage
             var storageResult = await this.storageClient.PingAsync();
-            SetServiceStatus(storageAdapterName, storageResult, result, errors);
+            SetServiceStatus(storageName, storageResult, result, errors);
 
             if (errors.Count > 0)
             {
