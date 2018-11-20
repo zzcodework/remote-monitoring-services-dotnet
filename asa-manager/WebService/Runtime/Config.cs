@@ -76,9 +76,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string ALARMS_KEY = APPLICATION_KEY + "AlarmsStorage:";
         private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "storageType";
 
-        private const string RULES_KEY = "DeviceTelemetryRulesService:";
-        private const string RULES_WEBSERVICE_URL_KEY = RULES_KEY + "webservice_url";
-        private const string RULES_WEBSERVICE_TIMEOUT_KEY = RULES_KEY + "webservice_timeout_msecs";
+        private const string DEVICE_TELEMETRY_KEY = "DeviceTelemetryService:";
+        private const string DEVICE_TELEMETRY_WEBSERVICE_URL_KEY = DEVICE_TELEMETRY_KEY + "webservice_url";
+        private const string DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY = DEVICE_TELEMETRY_KEY + "webservice_timeout_msecs";
 
         private const string CONFIG_KEY = "PCSConfigurationService:";
         private const string CONFIG_WEBSERVICE_URL_KEY = CONFIG_KEY + "webservice_url";
@@ -171,8 +171,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
 
             return new ServicesConfig
             {
-                RulesWebServiceUrl = configData.GetString(RULES_WEBSERVICE_URL_KEY),
-                RulesWebServiceTimeout = configData.GetInt(RULES_WEBSERVICE_TIMEOUT_KEY),
+                DeviceTelemetryWebServiceUrl = configData.GetString(DEVICE_TELEMETRY_WEBSERVICE_URL_KEY),
+                DeviceTelemetryWebServiceTimeout = configData.GetInt(DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY),
                 ConfigServiceUrl = configData.GetString(CONFIG_WEBSERVICE_URL_KEY),
                 ConfigServiceTimeout = configData.GetInt(CONFIG_WEBSERVICE_TIMEOUT_KEY),
                 IotHubManagerServiceUrl = configData.GetString(IOTHUB_MANAGER_WEBSERVICE_URL_KEY),

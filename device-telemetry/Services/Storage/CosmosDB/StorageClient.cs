@@ -10,6 +10,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.SystemFunctions;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB
@@ -46,7 +47,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB
             FeedOptions queryOptions,
             SqlQuerySpec querySpec);
 
-        Tuple<bool, string> Ping();
+        Task<StatusResultServiceModel> PingAsync();
     }
 
     public class StorageClient : IStorageClient, IDisposable
@@ -185,26 +186,31 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB
             return this.client;
         }
 
-        public Tuple<bool, string> Ping()
+        public async Task<StatusResultServiceModel> PingAsync()
         {
-            Uri response = null;
+            var result = new StatusResultServiceModel(false, "Storage check failed");
 
-            if (this.client != null)
+            try
             {
-                // make generic call to see if storage client can be reached
-                response = this.client.ReadEndpoint;
+                DatabaseAccount response = null;
+                if (this.client != null)
+                {
+                    // make generic call to see if storage client can be reached
+                    response = await this.client.GetDatabaseAccountAsync();
+                }
+
+                if (response != null)
+                {
+                    result.IsHealthy = true;
+                    result.Message = "Alive and Well!";
+                }
+            }
+            catch (Exception e)
+            {
+                this.log.Info(result.Message, () => new { e });
             }
 
-            if (response != null)
-            {
-                return new Tuple<bool, string>(true, "OK: Alive and well");
-            }
-            else
-            {
-                return new Tuple<bool, string>(false,
-                    "Could not reach storage service. " +
-                    "Check connection string");
-            }
+            return result;
         }
 
         public List<Document> QueryDocuments(
@@ -271,7 +277,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.CosmosDB
 
             if (resultList.Length > 0)
             {
-                return (int) resultList[0];
+                return (int)resultList[0];
             }
 
             this.log.Info("No results found for count query", () => new { databaseName, colId, querySpec });
