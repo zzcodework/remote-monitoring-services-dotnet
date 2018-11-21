@@ -1,8 +1,4 @@
-﻿using System;
-// Copyright (c) Microsoft. All rights reserved.
-
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Microsoft. All rights reserved.
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidation
 {
