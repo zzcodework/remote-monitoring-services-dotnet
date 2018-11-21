@@ -30,11 +30,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet("{packageType}/{configType}")]
-        public async Task<PackageListApiModel> GetAllAsync(string packageType, string configType)
+        public async Task<PackageListApiModel> GetListAsync(string packageType, string configType)
         {
             if (string.IsNullOrEmpty(packageType))
             {
-                throw new InvalidInputException("Valid package packageType must be provided");
+                throw new InvalidInputException("Valid package Type must be provided");
             }
 
             return new PackageListApiModel(await this.storage.GetPackagesAsync(), packageType, configType);
@@ -55,7 +55,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [Route("configtypes")]
         public async Task<ConfigTypeListApiModel> GetListAsync()
         {
-            return new ConfigTypeListApiModel(await this.storage.GetAllConfigurationsAsync());
+            return new ConfigTypeListApiModel(await this.storage.GetConfigTypeListAsync());
         }
 
         [HttpPost]
@@ -64,7 +64,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         {
             if (string.IsNullOrEmpty(packageType))
             {
-                throw new InvalidInputException("Package packageType must be provided");
+                throw new InvalidInputException("Package Type must be provided");
             }
 
             if (configType == null)
@@ -75,7 +75,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             bool isValidPackageType = Enum.TryParse(packageType, true, out PackageType uploadedPackageType);
             if (!isValidPackageType)
             {
-                throw new InvalidInputException($"Provided package packageType {packageType} is not valid.");
+                throw new InvalidInputException($"Provided package Type {packageType} is not valid.");
             }
 
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))

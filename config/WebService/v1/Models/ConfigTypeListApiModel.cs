@@ -10,22 +10,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
     public class ConfigTypeListApiModel
     {
         [JsonProperty("Items")]
-        public string[] Items { get; set; }
+        public string[] configTypes { get; set; }
 
         public ConfigTypeListApiModel(ConfigTypeList configTypeList)
         {
-            List<String> configType = configTypeList.Items.ToList<String>();
-
-            foreach (ConfigType type in Enum.GetValues(typeof(ConfigType)))
-            {
-                if (!type.Equals(ConfigType.Custom))
-                {
-                    configType.Insert(0, type.ToString());
-                }
-            }
-
-            this.Items = configType.ToArray<String>();
+            this.configTypes = configTypeList.ConfigTypes;
         }
-
     }
 }

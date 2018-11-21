@@ -6,6 +6,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
 {
     internal class EdgePackageValidator : PackageValidator
     {
+        //TODO: Implement validation for Edge packages
         public override bool Validate()
         {
             return true;

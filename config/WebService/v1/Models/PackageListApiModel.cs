@@ -15,26 +15,29 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         {
             this.Items = models.Select(m => new PackageApiModel(m));
         }
-
-        public PackageListApiModel(IEnumerable<Package> models, string type, string config)
+        
+        /**
+         * This method helps filtering packages by packageType and configType
+         */
+        public PackageListApiModel(IEnumerable<Package> models, string packageType, string configType)
         {
-            if (string.IsNullOrEmpty(type))
+            if (string.IsNullOrEmpty(packageType))
             {
                 this.Items = models.Select(m => new PackageApiModel(m));
             }
-            else if (string.IsNullOrEmpty(config))
+            else if (string.IsNullOrEmpty(configType))
             {
                 this.Items = models.Select(m => new PackageApiModel(m)).Where(
                                                 package => (
-                                                package.packageType.ToString().ToLower().Equals(type.ToString().ToLower())));
+                                                package.packageType.ToString().ToLower().Equals(packageType.ToString().ToLower())));
             }
             else
             {
                 this.Items = models.Select(m => new PackageApiModel(m)).Where(
                                 package => (
                                 package.ConfigType != null
-                                && package.packageType.ToString().ToLower().Equals(type.ToLower())
-                                && package.ConfigType.ToString().ToLower().Equals(config.ToLower())));
+                                && package.packageType.ToString().ToLower().Equals(packageType.ToLower())
+                                && package.ConfigType.ToString().ToLower().Equals(configType.ToLower())));
             }
         }
     }

@@ -33,9 +33,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
             this.SystemMetrics[APPLIED_METRICS_KEY] = 0;
             this.SystemMetrics[TARGETED_METRICS_KEY] = 0;
-            this.SystemMetrics[SUCCESSFUL_METRICS_KEY] = 0;
-            this.SystemMetrics[FAILED_METRICS_KEY] = 0;
-            this.SystemMetrics[PENDING_METRICS_KEY] = 0;
 
             if (metricsServiceModel == null) return;
 

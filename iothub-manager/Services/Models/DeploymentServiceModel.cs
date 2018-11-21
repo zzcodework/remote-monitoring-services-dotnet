@@ -109,5 +109,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         DeviceConfiguration
     }
 
-
+    public enum ConfigType {
+        FirmwareUpdateMxChip
+    }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {
@@ -9,7 +10,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
     {
         private HashSet<String> configTypes = new HashSet<String>();
 
-        public string[] Items
+        [JsonProperty("configtypes")]
+        public string[] ConfigTypes
         {
             get
             {

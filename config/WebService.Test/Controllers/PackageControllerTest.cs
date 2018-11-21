@@ -46,11 +46,11 @@ namespace WebService.Test.Controllers
             }
 
             this.mockStorage.Setup(x => x.AddPackageAsync(
-                                    It.Is<Package>(p => p.packageType.ToString().Equals(type) &&
+                                    It.Is<Package>(p => p.Type.ToString().Equals(type) &&
                                                         p.Name.Equals(filename))))
                             .ReturnsAsync(new Package() {
                                 Name = filename,
-                                packageType = PackageType.EdgeManifest
+                                Type = PackageType.EdgeManifest
                             });
             try
             {
@@ -85,7 +85,7 @@ namespace WebService.Test.Controllers
                     Id = id,
                     Name = name,
                     Content = content,
-                    packageType = type,
+                    Type = type,
                     ConfigType = string.Empty,
                     DateCreated = dateCreated
                 });
@@ -121,7 +121,7 @@ namespace WebService.Test.Controllers
                                          Id = id + i,
                                          Name = name + i,
                                          Content = content + i,
-                                         packageType = type,
+                                         Type = type,
                                          ConfigType = config + i,
                                          DateCreated = dateCreated
                                      }).ToList();
@@ -164,7 +164,7 @@ namespace WebService.Test.Controllers
                 Id = id + i,
                 Name = name + i,
                 Content = content + i,
-                packageType = type + i,
+                Type = type + i,
                 ConfigType = (i == 0) ? ConfigType.FirmwareUpdateMxChip.ToString() : i.ToString(),
                 DateCreated = dateCreated
             }).ToList();
@@ -198,15 +198,15 @@ namespace WebService.Test.Controllers
         {
             // Arrange
             this.mockStorage
-                .Setup(x => x.GetAllConfigurationsAsync())
+                .Setup(x => x.GetConfigTypeListAsync())
                 .ReturnsAsync(new ConfigTypeList());
 
             // Act
             var cfg = await this.controller.GetListAsync();
 
             // Assert
-            Assert.Single(cfg.Items);
-            Assert.Contains(ConfigType.FirmwareUpdateMxChip.ToString(), cfg.Items);
+            Assert.Single(cfg.configTypes);
+            Assert.Contains(ConfigType.FirmwareUpdateMxChip.ToString(), cfg.configTypes);
         }
 
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
@@ -93,7 +94,7 @@ namespace Services.Test
                     ""id"": ""9a9690df-f037-4c3a-8fc0-8eaba687609d"",
                     ""schemaVersion"": ""1.0"",
                     ""labels"": {
-                        ""packageType"": ""DeviceConfiguration"",
+                        ""Type"": ""DeviceConfiguration"",
                         ""Name"": ""Deployment-12"",
                         ""DeviceGroupId"": ""MxChip"",
                         ""RMDeployment"": ""True""
@@ -140,7 +141,9 @@ namespace Services.Test
                 new ServicesConfig
                 {
                     AzureMapsKey = this.azureMapsKey
-                });
+                },
+                new Logger();
+                );
         }
 
         [Fact]
@@ -715,7 +718,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = key,
-                packageType = PackageType.EdgeManifest,
+                Type = PackageType.EdgeManifest,
                 ConfigType = string.Empty,
                 Content = EDGE_PACKAGE_JSON
             };
@@ -736,7 +739,7 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.packageType, result.packageType);
+            Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
         }
 
@@ -750,7 +753,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = key,
-                packageType = PackageType.DeviceConfiguration,
+                Type = PackageType.DeviceConfiguration,
                 Content = ADM_PACKAGE_JSON,
                 ConfigType = ConfigType.FirmwareUpdateMxChip.ToString()
             };
@@ -766,12 +769,32 @@ namespace Services.Test
                     Data = value
                 });
 
+            const string configKey = "Items";
+
+            this.mockClient
+                .Setup(x => x.UpdateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => i == configKey),
+                       It.Is<string>(i => i == ConfigType.FirmwareUpdateMxChip.ToString()),
+                       It.Is<string>(i => i == "*")))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+
+            this.mockClient
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(i => i == collectionId),
+                    It.Is<string>(i => i == configKey)))
+                .ThrowsAsync(new ResourceNotFoundException());
+
             // Act
             var result = await this.storage.AddPackageAsync(pkg);
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.packageType, result.packageType);
+            Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
             Assert.Equal(pkg.ConfigType, result.ConfigType);
         }
@@ -788,7 +811,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = key,
-                packageType = PackageType.DeviceConfiguration,
+                Type = PackageType.DeviceConfiguration,
                 Content = ADM_PACKAGE_JSON,
                 ConfigType = "Custom-config"
             };
@@ -803,6 +826,7 @@ namespace Services.Test
                     Key = key,
                     Data = value
                 });
+
             const string configKey = "Items";
 
             this.mockClient
@@ -828,7 +852,7 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.packageType, result.packageType);
+            Assert.Equal(pkg.Type, result.Type);
             Assert.Equal(pkg.Content, result.Content);
             Assert.Equal(pkg.ConfigType, result.ConfigType);
         }
@@ -847,7 +871,7 @@ namespace Services.Test
                 .ThrowsAsync(new ResourceNotFoundException());
 
             // Act
-            var result = await this.storage.GetAllConfigurationsAsync();
+            var result = await this.storage.GetConfigTypeListAsync();
 
             // Assert
             Assert.Empty(result.Items);
@@ -862,7 +886,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = "testpackage",
-                packageType = PackageType.EdgeManifest,
+                Type = PackageType.EdgeManifest,
                 Content = "InvalidPackage"
             };
 

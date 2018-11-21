@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     [JsonConverter(typeof(StringEnumConverter))]
     public enum DeploymentStatus
     {
-        Pending, Successful, Failed
+        Pending, Successful, Failed, Unknown
     }
 
     public class Deployments : IDeployments
@@ -183,8 +183,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             {
                 DeploymentMetrics =
                 {
-                    DeviceMetrics = ConfigurationsHelper.IsEdgeDeployment(deployment) ?
-                                                null : CalculateDeviceMetrics(deviceStatuses),
+                    DeviceMetrics = CalculateDeviceMetrics(deviceStatuses),
                     DeviceStatuses = includeDeviceStatus ? deviceStatuses : null
                 }
             };
@@ -213,22 +212,30 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         private IDictionary<string, DeploymentStatus> GetDeviceStatuses(Configuration deployment)
         {
+
             deployment.Labels.TryGetValue(ConfigurationsHelper.DEPLOYMENT_TYPE_LABEL, out string deploymentType);
             deployment.Labels.TryGetValue(ConfigurationsHelper.CONFIG_TYPE_LABEL, out string configType);
 
             IDictionary<QueryType, String> Queries = GetQueries(deploymentType, configType);
 
-            if (Queries == null)
-            {
-                return null;
-            }
+            var deviceWithStatus = new Dictionary<string, DeploymentStatus>();
 
             string deploymentId = deployment.Id;
             var appliedDevices = this.GetDevicesInQuery(Queries[QueryType.APPLIED], deploymentId);
+
+            if (!(ConfigurationsHelper.IsEdgeDeployment(deployment)) &&
+                    !(configType.Equals(ConfigType.FirmwareUpdateMxChip.ToString())))
+            {
+                foreach (var devices in appliedDevices)
+                {
+                    deviceWithStatus.Add(devices, DeploymentStatus.Unknown);
+                }
+
+                return deviceWithStatus;
+            }
+
             var successfulDevices = this.GetDevicesInQuery(Queries[QueryType.SUCCESSFUL], deploymentId);
             var failedDevices = this.GetDevicesInQuery(Queries[QueryType.FAILED], deploymentId);
-
-            var deviceWithStatus = new Dictionary<string, DeploymentStatus>();
 
             foreach (var successfulDevice in successfulDevices)
             {

@@ -14,12 +14,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
             { ConfigType.FirmwareUpdateMxChip, new FirmwareUpdateMxChipValidator() }
         };
 
+        private static EdgePackageValidator edgePackageValidator = new EdgePackageValidator();
+
         //TODO:Return double checked singleton objects
         public static IPackageValidator GetValidator(PackageType packageType, string configType)
         {
             if (packageType.Equals(PackageType.EdgeManifest))
             {
-                return new EdgePackageValidator();
+                return edgePackageValidator;
             }
 
             Enum.TryParse<ConfigType>(configType, out ConfigType type);

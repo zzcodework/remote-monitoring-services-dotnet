@@ -32,7 +32,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         {
             this.Id = model.Id;
             this.Name = model.Name;
-            this.packageType = model.packageType;
+            this.packageType = model.Type;
             this.DateCreated = model.DateCreated;
             this.Content = model.Content;
             this.ConfigType = model.ConfigType;
@@ -56,7 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             {
                 Content = this.Content,
                 Name = this.Name,
-                packageType = this.packageType,
+                Type = this.packageType,
                 ConfigType = this.ConfigType
             };
         }

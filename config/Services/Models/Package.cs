@@ -12,7 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         public string Name { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public PackageType packageType { get; set; }
+        public PackageType Type { get; set; }
 
         public string ConfigType { get; set; }
 

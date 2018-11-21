@@ -39,7 +39,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public int Priority { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        [JsonProperty(PropertyName = "Type")]
+        [JsonProperty(PropertyName = "PackageType")]
         public DeploymentType Type { get; set; }
 
         [JsonProperty(PropertyName = "ConfigType")]
