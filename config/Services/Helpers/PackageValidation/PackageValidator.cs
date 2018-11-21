@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using System;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
