@@ -74,12 +74,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
 
             this.log.Info("Seed begin", () => { });
-            await this.SeedAsync();
-            this.log.Info("Seed end", () => { });
-
-            await this.SetCompletedFlagAsync();
-
-            await this.mutex.LeaveAsync(SEED_COLLECTION_ID, MUTEX_KEY);
+            try
+            {
+                await this.SeedAsync();
+                this.log.Info("Seed end", () => { });
+                await this.SetCompletedFlagAsync();
+                this.log.Info("Seed completed flag set", () => { });
+            }
+            finally
+            {
+                await this.mutex.LeaveAsync(SEED_COLLECTION_ID, MUTEX_KEY);
+            }
         }
 
         private async Task<bool> CheckCompletedFlagAsync()
