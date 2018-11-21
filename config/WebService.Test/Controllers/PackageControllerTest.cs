@@ -131,7 +131,7 @@ namespace WebService.Test.Controllers
                 .ReturnsAsync(packages);
 
             // Act
-            var resultPackages = await this.controller.GetAllAsync();
+            var resultPackages = await this.controller.GetListAsync(null, null);
 
             // Assert
             this.mockStorage
@@ -174,7 +174,7 @@ namespace WebService.Test.Controllers
                 .ReturnsAsync(packages);
 
             // Act
-            var resultPackages = await this.controller.GetAllAsync(
+            var resultPackages = await this.controller.GetListAsync(
                                                     PackageType.DeviceConfiguration.ToString(),
                                                     ConfigType.FirmwareUpdateMxChip.ToString());
 
@@ -205,8 +205,7 @@ namespace WebService.Test.Controllers
             var cfg = await this.controller.GetListAsync();
 
             // Assert
-            Assert.Single(cfg.configTypes);
-            Assert.Contains(ConfigType.FirmwareUpdateMxChip.ToString(), cfg.configTypes);
+            Assert.Empty(cfg.configTypes);
         }
 
 

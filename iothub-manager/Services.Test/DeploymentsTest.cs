@@ -9,6 +9,7 @@ using Xunit;
 using System.Threading.Tasks;
 using Services.Test.helpers;
 using Microsoft.Azure.Devices;
+using System.Linq;
 
 namespace Services.Test
 {
@@ -392,14 +393,8 @@ namespace Services.Test
             var returnedDeployment = await this.deployments.GetAsync(deploymentId);
 
             // Assert Should returned Deplyment Type according to label
-            if (isEdgeDeployment)
-            {
-                Assert.Null(returnedDeployment.DeploymentMetrics.DeviceMetrics);
-            }
-            else
-            {
-                Assert.NotNull(returnedDeployment.DeploymentMetrics.DeviceMetrics);
-            }
+            Assert.NotNull(returnedDeployment.DeploymentMetrics.DeviceMetrics);
+            Assert.Equal(3, returnedDeployment.DeploymentMetrics.DeviceMetrics.Count());
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]

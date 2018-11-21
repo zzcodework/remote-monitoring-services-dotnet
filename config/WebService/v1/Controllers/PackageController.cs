@@ -23,16 +23,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             this.storage = storage;
         }
 
+        /**
+         * This function can be used to packages with and without parameters packageType, configType
+         */
         [HttpGet]
-        [Authorize("ReadAll")]
-        public async Task<PackageListApiModel> GetAllAsync()
+        public async Task<PackageListApiModel> GetListAsync([FromQuery]string packageType, [FromQuery]string configType)
         {
-            return new PackageListApiModel(await this.storage.GetPackagesAsync());
-        }
+            if (string.IsNullOrEmpty(packageType) && string.IsNullOrEmpty(configType))
+            {
+                return new PackageListApiModel(await this.storage.GetPackagesAsync());
+            }
 
-        [HttpGet("{packageType}/{configType}")]
-        public async Task<PackageListApiModel> GetListAsync(string packageType, string configType)
-        {
             if (string.IsNullOrEmpty(packageType))
             {
                 throw new InvalidInputException("Valid package Type must be provided");
@@ -42,7 +43,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize("ReadAll")]
         public async Task<PackageApiModel> GetAsync(string id)
         {
             if (string.IsNullOrEmpty(id))

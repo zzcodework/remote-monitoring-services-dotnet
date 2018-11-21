@@ -111,6 +111,16 @@ namespace WebService.Test.v1.Controllers
         {
             // Arrange
             var deploymentsList = new List<DeploymentServiceModel>();
+            var deploymentMetrics = new DeploymentMetrics(null, null)
+            {
+                DeviceMetrics = new Dictionary<DeploymentStatus, long>()
+                {
+                    { DeploymentStatus.Successful, 0},
+                    { DeploymentStatus.Pending, 0},
+                    { DeploymentStatus.Failed, 0}
+                }
+            };
+
             for (var i = 0; i < numDeployments; i++)
             {
                 deploymentsList.Add(new DeploymentServiceModel()
@@ -123,7 +133,8 @@ namespace WebService.Test.v1.Controllers
                     Id = DEPLOYMENT_ID + i,
                     Type = DeploymentType.EdgeManifest,
                     ConfigType = CONFIG_TYPE,
-                    CreatedDateTimeUtc = DateTime.UtcNow
+                    CreatedDateTimeUtc = DateTime.UtcNow,
+                    DeploymentMetrics = deploymentMetrics
                 });
             }
 

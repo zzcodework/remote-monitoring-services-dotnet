@@ -142,7 +142,7 @@ namespace Services.Test
                 {
                     AzureMapsKey = this.azureMapsKey
                 },
-                new Logger();
+                new Logger(string.Empty, LogLevel.Debug)
                 );
         }
 
@@ -769,7 +769,7 @@ namespace Services.Test
                     Data = value
                 });
 
-            const string configKey = "Items";
+            const string configKey = "configtypes";
 
             this.mockClient
                 .Setup(x => x.UpdateAsync(
@@ -827,7 +827,7 @@ namespace Services.Test
                     Data = value
                 });
 
-            const string configKey = "Items";
+            const string configKey = "configtypes";
 
             this.mockClient
                 .Setup(x => x.UpdateAsync(
@@ -861,7 +861,7 @@ namespace Services.Test
         public async Task ListConfigurationsTest()
         {
             const string collectionId = "packages";
-            const string configKey = "Items";
+            const string configKey = "configtypes";
 
             // Arrange
             this.mockClient
@@ -874,7 +874,7 @@ namespace Services.Test
             var result = await this.storage.GetConfigTypeListAsync();
 
             // Assert
-            Assert.Empty(result.Items);
+            Assert.Empty(result.ConfigTypes);
         }
 
 
