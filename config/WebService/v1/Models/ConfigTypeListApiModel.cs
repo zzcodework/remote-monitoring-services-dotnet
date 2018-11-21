@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
@@ -12,9 +9,18 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty("Items")]
         public string[] configTypes { get; set; }
 
+        [JsonProperty(PropertyName = "$metadata")]
+        public Dictionary<string, string> Metadata { get; set; }
+
         public ConfigTypeListApiModel(ConfigTypeList configTypeList)
         {
             this.configTypes = configTypeList.ConfigTypes;
+
+            this.Metadata = new Dictionary<string, string>
+            {
+                { "$type", $"DevicePropertyList;{Version.NUMBER}" },
+                { "$url", $"/{Version.PATH}/deviceproperties" }
+            };
         }
     }
 }

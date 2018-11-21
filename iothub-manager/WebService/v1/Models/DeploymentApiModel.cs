@@ -48,8 +48,16 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "Metrics", NullValueHandling = NullValueHandling.Ignore)]
         public DeploymentMetricsApiModel Metrics { get; set; }
 
+        [JsonProperty(PropertyName = "$metadata")]
+        public Dictionary<string, string> Metadata { get; set; }
+
         public DeploymentApiModel()
         {
+            this.Metadata = new Dictionary<string, string>
+            {
+                { "$type", $"DevicePropertyList;{Version.NUMBER}" },
+                { "$url", $"/{Version.PATH}/deviceproperties" }
+            };
         }
 
         public DeploymentApiModel(DeploymentServiceModel serviceModel)
@@ -68,6 +76,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
             {
                 DeviceStatuses = serviceModel.DeploymentMetrics?.DeviceStatuses
+            };
+            this.Metadata = new Dictionary<string, string>
+            {
+                { "$type", $"DevicePropertyList;{Version.NUMBER}" },
+                { "$url", $"/{Version.PATH}/deviceproperties" }
             };
         }
 

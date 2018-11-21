@@ -77,7 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             bool isValidPackageType = Enum.TryParse(packageType, true, out PackageType uploadedPackageType);
             if (!isValidPackageType)
             {
-                throw new InvalidInputException($"Provided package Type {packageType} is not valid.");
+                throw new InvalidInputException($"Provided packageType {packageType} is not valid.");
             }
 
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))

@@ -1,6 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved.
 
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;

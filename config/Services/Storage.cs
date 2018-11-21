@@ -233,11 +233,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             IPackageValidator validator = PackageValidatorFactory.GetValidator(package.Type, package.ConfigType);
 
             // Bypass validation for custom config type
-            if (validator == null)
-            {
-                return true;
-            }
-            return validator.Validate();
+            return validator == null || validator.Validate();
         }
 
         public async Task DeletePackageAsync(string id)

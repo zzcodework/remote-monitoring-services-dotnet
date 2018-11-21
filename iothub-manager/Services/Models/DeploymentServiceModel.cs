@@ -72,6 +72,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             }
             else
             {
+                // This is for the backward compatibility, as some of the old
+                // deployments may not have the required label.
                 if (deployment.Content?.ModulesContent != null)
                 {
                     this.Type = DeploymentType.EdgeManifest;
@@ -103,7 +105,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         }
     }
 
-    //Sync these variables with PackageType in Config 
+    // Sync these variables with PackageType in Config 
     public enum DeploymentType {
         EdgeManifest,
         DeviceConfiguration

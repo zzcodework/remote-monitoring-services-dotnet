@@ -24,7 +24,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
         public const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
         public const string RM_CREATED_LABEL = "RMDeployment";
 
-
         public static Configuration ToHubConfiguration(DeploymentServiceModel model)
         {
             var packageConfiguration = JsonConvert.DeserializeObject<Configuration>(model.PackageContent);
@@ -82,7 +81,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 
         public static Boolean IsEdgeDeployment(Configuration deployment)
         {
-
             deployment.Labels.TryGetValue(DEPLOYMENT_TYPE_LABEL, out var type);
 
             if ( type.Equals(DeploymentType.EdgeManifest.ToString()))

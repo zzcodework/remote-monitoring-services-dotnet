@@ -743,20 +743,25 @@ namespace Services.Test
             Assert.Equal(pkg.Content, result.Content);
         }
 
-        [Fact]
-        public async Task AddADMPackageTest()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task AddADMPackageTest(Boolean isCustomConfigType)
         {
             // Arrange
             const string collectionId = "packages";
             const string key = "package name";
+            string configType = isCustomConfigType ? "Custom-config" : ConfigType.FirmwareUpdateMxChip.ToString();
+
             var pkg = new Package
             {
                 Id = string.Empty,
                 Name = key,
                 Type = PackageType.DeviceConfiguration,
                 Content = ADM_PACKAGE_JSON,
-                ConfigType = ConfigType.FirmwareUpdateMxChip.ToString()
+                ConfigType = configType
             };
+
             var value = JsonConvert.SerializeObject(pkg);
 
             this.mockClient
@@ -776,64 +781,6 @@ namespace Services.Test
                        It.Is<string>(i => i == collectionId),
                        It.Is<string>(i => i == configKey),
                        It.Is<string>(i => i == ConfigType.FirmwareUpdateMxChip.ToString()),
-                       It.Is<string>(i => i == "*")))
-                .ReturnsAsync(new ValueApiModel
-                {
-                    Key = key,
-                    Data = value
-                });
-
-            this.mockClient
-                .Setup(x => x.GetAsync(
-                    It.Is<string>(i => i == collectionId),
-                    It.Is<string>(i => i == configKey)))
-                .ThrowsAsync(new ResourceNotFoundException());
-
-            // Act
-            var result = await this.storage.AddPackageAsync(pkg);
-
-            // Assert
-            Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.Type, result.Type);
-            Assert.Equal(pkg.Content, result.Content);
-            Assert.Equal(pkg.ConfigType, result.ConfigType);
-        }
-
-        [Fact]
-        public async Task AddADMCustomPackageTest()
-        {
-            // Arrange
-            const string collectionId = "packages";
-            const string key = "package name";
-            const string customConfig = "Custom-config";
-
-            var pkg = new Package
-            {
-                Id = string.Empty,
-                Name = key,
-                Type = PackageType.DeviceConfiguration,
-                Content = ADM_PACKAGE_JSON,
-                ConfigType = "Custom-config"
-            };
-            var value = JsonConvert.SerializeObject(pkg);
-
-            this.mockClient
-                .Setup(x => x.CreateAsync(
-                       It.Is<string>(i => i == collectionId),
-                       It.Is<string>(i => this.IsMatchingPackage(i, value))))
-                .ReturnsAsync(new ValueApiModel
-                {
-                    Key = key,
-                    Data = value
-                });
-
-            const string configKey = "configtypes";
-
-            this.mockClient
-                .Setup(x => x.UpdateAsync(
-                       It.Is<string>(i => i == collectionId),
-                       It.Is<string>(i => i == configKey),
-                       It.Is<string>(i => i == customConfig),
                        It.Is<string>(i => i == "*")))
                 .ReturnsAsync(new ValueApiModel
                 {
