@@ -19,6 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
         }
 
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<DevicePropertiesApiModel> GetAsync()
         {
             return new DevicePropertiesApiModel(await this.deviceProperties.GetListAsync());

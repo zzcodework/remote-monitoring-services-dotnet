@@ -34,6 +34,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet(Version.PATH + "/[controller]")]
+        [Authorize("ReadAll")]
         public AlarmListApiModel List(
             [FromQuery] string from,
             [FromQuery] string to,
@@ -52,6 +53,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpPost(Version.PATH + "/[controller]")]
+        [Authorize("ReadAll")]
         public AlarmListApiModel Post([FromBody] QueryApiModel body)
         {
             string[] deviceIds = body.Devices == null
@@ -68,6 +70,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet(Version.PATH + "/[controller]/{id}")]
+        [Authorize("ReadAll")]
         public AlarmApiModel Get([FromRoute] string id)
         {
             Alarm alarm = this.alarmService.Get(id);

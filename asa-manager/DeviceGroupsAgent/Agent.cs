@@ -72,9 +72,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.DeviceGroupsAgent
             // again a minute after changes have been seen,
             // to ensures if there are updates they are not missed.
             bool previousEventHubSeenChanges = this.eventHubStatus.SeenChanges;
-            
+
             await this.SetupEventHub(runState);
-            
+
             this.mostRecentMapping = null;
 
             while (!runState.IsCancellationRequested)
