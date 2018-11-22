@@ -191,7 +191,7 @@ namespace Services.Test
                 Labels = new Dictionary<string, string>()
                 {
                     { DEPLOYMENT_NAME_LABEL, deploymentName },
-                    { PACKAGE_TYPE_LABEL , DeploymentType.EdgeManifest.ToString() },
+                    { PACKAGE_TYPE_LABEL , PackageType.EdgeManifest.ToString() },
                     { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
                     { RM_CREATED_LABEL, bool.TrueString },
                 }, Priority = priority
@@ -308,7 +308,7 @@ namespace Services.Test
 
             if (addLabel)
             {
-                label = isEdgeLabel ? DeploymentType.EdgeManifest.ToString() : DeploymentType.DeviceConfiguration.ToString();
+                label = isEdgeLabel ? PackageType.EdgeManifest.ToString() : PackageType.DeviceConfiguration.ToString();
             }
 
             var configuration = new Configuration("test-config")
@@ -336,22 +336,22 @@ namespace Services.Test
             {
                 if (isEdgeLabel)
                 {
-                    Assert.Equal(DeploymentType.EdgeManifest, returnedDeployment.Type);
+                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.Type);
                 }
                 else
                 {
-                    Assert.Equal(DeploymentType.DeviceConfiguration, returnedDeployment.Type);
+                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.Type);
                 }
             }
             else
             {
                 if (isEdgeContent)
                 {
-                    Assert.Equal(DeploymentType.EdgeManifest, returnedDeployment.Type);
+                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.Type);
                 }
                 else
                 {
-                    Assert.Equal(DeploymentType.DeviceConfiguration, returnedDeployment.Type);
+                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.Type);
                 }
             }
         }
@@ -368,7 +368,7 @@ namespace Services.Test
                 DeviceContent = !(isEdgeDeployment) ? new Dictionary<string, object>() : null
             };
 
-            var label = isEdgeDeployment ? DeploymentType.EdgeManifest.ToString() : DeploymentType.DeviceConfiguration.ToString();
+            var label = isEdgeDeployment ? PackageType.EdgeManifest.ToString() : PackageType.DeviceConfiguration.ToString();
             
             var FirmwareUpdateMxChip = "FirmwareUpdate";
 
@@ -422,7 +422,7 @@ namespace Services.Test
             {
                 Labels = new Dictionary<string, string>()
                 {
-                    { PACKAGE_TYPE_LABEL , DeploymentType.EdgeManifest.ToString() },
+                    { PACKAGE_TYPE_LABEL , PackageType.EdgeManifest.ToString() },
                     { DEPLOYMENT_NAME_LABEL, deploymentName },
                     { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
                     { RM_CREATED_LABEL, bool.TrueString },
@@ -480,7 +480,7 @@ namespace Services.Test
             {
                 Labels = new Dictionary<string, string>()
                 {
-                    { PACKAGE_TYPE_LABEL , DeploymentType.EdgeManifest.ToString() },
+                    { PACKAGE_TYPE_LABEL , PackageType.EdgeManifest.ToString() },
                     { DEPLOYMENT_NAME_LABEL, "deployment" + idx },
                     { DEPLOYMENT_GROUP_ID_LABEL, "dvcGroupId" + idx }
                 }, Priority = 10

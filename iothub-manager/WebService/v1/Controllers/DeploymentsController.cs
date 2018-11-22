@@ -47,7 +47,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
                 throw new InvalidInputException("PackageContent must be provided");
             }
 
-            if ( deployment.Type.Equals(DeploymentType.DeviceConfiguration) 
+            if ( deployment.Type.Equals(PackageType.DeviceConfiguration) 
                 && string.IsNullOrEmpty(deployment.ConfigType))
             {
                 throw new InvalidInputException("Config type must be provided");

@@ -107,7 +107,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
                 throw new ArgumentNullException(PACKAGE_CONTENT_PARAM);
             }
 
-            if (model.Type.Equals(DeploymentType.DeviceConfiguration) 
+            if (model.Type.Equals(PackageType.DeviceConfiguration) 
                 && string.IsNullOrEmpty(model.ConfigType))
             {
                 throw new ArgumentNullException(CONFIG_TYPE_PARAM);
@@ -211,7 +211,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
         private IDictionary<string, DeploymentStatus> GetDeviceStatuses(Configuration deployment)
         {
-            deployment.Labels.TryGetValue(ConfigurationsHelper.DEPLOYMENT_TYPE_LABEL, out string deploymentType);
+            deployment.Labels.TryGetValue(ConfigurationsHelper.PACKAGE_TYPE_LABEL, out string deploymentType);
             deployment.Labels.TryGetValue(ConfigurationsHelper.CONFIG_TYPE_LABEL, out string configType);
 
             IDictionary<QueryType, String> Queries = GetQueries(deploymentType, configType);
@@ -287,7 +287,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             IDictionary<string, 
             DeploymentStatus> deviceStatuses)
         {
-
             if (deviceStatuses == null)
             {
                 return null;

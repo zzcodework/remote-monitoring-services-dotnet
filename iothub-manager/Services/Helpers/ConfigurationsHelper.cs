@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
         private const string PACKAGE_CONTENT_PARAM = "packageContent";
         private const string PRIORITY_PARAM = "priority";
 
-        public const string DEPLOYMENT_TYPE_LABEL = "Type";
+        public const string PACKAGE_TYPE_LABEL = "Type";
         public const string CONFIG_TYPE_LABEL = "ConfigType";
         public const string DEPLOYMENT_NAME_LABEL = "Name";
         public const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
@@ -29,12 +29,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
         {
             var packageConfiguration = JsonConvert.DeserializeObject<Configuration>(model.PackageContent);
 
-            if (model.Type.Equals(DeploymentType.EdgeManifest) &&
+            if (model.Type.Equals(PackageType.EdgeManifest) &&
                 packageConfiguration.Content?.DeviceContent != null)
             {
                 throw new InvalidInputException("Deployment type does not match with package contents.");
             }
-            else if (model.Type.Equals(DeploymentType.DeviceConfiguration) &&
+            else if (model.Type.Equals(PackageType.DeviceConfiguration) &&
                 packageConfiguration.Content?.ModulesContent != null)
             {
                 throw new InvalidInputException("Deployment type does not match with package contents.");
@@ -55,7 +55,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
             }
 
             // Required labels
-            configuration.Labels.Add(DEPLOYMENT_TYPE_LABEL, model.Type.ToString());
+            configuration.Labels.Add(PACKAGE_TYPE_LABEL, model.Type.ToString());
             configuration.Labels.Add(CONFIG_TYPE_LABEL, model.ConfigType);
             configuration.Labels.Add(DEPLOYMENT_NAME_LABEL, model.Name);
             configuration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);
@@ -82,9 +82,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
 
         public static Boolean IsEdgeDeployment(Configuration deployment)
         {
-            deployment.Labels.TryGetValue(DEPLOYMENT_TYPE_LABEL, out var type);
+            deployment.Labels.TryGetValue(PACKAGE_TYPE_LABEL, out var type);
 
-            if ( type.Equals(DeploymentType.EdgeManifest.ToString()))
+            if ( type.Equals(PackageType.EdgeManifest.ToString()))
             {
                 return true;
             }

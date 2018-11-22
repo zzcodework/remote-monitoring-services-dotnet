@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using static Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.DeviceStatusQueries;
 
@@ -13,10 +11,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
     {
         public static IDictionary<QueryType, string> Queries = new Dictionary<QueryType, string>()
         {
-            { QueryType.APPLIED, "SELECT deviceId from devices where configurations.[[{0}]].status = 'Applied'"},
-            { QueryType.SUCCESSFUL, "SELECT deviceId FROM devices WHERE properties.reported.firmware.fwUpdateStatus='Current' " +
+            { QueryType.APPLIED, "SELECT deviceId from devices where configurations.[[{0}]].status" +
+                " = 'Applied'"},
+            { QueryType.SUCCESSFUL, "SELECT deviceId FROM devices WHERE " +
+                "properties.reported.firmware.fwUpdateStatus='Current' " +
                 "AND properties.reported.firmware.type='IoTDevKit'"},
-            { QueryType.FAILED, "SELECT deviceId FROM devices WHERE properties.reported.firmware.fwUpdateStatus='Error' " +
+            { QueryType.FAILED, "SELECT deviceId FROM devices WHERE " +
+                "properties.reported.firmware.fwUpdateStatus='Error' " +
                 "AND properties.reported.firmware.type='IoTDevKit'"}
         };
     }
@@ -25,12 +26,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
     {
         public static IDictionary<QueryType, string> Queries = new Dictionary<QueryType, string>()
         {
-            { QueryType.APPLIED, "select deviceId from devices.modules where moduleId = '$edgeAgent' and " +
+            { QueryType.APPLIED, "select deviceId from devices.modules" +
+                " where moduleId = '$edgeAgent' and " +
                 "configurations.[[{0}]].status = 'Applied'" },
-            { QueryType.SUCCESSFUL, "select deviceId from devices.modules where moduleId = '$edgeAgent' and " +
+            { QueryType.SUCCESSFUL, "select deviceId from devices.modules" +
+                " where moduleId = '$edgeAgent' and " +
                 "properties.desired.$version = properties.reported.lastDesiredVersion and " +
                 "properties.reported.lastDesiredStatus.code = 200" },
-            { QueryType.FAILED, "SELECT deviceId FROM devices WHERE properties.reported.firmware.fwUpdateStatus='Error'" +
+            { QueryType.FAILED, "SELECT deviceId FROM devices WHERE" +
+                " properties.reported.firmware.fwUpdateStatus='Error'" +
                 " AND properties.reported.firmware.type='IoTDevKit'" }
         };
     }
@@ -39,7 +43,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
     {
         public static IDictionary<QueryType, string> Queries = new Dictionary<QueryType, string>()
         {
-            { QueryType.APPLIED, "SELECT deviceId from devices where configurations.[[{0}]].status = 'Applied'" },
+            { QueryType.APPLIED, "SELECT deviceId from devices where" +
+                " configurations.[[{0}]].status = 'Applied'" },
             { QueryType.SUCCESSFUL, String.Empty },
             { QueryType.FAILED, String.Empty }
         };
@@ -56,7 +61,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 
         internal static IDictionary<QueryType, string> GetQueries(string deploymentType, string configType)
         {
-            if (deploymentType.Equals(DeploymentType.EdgeManifest.ToString()))
+            if (deploymentType.Equals(PackageType.EdgeManifest.ToString()))
             {
                 return EdgeDeviceStatusQueries.Queries;
             }
