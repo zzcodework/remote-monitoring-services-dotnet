@@ -46,11 +46,11 @@ namespace WebService.Test.Controllers
             }
 
             this.mockStorage.Setup(x => x.AddPackageAsync(
-                                    It.Is<Package>(p => p.Type.ToString().Equals(type) &&
+                                    It.Is<Package>(p => p.PackageType.ToString().Equals(type) &&
                                                         p.Name.Equals(filename))))
                             .ReturnsAsync(new Package() {
                                 Name = filename,
-                                Type = PackageType.EdgeManifest
+                                PackageType = PackageType.EdgeManifest
                             });
             try
             {
@@ -85,7 +85,7 @@ namespace WebService.Test.Controllers
                     Id = id,
                     Name = name,
                     Content = content,
-                    Type = type,
+                    PackageType = type,
                     ConfigType = string.Empty,
                     DateCreated = dateCreated
                 });
@@ -121,13 +121,13 @@ namespace WebService.Test.Controllers
                                          Id = id + i,
                                          Name = name + i,
                                          Content = content + i,
-                                         Type = type,
+                                         PackageType = type,
                                          ConfigType = config + i,
                                          DateCreated = dateCreated
                                      }).ToList();
 
             this.mockStorage
-                .Setup(x => x.GetPackagesAsync())
+                .Setup(x => x.GetAllPackagesAsync())
                 .ReturnsAsync(packages);
 
             // Act
@@ -135,7 +135,7 @@ namespace WebService.Test.Controllers
 
             // Assert
             this.mockStorage
-                .Verify(x => x.GetPackagesAsync(), Times.Once);
+                .Verify(x => x.GetAllPackagesAsync(), Times.Once);
 
             foreach (int i in idx)
             {
@@ -164,30 +164,30 @@ namespace WebService.Test.Controllers
                 Id = id + i,
                 Name = name + i,
                 Content = content + i,
-                Type = type + i,
-                ConfigType = (i == 0) ? ConfigType.FirmwareUpdateMxChip.ToString() : i.ToString(),
+                PackageType = type + i,
+                ConfigType = (i == 0) ? ConfigType.FirmwareUpdate.ToString() : i.ToString(),
                 DateCreated = dateCreated
             }).ToList();
 
             this.mockStorage
-                .Setup(x => x.GetPackagesAsync())
+                .Setup(x => x.GetAllPackagesAsync())
                 .ReturnsAsync(packages);
 
             // Act
             var resultPackages = await this.controller.GetListAsync(
                                                     PackageType.DeviceConfiguration.ToString(),
-                                                    ConfigType.FirmwareUpdateMxChip.ToString());
+                                                    ConfigType.FirmwareUpdate.ToString());
 
             // Assert
             this.mockStorage
-                .Verify(x => x.GetPackagesAsync(), Times.Once);
+                .Verify(x => x.GetAllPackagesAsync(), Times.Once);
 
             var pkg = resultPackages.Items.ElementAt(0);
             Assert.Single(resultPackages.Items);
             Assert.Equal(id + 0, pkg.Id);
             Assert.Equal(name + 0, pkg.Name);
             Assert.Equal(type, pkg.packageType);
-            Assert.Equal(ConfigType.FirmwareUpdateMxChip.ToString(), pkg.ConfigType);
+            Assert.Equal(ConfigType.FirmwareUpdate.ToString(), pkg.ConfigType);
             Assert.Equal(content + 0, pkg.Content);
             Assert.Equal(dateCreated, pkg.DateCreated);
             
@@ -198,7 +198,7 @@ namespace WebService.Test.Controllers
         {
             // Arrange
             this.mockStorage
-                .Setup(x => x.GetConfigTypeListAsync())
+                .Setup(x => x.GetConfigTypesListAsync())
                 .ReturnsAsync(new ConfigTypeList());
 
             // Act

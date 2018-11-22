@@ -4,7 +4,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
 {
     internal class FirmwareUpdateMxChipValidator : PackageValidator
     {
-        //TODO: Implement validation for Firmware Update for MxChip packages
+        // TODO: Implement validation for Firmware Update for MxChip packages
         public override bool Validate()
         {
             return true;

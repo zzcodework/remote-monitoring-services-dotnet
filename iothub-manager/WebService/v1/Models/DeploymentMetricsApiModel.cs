@@ -43,9 +43,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
             if (metricsServiceModel.DeviceMetrics != null)
             {
-                this.SystemMetrics[SUCCESSFUL_METRICS_KEY] = metricsServiceModel.DeviceMetrics[DeploymentStatus.Successful];
-                SystemMetrics[FAILED_METRICS_KEY] = metricsServiceModel.DeviceMetrics[DeploymentStatus.Failed];
-                SystemMetrics[PENDING_METRICS_KEY] = metricsServiceModel.DeviceMetrics[DeploymentStatus.Pending];
+                this.SystemMetrics[SUCCESSFUL_METRICS_KEY] = 
+                    metricsServiceModel.DeviceMetrics[DeploymentStatus.Successful];
+                this.SystemMetrics[FAILED_METRICS_KEY] = 
+                    metricsServiceModel.DeviceMetrics[DeploymentStatus.Failed];
+                this.SystemMetrics[PENDING_METRICS_KEY] = 
+                    metricsServiceModel.DeviceMetrics[DeploymentStatus.Pending];
             }
         }
     }

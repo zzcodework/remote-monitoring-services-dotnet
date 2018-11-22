@@ -50,7 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         private static Dictionary<string, IDictionary<QueryType, string>> AdmQueryMapping =
             new Dictionary<string, IDictionary<QueryType, string>>()
         {
-            { ConfigType.FirmwareUpdateMxChip.ToString(),
+            { ConfigType.FirmwareUpdate.ToString(),
                     FirmwareUpdateMxChipStatusQueries.Queries }
         };
 

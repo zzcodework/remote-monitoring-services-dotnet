@@ -22,7 +22,7 @@ namespace Services.Test
         private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
         private const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
         private const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
-        private string DEPLOYMENT_TYPE_LABEL = "Type";
+        private string PACKAGE_TYPE_LABEL  = "Type";
         private const string CONFIG_TYPE_LABEL = "ConfigType";
         private const string RM_CREATED_LABEL = "RMDeployment";
         private const string RESOURCE_NOT_FOUND_EXCEPTION =
@@ -191,7 +191,7 @@ namespace Services.Test
                 Labels = new Dictionary<string, string>()
                 {
                     { DEPLOYMENT_NAME_LABEL, deploymentName },
-                    { DEPLOYMENT_TYPE_LABEL, DeploymentType.EdgeManifest.ToString() },
+                    { PACKAGE_TYPE_LABEL , DeploymentType.EdgeManifest.ToString() },
                     { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
                     { RM_CREATED_LABEL, bool.TrueString },
                 }, Priority = priority
@@ -317,7 +317,7 @@ namespace Services.Test
                 {
                     { DEPLOYMENT_NAME_LABEL, string.Empty },
                     { DEPLOYMENT_GROUP_ID_LABEL, string.Empty },
-                    { DEPLOYMENT_TYPE_LABEL, label},
+                    { PACKAGE_TYPE_LABEL , label},
                     { CONFIG_TYPE_LABEL, "CustomConfig" },
                     { RM_CREATED_LABEL, bool.TrueString },
                 },
@@ -370,7 +370,7 @@ namespace Services.Test
 
             var label = isEdgeDeployment ? DeploymentType.EdgeManifest.ToString() : DeploymentType.DeviceConfiguration.ToString();
             
-            var FirmwareUpdateMxChip = "FirmwareUpdateMxChip";
+            var FirmwareUpdateMxChip = "FirmwareUpdate";
 
             var configuration = new Configuration("test-config")
             {
@@ -378,7 +378,7 @@ namespace Services.Test
                 {
                     { DEPLOYMENT_NAME_LABEL, string.Empty },
                     { DEPLOYMENT_GROUP_ID_LABEL, string.Empty },
-                    { DEPLOYMENT_TYPE_LABEL, label},
+                    { PACKAGE_TYPE_LABEL , label},
                     { CONFIG_TYPE_LABEL, FirmwareUpdateMxChip },
                     { RM_CREATED_LABEL, bool.TrueString },
                 },
@@ -422,7 +422,7 @@ namespace Services.Test
             {
                 Labels = new Dictionary<string, string>()
                 {
-                    { DEPLOYMENT_TYPE_LABEL, DeploymentType.EdgeManifest.ToString() },
+                    { PACKAGE_TYPE_LABEL , DeploymentType.EdgeManifest.ToString() },
                     { DEPLOYMENT_NAME_LABEL, deploymentName },
                     { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
                     { RM_CREATED_LABEL, bool.TrueString },
@@ -480,7 +480,7 @@ namespace Services.Test
             {
                 Labels = new Dictionary<string, string>()
                 {
-                    { DEPLOYMENT_TYPE_LABEL, DeploymentType.EdgeManifest.ToString() },
+                    { PACKAGE_TYPE_LABEL , DeploymentType.EdgeManifest.ToString() },
                     { DEPLOYMENT_NAME_LABEL, "deployment" + idx },
                     { DEPLOYMENT_GROUP_ID_LABEL, "dvcGroupId" + idx }
                 }, Priority = 10

@@ -25,13 +25,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<Logo> GetLogoAsync();
         Task<Logo> SetLogoAsync(Logo model);
         Task<IEnumerable<DeviceGroup>> GetAllDeviceGroupsAsync();
-        Task<ConfigTypeList> GetConfigTypeListAsync();
+        Task<ConfigTypeList> GetConfigTypesListAsync();
         Task<DeviceGroup> GetDeviceGroupAsync(string id);
         Task<DeviceGroup> CreateDeviceGroupAsync(DeviceGroup input);
         Task<DeviceGroup> UpdateDeviceGroupAsync(string id, DeviceGroup input, string etag);
         Task DeleteDeviceGroupAsync(string id);
-        Task<IEnumerable<Package>> GetPackagesAsync();
+        Task<IEnumerable<Package>> GetAllPackagesAsync();
         Task<Package> GetPackageAsync(string id);
+        Task<IEnumerable<Package>> GetFilteredPackagesAsync(string packageType, string configType);
         Task<Package> AddPackageAsync(Package package);
         Task DeletePackageAsync(string id);
         Task UpdateConfigTypeAsync(string customConfigType);
@@ -49,7 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal const string USER_COLLECTION_ID = "user-settings";
         internal const string DEVICE_GROUP_COLLECTION_ID = "devicegroups";
         internal const string PACKAGES_COLLECTION_ID = "packages";
-        internal const string PACKAGES_CONFIG_TYPE_KEY = "configtypes";
+        internal const string PACKAGES_CONFIG_TYPE_KEY = "config-types";
         private const string AZURE_MAPS_KEY = "AzureMapsKey";
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
@@ -185,11 +186,44 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             await this.client.DeleteAsync(DEVICE_GROUP_COLLECTION_ID, id);
         }
 
-        public async Task<IEnumerable<Package>> GetPackagesAsync()
+        public async Task<IEnumerable<Package>> GetAllPackagesAsync()
         {
             var response = await this.client.GetAllAsync(PACKAGES_COLLECTION_ID);
             return response.Items.AsParallel().Where(r => r.Key != PACKAGES_CONFIG_TYPE_KEY)
                 .Select(this.CreatePackageServiceModel);
+        }
+
+        public async Task<IEnumerable<Package>> GetFilteredPackagesAsync(string packageType, string configType)
+        {
+            var response = await this.client.GetAllAsync(PACKAGES_COLLECTION_ID);
+            IEnumerable<Package> packages = response.Items.AsParallel()
+                .Where(r => r.Key != PACKAGES_CONFIG_TYPE_KEY)
+                .Select(this.CreatePackageServiceModel);
+
+            bool isPackageTypeEmpty = string.IsNullOrEmpty(packageType);
+            bool isConfigTypeEmpty = string.IsNullOrEmpty(configType);
+
+            if (!isPackageTypeEmpty && !isConfigTypeEmpty)
+            {
+                return packages.Where(p => (p.PackageType.ToString().Equals(packageType) &&
+                                           p.ConfigType.Equals(configType)));
+            }
+            else if (!isPackageTypeEmpty && isConfigTypeEmpty)
+            {
+                return packages.Where(p => p.PackageType.ToString().Equals(packageType));
+            }
+            else if (isPackageTypeEmpty && !isConfigTypeEmpty)
+            {
+                // Non-empty ConfigType with empty PackageType indicates Packages of type
+                // DeviceConfiguration
+                return packages.Where(p => (p.PackageType.ToString().Equals(
+                    PackageType.DeviceConfiguration.ToString()) &&
+                    p.ConfigType.Equals(configType)));
+            }
+            else
+            {
+                return packages;
+            }
         }
 
         public async Task<Package> AddPackageAsync(Package package)
@@ -197,8 +231,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             bool isValidPackage = ValidatePackage(package);
             if (!isValidPackage)
             {
-                throw new InvalidInputException($"Package provided is a invalid deployment manifest " +
-                    $"for type {package.Type} and config type {package.ConfigType}");
+                var msg = "Package provided is a invalid deployment manifest " +
+                    $"for type {package.PackageType}";
+
+                msg += package.PackageType.Equals(PackageType.DeviceConfiguration) ?
+                    $"and configuration {package.ConfigType}" : string.Empty; 
+
+                throw new InvalidInputException(msg);
             }
 
             try
@@ -220,20 +259,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             var response = await this.client.CreateAsync(PACKAGES_COLLECTION_ID, value);
             
             if (!(string.IsNullOrEmpty(package.ConfigType))
-                && package.Type.Equals(PackageType.DeviceConfiguration))
+                && package.PackageType.Equals(PackageType.DeviceConfiguration))
             {
                 await this.UpdateConfigTypeAsync(package.ConfigType);
             }
 
             return this.CreatePackageServiceModel(response);
-        }
-
-        private Boolean ValidatePackage(Package package)
-        {
-            IPackageValidator validator = PackageValidatorFactory.GetValidator(package.Type, package.ConfigType);
-
-            // Bypass validation for custom config type
-            return validator == null || validator.Validate();
         }
 
         public async Task DeletePackageAsync(string id)
@@ -247,7 +278,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             return this.CreatePackageServiceModel(response);
         }
 
-        public async Task<ConfigTypeList> GetConfigTypeListAsync()
+        public async Task<ConfigTypeList> GetConfigTypesListAsync()
         {
             try
             {
@@ -256,7 +287,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             catch (ResourceNotFoundException)
             {
-                log.Debug("Config Types have not been created.", () => { });
+                log.Debug("Document config-types has not been created.", () => { });
                 // Return empty Package Config types
                 return new ConfigTypeList(); 
             }
@@ -278,6 +309,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             list.add(customConfigType);
             await this.client.UpdateAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIG_TYPE_KEY, JsonConvert.SerializeObject(list), "*");
+        }
+
+        private Boolean ValidatePackage(Package package)
+        {
+            IPackageValidator validator = PackageValidatorFactory.GetValidator(
+                package.PackageType,
+                package.ConfigType);
+
+            // Bypass validation for custom config type
+            return validator == null || validator.Validate();
         }
 
         private DeviceGroup CreateGroupServiceModel(ValueApiModel input)

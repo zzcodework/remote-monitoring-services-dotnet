@@ -222,7 +222,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             var appliedDevices = this.GetDevicesInQuery(Queries[QueryType.APPLIED], deploymentId);
 
             if (!(ConfigurationsHelper.IsEdgeDeployment(deployment)) &&
-                    !(configType.Equals(ConfigType.FirmwareUpdateMxChip.ToString())))
+                    !(configType.Equals(ConfigType.FirmwareUpdate.ToString())))
             {
                 foreach (var devices in appliedDevices)
                 {
@@ -283,7 +283,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             return deviceIds;
         }
 
-        private IDictionary<DeploymentStatus, long> CalculateDeviceMetrics(IDictionary<string, DeploymentStatus> deviceStatuses)
+        private IDictionary<DeploymentStatus, long> CalculateDeviceMetrics(
+            IDictionary<string, 
+            DeploymentStatus> deviceStatuses)
         {
 
             if (deviceStatuses == null)

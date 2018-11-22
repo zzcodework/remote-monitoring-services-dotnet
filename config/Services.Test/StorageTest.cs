@@ -718,7 +718,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = key,
-                Type = PackageType.EdgeManifest,
+                PackageType = PackageType.EdgeManifest,
                 ConfigType = string.Empty,
                 Content = EDGE_PACKAGE_JSON
             };
@@ -739,7 +739,7 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.PackageType, result.PackageType);
             Assert.Equal(pkg.Content, result.Content);
         }
 
@@ -751,13 +751,13 @@ namespace Services.Test
             // Arrange
             const string collectionId = "packages";
             const string key = "package name";
-            string configType = isCustomConfigType ? "Custom-config" : ConfigType.FirmwareUpdateMxChip.ToString();
+            string configType = isCustomConfigType ? "Custom-config" : ConfigType.FirmwareUpdate.ToString();
 
             var pkg = new Package
             {
                 Id = string.Empty,
                 Name = key,
-                Type = PackageType.DeviceConfiguration,
+                PackageType = PackageType.DeviceConfiguration,
                 Content = ADM_PACKAGE_JSON,
                 ConfigType = configType
             };
@@ -774,13 +774,13 @@ namespace Services.Test
                     Data = value
                 });
 
-            const string configKey = "configtypes";
+            const string configKey = "config-types";
 
             this.mockClient
                 .Setup(x => x.UpdateAsync(
                        It.Is<string>(i => i == collectionId),
                        It.Is<string>(i => i == configKey),
-                       It.Is<string>(i => i == ConfigType.FirmwareUpdateMxChip.ToString()),
+                       It.Is<string>(i => i == ConfigType.FirmwareUpdate.ToString()),
                        It.Is<string>(i => i == "*")))
                 .ReturnsAsync(new ValueApiModel
                 {
@@ -799,7 +799,7 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.PackageType, result.PackageType);
             Assert.Equal(pkg.Content, result.Content);
             Assert.Equal(pkg.ConfigType, result.ConfigType);
         }
@@ -808,7 +808,7 @@ namespace Services.Test
         public async Task ListConfigurationsTest()
         {
             const string collectionId = "packages";
-            const string configKey = "configtypes";
+            const string configKey = "config-types";
 
             // Arrange
             this.mockClient
@@ -818,7 +818,7 @@ namespace Services.Test
                 .ThrowsAsync(new ResourceNotFoundException());
 
             // Act
-            var result = await this.storage.GetConfigTypeListAsync();
+            var result = await this.storage.GetConfigTypesListAsync();
 
             // Assert
             Assert.Empty(result.ConfigTypes);
@@ -833,7 +833,7 @@ namespace Services.Test
             {
                 Id = string.Empty,
                 Name = "testpackage",
-                Type = PackageType.EdgeManifest,
+                PackageType = PackageType.EdgeManifest,
                 Content = "InvalidPackage"
             };
 

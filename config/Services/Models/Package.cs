@@ -11,8 +11,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 
         public string Name { get; set; }
 
+        [JsonProperty("Type")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public PackageType Type { get; set; }
+        public PackageType PackageType { get; set; }
 
         public string ConfigType { get; set; }
 
@@ -21,17 +22,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         public string DateCreated { get; set; }
     }
 
-    //Sync these variables with Deploymenttypes in IotHubManager
+    // Sync these variables with PackageType in IotHubManager
     public enum PackageType
     {
         EdgeManifest,
         DeviceConfiguration
     }
 
-    //Used for validation, these are pre-defined constants for configuration type
+    // Used for validation, these are pre-defined constants for configuration type
     public enum ConfigType
     {
         Custom,
-        FirmwareUpdateMxChip
+        FirmwareUpdate
     }
 }

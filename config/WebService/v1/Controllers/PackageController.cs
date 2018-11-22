@@ -24,25 +24,33 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         /**
-         * This function can be used to packages with and without parameters packageType, configType
+         * This function can be used to get packages with and without parameters
+         * PackageType, ConfigType. Without the query params this will return all
+         * the packages.
          */
         [HttpGet]
-        public async Task<PackageListApiModel> GetListAsync([FromQuery]string packageType, [FromQuery]string configType)
+        [Authorize("ReadAll")]
+        public async Task<PackageListApiModel> GetFilteredAsync(
+            [FromQuery]string packageType, 
+            [FromQuery]string configType)
         {
             if (string.IsNullOrEmpty(packageType) && string.IsNullOrEmpty(configType))
             {
-                return new PackageListApiModel(await this.storage.GetPackagesAsync());
+                return new PackageListApiModel(await this.storage.GetAllPackagesAsync());
             }
 
             if (string.IsNullOrEmpty(packageType))
             {
-                throw new InvalidInputException("Valid package Type must be provided");
+                throw new InvalidInputException("Valid packageType must be provided");
             }
 
-            return new PackageListApiModel(await this.storage.GetPackagesAsync(), packageType, configType);
+            return new PackageListApiModel(await this.storage.GetFilteredPackagesAsync(
+                packageType, 
+                configType));
         }
 
         [HttpGet("{id}")]
+        [Authorize("ReadAll")]
         public async Task<PackageApiModel> GetAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -55,9 +63,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 
         [HttpGet]
         [Route("configtypes")]
-        public async Task<ConfigTypeListApiModel> GetListAsync()
+        [Authorize("ReadAll")]
+        public async Task<ConfigTypeListApiModel> GetAllConfigTypesAsync()
         {
-            return new ConfigTypeListApiModel(await this.storage.GetConfigTypeListAsync());
+            return new ConfigTypeListApiModel(await this.storage.GetConfigTypesListAsync());
         }
 
         [HttpPost]
