@@ -24,9 +24,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "DeviceStatuses")]
         public IDictionary<string, DeploymentStatus> DeviceStatuses { get; set; }
 
-        public DeploymentMetricsApiModel()
-        {}
-
         public DeploymentMetricsApiModel(DeploymentMetrics metricsServiceModel)
         {
             this.SystemMetrics = new Dictionary<string, long>();

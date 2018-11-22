@@ -50,7 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
             if ( deployment.Type.Equals(PackageType.DeviceConfiguration) 
                 && string.IsNullOrEmpty(deployment.ConfigType))
             {
-                throw new InvalidInputException("Config type must be provided");
+                throw new InvalidInputException("Configuration type must be provided");
             }
 
             if (deployment.Priority < 0)

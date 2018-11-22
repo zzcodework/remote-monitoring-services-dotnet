@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
 
         private static EdgePackageValidator edgePackageValidator = new EdgePackageValidator();
 
-        //TODO:Return double checked singleton objects
+        // TODO:Return double checked singleton objects
         public static IPackageValidator GetValidator(PackageType packageType, string configType)
         {
             if (packageType.Equals(PackageType.EdgeManifest))

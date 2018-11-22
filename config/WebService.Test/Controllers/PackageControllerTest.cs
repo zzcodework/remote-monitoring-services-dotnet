@@ -131,7 +131,7 @@ namespace WebService.Test.Controllers
                 .ReturnsAsync(packages);
 
             // Act
-            var resultPackages = await this.controller.GetListAsync(null, null);
+            var resultPackages = await this.controller.GetFilteredAsync(null, null);
 
             // Assert
             this.mockStorage
@@ -170,44 +170,22 @@ namespace WebService.Test.Controllers
             }).ToList();
 
             this.mockStorage
-                .Setup(x => x.GetAllPackagesAsync())
+                .Setup(x => x.GetFilteredPackagesAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
                 .ReturnsAsync(packages);
 
             // Act
-            var resultPackages = await this.controller.GetListAsync(
+            var resultPackages = await this.controller.GetFilteredAsync(
                                                     PackageType.DeviceConfiguration.ToString(),
                                                     ConfigType.FirmwareUpdate.ToString());
 
             // Assert
-            this.mockStorage
-                .Verify(x => x.GetAllPackagesAsync(), Times.Once);
-
-            var pkg = resultPackages.Items.ElementAt(0);
-            Assert.Single(resultPackages.Items);
-            Assert.Equal(id + 0, pkg.Id);
-            Assert.Equal(name + 0, pkg.Name);
-            Assert.Equal(type, pkg.packageType);
-            Assert.Equal(ConfigType.FirmwareUpdate.ToString(), pkg.ConfigType);
-            Assert.Equal(content + 0, pkg.Content);
-            Assert.Equal(dateCreated, pkg.DateCreated);
-            
+            this.mockStorage.Verify(x => x.GetFilteredPackagesAsync(
+                    PackageType.DeviceConfiguration.ToString(),
+                    ConfigType.FirmwareUpdate.ToString()), 
+                    Times.Once);
         }
-
-        [Fact]
-        public async Task GetConfigurationsTest()
-        {
-            // Arrange
-            this.mockStorage
-                .Setup(x => x.GetConfigTypesListAsync())
-                .ReturnsAsync(new ConfigTypeList());
-
-            // Act
-            var cfg = await this.controller.GetListAsync();
-
-            // Assert
-            Assert.Empty(cfg.configTypes);
-        }
-
 
         private FormFile CreateSampleFile(string filename)
         {

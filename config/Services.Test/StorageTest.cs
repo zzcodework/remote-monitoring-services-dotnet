@@ -804,6 +804,72 @@ namespace Services.Test
             Assert.Equal(pkg.ConfigType, result.ConfigType);
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task ListPackagesTest(Boolean isEdgeManifest)
+        {
+            // Arrange
+            const string collectionId = "packages";
+            const string id = "packageId";
+            const string name = "packageName";
+            const PackageType type = PackageType.DeviceConfiguration;
+            const string content = "{}";
+            //string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
+
+            int[] idx = new int[] { 0, 1, 2 };
+            var packages = idx.Select(i => new Package()
+            {
+                Id = id + i,
+                Name = name + i,
+                Content = content + i,
+                PackageType = (i == 0) ? PackageType.DeviceConfiguration : PackageType.EdgeManifest,
+                ConfigType = (i == 0) ? ConfigType.FirmwareUpdate.ToString() : string.Empty 
+                                                
+            }).ToList();
+
+            this.mockClient
+                .Setup(x => x.GetAllAsync(
+                       It.Is<string>(i => (i == collectionId))))
+                .ReturnsAsync(new ValueListApiModel
+                {
+                    Items = new List<ValueApiModel>()
+                    {
+                        new ValueApiModel()
+                        { Key = string.Empty, Data = JsonConvert.SerializeObject(packages[0])},
+                        new ValueApiModel()
+                        { Key = string.Empty, Data = JsonConvert.SerializeObject(packages[1])},
+                        new ValueApiModel()
+                        { Key = string.Empty, Data = JsonConvert.SerializeObject(packages[2])}
+                    }
+                });
+
+            // Act
+            var packageType = isEdgeManifest ? PackageType.EdgeManifest.ToString() :
+                                                string.Empty;
+
+            var configType = isEdgeManifest ? string.Empty : ConfigType.FirmwareUpdate.ToString();
+
+            var resultPackages = await this.storage.GetFilteredPackagesAsync(
+                                                    packageType,
+                                                    configType);
+
+            // Assert
+            if (!isEdgeManifest)
+            {
+                var pkg = resultPackages.First();
+                Assert.Single(resultPackages);
+                Assert.Equal(type, pkg.PackageType);
+                Assert.Equal(ConfigType.FirmwareUpdate.ToString(), pkg.ConfigType);
+            }
+            else
+            {
+                var pkg = resultPackages.First();
+                Assert.Equal(PackageType.EdgeManifest, pkg.PackageType);
+                Assert.Equal(string.Empty, pkg.ConfigType);
+            }
+        }
+
         [Fact]
         public async Task ListConfigurationsTest()
         {
