@@ -70,15 +70,22 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 throw new InvalidInputException("Package Type must be provided");
             }
 
-            if (configType == null)
-            {
-                configType = string.Empty;
-            }
-
             bool isValidPackageType = Enum.TryParse(packageType, true, out PackageType uploadedPackageType);
             if (!isValidPackageType)
             {
                 throw new InvalidInputException($"Provided packageType {packageType} is not valid.");
+            }
+
+            if (uploadedPackageType.Equals(PackageType.EdgeManifest) &&
+                !(string.IsNullOrEmpty(configType)))
+            {
+                throw new InvalidInputException($"Package of type EdgeManifest cannot have parameter " +
+                    $"configType.");
+            }
+
+            if (configType == null)
+            {
+                configType = string.Empty;
             }
 
             if (package == null || package.Length == 0 || string.IsNullOrEmpty(package.FileName))
