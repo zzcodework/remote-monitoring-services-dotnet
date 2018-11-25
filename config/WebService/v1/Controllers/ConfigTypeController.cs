@@ -8,7 +8,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 {
-    [Route(Version.PATH + "/configTypes"), TypeFilter(typeof(ExceptionsFilterAttribute))]
+    [Route(Version.PATH + "/configtypes"), TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class ConfigTypeController
     {
         private readonly IStorage storage;
@@ -19,7 +19,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpGet]
-        [Route("configtypes")]
         [Authorize("ReadAll")]
         public async Task<ConfigTypeListApiModel> GetAllConfigTypesAsync()
         {
