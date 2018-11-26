@@ -302,8 +302,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             var devicesWithConnectedModules = await this.GetDevicesWithConnectedModules();
-            var edgeDevices = devicesList.Where(device => device.Capabilities?.IotEdge ??
-                                                          twinsMap[device.Id].Capabilities?.IotEdge ?? false)
+            var edgeDevices = devicesList
+                .Where(dvc => twinsMap.ContainsKey(dvc.Id))
+                .Where(device => device.Capabilities?.IotEdge ??
+                           twinsMap[device.Id].Capabilities?.IotEdge ?? false)
                 .Where(edgeDvc => devicesWithConnectedModules.Contains(edgeDvc.Id))
                 .ToDictionary(edgeDevice => edgeDevice.Id, edgeDevice => edgeDevice);
             return edgeDevices;
