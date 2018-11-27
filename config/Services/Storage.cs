@@ -214,11 +214,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             else if (isPackageTypeEmpty && !isConfigTypeEmpty)
             {
-                // Non-empty ConfigType with empty PackageType indicates Packages of type
-                // DeviceConfiguration
-                 return packages.Where(p => (p.PackageType.ToString().Equals(
-                    PackageType.DeviceConfiguration.ToString()) &&
-                    p.ConfigType.Equals(configType)));
+                // Non-empty ConfigType with empty PackageType indicates invalid packages
+                throw new InvalidInputException("Package Type cannot be empty.");
             }
             else
             {

@@ -66,11 +66,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
             // Add optional labels
             if (model.DeviceGroupName != null)
             {
-                configuration.Labels.Add(DEPLOYMENT_GROUP_NAME_LABEL, model.DeviceGroupName);
+                configuration.Labels[DEPLOYMENT_GROUP_NAME_LABEL] = model.DeviceGroupName;
             }
+
             if (model.PackageName != null)
             {
-                configuration.Labels.Add(DEPLOYMENT_PACKAGE_NAME_LABEL, model.PackageName);
+                configuration.Labels[DEPLOYMENT_PACKAGE_NAME_LABEL] = model.PackageName;
             }
 
             return configuration;

@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         [JsonProperty(PropertyName = "MaxExecutionTimeInSeconds", NullValueHandling = NullValueHandling.Ignore)]
         public long? MaxExecutionTimeInSeconds { get; set; }
 
-        [JsonProperty(PropertyName = "PackageType")]
+        [JsonProperty(PropertyName = "Type")]
         public JobType Type { get; set; }
 
         [JsonProperty(PropertyName = "Status")]

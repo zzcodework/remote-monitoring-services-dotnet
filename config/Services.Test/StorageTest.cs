@@ -850,23 +850,19 @@ namespace Services.Test
 
             var configType = isEdgeManifest ? string.Empty : ConfigType.Firmware.ToString();
 
-            var resultPackages = await this.storage.GetFilteredPackagesAsync(
+            try
+            {
+                var resultPackages = await this.storage.GetFilteredPackagesAsync(
                                                     packageType,
                                                     configType);
-
-            // Assert
-            if (!isEdgeManifest)
-            {
-                var pkg = resultPackages.First();
-                Assert.Single(resultPackages);
-                Assert.Equal(type, pkg.PackageType);
-                Assert.Equal(ConfigType.Firmware.ToString(), pkg.ConfigType);
-            }
-            else
-            {
+                // Assert
                 var pkg = resultPackages.First();
                 Assert.Equal(PackageType.EdgeManifest, pkg.PackageType);
                 Assert.Equal(string.Empty, pkg.ConfigType);
+            }
+            catch (Exception)
+            {
+                Assert.False(isEdgeManifest);
             }
         }
 
@@ -889,7 +885,6 @@ namespace Services.Test
             // Assert
             Assert.Empty(result.ConfigTypes);
         }
-
 
         [Fact]
         public async Task InvalidPackageThrowsTest()
