@@ -308,7 +308,8 @@ namespace Services.Test
 
             if (addLabel)
             {
-                label = isEdgeLabel ? PackageType.EdgeManifest.ToString() : PackageType.DeviceConfiguration.ToString();
+                label = isEdgeLabel ? PackageType.EdgeManifest.ToString() : 
+                    PackageType.DeviceConfiguration.ToString();
             }
 
             var configuration = new Configuration("test-config")
@@ -331,27 +332,27 @@ namespace Services.Test
             // Act
             var returnedDeployment = await this.deployments.GetAsync(deploymentId);
 
-            // Assert Should returned Deplyment Type according to label
+            // Assert Should returned Deplyment PackageType according to label
             if (addLabel)
             {
                 if (isEdgeLabel)
                 {
-                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.Type);
+                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.PackageType);
                 }
                 else
                 {
-                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.Type);
+                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.PackageType);
                 }
             }
             else
             {
                 if (isEdgeContent)
                 {
-                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.Type);
+                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.PackageType);
                 }
                 else
                 {
-                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.Type);
+                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.PackageType);
                 }
             }
         }
@@ -370,7 +371,7 @@ namespace Services.Test
 
             var label = isEdgeDeployment ? PackageType.EdgeManifest.ToString() : PackageType.DeviceConfiguration.ToString();
             
-            var FirmwareUpdateMxChip = "FirmwareUpdate";
+            var Firmware = "Firmware";
 
             var configuration = new Configuration("test-config")
             {
@@ -379,7 +380,7 @@ namespace Services.Test
                     { DEPLOYMENT_NAME_LABEL, string.Empty },
                     { DEPLOYMENT_GROUP_ID_LABEL, string.Empty },
                     { PACKAGE_TYPE_LABEL , label},
-                    { CONFIG_TYPE_LABEL, FirmwareUpdateMxChip },
+                    { CONFIG_TYPE_LABEL, Firmware },
                     { RM_CREATED_LABEL, bool.TrueString },
                 },
                 Content = content
@@ -392,7 +393,7 @@ namespace Services.Test
             // Act
             var returnedDeployment = await this.deployments.GetAsync(deploymentId);
 
-            // Assert Should returned Deplyment Type according to label
+            // Assert Should return Deplyment metrics according to label
             Assert.NotNull(returnedDeployment.DeploymentMetrics.DeviceMetrics);
             Assert.Equal(3, returnedDeployment.DeploymentMetrics.DeviceMetrics.Count());
         }

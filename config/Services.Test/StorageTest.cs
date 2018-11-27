@@ -714,7 +714,7 @@ namespace Services.Test
             // Arrange
             const string collectionId = "packages";
             const string key = "package name";
-            var pkg = new Package
+            var pkg = new PackageServiceModel
             {
                 Id = string.Empty,
                 Name = key,
@@ -751,9 +751,9 @@ namespace Services.Test
             // Arrange
             const string collectionId = "packages";
             const string key = "package name";
-            string configType = isCustomConfigType ? "Custom-config" : ConfigType.FirmwareUpdate.ToString();
+            string configType = isCustomConfigType ? "Custom-config" : ConfigType.Firmware.ToString();
 
-            var pkg = new Package
+            var pkg = new PackageServiceModel
             {
                 Id = string.Empty,
                 Name = key,
@@ -780,7 +780,7 @@ namespace Services.Test
                 .Setup(x => x.UpdateAsync(
                        It.Is<string>(i => i == collectionId),
                        It.Is<string>(i => i == configKey),
-                       It.Is<string>(i => i == ConfigType.FirmwareUpdate.ToString()),
+                       It.Is<string>(i => i == ConfigType.Firmware.ToString()),
                        It.Is<string>(i => i == "*")))
                 .ReturnsAsync(new ValueApiModel
                 {
@@ -818,13 +818,13 @@ namespace Services.Test
             //string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
 
             int[] idx = new int[] { 0, 1, 2 };
-            var packages = idx.Select(i => new Package()
+            var packages = idx.Select(i => new PackageServiceModel()
             {
                 Id = id + i,
                 Name = name + i,
                 Content = content + i,
                 PackageType = (i == 0) ? PackageType.DeviceConfiguration : PackageType.EdgeManifest,
-                ConfigType = (i == 0) ? ConfigType.FirmwareUpdate.ToString() : string.Empty 
+                ConfigType = (i == 0) ? ConfigType.Firmware.ToString() : string.Empty 
                                                 
             }).ToList();
 
@@ -848,7 +848,7 @@ namespace Services.Test
             var packageType = isEdgeManifest ? PackageType.EdgeManifest.ToString() :
                                                 string.Empty;
 
-            var configType = isEdgeManifest ? string.Empty : ConfigType.FirmwareUpdate.ToString();
+            var configType = isEdgeManifest ? string.Empty : ConfigType.Firmware.ToString();
 
             var resultPackages = await this.storage.GetFilteredPackagesAsync(
                                                     packageType,
@@ -860,7 +860,7 @@ namespace Services.Test
                 var pkg = resultPackages.First();
                 Assert.Single(resultPackages);
                 Assert.Equal(type, pkg.PackageType);
-                Assert.Equal(ConfigType.FirmwareUpdate.ToString(), pkg.ConfigType);
+                Assert.Equal(ConfigType.Firmware.ToString(), pkg.ConfigType);
             }
             else
             {
@@ -895,7 +895,7 @@ namespace Services.Test
         public async Task InvalidPackageThrowsTest()
         {
             // Arrange
-            var pkg = new Package
+            var pkg = new PackageServiceModel
             {
                 Id = string.Empty,
                 Name = "testpackage",

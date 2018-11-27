@@ -5,7 +5,7 @@ using Newtonsoft.Json.Converters;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 {
-    public class Package
+    public class PackageServiceModel
     {
         public string Id { get; set; }
 
@@ -33,6 +33,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
     public enum ConfigType
     {
         Custom,
-        FirmwareUpdate
+        Firmware
     }
 }

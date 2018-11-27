@@ -33,10 +33,13 @@ namespace WebService.Test.Controllers
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
         [InlineData("EdgeManifest", "filename", true, false)]
         [InlineData("EdgeManifest", "filename", false, true)]
+        [InlineData("EdgeManifest", "filename", false, true, true)]
+        [InlineData("DeviceConfiguration", "filename", true, false, true)]
         [InlineData("EdgeManifest", "", true, true)]
         [InlineData("BAD_TYPE", "filename", true, true)]
         public async Task PostAsyncExceptionVerificationTest(string type, string filename,
-                                                             bool isValidFileProvided, bool expectException)
+                                                             bool isValidFileProvided, bool expectException,
+                                                             bool shouldHaveConfig=false)
         {
             // Arrange
             IFormFile file = null;
@@ -45,24 +48,29 @@ namespace WebService.Test.Controllers
                 file = this.CreateSampleFile(filename);
             }
 
+            Enum.TryParse(type, out PackageType pckgType);
+            
             this.mockStorage.Setup(x => x.AddPackageAsync(
-                                    It.Is<Package>(p => p.PackageType.ToString().Equals(type) &&
+                                    It.Is<PackageServiceModel>(p => p.PackageType.ToString().Equals(type) &&
                                                         p.Name.Equals(filename))))
-                            .ReturnsAsync(new Package() {
+                            .ReturnsAsync(new PackageServiceModel() {
                                 Name = filename,
-                                PackageType = PackageType.EdgeManifest
+                                PackageType = pckgType
                             });
+
+            var configType = shouldHaveConfig ? "customconfig" : null;
+
             try
             {
                 // Act
-                var package = await this.controller.PostAsync(type, null, file);
+                var package = await this.controller.PostAsync(type, configType, file);
 
                 // Assert
                 Assert.False(expectException);
                 Assert.Equal(filename, package.Name);
                 Assert.Equal(type, package.packageType.ToString());
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Assert.True(expectException);
             }
@@ -80,7 +88,7 @@ namespace WebService.Test.Controllers
 
             this.mockStorage
                 .Setup(x => x.GetPackageAsync(id))
-                .ReturnsAsync(new Package()
+                .ReturnsAsync(new PackageServiceModel()
                 {
                     Id = id,
                     Name = name,
@@ -116,7 +124,7 @@ namespace WebService.Test.Controllers
             string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
 
             int[] idx = new int[] {0, 1, 2};
-            var packages = idx.Select(i => new Package()
+            var packages = idx.Select(i => new PackageServiceModel()
                                      {
                                          Id = id + i,
                                          Name = name + i,
@@ -159,13 +167,13 @@ namespace WebService.Test.Controllers
             string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
 
             int[] idx = new int[] { 0, 1, 2 };
-            var packages = idx.Select(i => new Package()
+            var packages = idx.Select(i => new PackageServiceModel()
             {
                 Id = id + i,
                 Name = name + i,
                 Content = content + i,
                 PackageType = type + i,
-                ConfigType = (i == 0) ? ConfigType.FirmwareUpdate.ToString() : i.ToString(),
+                ConfigType = (i == 0) ? ConfigType.Firmware.ToString() : i.ToString(),
                 DateCreated = dateCreated
             }).ToList();
 
@@ -178,12 +186,12 @@ namespace WebService.Test.Controllers
             // Act
             var resultPackages = await this.controller.GetFilteredAsync(
                                                     PackageType.DeviceConfiguration.ToString(),
-                                                    ConfigType.FirmwareUpdate.ToString());
+                                                    ConfigType.Firmware.ToString());
 
             // Assert
             this.mockStorage.Verify(x => x.GetFilteredPackagesAsync(
                     PackageType.DeviceConfiguration.ToString(),
-                    ConfigType.FirmwareUpdate.ToString()), 
+                    ConfigType.Firmware.ToString()), 
                     Times.Once);
         }
 

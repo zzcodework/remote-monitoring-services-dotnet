@@ -29,12 +29,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
         {
             var packageConfiguration = JsonConvert.DeserializeObject<Configuration>(model.PackageContent);
 
-            if (model.Type.Equals(PackageType.EdgeManifest) &&
+            if (model.PackageType.Equals(PackageType.EdgeManifest) &&
                 packageConfiguration.Content?.DeviceContent != null)
             {
                 throw new InvalidInputException("Deployment type does not match with package contents.");
             }
-            else if (model.Type.Equals(PackageType.DeviceConfiguration) &&
+            else if (model.PackageType.Equals(PackageType.DeviceConfiguration) &&
                 packageConfiguration.Content?.ModulesContent != null)
             {
                 throw new InvalidInputException("Deployment type does not match with package contents.");
@@ -48,14 +48,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
             configuration.TargetCondition = string.IsNullOrEmpty(targetCondition) ? "*" : targetCondition;
             configuration.Priority = model.Priority;
             configuration.ETag = string.Empty;
-
-            if (configuration.Labels == null)
-            {
-                configuration.Labels = new Dictionary<string, string>();
-            }
+            configuration.Labels = packageConfiguration.Labels ?? new Dictionary<string, string>();
 
             // Required labels
-            configuration.Labels.Add(PACKAGE_TYPE_LABEL, model.Type.ToString());
+            configuration.Labels.Add(PACKAGE_TYPE_LABEL, model.PackageType.ToString());
             configuration.Labels.Add(CONFIG_TYPE_LABEL, model.ConfigType);
             configuration.Labels.Add(DEPLOYMENT_NAME_LABEL, model.Name);
             configuration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);

@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {
-    public class ConfigTypeList
+    public class ConfigTypeListServiceModel
     {
         private HashSet<String> configTypes = new HashSet<String>();
 

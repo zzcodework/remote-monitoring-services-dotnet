@@ -40,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(PropertyName = "PackageType")]
-        public PackageType Type { get; set; }
+        public PackageType PackageType { get; set; }
 
         [JsonProperty(PropertyName = "ConfigType")]
         public string ConfigType { get; set; }
@@ -71,7 +71,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.PackageContent = serviceModel.PackageContent;
             this.PackageName = serviceModel.PackageName;
             this.Priority = serviceModel.Priority;
-            this.Type = serviceModel.Type;
+            this.PackageType = serviceModel.PackageType;
             this.ConfigType = serviceModel.ConfigType;
             this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
             {
@@ -95,7 +95,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 PackageContent = this.PackageContent,
                 PackageName = this.PackageName,
                 Priority = this.Priority,
-                Type = this.Type,
+                PackageType = this.PackageType,
                 ConfigType = this.ConfigType
                 
             };

@@ -11,7 +11,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
 
         public DateTime CreatedDateTimeUtc { get; set; }
         public string Id { get; set; }
-        public DeploymentMetrics DeploymentMetrics { get; set; }
+        public DeploymentMetricsServiceModel DeploymentMetrics { get; set; }
         public string DeviceGroupId { get; set; }
         public string DeviceGroupName { get; set; }
         public string DeviceGroupQuery { get; set; }
@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public string PackageContent { get; set; }
         public string PackageName { get; set; }
         public int Priority { get; set; }
-        public PackageType Type { get; set; }
+        public PackageType PackageType { get; set; }
         public string ConfigType { get; set; }
 
         public DeploymentServiceModel()
@@ -59,11 +59,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 if (deployment.Labels.Values.Contains(PackageType.EdgeManifest.ToString()))
                 {
-                    this.Type = PackageType.EdgeManifest;
+                    this.PackageType = PackageType.EdgeManifest;
                 }
                 else if (deployment.Labels.Values.Contains(PackageType.DeviceConfiguration.ToString()))
                 {
-                    this.Type = PackageType.DeviceConfiguration;
+                    this.PackageType = PackageType.DeviceConfiguration;
                 }
             }
             else
@@ -72,11 +72,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 // deployments may not have the required label.
                 if (deployment.Content?.ModulesContent != null)
                 {
-                    this.Type = PackageType.EdgeManifest;
+                    this.PackageType = PackageType.EdgeManifest;
                 }
                 else if (deployment.Content?.DeviceContent != null)
                 {
-                    this.Type = PackageType.DeviceConfiguration;
+                    this.PackageType = PackageType.DeviceConfiguration;
                 }
             }
 
@@ -89,7 +89,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 this.ConfigType = PackageType.EdgeManifest.ToString();
             }
 
-            this.DeploymentMetrics = new DeploymentMetrics(deployment.SystemMetrics, deployment.Metrics);
+            this.DeploymentMetrics = new DeploymentMetricsServiceModel(deployment.SystemMetrics, deployment.Metrics);
         }
 
         private void VerifyConfigurationLabel(Configuration deployment, string labelName)
@@ -108,6 +108,6 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
     }
 
     public enum ConfigType {
-        FirmwareUpdate
+        Firmware
     }
 }

@@ -14,7 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata { get; set; }
 
-        public PackageListApiModel(IEnumerable<Package> models)
+        public PackageListApiModel(IEnumerable<PackageServiceModel> models)
         {
             this.Items = models.Select(m => new PackageApiModel(m));
 

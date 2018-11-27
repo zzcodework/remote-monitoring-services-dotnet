@@ -12,7 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers.PackageValidati
         private static Dictionary<ConfigType, IPackageValidator> validatorMapping =
             new Dictionary<ConfigType, IPackageValidator>()
         {
-            { ConfigType.FirmwareUpdate, new FirmwareUpdateMxChipValidator() }
+            { ConfigType.Firmware, new FirmwareValidator() }
         };
 
         private static EdgePackageValidator edgePackageValidator = new EdgePackageValidator();

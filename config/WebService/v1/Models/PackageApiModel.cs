@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty("Content")]
         public string Content { get; set; }
 
-        public PackageApiModel(Package model)
+        public PackageApiModel(PackageServiceModel model)
         {
             this.Id = model.Id;
             this.Name = model.Name;
@@ -50,9 +50,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
             this.ConfigType = ConfigType;
         }
 
-        public Package ToServiceModel()
+        public PackageServiceModel ToServiceModel()
         {
-            return new Package()
+            return new PackageServiceModel()
             {
                 Content = this.Content,
                 Name = this.Name,

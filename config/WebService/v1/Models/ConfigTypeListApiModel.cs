@@ -14,7 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata { get; set; }
 
-        public ConfigTypeListApiModel(ConfigTypeList configTypeList)
+        public ConfigTypeListApiModel(ConfigTypeListServiceModel configTypeList)
         {
             this.configTypes = configTypeList.ConfigTypes;
 

@@ -37,6 +37,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
                 throw new InvalidInputException("DeviceGroupId must be provided");
             }
 
+            if (string.IsNullOrWhiteSpace(deployment.DeviceGroupName))
+            {
+                throw new InvalidInputException("DeviceGroupName must be provided");
+            }
+
             if (string.IsNullOrWhiteSpace(deployment.DeviceGroupQuery))
             {
                 throw new InvalidInputException("DeviceGroupQuery must be provided");
@@ -47,7 +52,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
                 throw new InvalidInputException("PackageContent must be provided");
             }
 
-            if ( deployment.Type.Equals(PackageType.DeviceConfiguration) 
+            if ( deployment.PackageType.Equals(PackageType.DeviceConfiguration) 
                 && string.IsNullOrEmpty(deployment.ConfigType))
             {
                 throw new InvalidInputException("Configuration type must be provided");
