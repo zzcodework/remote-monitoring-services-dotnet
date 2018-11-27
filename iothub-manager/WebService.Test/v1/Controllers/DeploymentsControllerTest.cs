@@ -115,7 +115,7 @@ namespace WebService.Test.v1.Controllers
             {
                 DeviceMetrics = new Dictionary<DeploymentStatus, long>()
                 {
-                    { DeploymentStatus.Successful, 0},
+                    { DeploymentStatus.Succeeded, 0},
                     { DeploymentStatus.Pending, 0},
                     { DeploymentStatus.Failed, 0}
                 }

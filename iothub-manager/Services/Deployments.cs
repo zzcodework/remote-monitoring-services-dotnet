@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
     [JsonConverter(typeof(StringEnumConverter))]
     public enum DeploymentStatus
     {
-        Pending, Successful, Failed, Unknown
+        Pending, Succeeded, Failed, Unknown
     }
 
     public class Deployments : IDeployments
@@ -237,7 +237,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
             foreach (var successfulDevice in successfulDevices)
             {
-                deviceWithStatus.Add(successfulDevice, DeploymentStatus.Successful);
+                deviceWithStatus.Add(successfulDevice, DeploymentStatus.Succeeded);
             }
 
             foreach (var failedDevice in failedDevices)
@@ -294,8 +294,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
             IDictionary<DeploymentStatus, long> deviceMetrics = new Dictionary<DeploymentStatus, long>();
 
-            deviceMetrics[DeploymentStatus.Successful] = deviceStatuses.Where(item =>
-                                                            item.Value == DeploymentStatus.Successful).LongCount();
+            deviceMetrics[DeploymentStatus.Succeeded] = deviceStatuses.Where(item =>
+                                                            item.Value == DeploymentStatus.Succeeded).LongCount();
 
             deviceMetrics[DeploymentStatus.Failed] = deviceStatuses.Where(item =>
                                                             item.Value == DeploymentStatus.Failed).LongCount();

@@ -11,7 +11,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
     {
         private const string APPLIED_METRICS_KEY = "appliedCount";
         private const string TARGETED_METRICS_KEY = "targetedCount";
-        private const string SUCCESSFUL_METRICS_KEY = "successfullCount";
+        private const string SUCCESSFUL_METRICS_KEY = "succeededCount";
         private const string FAILED_METRICS_KEY = "failedCount";
         private const string PENDING_METRICS_KEY = "pendingCount";
 
@@ -41,11 +41,36 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             if (metricsServiceModel.DeviceMetrics != null)
             {
                 this.SystemMetrics[SUCCESSFUL_METRICS_KEY] = 
-                    metricsServiceModel.DeviceMetrics[DeploymentStatus.Successful];
+                    metricsServiceModel.DeviceMetrics[DeploymentStatus.Succeeded];
                 this.SystemMetrics[FAILED_METRICS_KEY] = 
                     metricsServiceModel.DeviceMetrics[DeploymentStatus.Failed];
                 this.SystemMetrics[PENDING_METRICS_KEY] = 
                     metricsServiceModel.DeviceMetrics[DeploymentStatus.Pending];
+            }
+
+            if (this.CustomMetrics != null)
+            {
+                // Override System metrics if custom metric contain same metrics
+                if (this.CustomMetrics.ContainsKey(SUCCESSFUL_METRICS_KEY))
+                {
+                    this.SystemMetrics[SUCCESSFUL_METRICS_KEY] =
+                        this.CustomMetrics[SUCCESSFUL_METRICS_KEY];
+                    this.CustomMetrics.Remove(SUCCESSFUL_METRICS_KEY);
+                }
+
+                if (this.CustomMetrics.ContainsKey(FAILED_METRICS_KEY))
+                {
+                    this.SystemMetrics[FAILED_METRICS_KEY] =
+                        this.CustomMetrics[FAILED_METRICS_KEY];
+                    this.CustomMetrics.Remove(FAILED_METRICS_KEY);
+                }
+
+                if (this.CustomMetrics.ContainsKey(PENDING_METRICS_KEY))
+                {
+                    this.SystemMetrics[PENDING_METRICS_KEY] =
+                        this.CustomMetrics[PENDING_METRICS_KEY];
+                    this.CustomMetrics.Remove(PENDING_METRICS_KEY);
+                }
             }
         }
     }

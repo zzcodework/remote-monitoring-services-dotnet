@@ -51,11 +51,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
             configuration.Labels = packageConfiguration.Labels ?? new Dictionary<string, string>();
 
             // Required labels
-            configuration.Labels.Add(PACKAGE_TYPE_LABEL, model.PackageType.ToString());
-            configuration.Labels.Add(CONFIG_TYPE_LABEL, model.ConfigType);
-            configuration.Labels.Add(DEPLOYMENT_NAME_LABEL, model.Name);
-            configuration.Labels.Add(DEPLOYMENT_GROUP_ID_LABEL, model.DeviceGroupId);
-            configuration.Labels.Add(RM_CREATED_LABEL, bool.TrueString);
+            configuration.Labels[PACKAGE_TYPE_LABEL] = model.PackageType.ToString();
+            configuration.Labels[CONFIG_TYPE_LABEL] = model.ConfigType;
+            configuration.Labels[DEPLOYMENT_NAME_LABEL] = model.Name;
+            configuration.Labels[DEPLOYMENT_GROUP_ID_LABEL] = model.DeviceGroupId;
+            configuration.Labels[RM_CREATED_LABEL] = bool.TrueString;
 
             var customMetrics = packageConfiguration.Metrics?.Queries;
             if (customMetrics != null)
