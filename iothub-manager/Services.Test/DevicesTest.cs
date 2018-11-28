@@ -243,7 +243,7 @@ namespace Services.Test
         }
 
         /// <summary>
-        /// Returns a set of 4 devices the first two being non-edge
+        /// Returns a set of edge and non-edge devices
         /// </summary>
         /// <returns></returns>
         private IEnumerable<Device> CreateTestListOfDevices()
@@ -254,6 +254,8 @@ namespace Services.Test
                 DevicesTest.CreateTestDevice("device1", false),
                 DevicesTest.CreateTestDevice("device2", true),
                 DevicesTest.CreateTestDevice("device3", true),
+                DevicesTest.CreateTestDevice("device4", false),
+                DevicesTest.CreateTestDevice("device5", true),
             };
         }
     }
