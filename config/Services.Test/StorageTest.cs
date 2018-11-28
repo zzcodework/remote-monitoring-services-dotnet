@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
@@ -24,7 +25,7 @@ namespace Services.Test
         private readonly Storage storage;
         private readonly Random rand;
         private const string PACKAGES_COLLECTION_ID = "packages";
-        private const string TEST_PACKAGE_JSON =
+        private const string EDGE_PACKAGE_JSON =
                 @"{
                     ""id"": ""tempid"",
                     ""schemaVersion"": ""1.0"",
@@ -88,18 +89,60 @@ namespace Services.Test
                     }
                  }";
 
+        private const string ADM_PACKAGE_JSON =
+                @"{
+                    ""id"": ""9a9690df-f037-4c3a-8fc0-8eaba687609d"",
+                    ""schemaVersion"": ""1.0"",
+                    ""labels"": {
+                        ""Type"": ""DeviceConfiguration"",
+                        ""Name"": ""Deployment-12"",
+                        ""DeviceGroupId"": ""MxChip"",
+                        ""RMDeployment"": ""True""
+                    },
+                    ""content"": {
+                        ""deviceContent"": {
+                            ""properties.desired.firmware"": {
+                                ""fwVersion"": ""1.0.1"",
+                                ""fwPackageURI"": ""https://cs4c496459d5c79x44d1x97a.blob.core.windows.net/firmware/FirmwareOTA.ino.bin"",
+                                ""fwPackageCheckValue"": ""45cd"",
+                                ""fwSize"": 568648
+                            }
+                        }
+                    },
+                    ""targetCondition"": ""Tags.isVan1='Y'"",
+                    ""createdTimeUtc"": ""2018-11-10T23:50:30.938Z"",
+                    ""lastUpdatedTimeUtc"": ""2018-11-10T23:50:30.938Z"",
+                    ""priority"": 20,
+                    ""systemMetrics"": {
+                        ""results"": {
+                            ""targetedCount"": 2,
+                            ""appliedCount"": 2
+                        },
+                        ""queries"": {
+                            ""Targeted"": ""select deviceId from devices where Tags.isVan1='Y'"",
+                            ""Applied"": ""select deviceId from devices where Items.[[9a9690df-f037-4c3a-8fc0-8eaba687609d]].status = 'Applied'""
+                        }
+                    },
+                    ""metrics"": {
+                        ""results"": {},
+                        ""queries"": {}
+                    },
+                    ""etag"": ""MQ==""
+                    }";
+
         public StorageTest()
         {
             this.rand = new Random();
 
             this.azureMapsKey = this.rand.NextString();
             this.mockClient = new Mock<IStorageAdapterClient>();
-            this.storage = new Storage(
+            this.storage = new Storage( 
                 this.mockClient.Object,
                 new ServicesConfig
                 {
                     AzureMapsKey = this.azureMapsKey
-                });
+                }, 
+                new Logger(string.Empty, LogLevel.Debug));
         }
 
         [Fact]
@@ -665,17 +708,18 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task AddPackageTest()
+        public async Task AddEdgePackageTest()
         {
             // Arrange
             const string collectionId = "packages";
             const string key = "package name";
-            var pkg = new Package
+            var pkg = new PackageServiceModel
             {
                 Id = string.Empty,
                 Name = key,
-                Type = PackageType.EdgeManifest,
-                Content = TEST_PACKAGE_JSON
+                PackageType = PackageType.EdgeManifest,
+                ConfigType = string.Empty,
+                Content = EDGE_PACKAGE_JSON
             };
             var value = JsonConvert.SerializeObject(pkg);
 
@@ -694,19 +738,160 @@ namespace Services.Test
 
             // Assert
             Assert.Equal(pkg.Name, result.Name);
-            Assert.Equal(pkg.Type, result.Type);
+            Assert.Equal(pkg.PackageType, result.PackageType);
             Assert.Equal(pkg.Content, result.Content);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task AddADMPackageTest(Boolean isCustomConfigType)
+        {
+            // Arrange
+            const string collectionId = "packages";
+            const string key = "package name";
+            string configType = isCustomConfigType ? "Custom-config" : ConfigType.Firmware.ToString();
+
+            var pkg = new PackageServiceModel
+            {
+                Id = string.Empty,
+                Name = key,
+                PackageType = PackageType.DeviceConfiguration,
+                Content = ADM_PACKAGE_JSON,
+                ConfigType = configType
+            };
+
+            var value = JsonConvert.SerializeObject(pkg);
+
+            this.mockClient
+                .Setup(x => x.CreateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => this.IsMatchingPackage(i, value))))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+
+            const string configKey = "config-types";
+
+            this.mockClient
+                .Setup(x => x.UpdateAsync(
+                       It.Is<string>(i => i == collectionId),
+                       It.Is<string>(i => i == configKey),
+                       It.Is<string>(i => i == ConfigType.Firmware.ToString()),
+                       It.Is<string>(i => i == "*")))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Key = key,
+                    Data = value
+                });
+
+            this.mockClient
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(i => i == collectionId),
+                    It.Is<string>(i => i == configKey)))
+                .ThrowsAsync(new ResourceNotFoundException());
+
+            // Act
+            var result = await this.storage.AddPackageAsync(pkg);
+
+            // Assert
+            Assert.Equal(pkg.Name, result.Name);
+            Assert.Equal(pkg.PackageType, result.PackageType);
+            Assert.Equal(pkg.Content, result.Content);
+            Assert.Equal(pkg.ConfigType, result.ConfigType);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task ListPackagesTest(Boolean isEdgeManifest)
+        {
+            // Arrange
+            const string collectionId = "packages";
+            const string id = "packageId";
+            const string name = "packageName";
+            const string content = "{}";
+
+            int[] idx = new int[] { 0, 1, 2 };
+            var packages = idx.Select(i => new PackageServiceModel()
+            {
+                Id = id + i,
+                Name = name + i,
+                Content = content + i,
+                PackageType = (i == 0) ? PackageType.DeviceConfiguration : PackageType.EdgeManifest,
+                ConfigType = (i == 0) ? ConfigType.Firmware.ToString() : string.Empty 
+                                                
+            }).ToList();
+
+            this.mockClient
+                .Setup(x => x.GetAllAsync(
+                       It.Is<string>(i => (i == collectionId))))
+                .ReturnsAsync(new ValueListApiModel
+                {
+                    Items = new List<ValueApiModel>()
+                    {
+                        new ValueApiModel()
+                        { Key = string.Empty, Data = JsonConvert.SerializeObject(packages[0])},
+                        new ValueApiModel()
+                        { Key = string.Empty, Data = JsonConvert.SerializeObject(packages[1])},
+                        new ValueApiModel()
+                        { Key = string.Empty, Data = JsonConvert.SerializeObject(packages[2])}
+                    }
+                });
+
+            // Act
+            var packageType = isEdgeManifest ? PackageType.EdgeManifest.ToString() :
+                                                string.Empty;
+
+            var configType = isEdgeManifest ? string.Empty : ConfigType.Firmware.ToString();
+
+            try
+            {
+                var resultPackages = await this.storage.GetFilteredPackagesAsync(
+                                                    packageType,
+                                                    configType);
+                // Assert
+                var pkg = resultPackages.First();
+                Assert.Equal(PackageType.EdgeManifest, pkg.PackageType);
+                Assert.Equal(string.Empty, pkg.ConfigType);
+            }
+            catch (Exception)
+            {
+                Assert.False(isEdgeManifest);
+            }
+        }
+
+        [Fact]
+        public async Task ListConfigurationsTest()
+        {
+            const string collectionId = "packages";
+            const string configKey = "config-types";
+
+            // Arrange
+            this.mockClient
+                .Setup(x => x.GetAsync(
+                    It.Is<string>(i => i == collectionId),
+                    It.Is<string>(i => i == configKey)))
+                .ThrowsAsync(new ResourceNotFoundException());
+
+            // Act
+            var result = await this.storage.GetConfigTypesListAsync();
+
+            // Assert
+            Assert.Empty(result.ConfigTypes);
         }
 
         [Fact]
         public async Task InvalidPackageThrowsTest()
         {
             // Arrange
-            var pkg = new Package
+            var pkg = new PackageServiceModel
             {
                 Id = string.Empty,
                 Name = "testpackage",
-                Type = PackageType.EdgeManifest,
+                PackageType = PackageType.EdgeManifest,
                 Content = "InvalidPackage"
             };
 

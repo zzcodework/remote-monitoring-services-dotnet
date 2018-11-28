@@ -9,6 +9,7 @@ using Xunit;
 using System.Threading.Tasks;
 using Services.Test.helpers;
 using Microsoft.Azure.Devices;
+using System.Linq;
 
 namespace Services.Test
 {
@@ -21,13 +22,79 @@ namespace Services.Test
         private const string DEPLOYMENT_GROUP_ID_LABEL = "DeviceGroupId";
         private const string DEPLOYMENT_GROUP_NAME_LABEL = "DeviceGroupName";
         private const string DEPLOYMENT_PACKAGE_NAME_LABEL = "PackageName";
+        private string PACKAGE_TYPE_LABEL  = "Type";
+        private const string CONFIG_TYPE_LABEL = "ConfigType";
         private const string RM_CREATED_LABEL = "RMDeployment";
         private const string RESOURCE_NOT_FOUND_EXCEPTION =
             "Microsoft.Azure.IoTSolutions.IotHubManager.Services." +
             "Exceptions.ResourceNotSupportedException, Microsoft.Azure." + 
             "IoTSolutions.IotHubManager.Services, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
 
-        private const string TEST_PACKAGE_JSON =
+        private const string TEST_EDGE_PACKAGE_JSON =
+                @"{
+                    ""id"": ""tempid"",
+                    ""schemaVersion"": ""1.0"",
+                    ""content"": {
+                        ""modulesContent"": {
+                        ""$edgeAgent"": {
+                            ""properties.desired"": {
+                            ""schemaVersion"": ""1.0"",
+                            ""runtime"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                ""loggingOptions"": """",
+                                ""minDockerVersion"": ""v1.25""
+                                }
+                            },
+                            ""systemModules"": {
+                                ""edgeAgent"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                    ""image"": ""mcr.microsoft.com/azureiotedge-agent:1.0"",
+                                    ""createOptions"": ""{}""
+                                }
+                                },
+                                ""edgeHub"": {
+                                ""type"": ""docker"",
+                                ""settings"": {
+                                    ""image"": ""mcr.microsoft.com/azureiotedge-hub:1.0"",
+                                    ""createOptions"": ""{}""
+                                },
+                                ""status"": ""running"",
+                                ""restartPolicy"": ""always""
+                                }
+                            },
+                            ""modules"": {}
+                            }
+                        },
+                        ""$edgeHub"": {
+                            ""properties.desired"": {
+                            ""schemaVersion"": ""1.0"",
+                            ""routes"": {
+                                ""route"": ""FROM /messages/* INTO $upstream""
+                            },
+                            ""storeAndForwardConfiguration"": {
+                                ""timeToLiveSecs"": 7200
+                            }
+                            }
+                        }
+                        }
+                    },
+                    ""targetCondition"": ""*"",
+                    ""priority"": 30,
+                    ""labels"": {
+                        ""Name"": ""Test""
+                    },
+                    ""createdTimeUtc"": ""2018-08-20T18:05:55.482Z"",
+                    ""lastUpdatedTimeUtc"": ""2018-08-20T18:05:55.482Z"",
+                    ""etag"": null,
+                    ""metrics"": {
+                        ""results"": {},
+                        ""queries"": {}
+                    }
+                 }";
+
+        private const string TEST_ADM_PACKAGE_JSON =
                 @"{
                     ""id"": ""tempid"",
                     ""schemaVersion"": ""1.0"",
@@ -99,12 +166,12 @@ namespace Services.Test
         }
 
         [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
-        [InlineData("depname", "dvcgroupid", "dvcquery", TEST_PACKAGE_JSON, 10, "")]
-        [InlineData("", "dvcgroupid", "dvcquery", TEST_PACKAGE_JSON, 10, "System.ArgumentNullException")]
-        [InlineData("depname", "", "dvcquery", TEST_PACKAGE_JSON, 10, "System.ArgumentNullException")]
-        [InlineData("depname", "dvcgroupid", "", TEST_PACKAGE_JSON, 10, "System.ArgumentNullException")]
+        [InlineData("depname", "dvcgroupid", "dvcquery", TEST_EDGE_PACKAGE_JSON, 10, "")]
+        [InlineData("", "dvcgroupid", "dvcquery", TEST_EDGE_PACKAGE_JSON, 10, "System.ArgumentNullException")]
+        [InlineData("depname", "", "dvcquery", TEST_EDGE_PACKAGE_JSON, 10, "System.ArgumentNullException")]
+        [InlineData("depname", "dvcgroupid", "", TEST_EDGE_PACKAGE_JSON, 10, "System.ArgumentNullException")]
         [InlineData("depname", "dvcgroupid", "dvcquery", "", 10, "System.ArgumentNullException")]
-        [InlineData("depname", "dvcgroupid", "dvcquery", TEST_PACKAGE_JSON, -1, "System.ArgumentOutOfRangeException")]
+        [InlineData("depname", "dvcgroupid", "dvcquery", TEST_EDGE_PACKAGE_JSON, -1, "System.ArgumentOutOfRangeException")]
         public async Task CreateDeploymentTest(string deploymentName, string deviceGroupId,
                                                string deviceGroupQuery, string packageContent,
                                                int priority, string expectedException)
@@ -124,6 +191,7 @@ namespace Services.Test
                 Labels = new Dictionary<string, string>()
                 {
                     { DEPLOYMENT_NAME_LABEL, deploymentName },
+                    { PACKAGE_TYPE_LABEL , PackageType.EdgeManifest.ToString() },
                     { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
                     { RM_CREATED_LABEL, bool.TrueString },
                 }, Priority = priority
@@ -210,15 +278,124 @@ namespace Services.Test
             this.registry.Setup(r => r.CreateQuery(It.IsAny<string>())).Returns(queryResult);
 
             // Act
-            var returnedDeployment = await this.deployments.GetAsync(deploymentId);
+            var returnedDeployment = await this.deployments.GetAsync(deploymentId, true);
             var deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
+            Assert.Equal(3, deviceStatuses.Count); 
 
-            // Assert
-            Assert.Null(deviceStatuses);
-
-            returnedDeployment = await this.deployments.GetAsync(deploymentId, true);
+            //Assert
+            returnedDeployment = await this.deployments.GetAsync(deploymentId);
             deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
-            Assert.Equal(3, deviceStatuses.Count);
+            Assert.Null(deviceStatuses);
+        }
+
+        [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        [InlineData(true, true, true)]
+        [InlineData(false, true)]
+        [InlineData(true, true)]
+        [InlineData(false, true, true)]
+        [InlineData(true, false)]
+        [InlineData(true, false, true)]
+        public async Task GetDeploymentTypeTest(bool isEdgeContent, bool addLabel, bool isEdgeLabel=false)
+        {
+            // Arrange
+            var content = new ConfigurationContent()
+            {
+                ModulesContent = isEdgeContent ? new Dictionary<string, IDictionary<string, object>>() : null,
+                DeviceContent = !(isEdgeContent) ? new Dictionary<string, object>() : null
+            };
+
+            var label = string.Empty;
+
+            if (addLabel)
+            {
+                label = isEdgeLabel ? PackageType.EdgeManifest.ToString() : 
+                    PackageType.DeviceConfiguration.ToString();
+            }
+
+            var configuration = new Configuration("test-config")
+            {
+                Labels = new Dictionary<string, string>()
+                {
+                    { DEPLOYMENT_NAME_LABEL, string.Empty },
+                    { DEPLOYMENT_GROUP_ID_LABEL, string.Empty },
+                    { PACKAGE_TYPE_LABEL , label},
+                    { CONFIG_TYPE_LABEL, "CustomConfig" },
+                    { RM_CREATED_LABEL, bool.TrueString },
+                },
+                Content = content
+            };
+
+            var deploymentId = configuration.Id;
+            this.registry.Setup(r => r.GetConfigurationAsync(deploymentId)).ReturnsAsync(configuration);
+            this.registry.Setup(r => r.CreateQuery(It.IsAny<string>())).Returns(new ResultQuery(0));
+
+            // Act
+            var returnedDeployment = await this.deployments.GetAsync(deploymentId);
+
+            // Assert Should returned Deplyment PackageType according to label
+            if (addLabel)
+            {
+                if (isEdgeLabel)
+                {
+                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.PackageType);
+                }
+                else
+                {
+                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.PackageType);
+                }
+            }
+            else
+            {
+                if (isEdgeContent)
+                {
+                    Assert.Equal(PackageType.EdgeManifest, returnedDeployment.PackageType);
+                }
+                else
+                {
+                    Assert.Equal(PackageType.DeviceConfiguration, returnedDeployment.PackageType);
+                }
+            }
+        }
+
+        [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task GetDeploymentMetricsTest(bool isEdgeDeployment)
+        {
+            // Arrange
+            var content = new ConfigurationContent()
+            {
+                ModulesContent = isEdgeDeployment ? new Dictionary<string, IDictionary<string, object>>() : null,
+                DeviceContent = !(isEdgeDeployment) ? new Dictionary<string, object>() : null
+            };
+
+            var label = isEdgeDeployment ? PackageType.EdgeManifest.ToString() : PackageType.DeviceConfiguration.ToString();
+            
+            var Firmware = "Firmware";
+
+            var configuration = new Configuration("test-config")
+            {
+                Labels = new Dictionary<string, string>()
+                {
+                    { DEPLOYMENT_NAME_LABEL, string.Empty },
+                    { DEPLOYMENT_GROUP_ID_LABEL, string.Empty },
+                    { PACKAGE_TYPE_LABEL , label},
+                    { CONFIG_TYPE_LABEL, Firmware },
+                    { RM_CREATED_LABEL, bool.TrueString },
+                },
+                Content = content
+            };
+
+            var deploymentId = configuration.Id;
+            this.registry.Setup(r => r.GetConfigurationAsync(deploymentId)).ReturnsAsync(configuration);
+            this.registry.Setup(r => r.CreateQuery(It.IsAny<string>())).Returns(new ResultQuery(0));
+
+            // Act
+            var returnedDeployment = await this.deployments.GetAsync(deploymentId);
+
+            // Assert Should return Deplyment metrics according to label
+            Assert.NotNull(returnedDeployment.DeploymentMetrics.DeviceMetrics);
+            Assert.Equal(3, returnedDeployment.DeploymentMetrics.DeviceMetrics.Count());
         }
 
         [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
@@ -237,7 +414,7 @@ namespace Services.Test
                 DeviceGroupId = deviceGroupId,
                 DeviceGroupName = deviceGroupName,
                 DeviceGroupQuery = deviceGroupQuery,
-                PackageContent = TEST_PACKAGE_JSON,
+                PackageContent = TEST_EDGE_PACKAGE_JSON,
                 PackageName = packageName,
                 Priority = priority
             };
@@ -246,6 +423,7 @@ namespace Services.Test
             {
                 Labels = new Dictionary<string, string>()
                 {
+                    { PACKAGE_TYPE_LABEL , PackageType.EdgeManifest.ToString() },
                     { DEPLOYMENT_NAME_LABEL, deploymentName },
                     { DEPLOYMENT_GROUP_ID_LABEL, deviceGroupId },
                     { RM_CREATED_LABEL, bool.TrueString },
@@ -303,6 +481,7 @@ namespace Services.Test
             {
                 Labels = new Dictionary<string, string>()
                 {
+                    { PACKAGE_TYPE_LABEL , PackageType.EdgeManifest.ToString() },
                     { DEPLOYMENT_NAME_LABEL, "deployment" + idx },
                     { DEPLOYMENT_GROUP_ID_LABEL, "dvcGroupId" + idx }
                 }, Priority = 10

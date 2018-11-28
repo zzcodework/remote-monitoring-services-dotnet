@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Devices;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
@@ -26,6 +28,7 @@ namespace WebService.Test.v1.Controllers
         private const string PACKAGE_NAME = "packageName";
         private const string DEPLOYMENT_ID = "dvcGroupId-packageId";
         private const int PRIORITY = 10;
+        private const string CONFIG_TYPE = "Edge";
 
         public DeploymentsControllerTest()
         {
@@ -47,7 +50,8 @@ namespace WebService.Test.v1.Controllers
                 PackageName = PACKAGE_NAME,
                 Priority = PRIORITY,
                 Id = DEPLOYMENT_ID,
-                Type = DeploymentType.EdgeManifest,
+                PackageType = PackageType.EdgeManifest,
+                ConfigType = CONFIG_TYPE,
                 CreatedDateTimeUtc = DateTime.UtcNow
             });
 
@@ -62,7 +66,8 @@ namespace WebService.Test.v1.Controllers
             Assert.Equal(DEVICE_GROUP_ID, result.DeviceGroupId);
             Assert.Equal(DEVICE_GROUP_NAME, result.DeviceGroupName);
             Assert.Equal(PRIORITY, result.Priority);
-            Assert.Equal(DeploymentType.EdgeManifest, result.Type);
+            Assert.Equal(PackageType.EdgeManifest, result.PackageType);
+            Assert.Equal(CONFIG_TYPE, result.ConfigType);
             Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
         }
 
@@ -79,7 +84,8 @@ namespace WebService.Test.v1.Controllers
                 PackageContent = PACKAGE_CONTENT,
                 Priority = PRIORITY,
                 Id = DEPLOYMENT_ID,
-                Type = DeploymentType.EdgeManifest,
+                PackageType = PackageType.EdgeManifest,
+                ConfigType = CONFIG_TYPE,
                 CreatedDateTimeUtc = DateTime.UtcNow
             });
 
@@ -92,7 +98,8 @@ namespace WebService.Test.v1.Controllers
             Assert.Equal(PACKAGE_CONTENT, result.PackageContent);
             Assert.Equal(DEVICE_GROUP_ID, result.DeviceGroupId);
             Assert.Equal(PRIORITY, result.Priority);
-            Assert.Equal(DeploymentType.EdgeManifest, result.Type);
+            Assert.Equal(PackageType.EdgeManifest, result.PackageType);
+            Assert.Equal(CONFIG_TYPE, result.ConfigType);
             Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
         }
 
@@ -104,6 +111,16 @@ namespace WebService.Test.v1.Controllers
         {
             // Arrange
             var deploymentsList = new List<DeploymentServiceModel>();
+            var deploymentMetrics = new DeploymentMetricsServiceModel(null, null)
+            {
+                DeviceMetrics = new Dictionary<DeploymentStatus, long>()
+                {
+                    { DeploymentStatus.Succeeded, 0},
+                    { DeploymentStatus.Pending, 0},
+                    { DeploymentStatus.Failed, 0}
+                }
+            };
+
             for (var i = 0; i < numDeployments; i++)
             {
                 deploymentsList.Add(new DeploymentServiceModel()
@@ -114,8 +131,10 @@ namespace WebService.Test.v1.Controllers
                     PackageContent = PACKAGE_CONTENT + i,
                     Priority = PRIORITY + i,
                     Id = DEPLOYMENT_ID + i,
-                    Type = DeploymentType.EdgeManifest,
-                    CreatedDateTimeUtc = DateTime.UtcNow
+                    PackageType = PackageType.EdgeManifest,
+                    ConfigType = CONFIG_TYPE,
+                    CreatedDateTimeUtc = DateTime.UtcNow,
+                    DeploymentMetrics = deploymentMetrics
                 });
             }
 
@@ -137,8 +156,10 @@ namespace WebService.Test.v1.Controllers
                 Assert.Equal(DEVICE_GROUP_ID + i, result.DeviceGroupId);
                 Assert.Equal(PACKAGE_CONTENT + i, result.PackageContent);
                 Assert.Equal(PRIORITY + i, result.Priority);
-                Assert.Equal(DeploymentType.EdgeManifest, result.Type);
+                Assert.Equal(PackageType.EdgeManifest, result.PackageType);
+                Assert.Equal(CONFIG_TYPE, result.ConfigType);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
+                Assert.Equal(5, result.Metrics.SystemMetrics.Count());
             }
         }
 
@@ -155,21 +176,26 @@ namespace WebService.Test.v1.Controllers
         {
             // Arrange
             var deploymentId = "test-deployment";
+            const string deviceGroupName = "DeviceGroup";
             this.deploymentsMock.Setup(x => x.CreateAsync(Match.Create<DeploymentServiceModel>(model =>
                     model.DeviceGroupId == deviceGroupId &&
                     model.PackageContent == packageContent &&
                     model.Priority == priority &&
+                    model.DeviceGroupName == deviceGroupName &&
                     model.Name == name &&
-                    model.Type == DeploymentType.EdgeManifest)))
+                    model.PackageType == PackageType.EdgeManifest &&
+                    model.ConfigType == CONFIG_TYPE)))
                 .ReturnsAsync(new DeploymentServiceModel()
                 {
                     Name = name,
                     DeviceGroupId = deviceGroupId,
+                    DeviceGroupName = deviceGroupName,
                     DeviceGroupQuery = deviceGroupQuery,
                     PackageContent = packageContent,
                     Priority = priority,
                     Id = deploymentId,
-                    Type = DeploymentType.EdgeManifest,
+                    PackageType = PackageType.EdgeManifest,
+                    ConfigType = CONFIG_TYPE,
                     CreatedDateTimeUtc = DateTime.UtcNow
                 });
 
@@ -178,8 +204,10 @@ namespace WebService.Test.v1.Controllers
                 Name = name,
                 DeviceGroupId = deviceGroupId,
                 DeviceGroupQuery = deviceGroupQuery,
+                DeviceGroupName = deviceGroupName,
                 PackageContent = packageContent,
-                Type = DeploymentType.EdgeManifest,
+                PackageType = PackageType.EdgeManifest,
+                ConfigType = CONFIG_TYPE,
                 Priority = priority
             };
 
@@ -199,9 +227,32 @@ namespace WebService.Test.v1.Controllers
                 Assert.Equal(deviceGroupQuery, result.DeviceGroupQuery);
                 Assert.Equal(packageContent, result.PackageContent);
                 Assert.Equal(priority, result.Priority);
-                Assert.Equal(DeploymentType.EdgeManifest, result.Type);
+                Assert.Equal(PackageType.EdgeManifest, result.PackageType);
+                Assert.Equal(CONFIG_TYPE, result.ConfigType);
                 Assert.True((DateTimeOffset.UtcNow - result.CreatedDateTimeUtc).TotalSeconds < 5);
             }
+        }
+
+        [Theory, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        [InlineData("depName", "dvcGroupId", "dvcQuery", "pkgContent", -1)]
+        public async Task PostInvalidDeploymentTest(string name, string deviceGroupId,
+                                             string deviceGroupQuery, string packageContent,
+                                             int priority)
+        {
+            // Arrange
+            var depApiModel = new DeploymentApiModel()
+            {
+                Name = name,
+                DeviceGroupId = deviceGroupId,
+                DeviceGroupQuery = deviceGroupQuery,
+                PackageContent = packageContent,
+                PackageType = PackageType.DeviceConfiguration,
+                ConfigType = string.Empty,
+                Priority = priority
+            };
+
+            // Act
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.deploymentsController.PostAsync(depApiModel));    
         }
     }
 }

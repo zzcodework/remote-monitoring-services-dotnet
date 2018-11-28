@@ -8,7 +8,7 @@ namespace WebService.Test.helpers
     /// </summary>
     public class Constants
     {
-        public const string TYPE = "Type";
+        public const string TYPE = "PackageType";
         public const string UNIT_TEST = "UnitTest";
         public const string INTEGRATION_TEST = "IntegrationTest";
 

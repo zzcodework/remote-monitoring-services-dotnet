@@ -1,22 +1,22 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
-    public class PackageListApiModel
+    public class ConfigTypeListApiModel
     {
-        public IEnumerable<PackageApiModel> Items { get; set; }
+        [JsonProperty("Items")]
+        public string[] configTypes { get; set; }
 
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata { get; set; }
 
-        public PackageListApiModel(IEnumerable<PackageServiceModel> models)
+        public ConfigTypeListApiModel(ConfigTypeListServiceModel configTypeList)
         {
-            this.Items = models.Select(m => new PackageApiModel(m));
+            this.configTypes = configTypeList.ConfigTypes;
 
             this.Metadata = new Dictionary<string, string>
             {
