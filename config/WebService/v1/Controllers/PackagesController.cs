@@ -26,8 +26,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         /**
          * This function can be used to get packages with or without parameters
          * PackageType, ConfigType. Without both the query params this will return all
-         * the packages. With only packageType the method will return packages of that packageType.
-         * If only configType is provided the method will throw an Exception.
+         * the packages. With only packageType the method will return packages of that
+         * packageType. If only configType is provided (w/o package type) the method will
+         * throw an Exception.
          */
         [HttpGet]
         [Authorize("ReadAll")]

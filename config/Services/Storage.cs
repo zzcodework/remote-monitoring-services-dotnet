@@ -219,13 +219,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             else
             {
+                // Return all packages when ConfigType & PackageType are empty
                 return packages;
             }
         }
 
         public async Task<PackageServiceModel> AddPackageAsync(PackageServiceModel package)
         {
-            bool isValidPackage = ValidatePackage(package);
+            bool isValidPackage = IsValidPackage(package);
             if (!isValidPackage)
             {
                 var msg = "Package provided is a invalid deployment manifest " +
@@ -308,7 +309,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             await this.client.UpdateAsync(PACKAGES_COLLECTION_ID, PACKAGES_CONFIG_TYPE_KEY, JsonConvert.SerializeObject(list), "*");
         }
 
-        private Boolean ValidatePackage(PackageServiceModel package)
+        private Boolean IsValidPackage(PackageServiceModel package)
         {
             IPackageValidator validator = PackageValidatorFactory.GetValidator(
                 package.PackageType,

@@ -136,14 +136,13 @@ namespace Services.Test
 
             this.azureMapsKey = this.rand.NextString();
             this.mockClient = new Mock<IStorageAdapterClient>();
-            this.storage = new Storage(
+            this.storage = new Storage( 
                 this.mockClient.Object,
                 new ServicesConfig
                 {
                     AzureMapsKey = this.azureMapsKey
-                },
-                new Logger(string.Empty, LogLevel.Debug)
-                );
+                }, 
+                new Logger(string.Empty, LogLevel.Debug));
         }
 
         [Fact]
@@ -813,9 +812,7 @@ namespace Services.Test
             const string collectionId = "packages";
             const string id = "packageId";
             const string name = "packageName";
-            const PackageType type = PackageType.DeviceConfiguration;
             const string content = "{}";
-            //string dateCreated = DateTime.UtcNow.ToString(DATE_FORMAT);
 
             int[] idx = new int[] { 0, 1, 2 };
             var packages = idx.Select(i => new PackageServiceModel()

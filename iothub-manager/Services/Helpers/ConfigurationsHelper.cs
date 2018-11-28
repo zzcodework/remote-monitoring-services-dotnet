@@ -81,7 +81,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
         {
             deployment.Labels.TryGetValue(PACKAGE_TYPE_LABEL, out var type);
 
-            if ( type.Equals(PackageType.EdgeManifest.ToString()))
+            if (type.Equals(PackageType.EdgeManifest.ToString()))
             {
                 return true;
             }
