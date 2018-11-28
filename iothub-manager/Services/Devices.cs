@@ -100,18 +100,18 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
 
             // normally we need deviceTwins for all devices to show device list
             var devices = await this.registry.GetDevicesAsync(MAX_GET_LIST);
-            var devicesList = devices.ToList();
 
             var twins = await this.GetTwinByQueryAsync(QUERY_PREFIX,
                                                        query,
                                                        continuationToken,
                                                        MAX_GET_LIST);
             var twinsMap = twins.Result.ToDictionary(twin => twin.DeviceId, twin => twin);
+
+            var devicesList = devices.Where(dvc => twinsMap.ContainsKey(dvc.Id)).ToList();
             var connectedEdgeDevices = this.GetConnectedEdgeDevices(devicesList, twinsMap).Result;
 
             // since deviceAsync does not support continuationToken for now, we need to ignore those devices which does not shown in twins
             return new DeviceServiceListModel(devicesList
-                    .Where(d => twinsMap.ContainsKey(d.Id))
                     .Select(azureDevice => new DeviceServiceModel(azureDevice,
                                                                   twinsMap[azureDevice.Id],
                                                                   this.ioTHubHostName,
@@ -302,8 +302,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             }
 
             var devicesWithConnectedModules = await this.GetDevicesWithConnectedModules();
-            var edgeDevices = devicesList.Where(device => device.Capabilities?.IotEdge ??
-                                                          twinsMap[device.Id].Capabilities?.IotEdge ?? false)
+            var edgeDevices = devicesList
+                .Where(device => device.Capabilities?.IotEdge ??
+                           twinsMap[device.Id].Capabilities?.IotEdge ?? false)
                 .Where(edgeDvc => devicesWithConnectedModules.Contains(edgeDvc.Id))
                 .ToDictionary(edgeDevice => edgeDevice.Id, edgeDevice => edgeDevice);
             return edgeDevices;
