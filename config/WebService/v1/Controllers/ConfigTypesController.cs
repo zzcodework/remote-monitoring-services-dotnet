@@ -9,11 +9,11 @@ using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 {
     [Route(Version.PATH + "/configtypes"), TypeFilter(typeof(ExceptionsFilterAttribute))]
-    public class ConfigTypeController
+    public class ConfigTypesController
     {
         private readonly IStorage storage;
 
-        public ConfigTypeController(IStorage storage)
+        public ConfigTypesController(IStorage storage)
         {
             this.storage = storage;
         }

@@ -14,19 +14,20 @@ using System.Threading.Tasks;
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 {
     [Route(Version.PATH + "/packages"), TypeFilter(typeof(ExceptionsFilterAttribute))]
-    public class PackageController : Controller
+    public class PackagesController : Controller
     {
         private readonly IStorage storage;
 
-        public PackageController(IStorage storage)
+        public PackagesController(IStorage storage)
         {
             this.storage = storage;
         }
 
         /**
-         * This function can be used to get packages with and without parameters
-         * PackageType, ConfigType. Without the query params this will return all
-         * the packages.
+         * This function can be used to get packages with or without parameters
+         * PackageType, ConfigType. Without both the query params this will return all
+         * the packages. With only packageType the method will return packages of that packageType.
+         * If only configType is provided the method will throw an Exception.
          */
         [HttpGet]
         [Authorize("ReadAll")]

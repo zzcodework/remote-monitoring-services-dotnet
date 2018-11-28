@@ -23,10 +23,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public PackageType PackageType { get; set; }
         public string ConfigType { get; set; }
 
-        public DeploymentServiceModel()
-        {
-        }
-
+        // IoT SDK's configurations is a deployment for RM.
         public DeploymentServiceModel(Configuration deployment)
         {
             if (string.IsNullOrEmpty(deployment.Id))
@@ -73,8 +70,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             }
             else
             {
-                // This is for the backward compatibility, as some of the old
-                // deployments may not have the required label.
+                /* This is for the backward compatibility, as some of the old
+                *  deployments may not have the required label.
+                */
                 if (deployment.Content?.ModulesContent != null)
                 {
                     this.PackageType = PackageType.EdgeManifest;
