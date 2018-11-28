@@ -2,6 +2,7 @@
 
 using System;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
@@ -65,6 +66,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 {
                     this.PackageType = PackageType.DeviceConfiguration;
                 }
+                else
+                {
+                    throw new InvalidConfigurationException("Deployment package type should not be empty.");
+                }
             }
             else
             {
@@ -77,6 +82,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
                 else if (deployment.Content?.DeviceContent != null)
                 {
                     this.PackageType = PackageType.DeviceConfiguration;
+                }
+                else
+                {
+                    throw new InvalidConfigurationException("Deployment package type should not be empty.");
                 }
             }
 
