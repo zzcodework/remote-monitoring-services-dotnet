@@ -19,14 +19,14 @@ namespace WebService.Test.Controllers
     public class PackageControllerTest
     {
         private readonly Mock<IStorage> mockStorage;
-        private readonly PackageController controller;
+        private readonly PackagesController controller;
         private readonly Random rand;
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
         public PackageControllerTest()
         {
             this.mockStorage = new Mock<IStorage>();
-            this.controller = new PackageController(this.mockStorage.Object);
+            this.controller = new PackagesController(this.mockStorage.Object);
             this.rand = new Random();
         }
 

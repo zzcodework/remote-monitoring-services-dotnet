@@ -99,6 +99,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.DeploymentMetrics = new DeploymentMetricsServiceModel(deployment.SystemMetrics, deployment.Metrics);
         }
 
+        public DeploymentServiceModel()
+        {
+        }
+
         private void VerifyConfigurationLabel(Configuration deployment, string labelName)
         {
             if (!deployment.Labels.ContainsKey(labelName))
