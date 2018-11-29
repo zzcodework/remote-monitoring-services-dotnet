@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
 
@@ -36,6 +37,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
                 throw new InvalidInputException("DeviceGroupId must be provided");
             }
 
+            if (string.IsNullOrWhiteSpace(deployment.DeviceGroupName))
+            {
+                throw new InvalidInputException("DeviceGroupName must be provided");
+            }
+
             if (string.IsNullOrWhiteSpace(deployment.DeviceGroupQuery))
             {
                 throw new InvalidInputException("DeviceGroupQuery must be provided");
@@ -44,6 +50,12 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
             if (string.IsNullOrWhiteSpace(deployment.PackageContent))
             {
                 throw new InvalidInputException("PackageContent must be provided");
+            }
+
+            if ( deployment.PackageType.Equals(PackageType.DeviceConfiguration) 
+                && string.IsNullOrEmpty(deployment.ConfigType))
+            {
+                throw new InvalidInputException("Configuration type must be provided");
             }
 
             if (deployment.Priority < 0)

@@ -1,22 +1,15 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:51411/",
-      "sslPort": 0
-    }
-  },
   "profiles": {
     "WebService": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:9001/v1/status",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "PCS_AUTH_AUDIENCE: "${PCS_AUTH_AUDIENCE}",
+        "PCS_AUTH_AUDIENCE": "${PCS_AUTH_AUDIENCE}",
         "PCS_AUTH_ISSUER": "${PCS_AUTH_ISSUER}"
       },
-      "applicationUrl": "http://localhost:51412/"
+      "applicationUrl": "http://localhost:9001/v1/status"
     }
   }
 }

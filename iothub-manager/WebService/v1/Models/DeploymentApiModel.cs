@@ -39,14 +39,25 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
         public int Priority { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        [JsonProperty(PropertyName = "Type")]
-        public DeploymentType Type { get; set; }
+        [JsonProperty(PropertyName = "PackageType")]
+        public PackageType PackageType { get; set; }
+
+        [JsonProperty(PropertyName = "ConfigType")]
+        public string ConfigType { get; set; }
 
         [JsonProperty(PropertyName = "Metrics", NullValueHandling = NullValueHandling.Ignore)]
         public DeploymentMetricsApiModel Metrics { get; set; }
 
+        [JsonProperty(PropertyName = "$metadata")]
+        public Dictionary<string, string> Metadata { get; set; }
+
         public DeploymentApiModel()
         {
+            this.Metadata = new Dictionary<string, string>
+            {
+                { "$type", $"DevicePropertyList;{Version.NUMBER}" },
+                { "$url", $"/{Version.PATH}/deviceproperties" }
+            };
         }
 
         public DeploymentApiModel(DeploymentServiceModel serviceModel)
@@ -60,27 +71,19 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
             this.PackageContent = serviceModel.PackageContent;
             this.PackageName = serviceModel.PackageName;
             this.Priority = serviceModel.Priority;
-            this.Type = serviceModel.Type;
+            this.PackageType = serviceModel.PackageType;
+            this.ConfigType = serviceModel.ConfigType;
             this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
             {
                 DeviceStatuses = serviceModel.DeploymentMetrics?.DeviceStatuses
             };
-        }
-
-        public DeploymentApiModel(DeploymentServiceModel serviceModel,
-                                  IDictionary<string, DeploymentStatus> deviceStatuses)
-        {
-            this.CreatedDateTimeUtc = serviceModel.CreatedDateTimeUtc;
-            this.DeploymentId = serviceModel.Id;
-            this.DeviceGroupId = serviceModel.DeviceGroupId;
-            this.Name = serviceModel.Name;
-            this.Priority = serviceModel.Priority;
-            this.Type = serviceModel.Type;
-            this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
+            this.Metadata = new Dictionary<string, string>
             {
-                DeviceStatuses = deviceStatuses
+                { "$type", $"DevicePropertyList;{Version.NUMBER}" },
+                { "$url", $"/{Version.PATH}/deviceproperties" }
             };
         }
+
 
         public DeploymentServiceModel ToServiceModel()
         {
@@ -92,7 +95,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models
                 PackageContent = this.PackageContent,
                 PackageName = this.PackageName,
                 Priority = this.Priority,
-                Type = this.Type
+                PackageType = this.PackageType,
+                ConfigType = this.ConfigType
+                
             };
         }
     }
