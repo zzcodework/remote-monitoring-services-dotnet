@@ -75,7 +75,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             using (var client = new DocumentClient(uri, authKey, ConnectionPolicy.Default, consistencyLevel))
             {
                 await client.CreateDocumentCollectionIfNotExistsAsync(
-                    $"/dbs/{database}",
+                    UriFactory.CreateDatabaseUri(database),
                     new DocumentCollection { Id = collection },
                     new RequestOptions { OfferThroughput = RUs });
             }
@@ -85,7 +85,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
         {
             using (var client = new DocumentClient(uri, authKey, ConnectionPolicy.Default))
             {
-                await client.ReadDatabaseAsync(database);
+                await client.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(database));
             }
         }
     }
