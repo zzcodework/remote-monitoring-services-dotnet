@@ -25,6 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.RecurringTasksAgent
         
         private readonly IDeviceProperties deviceProperties;
         private readonly ILogger log;
+        private Timer cacheUpdateTimer;
 
         public Agent(
             IDeviceProperties deviceProperties,
@@ -66,7 +67,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.RecurringTasksAgent
             try
             {
                 this.log.Info("Scheduling a DeviceProperties cache update", () => new { CACHE_UPDATE_SECS });
-                var unused = new Timer(
+                this.cacheUpdateTimer = new Timer(
                     this.UpdateDevicePropertiesCache,
                     null,
                     1000 * CACHE_UPDATE_SECS,
