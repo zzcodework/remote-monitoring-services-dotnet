@@ -72,7 +72,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.RecurringTasksAgent
                     null,
                     1000 * CACHE_UPDATE_SECS,
                     Timeout.Infinite);
-                this.log.Info("DeviceProperties Cache update scheduled", () => new { CACHE_UPDATE_SECS });
+                this.log.Info("DeviceProperties Cache update scheduled.", () => new { CACHE_UPDATE_SECS });
             }
             catch (Exception e)
             {
