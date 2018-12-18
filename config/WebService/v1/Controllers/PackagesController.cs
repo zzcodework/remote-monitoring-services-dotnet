@@ -109,10 +109,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             }
 
             var packageToAdd = new PackageApiModel(
-            packageContent,
-            package.FileName,
-            uploadedPackageType, 
-            configType);
+                packageContent,
+                package.FileName,
+                uploadedPackageType, 
+                configType);
 
             return new PackageApiModel(await this.storage.AddPackageAsync(packageToAdd.ToServiceModel()));
         }
