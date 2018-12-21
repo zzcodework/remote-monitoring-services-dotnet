@@ -33,8 +33,11 @@ run_tests() {
 
     cd $APP_HOME
     header "Running tests..."
+    header "Failing at this cmd"
+    temp=$(dotnet sln list)
+    header $temp
     PROJECTS=$(dotnet sln list | grep 'csproj$' | grep '\.Test')
-    echo "Found projects $PROJECTS"
+    header "Found projects $PROJECTS"
     for PROJ in $PROJECTS; do
         echo "-- $PROJ"
         dotnet test --configuration $CONFIGURATION $PROJ
