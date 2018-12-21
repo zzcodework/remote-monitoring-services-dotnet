@@ -34,6 +34,7 @@ run_tests() {
     cd $APP_HOME
     header "Running tests..."
     header "Failing at this cmd"
+    header `pwd`
     temp=$(dotnet sln list)
     header $temp
     PROJECTS=$(dotnet sln list | grep 'csproj$' | grep '\.Test')
