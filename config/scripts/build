@@ -37,6 +37,7 @@ run_tests() {
     header "Found projects $PROJECTS"
     for PROJ in $PROJECTS; do
         echo "-- $PROJ"
+	echo `pwd`
         dotnet test --configuration $CONFIGURATION $PROJ
     done
 }
