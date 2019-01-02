@@ -37,10 +37,10 @@ run_tests() {
     header "Found projects $PROJECTS"
     for PROJ in $PROJECTS; do
         echo "-- $PROJ"
+	dotnet info
 	echo `pwd`
-	cd WebService.Test
-	ls -la
 	PROJ=${PROJ//\\/\/}
+	echo $PROJ
         dotnet test --configuration $CONFIGURATION $PROJ
     done
 }
