@@ -39,10 +39,8 @@ run_tests() {
         echo "-- $PROJ"
 
 	echo `pwd`
-	curdir=`pwd`
-	PROJ=${PROJ//\\/\/}
-	PROJ="$curdir/$PROJ"
-        dotnet test --configuration $CONFIGURATION $PROJ
+	cd WebService.Test
+        dotnet test --configuration $CONFIGURATION
     done
 }
 
