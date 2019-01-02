@@ -12,6 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         public RuleApiModel()
         {
             this.Conditions = new List<ConditionApiModel>();
+            this.Actions = new List<IActionApiModel>();
         }
 
         [JsonProperty("Id")]
@@ -41,6 +42,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         [JsonProperty("TimePeriod")]
         public long TimePeriod { get; set; }
 
+        [JsonProperty(PropertyName = "Actions")]
+        public List<IActionApiModel> Actions { get; set; }
+
         [JsonProperty("Deleted")]
         public bool Deleted { get; set; }
 
@@ -48,18 +52,29 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
         {
             if (!(obj is RuleApiModel x)) return false;
 
-            var count = this.Conditions.Count();
-            var conditionsMatch = x.Conditions.Count() == count;
-
-            while (conditionsMatch && --count >= 0)
+            if (this.Conditions.Count != x.Conditions.Count
+                || this.Actions.Count != x.Actions.Count)
             {
-                conditionsMatch = conditionsMatch
-                                  && this.Conditions[count].Equals(x.Conditions[count]);
+                return false;
             }
 
-            // Compare everything
-            return conditionsMatch
-                   && string.Equals(this.Id, x.Id)
+            if (this.Conditions.Except(x.Conditions).Any())
+            {
+                return false;
+            }
+
+            for (int i = 0; i < this.Actions.Count; i++)
+            {
+                {
+                    if (!this.Actions[i].Equals(x.Actions[i]))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            // Compare all other parameters if conditions and actions are equal
+            return string.Equals(this.Id, x.Id)
                    && string.Equals(this.Name, x.Name)
                    && string.Equals(this.Description, x.Description)
                    && this.Enabled == x.Enabled
@@ -78,9 +93,11 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Models
                 hashCode = (hashCode * 397) ^ (this.Name != null ? this.Name.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Description != null ? this.Description.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ this.Enabled.GetHashCode();
+                hashCode = (hashCode * 397) ^ this.Deleted.GetHashCode();
                 hashCode = (hashCode * 397) ^ (this.GroupId != null ? this.GroupId.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Severity != null ? this.Severity.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.Conditions != null ? this.Conditions.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.Actions != null ? this.Actions.GetHashCode() : 0);
                 return hashCode;
             }
         }

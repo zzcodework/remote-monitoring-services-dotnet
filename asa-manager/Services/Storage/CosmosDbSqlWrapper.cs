@@ -34,6 +34,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             string database,
             string collection,
             int RUs);
+
+        Task ReadDatabaseAsync(Uri uri, string authKey, string database);
     }
 
     public class CosmosDbSqlWrapper : ICosmosDbSqlWrapper
@@ -73,9 +75,17 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             using (var client = new DocumentClient(uri, authKey, ConnectionPolicy.Default, consistencyLevel))
             {
                 await client.CreateDocumentCollectionIfNotExistsAsync(
-                    $"/dbs/{database}",
+                    UriFactory.CreateDatabaseUri(database),
                     new DocumentCollection { Id = collection },
                     new RequestOptions { OfferThroughput = RUs });
+            }
+        }
+
+        public async Task ReadDatabaseAsync(Uri uri, string authKey, string database)
+        {
+            using (var client = new DocumentClient(uri, authKey, ConnectionPolicy.Default))
+            {
+                await client.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(database));
             }
         }
     }

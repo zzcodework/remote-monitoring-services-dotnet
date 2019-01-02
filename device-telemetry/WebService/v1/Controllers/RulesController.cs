@@ -21,6 +21,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize("ReadAll")]
         public async Task<RuleApiModel> GetAsync([FromRoute] string id)
         {
             Rule rule = await this.ruleService.GetAsync(id);
@@ -28,6 +29,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.v1.Controllers
         }
 
         [HttpGet]
+        [Authorize("ReadAll")]
         public async Task<RuleListApiModel> ListAsync(
             [FromQuery] string order,
             [FromQuery] int? skip,

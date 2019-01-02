@@ -14,6 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
         public DateTime LastActivity { get; set; }
         public bool Connected { get; set; }
         public bool Enabled { get; set; }
+        public bool IsEdgeDevice { get; set; }
         public DateTime LastStatusUpdated { get; set; }
         public TwinServiceModel Twin { get; set; }
         public string IoTHubHostName { get; set; }
@@ -26,6 +27,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             DateTime lastActivity,
             bool connected,
             bool enabled,
+            bool isEdgeDevice,
             DateTime lastStatusUpdated,
             TwinServiceModel twin,
             AuthenticationMechanismServiceModel authentication,
@@ -37,29 +39,45 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             this.LastActivity = lastActivity;
             this.Connected = connected;
             this.Enabled = enabled;
+            this.IsEdgeDevice = isEdgeDevice;
             this.LastStatusUpdated = lastStatusUpdated;
             this.Twin = twin;
             this.IoTHubHostName = ioTHubHostName;
             this.Authentication = authentication;
         }
 
-        public DeviceServiceModel(Device azureDevice, TwinServiceModel twin, string ioTHubHostName) :
+        /// <summary>
+        /// Additional constructor which allows passing an additional isConnected field.
+        /// This allows providing a different method of checking whether a device is connected or
+        /// not for edge devices.
+        /// </summary>
+        /// <param name="azureDevice">Device from service</param>
+        /// <param name="azureTwin">Device's twin</param>
+        /// <param name="ioTHubHostName">IoT Hub name</param>
+        /// <param name="isConnected">If this is true OR azureDevice.ConnectionState is Connected
+        /// then the device is said to be connected.</param>
+        public DeviceServiceModel(Device azureDevice, Twin azureTwin, string ioTHubHostName, bool isConnected) :
             this(
                 etag: azureDevice.ETag,
                 id: azureDevice.Id,
                 c2DMessageCount: azureDevice.CloudToDeviceMessageCount,
                 lastActivity: azureDevice.LastActivityTime,
-                connected: azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected),
+                connected: isConnected || azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected),
                 enabled: azureDevice.Status.Equals(DeviceStatus.Enabled),
+                isEdgeDevice: azureDevice.Capabilities?.IotEdge ?? azureTwin.Capabilities?.IotEdge ?? false,
                 lastStatusUpdated: azureDevice.StatusUpdatedTime,
-                twin: twin,
+                twin: new TwinServiceModel(azureTwin),
                 ioTHubHostName: ioTHubHostName,
                 authentication: new AuthenticationMechanismServiceModel(azureDevice.Authentication))
         {
         }
 
         public DeviceServiceModel(Device azureDevice, Twin azureTwin, string ioTHubHostName) :
-            this(azureDevice, new TwinServiceModel(azureTwin), ioTHubHostName)
+            this(
+                azureDevice,
+                azureTwin,
+                ioTHubHostName,
+                azureDevice.ConnectionState.Equals(DeviceConnectionState.Connected))
         {
         }
 
@@ -69,7 +87,11 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Models
             {
                 ETag = ignoreEtag ? null : this.Etag,
                 Status = Enabled ? DeviceStatus.Enabled : DeviceStatus.Disabled,
-                Authentication = this.Authentication == null ? null : this.Authentication.ToAzureModel()
+                Authentication = this.Authentication == null ? null : this.Authentication.ToAzureModel(),
+                Capabilities = this.IsEdgeDevice ? new DeviceCapabilities()
+                {
+                    IotEdge = this.IsEdgeDevice
+                } : null
             };
 
             return device;

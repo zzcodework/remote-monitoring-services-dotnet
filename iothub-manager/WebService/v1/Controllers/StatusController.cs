@@ -2,30 +2,36 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.IotHubManager.Services;
+using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Models;
+using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.v1.Controllers
 {
     [Route(Version.PATH + "/[controller]"), ExceptionsFilter]
-    public class StatusController : Controller
+    public sealed class StatusController : Controller
     {
-        private readonly IDevices devices;
+        private readonly IConfig config;
+        private readonly IStatusService statusService;
 
-        // TODO: check if the dependencies are healthy
-        public StatusController(IDevices devices)
+        public StatusController(IConfig config, IStatusService statusService)
         {
-            // This dependency is not used yet, however just having the instance
-            // helps to verify whether DI works
-            this.devices = devices;
+            this.statusService = statusService;
+            this.config = config;
         }
 
-        /// <summary>Return the service status</summary>
-        /// <returns>Status object</returns>
         [HttpGet]
-        public StatusApiModel Get()
+        [Authorize("ReadAll")]
+        public async Task<StatusApiModel> GetAsync()
         {
-            return new StatusApiModel(true, "Alive and well");
+            bool authRequired = this.config.ClientAuthConfig.AuthRequired;
+            var serviceStatus = await this.statusService.GetStatusAsync(authRequired);
+            var result = new StatusApiModel(serviceStatus);
+
+            result.Properties.Add("AuthRequired", authRequired.ToString());
+            result.Properties.Add("Port", this.config.Port.ToString());
+            return result;
         }
     }
 }

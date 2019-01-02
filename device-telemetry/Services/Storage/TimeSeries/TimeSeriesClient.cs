@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
 {
     public interface ITimeSeriesClient
     {
-        Task<Tuple<bool, string>> PingAsync();
+        Task<StatusResultServiceModel> PingAsync();
 
         Task<MessageList> QueryEventsAsync(
             DateTimeOffset? from,
@@ -92,34 +92,41 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Storage.TimeSeri
         /// that the fqdn provided can reach Time Series Insights.
         /// Returns a tuple with the status [bool isAvailable, string message].
         /// </summary>
-        public async Task<Tuple<bool, string>> PingAsync()
+        public async Task<StatusResultServiceModel> PingAsync()
         {
+            var result = new StatusResultServiceModel(false, "TimeSeries check failed");
+
             // Acquire an access token.
-            string accessToken;
+            string accessToken = "";
             try
             {
                 accessToken = await this.AcquireAccessTokenAsync();
+
+                // Prepare request
+                HttpRequest request = this.PrepareRequest(
+                    AVAILABILITY_KEY,
+                    accessToken,
+                    new[] { TIME_SERIES_TIMEOUT_PREFIX + "=" + this.timeout });
+
+                var response = await this.httpClient.GetAsync(request);
+
+                // Return status
+                if (!response.IsError)
+                {
+                    result.IsHealthy = true;
+                    result.Message = "Alive and well!";
+                }
+                else
+                {
+                    result.Message = $"Status code: {response.StatusCode}; Response: {response.Content}";
+                }
+
             }
             catch (Exception e)
             {
-                return new Tuple<bool, string>(false, "Unable to acquire access token. " + e.Message);
+                this.log.Error(result.Message, () => new { e });
             }
-
-            // Prepare request
-            HttpRequest request = this.PrepareRequest(
-                AVAILABILITY_KEY,
-                accessToken,
-                new[] { TIME_SERIES_TIMEOUT_PREFIX + "=" + this.timeout });
-
-            var response = await this.httpClient.GetAsync(request);
-
-            // Return status
-            if (response.IsError)
-            {
-                return new Tuple<bool, string>(false, "Status code: " + response.StatusCode);
-            }
-
-            return new Tuple<bool, string>(true, "Time Series Insights alive and well!");
+            return result;
         }
 
         public async Task<MessageList> QueryEventsAsync(

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime;
 using Newtonsoft.Json;
 
@@ -12,10 +13,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.v1.Models
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
         [JsonProperty(PropertyName = "Name", Order = 10)]
-        public string Name => "AsaManager";
+        public string Name => "ASAManager";
 
         [JsonProperty(PropertyName = "Status", Order = 20)]
-        public string Status { get; set; }
+        public StatusResultApiModel Status { get; set; }
 
         [JsonProperty(PropertyName = "CurrentTime", Order = 30)]
         public string CurrentTime => DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
@@ -36,26 +37,28 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.v1.Models
 
         /// <summary>A property bag with details about the service</summary>
         [JsonProperty(PropertyName = "Properties", Order = 70)]
-        public Dictionary<string, string> Properties = new Dictionary<string, string>();
+        public Dictionary<string, string> Properties { get; set; }
 
         /// <summary>A property bag with details about the internal dependencies</summary>
         [JsonProperty(PropertyName = "Dependencies", Order = 80)]
-        public Dictionary<string, string> Dependencies = new Dictionary<string, string>();
+        public Dictionary<string, StatusResultApiModel> Dependencies { get; set; }
 
         [JsonProperty(PropertyName = "$metadata", Order = 1000)]
-        public Dictionary<string, string> Metadata = new Dictionary<string, string>
+        public Dictionary<string, string> Metadata => new Dictionary<string, string>
         {
             { "$type", "Status;" + Version.NUMBER },
             { "$uri", "/" + Version.PATH + "/status" }
         };
 
-        public void SetStatus(bool isOk, string msg)
+        public StatusApiModel(StatusServiceModel model)
         {
-            this.Status = isOk ? "OK" : "ERROR";
-            if (!string.IsNullOrEmpty(msg))
+            this.Status = new StatusResultApiModel(model.Status);
+            this.Dependencies = new Dictionary<string, StatusResultApiModel>();
+            foreach (KeyValuePair<string, StatusResultServiceModel> pair in model.Dependencies)
             {
-                this.Status += ":" + msg;
+                this.Dependencies.Add(pair.Key, new StatusResultApiModel(pair.Value));
             }
+            this.Properties = model.Properties;
         }
     }
 }

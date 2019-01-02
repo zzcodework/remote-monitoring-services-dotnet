@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,8 +36,8 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services
         {
             this.log = logger;
             this.httpClient = httpClient;
-            this.rulesWebServiceUrl = config.RulesWebServiceUrl;
-            this.rulesWebServiceTimeout = config.RulesWebServiceTimeout;
+            this.rulesWebServiceUrl = config.DeviceTelemetryWebServiceUrl + "/rules";
+            this.rulesWebServiceTimeout = config.DeviceTelemetryWebServiceTimeout;
         }
 
         public async Task<IList<RuleApiModel>> GetActiveRulesSortedByIdAsync()

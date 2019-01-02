@@ -18,6 +18,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpPost]
+        [Authorize("ReadAll")]
         public async Task PostAsync()
         {
             await this.seed.TrySeedAsync();

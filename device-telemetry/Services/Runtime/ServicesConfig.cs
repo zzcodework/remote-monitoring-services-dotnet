@@ -28,6 +28,13 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         string ActiveDirectoryAppSecret { get; }
         string DiagnosticsApiUrl { get; }
         int DiagnosticsMaxLogRetries { get; }
+        string ActionsEventHubConnectionString { get; }
+        string ActionsEventHubName { get; }
+        string BlobStorageConnectionString { get; }
+        string ActionsBlobStorageContainer { get; }
+        string LogicAppEndpointUrl { get; }
+        string SolutionUrl { get; }
+        string TemplateFolder { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -94,5 +101,19 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
         public string ActiveDirectoryAppId { get; set; }
 
         public string ActiveDirectoryAppSecret { get; set; }
+
+        public string ActionsEventHubConnectionString { get; set; }
+
+        public string ActionsEventHubName { get; set; }
+
+        public string BlobStorageConnectionString { get; set; }
+
+        public string ActionsBlobStorageContainer { get; set; }
+
+        public string LogicAppEndpointUrl { get; set; }
+
+        public string SolutionUrl { get; set; }
+        
+        public string TemplateFolder { get; set; }
     }
 }

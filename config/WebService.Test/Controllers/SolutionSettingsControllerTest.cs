@@ -1,9 +1,14 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models.Actions;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers;
 using Moq;
 using WebService.Test.helpers;
@@ -14,13 +19,21 @@ namespace WebService.Test.Controllers
     public class SolutionControllerTest
     {
         private readonly Mock<IStorage> mockStorage;
+        private readonly Mock<IActions> mockActions;
+        private readonly Mock<ILogger> mockLogger;
+        private readonly Mock<IAzureResourceManagerClient> mockResourceManagementClient;
         private readonly SolutionSettingsController controller;
         private readonly Random rand;
 
         public SolutionControllerTest()
         {
             this.mockStorage = new Mock<IStorage>();
-            this.controller = new SolutionSettingsController(this.mockStorage.Object);
+            this.mockActions = new Mock<IActions>();
+            this.mockLogger = new Mock<ILogger>();
+            this.mockResourceManagementClient = new Mock<IAzureResourceManagerClient>();
+            this.controller = new SolutionSettingsController(
+                this.mockStorage.Object,
+                this.mockActions.Object);
             this.rand = new Random();
         }
 
@@ -202,6 +215,35 @@ namespace WebService.Test.Controllers
                 Assert.Equal(type, mockContext.Object.Response.ContentType);
                 Assert.Equal(name, mockContext.GetHeader(Logo.NAME_HEADER));
                 Assert.Equal("False", mockContext.GetHeader(Logo.IS_DEFAULT_HEADER));
+            }
+        }
+
+        [Fact]
+        public async Task GetActionsReturnsListOfActions()
+        {
+            // Arrange
+            using (var mockContext = new MockHttpContext())
+            {
+                this.controller.ControllerContext.HttpContext = mockContext.Object;
+
+                var config = new ServicesConfig();
+                var action = new EmailActionSettings(this.mockResourceManagementClient.Object, config, this.mockLogger.Object);   
+                var actionsList = new List<IActionSettings>
+                {
+                    action
+                };
+                this.mockActions
+                    .Setup(x => x.GetListAsync())
+                    .ReturnsAsync(actionsList);
+
+                // Act
+                var result = await this.controller.GetActionsSettingsAsync();
+
+                // Assert
+                this.mockActions.Verify(x => x.GetListAsync(), Times.Once);
+
+                Assert.NotEmpty(result.Items);
+                Assert.Equal(actionsList.Count, result.Items.Count);
             }
         }
     }

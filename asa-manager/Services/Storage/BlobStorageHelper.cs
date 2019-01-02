@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.AsaManager.Services.Models;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -12,6 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
     public interface IBlobStorageHelper
     {
         Task WriteBlobFromFileAsync(string blobName, string fileName);
+        Task<StatusResultServiceModel> PingAsync();
     }
 
     public class BlobStorageHelper : IBlobStorageHelper
@@ -64,6 +66,28 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Storage
             {
                 this.logger.Error("Unable to upload reference data to blob", () => new { e });
             }
+        }
+
+        public async Task<StatusResultServiceModel> PingAsync()
+        {
+            var result = new StatusResultServiceModel(false, "Blob check failed");
+
+            try
+            {
+                await this.InitializeBlobStorage();
+                var response = await this.cloudBlobContainer.ExistsAsync();
+                if (response)
+                {
+                    result.Message = "Alive and well!";
+                    result.IsHealthy = true;
+                }
+            }
+            catch (Exception e)
+            {
+                this.logger.Error(result.Message, () => new { e });
+            }
+
+            return result;
         }
     }
 }

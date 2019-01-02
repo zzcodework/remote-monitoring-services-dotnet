@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{82
 		.gitignore = .gitignore
 		.travis.yml = .travis.yml
 		CONTRIBUTING.md = CONTRIBUTING.md
-		telemetry.sln.DotSettings = telemetry.sln.DotSettings
 		LICENSE = LICENSE
 		README.md = README.md
+		telemetry.sln.DotSettings = telemetry.sln.DotSettings
 		version = version
 	EndProjectSection
 EndProject
@@ -73,11 +73,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8BAA
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{B3A8B713-DB43-4201-B832-ACF7D81B4843}"
-ProjectSection(SolutionItems) = preProject
-	.github\CODEOWNERS = .github\CODEOWNERS
-	.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
-	.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		.github\CODEOWNERS = .github\CODEOWNERS
+		.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
+		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionsAgent", "ActionsAgent\ActionsAgent.csproj", "{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionsAgent.Test", "ActionsAgent.Test\ActionsAgent.Test.csproj", "{BB60F9AC-6419-40CC-A756-1FBC0882705D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +105,14 @@ Global
 		{1BC54189-1DF9-448E-AE5F-66EB2EF51D82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BC54189-1DF9-448E-AE5F-66EB2EF51D82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BC54189-1DF9-448E-AE5F-66EB2EF51D82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AAA652D-1D1B-403B-B9DE-2207D83FDFEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB60F9AC-6419-40CC-A756-1FBC0882705D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +123,9 @@ Global
 		{DB8AF4E5-71A1-4650-A881-9F08FCB53DAA} = {7357A079-B54D-490F-AA91-1B7BDAFE5E3F}
 		{8BAA54A8-9C80-4446-83DD-CEBBC7B7BCD2} = {DB8AF4E5-71A1-4650-A881-9F08FCB53DAA}
 		{B3A8B713-DB43-4201-B832-ACF7D81B4843} = {8289AFAE-0933-40EF-9D19-6FFA2DB04837}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A65DB2E6-56BB-44A5-AB47-1645706191C1}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
