@@ -39,7 +39,7 @@ run_tests() {
         echo "-- $PROJ"
 	echo `pwd`
 	PROJ=${PROJ//\\/\\\\}
-        dotnet test --configuration $CONFIGURATION
+        dotnet test --configuration $CONFIGURATION WebService.Test/WebService.Test.csproj
     done
 }
 
