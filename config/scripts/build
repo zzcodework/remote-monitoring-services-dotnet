@@ -39,7 +39,7 @@ run_tests() {
         echo "-- $PROJ"
 	echo `pwd`
 	PROJ=${PROJ//\\/\\\\}
-        dotnet test --configuration $CONFIGURATION $PROJ
+        dotnet test --configuration $CONFIGURATION
     done
 }
 
