@@ -41,9 +41,9 @@ run_tests() {
 	PROJ_MF=${PROJ//\\/\/}
 	echo $PROJ_MF
 	echo "WebService.Test/WebService.Test.csproj"
+	echo "Running All tests"
         cmd="dotnet test --configuration $CONFIGURATION $PROJ_MF"
 	echo `$cmd`
-	#dotnet test --configuration $CONFIGURATION WebService.Test/WebService.Test.csproj
     done
 }
 
