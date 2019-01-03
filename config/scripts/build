@@ -38,7 +38,7 @@ run_tests() {
     for PROJ in $PROJECTS; do
         echo "-- $PROJ"
 	echo `pwd`
-	PROJ=${PROJ//\\/\/\/}
+	PROJ=${PROJ//\\/\\\\}
         dotnet test --configuration $CONFIGURATION $PROJ
     done
 }
