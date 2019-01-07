@@ -39,7 +39,7 @@ run_tests() {
         echo "-- $PROJ"
 	echo `pwd`
 	PROJ_MF=${PROJ//\\/\/}
-	PROJ_MF=${PROJ_MF//[^[:alnum:].]/}
+	PROJ_MF=${PROJ_MF//[^[:alnum:].\]/}
 	echo "Project - $PROJ_MF"
 	dotnet test --configuration $CONFIGURATION $PROJ_MF
     done
