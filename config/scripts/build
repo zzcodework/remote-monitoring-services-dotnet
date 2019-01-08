@@ -36,11 +36,8 @@ run_tests() {
     PROJECTS=$(dotnet sln config.sln list | grep '\.Test')
     header "Found projects $PROJECTS"
     for PROJ in $PROJECTS; do
-        echo "-- $PROJ"
-	echo `pwd`
 	PROJ_MF=${PROJ//\\/\/}
 	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.\/]//g')
-	echo "Project - $PROJ_MF"
 	dotnet test --configuration $CONFIGURATION $PROJ_MF
     done
 }
