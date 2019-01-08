@@ -37,10 +37,12 @@ run_tests() {
 
     cd $APP_HOME
     header "Running tests..."
-    PROJECTS=$(dotnet sln list | grep 'csproj$' | grep '\.Test')
+    PROJECTS=$(dotnet sln asa-manager.sln list | grep '\.Test')
+
     for PROJ in $PROJECTS; do
-        echo "-- $PROJ"
-        dotnet test --configuration $CONFIGURATION $PROJ
+	PROJ_MF=${PROJ//\\/\/}
+	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.\/]//g')
+	dotnet test --configuration $CONFIGURATION $PROJ_MF
     done
 }
 
