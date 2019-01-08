@@ -39,9 +39,9 @@ run_tests() {
         echo "-- $PROJ"
 	echo `pwd`
 	PROJ_MF=${PROJ//\\/\/}
-	ls $PROJ_MF
+	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.]//g')
 	echo "Project - $PROJ_MF"
-	dotnet test --configuration $CONFIGURATION WebService.Test/WebService.Test.csproj
+	dotnet test --configuration $CONFIGURATION $PROJ_MF
     done
 }
 
