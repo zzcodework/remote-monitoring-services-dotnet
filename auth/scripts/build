@@ -34,7 +34,6 @@ run_tests() {
 
     cd $APP_HOME
     header "Running tests..."
-    PROJECTS=$(dotnet sln list | grep 'csproj$' | grep '\.Test')
     PROJECTS=$(dotnet sln auth.sln list | grep '\.Test')
 
     for PROJ in $PROJECTS; do
