@@ -37,10 +37,9 @@ run_tests() {
     PROJECTS=$(dotnet sln auth.sln list | grep '\.Test')
 
     for PROJ in $PROJECTS; do
-        echo "-- $PROJ"
-        dotnet test --configuration $CONFIGURATION $PROJ
 	PROJ=${PROJ//\\/\/}
 	PROJ=$(echo $PROJ | sed 's/[^a-zA-Z\.\/]//g')
+	echo "-- $PROJ"
 	dotnet test --configuration $CONFIGURATION $PROJ
     done
 }
