@@ -34,12 +34,12 @@ run_tests() {
     cd $APP_HOME
     header "Running tests..."
     PROJECTS=$(dotnet sln config.sln list | grep '\.Test')
-    header "Found projects $PROJECTS"
+    
     for PROJ in $PROJECTS; do
-	PROJ_MF=${PROJ//\\/\/}
-	# Cleaning up special charcters from the array element.
-	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.\/]//g')  
-	dotnet test --configuration $CONFIGURATION $PROJ_MF
+	PROJ=${PROJ//\\/\/}
+	PROJ=$(echo $PROJ | sed 's/[^a-zA-Z\.\/]//g')
+	echo "-- $PROJ"
+	dotnet test --configuration $CONFIGURATION $PROJ
     done
 }
 
