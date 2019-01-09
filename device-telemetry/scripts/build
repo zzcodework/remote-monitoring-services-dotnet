@@ -43,7 +43,7 @@ run_tests() {
 	PROJ=${PROJ//\\/\/}
 	PROJ=$(echo $PROJ | sed 's/[^a-zA-Z\.\/]//g')
 	echo "-- $PROJ"
-	dotnet test --configuration $CONFIGURATION $PROJ_MF
+	dotnet test --configuration $CONFIGURATION $PROJ
     done
 }
 
