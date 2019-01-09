@@ -40,8 +40,9 @@ run_tests() {
     PROJECTS=$(dotnet sln asa-manager.sln list | grep '\.Test')
 
     for PROJ in $PROJECTS; do
-	PROJ_MF=${PROJ//\\/\/}
-	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.\/]//g')
+	PROJ=${PROJ//\\/\/}
+	PROJ=$(echo $PROJ | sed 's/[^a-zA-Z\.\/]//g')
+	echo "-- $PROJ"
 	dotnet test --configuration $CONFIGURATION $PROJ_MF
     done
 }
