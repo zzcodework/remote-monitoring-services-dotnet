@@ -21,10 +21,7 @@ PCS_CACHE="/tmp/azure/iotpcs/.cache"
 
 compile() {
     check_dependency_dotnet
-
-    cd $APP_HOME
-    ./scripts/env-vars-check
-
+    
     header "Downloading dependencies..."
     dotnet restore
 
