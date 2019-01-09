@@ -21,6 +21,9 @@ compile() {
     check_dependency_dotnet
 
     cd $APP_HOME
+    ./scripts/env-vars-check
+
+    cd $APP_HOME
     header "Downloading dependencies..."
     dotnet restore
 
