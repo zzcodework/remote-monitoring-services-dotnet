@@ -37,7 +37,8 @@ run_tests() {
     header "Found projects $PROJECTS"
     for PROJ in $PROJECTS; do
 	PROJ_MF=${PROJ//\\/\/}
-	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.\/]//g')
+	# Cleaning up special charcters from the array element.
+	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.\/]//g')  
 	dotnet test --configuration $CONFIGURATION $PROJ_MF
     done
 }
