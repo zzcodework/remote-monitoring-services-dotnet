@@ -39,9 +39,9 @@ run_tests() {
     for PROJ in $PROJECTS; do
         echo "-- $PROJ"
         dotnet test --configuration $CONFIGURATION $PROJ
-	PROJ_MF=${PROJ//\\/\/}
-	PROJ_MF=$(echo $PROJ_MF | sed 's/[^a-zA-Z\.\/]//g')
-	dotnet test --configuration $CONFIGURATION $PROJ_MF
+	PROJ=${PROJ//\\/\/}
+	PROJ=$(echo $PROJ | sed 's/[^a-zA-Z\.\/]//g')
+	dotnet test --configuration $CONFIGURATION $PROJ
     done
 }
 
