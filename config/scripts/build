@@ -37,7 +37,6 @@ run_tests() {
     
     for PROJ in $PROJECTS; do
 	PROJ=${PROJ//\\/\/}
-  # Cleaning up special charcters from the array element.
 	PROJ=$(echo $PROJ | sed 's/[^a-zA-Z\.\/]//g')
 	echo "-- $PROJ"
 	dotnet test --configuration $CONFIGURATION $PROJ
