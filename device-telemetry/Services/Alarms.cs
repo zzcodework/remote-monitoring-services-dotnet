@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -90,11 +88,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public Alarm Get(string id)
         {
-            if (Regex.IsMatch(id, INVALID_CHARACTER))
-            {
-                throw new InvalidInputException("id contains illegal characters.");
-            }
-
             Document doc = this.GetDocumentById(id);
             return new Alarm(doc);
         }
@@ -160,11 +153,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
                 limit,
                 devices, DEVICE_ID_KEY);
 
-            if (Regex.IsMatch(id, INVALID_CHARACTER))
-            {
-                throw new InvalidInputException("id contains illegal characters.");
-            }
-
             this.log.Debug("Created Alarm By Rule Query", () => new { sql });
 
             FeedOptions queryOptions = new FeedOptions();
@@ -220,10 +208,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task<Alarm> UpdateAsync(string id, string status)
         {
-            if (Regex.IsMatch(id, INVALID_CHARACTER))
-            {
-                throw new InvalidInputException("id contains illegal characters.");
-            }
+            ValidateInput(id);
 
             Document document = this.GetDocumentById(id);
             document.SetPropertyValue(STATUS_KEY, status);
@@ -238,10 +223,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         private Document GetDocumentById(string id)
         {
-            if (Regex.IsMatch(id, INVALID_CHARACTER))
-            {
-                throw new InvalidInputException("id contains illegal characters.");
-            }
+            ValidateInput(id);
 
             var query = new SqlQuerySpec(
                 "SELECT * FROM c WHERE c.id=@id",
@@ -268,6 +250,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task Delete(List<string> ids)
         {
+            foreach(var id in ids)
+            {
+                ValidateInput(id);
+            }
+
             Task[] taskList = new Task[ids.Count];
             for (int i = 0; i < ids.Count; i++)
             {
@@ -292,6 +279,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
          */
         public async Task DeleteAsync(string id)
         {
+            ValidateInput(id);
+
             int retryCount = 0;
             while (retryCount < this.maxDeleteRetryCount)
             {
@@ -326,6 +315,17 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
                     this.log.Warn("Exception on delete alarm", () => new { id, e });
                     Thread.Sleep(retryTimeSpan);
                 }
+            }
+        }
+
+        // Check illegal characters in input
+        private static void ValidateInput(string input)
+        {
+            input = input.Trim();
+
+            if (Regex.IsMatch(input, INVALID_CHARACTER))
+            {
+                throw new InvalidInputException($"Input '{input}' contains invalid characters.");
             }
         }
     }
