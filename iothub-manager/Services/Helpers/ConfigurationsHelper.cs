@@ -107,8 +107,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Helpers
             }
             else
             {
-                /* This is for the backward compatibility, as some of the old
-                *  deployments may not have the required label.
+               /* This is for the backward compatibility, as some of the old
+                * deployments may not have the required label.
                 */
                 if (deployment.Content?.ModulesContent != null)
                 {

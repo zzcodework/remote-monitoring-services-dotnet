@@ -7,6 +7,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Helpers;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -99,6 +100,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             using (var streamReader = new StreamReader(package.OpenReadStream()))
             {
                 packageContent = await streamReader.ReadToEndAsync();
+            }
+
+            if (!(PackagesHelper.VerifyPackageType(packageContent, uploadedPackageType)))
+            {
+                throw new InvalidInputException($@"Package uploaded is invalid. Package contents
+                            do not match with the given package type {packageType}.");
             }
 
             var packageToAdd = new PackageApiModel(
