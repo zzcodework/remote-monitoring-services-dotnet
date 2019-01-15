@@ -91,6 +91,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task DeleteAsync(string id)
         {
+            ValidateInput(id);
+
             Rule existing;
             try
             {
@@ -125,11 +127,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task<Rule> GetAsync(string id)
         {
-            if (Regex.IsMatch(id, INVALID_CHARACTER))
-            {
-                this.log.Debug("id contains illegal characters.", () => new { id });
-                throw new InvalidInputException("id contains illegal characters.");
-            }
+            ValidateInput(id);
 
             var item = await this.storage.GetAsync(STORAGE_COLLECTION, id);
             var rule = this.Deserialize(item.Data);
@@ -147,6 +145,9 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             string groupId,
             bool includeDeleted)
         {
+            ValidateInput(order);
+            ValidateInput(groupId);
+
             var data = await this.storage.GetAllAsync(STORAGE_COLLECTION);
             var ruleList = new List<Rule>();
             foreach (var item in data.Items)
@@ -205,6 +206,12 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             int limit,
             string[] devices)
         {
+            ValidateInput(order);
+            foreach (var device in devices)
+            {
+                ValidateInput(device);
+            }
+
             var alarmCountByRuleList = new List<AlarmCountByRule>();
 
             // get list of rules
@@ -246,6 +253,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             {
                 throw new InvalidInputException("Rule not provided.");
             }
+            rule.Validate();
 
             // Ensure dates are correct
             rule.DateCreated = DateTimeOffset.UtcNow.ToString(DATE_FORMAT);
@@ -265,6 +273,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task<Rule> UpsertIfNotDeletedAsync(Rule rule)
         {
+            rule.Validate();
+
             if (rule == null)
             {
                 throw new InvalidInputException("Rule not provided.");
@@ -388,6 +398,17 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             }
 
             return ruleCount;
+        }
+
+        // Check illegal characters in input
+        private static void ValidateInput(string input)
+        {
+            input = input.Trim();
+
+            if (Regex.IsMatch(input, INVALID_CHARACTER))
+            {
+                throw new InvalidInputException($"Input '{input}' contains invalid characters.");
+            }
         }
     }
 }

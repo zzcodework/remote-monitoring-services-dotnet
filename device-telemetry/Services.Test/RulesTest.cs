@@ -405,6 +405,59 @@ namespace Services.Test
             this.httpClientMock.Verify(x => x.PostAsync(It.IsAny<HttpRequest>()), Times.Exactly(4));
         }
 
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public async Task ThrowsOnInvalidInput()
+        {
+            // Arrange
+            var xssString = "<body onload=alert('test1')>";
+            var xssList = new List<string>
+            {
+                "<body onload=alert('test1')>",
+                "<IMG SRC=j&#X41vascript:alert('test2')>"
+            };
+
+            var rule = new Rule()
+            {
+                ETag = xssString,
+                Id = xssString,
+                Name = xssString,
+                DateCreated = xssString,
+                DateModified = xssString,
+                Enabled = true,
+                Description = xssString,
+                GroupId = xssString,
+                Severity = SeverityType.Critical,
+                Conditions = new List<Condition>
+                {
+                    new Condition()
+                    {
+                        Field = "sample_conddition",
+                        Operator = OperatorType.Equals,
+                        Value = "1"
+                    }
+                },
+                Actions = new List<IAction>
+                {
+                    new EmailAction(
+                        new Dictionary<string, object>
+                        {
+                            { "recipients", new Newtonsoft.Json.Linq.JArray(){ "sampleEmail@gmail.com", "sampleEmail2@gmail.com" } },
+                            { "subject", "Test Email" },
+                            { "notes", "Test Email Notes." }
+                        })
+                }
+            };
+
+            // Act & Assert
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.DeleteAsync(xssString));
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.DeleteAsync(xssString));
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.GetAsync(xssString));
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.GetListAsync(xssString, 0, 1, xssString, false));
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.GetAlarmCountForListAsync(null, null, xssString, 0, LIMIT, xssList.ToArray()));
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.CreateAsync(rule));
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.UpsertIfNotDeletedAsync(rule));
+        }
+
         private void ThereAreNoRulessInStorage()
         {
             this.rulesMock.Setup(x => x.GetListAsync(null, 0, LIMIT, null, false))
