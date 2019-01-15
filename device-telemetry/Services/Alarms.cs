@@ -209,6 +209,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         public async Task<Alarm> UpdateAsync(string id, string status)
         {
             ValidateInput(id);
+            ValidateInput(status);
 
             Document document = this.GetDocumentById(id);
             document.SetPropertyValue(STATUS_KEY, status);
