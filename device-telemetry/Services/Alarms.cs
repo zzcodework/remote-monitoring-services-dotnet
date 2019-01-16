@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
@@ -53,8 +52,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
     public class Alarms : IAlarms
     {
-        private const string INVALID_CHARACTER = @"[^A-Za-z0-9:;.,_\-]";
-
         private readonly ILogger log;
         private readonly IStorageClient storageClient;
 
@@ -208,8 +205,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task<Alarm> UpdateAsync(string id, string status)
         {
-            ValidateInput(id);
-            ValidateInput(status);
+            InputValidator.Validate(id);
+            InputValidator.Validate(status);
 
             Document document = this.GetDocumentById(id);
             document.SetPropertyValue(STATUS_KEY, status);
@@ -224,7 +221,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         private Document GetDocumentById(string id)
         {
-            ValidateInput(id);
+            InputValidator.Validate(id);
 
             var query = new SqlQuerySpec(
                 "SELECT * FROM c WHERE c.id=@id",
@@ -253,7 +250,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
         {
             foreach(var id in ids)
             {
-                ValidateInput(id);
+                InputValidator.Validate(id);
             }
 
             Task[] taskList = new Task[ids.Count];
@@ -280,7 +277,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
          */
         public async Task DeleteAsync(string id)
         {
-            ValidateInput(id);
+            InputValidator.Validate(id);
 
             int retryCount = 0;
             while (retryCount < this.maxDeleteRetryCount)
@@ -316,17 +313,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
                     this.log.Warn("Exception on delete alarm", () => new { id, e });
                     Thread.Sleep(retryTimeSpan);
                 }
-            }
-        }
-
-        // Check illegal characters in input
-        private static void ValidateInput(string input)
-        {
-            input = input.Trim();
-
-            if (Regex.IsMatch(input, INVALID_CHARACTER))
-            {
-                throw new InvalidInputException($"Input '{input}' contains invalid characters.");
             }
         }
     }

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Exceptions;
@@ -49,7 +48,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
     public class Rules : IRules
     {
         private const string STORAGE_COLLECTION = "rules";
-        private const string INVALID_CHARACTER = @"[^A-Za-z0-9:;.,_\-]";
         private const string DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sszzz";
 
         private readonly IStorageAdapterClient storage;
@@ -91,7 +89,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task DeleteAsync(string id)
         {
-            ValidateInput(id);
+            InputValidator.Validate(id);
 
             Rule existing;
             try
@@ -127,7 +125,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
 
         public async Task<Rule> GetAsync(string id)
         {
-            ValidateInput(id);
+            InputValidator.Validate(id);
 
             var item = await this.storage.GetAsync(STORAGE_COLLECTION, id);
             var rule = this.Deserialize(item.Data);
@@ -145,8 +143,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             string groupId,
             bool includeDeleted)
         {
-            ValidateInput(order);
-            ValidateInput(groupId);
+            InputValidator.Validate(order);
+            InputValidator.Validate(groupId);
 
             var data = await this.storage.GetAllAsync(STORAGE_COLLECTION);
             var ruleList = new List<Rule>();
@@ -206,10 +204,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             int limit,
             string[] devices)
         {
-            ValidateInput(order);
+            InputValidator.Validate(order);
             foreach (var device in devices)
             {
-                ValidateInput(device);
+                InputValidator.Validate(device);
             }
 
             var alarmCountByRuleList = new List<AlarmCountByRule>();
@@ -398,17 +396,6 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             }
 
             return ruleCount;
-        }
-
-        // Check illegal characters in input
-        private static void ValidateInput(string input)
-        {
-            input = input.Trim();
-
-            if (Regex.IsMatch(input, INVALID_CHARACTER))
-            {
-                throw new InvalidInputException($"Input '{input}' contains invalid characters.");
-            }
         }
     }
 }
