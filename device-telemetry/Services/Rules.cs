@@ -144,7 +144,10 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services
             bool includeDeleted)
         {
             InputValidator.Validate(order);
-            InputValidator.Validate(groupId);
+            if (!string.IsNullOrEmpty(groupId))
+            {
+                InputValidator.Validate(groupId);
+            }
 
             var data = await this.storage.GetAllAsync(STORAGE_COLLECTION);
             var ruleList = new List<Rule>();
