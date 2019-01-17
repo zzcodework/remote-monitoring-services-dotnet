@@ -515,7 +515,7 @@ namespace Services.Test
                 {
                     Name = "Sample 1",
                     Enabled = true,
-                    Description = "Sample description 1",
+                    Description = "Sample description 1 -- Pressure >= 298",
                     GroupId = "Prototyping devices",
                     Severity = SeverityType.Critical,
                     Conditions = sampleConditions,
