@@ -457,6 +457,21 @@ namespace Services.Test
             await Assert.ThrowsAsync<InvalidInputException>(async () => await this.rules.UpsertIfNotDeletedAsync(rule));
         }
 
+        [Fact, Trait(Constants.TYPE, Constants.UNIT_TEST)]
+        public void InputValidationPassesWithValidRule()
+        {
+            // Arrange
+            this.ThereAreSomeRulesInStorage();
+
+            List<Rule> rulesList = this.GetSampleRulesList();
+
+            // Act & Assert
+            foreach (var rule in rulesList)
+            {
+                rule.Validate();
+            }
+        }
+
         private void ThereAreNoRulessInStorage()
         {
             this.rulesMock.Setup(x => x.GetListAsync(null, 0, LIMIT, null, false))
@@ -464,6 +479,14 @@ namespace Services.Test
         }
 
         private void ThereAreSomeRulesInStorage()
+        {
+            var sampleRules = this.GetSampleRulesList();
+
+            this.rulesMock.Setup(x => x.GetListAsync(null, 0, LIMIT, null, false))
+                .ReturnsAsync(sampleRules);
+        }
+
+        private List<Rule> GetSampleRulesList()
         {
             var sampleConditions = new List<Condition>
             {
@@ -507,11 +530,22 @@ namespace Services.Test
                     Severity =  SeverityType.Warning,
                     Conditions = sampleConditions,
                     Actions = sampleActions
+                },
+                new Rule()
+                {
+                    ETag = "*",
+                    Name = "Sample 3",
+                    Enabled = true,
+                    Calculation = CalculationType.Instant,
+                    Description = "Sample description 2.",
+                    GroupId =  "Chillers",
+                    Severity =  SeverityType.Warning,
+                    Conditions = sampleConditions,
+                    Actions = sampleActions
                 }
             };
 
-            this.rulesMock.Setup(x => x.GetListAsync(null, 0, LIMIT, null, false))
-                .ReturnsAsync(sampleRules);
+            return sampleRules;
         }
 
         /**
