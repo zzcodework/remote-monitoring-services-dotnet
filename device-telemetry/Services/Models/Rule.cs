@@ -46,11 +46,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Models
 
         public void Validate()
         {
-            InputValidator.Validate(this.ETag);
             InputValidator.Validate(this.Id);
-            InputValidator.Validate(this.Name);
-            InputValidator.Validate(this.Description);
-            InputValidator.Validate(this.GroupId);
         }
     }
 
