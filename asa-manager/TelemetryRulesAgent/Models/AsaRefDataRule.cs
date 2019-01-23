@@ -152,7 +152,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.TelemetryRulesAgent.Models
                 this.Fields.Add(c.Field);
             }
 
-            if (rule.Actions != null && rule.Actions.Count > 0)
+            if (rule.Actions != null && rule.Actions.Count >= 0)
             {
                 this.Actions = rule.Actions;
             }
