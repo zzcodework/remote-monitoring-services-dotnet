@@ -45,7 +45,8 @@ namespace WebService.Test.Controllers
             IFormFile file = null;
             if (isValidFileProvided)
             {
-                file = this.CreateSampleFile(filename);
+                bool isEdgePackage = (type == "EdgeManifest") ? true : false;
+                file = this.CreateSampleFile(filename, isEdgePackage);
             }
 
             Enum.TryParse(type, out PackageType pckgType);
@@ -195,13 +196,20 @@ namespace WebService.Test.Controllers
                     Times.Once);
         }
 
-        private FormFile CreateSampleFile(string filename)
+        private FormFile CreateSampleFile(string filename, bool isEdgePackage)
         {
+            var admPackage = "{\"id\":\"dummy\",\"content\":{\"deviceContent\":{}}}";
+            var edgePackage = "{\"id\":\"dummy\",\"content\":{\"modulesContent\":{}}}";
+
             var stream = new MemoryStream();
-            stream.WriteByte(100);
-            stream.Flush();
+            var writer = new StreamWriter(stream);
+            var package = isEdgePackage ? edgePackage : admPackage;
+
+            writer.Write(package);
+            writer.Flush();
             stream.Position = 0;
-            return new FormFile(stream, 0, 1, "file", filename);
+            
+            return new FormFile(stream, 0, package.Length, "file", filename);
         }
     }
 }
