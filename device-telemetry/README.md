@@ -201,7 +201,7 @@ Licensed under the [MIT](LICENSE) License.
 [build-badge]:https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_apis/build/status/Consolidated%20Repo
 [build-url]: https://solutionaccelerators.visualstudio.com/RemoteMonitoring/_build/latest?definitionId=22
 [issues-badge]: https://img.shields.io/github/issues/azure/device-telemetry-dotnet.svg
-[issues-url]: https://github.com/azure/device-telemetry-dotnet/issues
+[issues-url]: https://github.com/Azure/remote-monitoring-services-dotnet/issues
 [gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg
 [gitter-url]: https://gitter.im/azure/iot-solutions
 [project-wiki]: https://github.com/Azure/remote-monitoring-services-dotnet/wiki/Telemetry-API
