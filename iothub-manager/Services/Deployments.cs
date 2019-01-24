@@ -123,16 +123,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services
             var configuration = ConfigurationsHelper.ToHubConfiguration(model);
             // TODO: Add specific exception handling when exception types are exposed
             // https://github.com/Azure/azure-iot-sdk-csharp/issues/649
-            DeploymentServiceModel deployment = null;
-            try
-            {
-                 deployment = new DeploymentServiceModel(await this.registry.AddConfigurationAsync(configuration));
-            }
-            catch (Exception e)
-            {
-                log.Debug($"Exception is {e.Message}", () => { });
-            }
-            return deployment;
+            return new DeploymentServiceModel(await this.registry.AddConfigurationAsync(configuration));
         }
 
         /// <summary>
