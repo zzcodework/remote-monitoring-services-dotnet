@@ -6,6 +6,8 @@ metadata:
     kubernetes.io/ingress.class: nginx
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Source "external";
 spec:
   backend:
     serviceName: webui
@@ -42,7 +44,7 @@ spec:
         backend:
           serviceName: asamanager
           servicePort: 80
-      - path: /auth/(.*)
+      - path: /auth/*
         backend:
           serviceName: auth
           servicePort: 80
