@@ -23,28 +23,41 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         private readonly IConfigurationRoot configuration;
         private readonly ILogger log;
 
+        // Key Vault
+        private KeyVault keyVault;             
+        private Boolean readFromKeyVaultOnly; // Flag to indicate if to read secrets from KV only 
+        
+        // Constants
+        private const string CLIENT_ID = "KeyVault:app_id";
+        private const string CLIENT_SECRET = "KeyVault:aad_application_secret";
+        private const string KEY_VAULT_NAME = "KeyVault:name";
+        private const string READ_FROM_KV_ONLY = "READ-FROM-KV-ONLY";
+
+
         public ConfigData(ILogger logger)
         {
             this.log = logger;
 
             // More info about configuration at
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration
-
             var configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true);
             this.configuration = configurationBuilder.Build();
+
+            // Set up Key Vault
+            this.SetUpKeyVault();
         }
 
         public string GetString(string key, string defaultValue = "")
         {
-            var value = this.configuration.GetValue(key, defaultValue);
+            var value = this.GetSecrets(key, defaultValue);
             this.ReplaceEnvironmentVariables(ref value, defaultValue);
             return value;
         }
 
         public bool GetBool(string key, bool defaultValue = false)
         {
-            var value = this.GetString(key, defaultValue.ToString()).ToLowerInvariant();
+            var value = this.GetSecrets(key, defaultValue.ToString()).ToLowerInvariant();
 
             var knownTrue = new HashSet<string> { "true", "t", "yes", "y", "1", "-1" };
             var knownFalse = new HashSet<string> { "false", "f", "no", "n", "0" };
@@ -59,12 +72,52 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         {
             try
             {
-                return Convert.ToInt32(this.GetString(key, defaultValue.ToString()));
+                return Convert.ToInt32(this.GetSecrets(key, defaultValue.ToString()));
             }
             catch (Exception e)
             {
                 throw new InvalidConfigurationException($"Unable to load configuration value for '{key}'", e);
             }
+        }
+
+        private void SetUpKeyVault()
+        {
+            var clientId = this.GetString(CLIENT_ID, string.Empty);
+            var clientSecret = this.GetString(CLIENT_SECRET, string.Empty);
+            var keyVaultName = this.GetString(KEY_VAULT_NAME, string.Empty);
+            
+            // Initailse key vault
+            this.keyVault = new KeyVault(keyVaultName, clientId, clientSecret);
+
+            // Initialise key vault read only flag
+            this.readFromKeyVaultOnly = this.GetBool(READ_FROM_KV_ONLY);
+        }
+
+        private string GetSecrets(string key, string defaultValue = "") {
+            string value = string.Empty;
+
+            // Check the variables in Local Environment variables if the flag is not set
+            if (!this.readFromKeyVaultOnly)
+            {
+                value = this.GetLocalEnvironmentVariables(key, defaultValue);
+            }
+
+            // If secrets are not found locally, search in Key-Vault
+            if (string.IsNullOrEmpty(value) || value.Equals("False"))
+            {
+                value = this.GetSecretsFromKeyVault(key);
+            }
+
+            return !string.IsNullOrEmpty(value) ? value : defaultValue;
+        }
+
+        private string GetSecretsFromKeyVault(string key) {
+            return this.keyVault.GetKeyVaultSecret(key);
+        }
+
+        private string GetLocalEnvironmentVariables(string key, string defaultValue = "")
+        {
+            return this.configuration.GetValue(key, defaultValue);
         }
 
         private void ReplaceEnvironmentVariables(ref string value, string defaultValue = "")

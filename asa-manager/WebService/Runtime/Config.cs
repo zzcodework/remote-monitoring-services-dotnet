@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.AsaManager.WebService.Auth;
+using System.Threading.Tasks;
 
 // TODO: tests
 // TODO: handle errors
@@ -113,7 +114,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             this.Port = configData.GetInt(PORT_KEY);
             this.LoggingConfig = GetLogConfig(configData);
             this.ServicesConfig = GetServicesConfig(configData);
-            this.ClientAuthConfig = GetClientAuthConfig(configData);
+            this.ClientAuthConfig = GetClientAuthConfigAsync(configData);
             this.BlobStorageConfig = GetBlobStorageConfig(configData);
         }
 
@@ -145,7 +146,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             return result;
         }
 
-        private static IClientAuthConfig GetClientAuthConfig(IConfigData configData)
+        private static IClientAuthConfig GetClientAuthConfigAsync(IConfigData configData)
         {
             return new ClientAuthConfig
             {

@@ -5,11 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.Azure.IoTSolutions.Auth.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.Auth.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Exceptions;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.Azure.IoTSolutions.Auth.Services.Runtime
+namespace Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Runtime
 {
     public interface IConfigData
     {
