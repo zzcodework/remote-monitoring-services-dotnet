@@ -31,73 +31,73 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
     public class Config : IConfig
     {
         private const string APPLICATION_KEY = "AsaManagerService:";
-        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
+        private const string PORT_KEY = APPLICATION_KEY + "webservicePort";
 
         private const string LOGGING_KEY = APPLICATION_KEY + "Logging:";
-        private const string LOGGING_LOGLEVEL_KEY = LOGGING_KEY + "LogLevel";
-        private const string LOGGING_INCLUDEPROCESSID_KEY = LOGGING_KEY + "IncludeProcessId";
-        private const string LOGGING_DATEFORMAT_KEY = LOGGING_KEY + "DateFormat";
-        private const string LOGGING_BLACKLIST_PREFIX_KEY = LOGGING_KEY + "BWListPrefix";
-        private const string LOGGING_BLACKLIST_SOURCES_KEY = LOGGING_KEY + "BlackListSources";
-        private const string LOGGING_WHITELIST_SOURCES_KEY = LOGGING_KEY + "WhiteListSources";
-        private const string LOGGING_EXTRADIAGNOSTICS_KEY = LOGGING_KEY + "ExtraDiagnostics";
-        private const string LOGGING_EXTRADIAGNOSTICSPATH_KEY = LOGGING_KEY + "ExtraDiagnosticsPath";
+        private const string LOGGING_LOGLEVEL_KEY = LOGGING_KEY + "logLevel";
+        private const string LOGGING_INCLUDEPROCESSID_KEY = LOGGING_KEY + "includeProcessId";
+        private const string LOGGING_DATEFORMAT_KEY = LOGGING_KEY + "dateFormat";
+        private const string LOGGING_BLACKLIST_PREFIX_KEY = LOGGING_KEY + "bwListPrefix";
+        private const string LOGGING_BLACKLIST_SOURCES_KEY = LOGGING_KEY + "blackListSources";
+        private const string LOGGING_WHITELIST_SOURCES_KEY = LOGGING_KEY + "whiteListSources";
+        private const string LOGGING_EXTRADIAGNOSTICS_KEY = LOGGING_KEY + "extraDiagnostics";
+        private const string LOGGING_EXTRADIAGNOSTICSPATH_KEY = LOGGING_KEY + "extraDiagnosticsPath";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
-        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
-        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
-        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
+        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "corsWhitelist";
+        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "authType";
+        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "authRequired";
 
         private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
-        private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
-        private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
-        private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
-        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+        private const string JWT_ALGOS_KEY = JWT_KEY + "allowedAlgorithms";
+        private const string JWT_ISSUER_KEY = JWT_KEY + "authIssuer";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "aadTenantId";
+        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clockSkewSeconds";
 
         private const string EVENTHUB_KEY = APPLICATION_KEY + "EventHub:";
-        private const string EVENTHUB_CONNECTION_KEY = EVENTHUB_KEY + "connection_string";
-        private const string EVENTHUB_NAME = EVENTHUB_KEY + "name";
-        private const string EVENTHUB_CHECKPOINT_INTERVAL_MS = EVENTHUB_KEY + "checkpoint_interval_msecs";
+        private const string EVENTHUB_CONNECTION_KEY = EVENTHUB_KEY + "messagesEventHubConnectionString";
+        private const string EVENTHUB_NAME = EVENTHUB_KEY + "messagesEventHubName";
+        private const string EVENTHUB_CHECKPOINT_INTERVAL_MS = EVENTHUB_KEY + "checkpointIntervalmsecs";
 
         private const string BLOB_STORAGE_KEY = APPLICATION_KEY + "BlobStorage:";
-        private const string STORAGE_REFERENCE_DATA_CONTAINER_KEY = BLOB_STORAGE_KEY + "reference_data_container";
-        private const string STORAGE_EVENTHUB_CONTAINER_KEY = BLOB_STORAGE_KEY + "eventhub_container";
-        private const string STORAGE_ACCOUNT_NAME_KEY = BLOB_STORAGE_KEY + "account_name";
-        private const string STORAGE_ACCOUNT_KEY_KEY = BLOB_STORAGE_KEY + "account_key";
-        private const string STORAGE_ACCOUNT_ENDPOINT_KEY = BLOB_STORAGE_KEY + "account_endpoint";
-        private const string STORAGE_DEVICE_GROUPS_FILE_NAME = BLOB_STORAGE_KEY + "reference_data_device_groups_file_name";
-        private const string STORAGE_RULES_FILE_NAME = BLOB_STORAGE_KEY + "reference_data_rules_file_name";
-        private const string STORAGE_DATE_FORMAT = BLOB_STORAGE_KEY + "reference_data_date_format";
-        private const string STORAGE_TIME_FORMAT = BLOB_STORAGE_KEY + "reference_data_time_format";
+        private const string STORAGE_REFERENCE_DATA_CONTAINER_KEY = BLOB_STORAGE_KEY + "referenceDataContainer";
+        private const string STORAGE_EVENTHUB_CONTAINER_KEY = BLOB_STORAGE_KEY + "eventhubContainer";
+        private const string STORAGE_ACCOUNT_NAME_KEY = BLOB_STORAGE_KEY + "storageAccountName";
+        private const string STORAGE_ACCOUNT_KEY_KEY = BLOB_STORAGE_KEY + "storageAccountKey";
+        private const string STORAGE_ACCOUNT_ENDPOINT_KEY = BLOB_STORAGE_KEY + "storageEndpointSuffix";
+        private const string STORAGE_DEVICE_GROUPS_FILE_NAME = BLOB_STORAGE_KEY + "referenceDataDeviceGroupsFileName";
+        private const string STORAGE_RULES_FILE_NAME = BLOB_STORAGE_KEY + "referenceDataRulesFileName";
+        private const string STORAGE_DATE_FORMAT = BLOB_STORAGE_KEY + "referenceDataDateFormat";
+        private const string STORAGE_TIME_FORMAT = BLOB_STORAGE_KEY + "referenceDataTimeFormat";
         private const string STORAGE_ACCOUNT_ENDPOINT_DEFAULT = "core.windows.net";
 
         private const string MESSAGES_KEY = APPLICATION_KEY + "MessagesStorage:";
         private const string MESSAGES_STORAGE_TYPE_KEY = MESSAGES_KEY + "storageType";
 
         private const string ALARMS_KEY = APPLICATION_KEY + "AlarmsStorage:";
-        private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "storageType";
+        private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "telemetryStorageType";
 
         private const string DEVICE_TELEMETRY_KEY = "DeviceTelemetryService:";
-        private const string DEVICE_TELEMETRY_WEBSERVICE_URL_KEY = DEVICE_TELEMETRY_KEY + "webservice_url";
-        private const string DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY = DEVICE_TELEMETRY_KEY + "webservice_timeout_msecs";
+        private const string DEVICE_TELEMETRY_WEBSERVICE_URL_KEY = DEVICE_TELEMETRY_KEY + "webserviceUrl";
+        private const string DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY = DEVICE_TELEMETRY_KEY + "webserviceTimeoutmsecs";
 
         private const string CONFIG_KEY = "PCSConfigurationService:";
-        private const string CONFIG_WEBSERVICE_URL_KEY = CONFIG_KEY + "webservice_url";
-        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = CONFIG_KEY + "webservice_timeout_msecs";
+        private const string CONFIG_WEBSERVICE_URL_KEY = CONFIG_KEY + "webserviceUrl";
+        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = CONFIG_KEY + "webserviceTimeoutmsecs";
 
         private const string IOTHUB_MANAGER_KEY = "IoTHubManagerService:";
-        private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webservice_url";
-        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webservice_timeout_msecs";
-        private const string IOTHUB_MANAGER_RETRY_COUNT = IOTHUB_MANAGER_KEY + "retry_count";
-        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = IOTHUB_MANAGER_KEY + "initial_retry_interval_msecs";
-        private const string IOTHUB_MANAGER_RETRY_INCREASE_FACTOR = IOTHUB_MANAGER_KEY + "retry_increase_factor";
+        private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webserviceUrl";
+        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webserviceTimeoutmsecs";
+        private const string IOTHUB_MANAGER_RETRY_COUNT = IOTHUB_MANAGER_KEY + "retryCount";
+        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = IOTHUB_MANAGER_KEY + "initialRetryIntervalmsecs";
+        private const string IOTHUB_MANAGER_RETRY_INCREASE_FACTOR = IOTHUB_MANAGER_KEY + "retryIncreaseFactor";
 
         // Values common to all the tables (messages and alarms)
-        private const string COSMOSDBSQL_CONNSTRING_KEY = "cosmosdbsql_connstring";
-        private const string COSMOSDBSQL_DATABASE_KEY = "cosmosdbsql_database";
-        private const string COSMOSDBSQL_CONSISTENCY_KEY = "cosmosdbsql_consistency_level";
-        private const string COSMOSDBSQL_COLLECTION_KEY = "cosmosdbsql_collection";
-        private const string COSMOSDBSQL_RUS_KEY = "cosmosdbsql_RUs";
+        private const string COSMOSDBSQL_CONNSTRING_KEY = "documentDBConnectionString";
+        private const string COSMOSDBSQL_DATABASE_KEY = "documentDBDatabase";
+        private const string COSMOSDBSQL_CONSISTENCY_KEY = "documentDBConsistencyLevel";
+        private const string COSMOSDBSQL_COLLECTION_KEY = "documentDBCollection";
+        private const string COSMOSDBSQL_RUS_KEY = "documentDBRUs";
 
         // Simple keys used internally in this class, these don't appear in the config file
         private const string MESSAGES = "messages";
