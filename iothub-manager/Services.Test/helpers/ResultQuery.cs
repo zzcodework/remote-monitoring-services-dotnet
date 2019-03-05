@@ -26,10 +26,18 @@ namespace Services.Test.helpers
             for (int i = 0; i < numResults; i++)
             {
                 this.results.Add(ResultQuery.CreateTestTwin(i));
-                this.deviceQueryResults.Add("{" + $"'{DEVICE_ID_KEY}':'device{i}'" + "}");
+                this.deviceQueryResults.Add($"{{'{DEVICE_ID_KEY}':'device{i}'}}");
                 this.HasMoreResults = true;
             }
         }
+
+        public ResultQuery(List<Twin> twins)
+        {
+            this.results = twins;
+            this.deviceQueryResults = twins.Select(x => $"{{'{DEVICE_ID_KEY}':'device{x.DeviceId}'}}").ToList();
+            this.HasMoreResults = true;
+        }
+
         public Task<IEnumerable<Twin>> GetNextAsTwinAsync()
         {
             this.HasMoreResults = false;
