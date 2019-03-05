@@ -72,10 +72,10 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string STORAGE_ACCOUNT_ENDPOINT_DEFAULT = "core.windows.net";
 
         private const string MESSAGES_KEY = APPLICATION_KEY + "MessagesStorage:";
-        private const string MESSAGES_STORAGE_TYPE_KEY = MESSAGES_KEY + "storageType";
+        private const string MESSAGES_STORAGE_TYPE_KEY = MESSAGES_KEY + "telemetryStorageType";
 
         private const string ALARMS_KEY = APPLICATION_KEY + "AlarmsStorage:";
-        private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "telemetryStorageType";
+        private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "alarmsStorageType";
 
         private const string DEVICE_TELEMETRY_KEY = "DeviceTelemetryService:";
         private const string DEVICE_TELEMETRY_WEBSERVICE_URL_KEY = DEVICE_TELEMETRY_KEY + "webserviceUrl";

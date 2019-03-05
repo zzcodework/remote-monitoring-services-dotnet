@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         private Boolean readFromKeyVaultOnly; // Flag to indicate if to read secrets from KV only 
         
         // Constants
-        private const string CLIENT_ID = "KeyVault:aadAppId";
+        private const string CLIENT_ID = "KeyVault:aadAppIdhh";
         private const string CLIENT_SECRET = "KeyVault:aadAppSecret";
         private const string KEY_VAULT_NAME = "KeyVault:name";
         private const string READ_FROM_KV_ONLY = "READ-FROM-KV-ONLY";
@@ -82,9 +82,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
 
         private void SetUpKeyVault()
         {
-            var clientId = this.GetString(CLIENT_ID, string.Empty);
-            var clientSecret = this.GetString(CLIENT_SECRET, string.Empty);
-            var keyVaultName = this.GetString(KEY_VAULT_NAME, string.Empty);
+            var clientId = this.GetLocalEnvironmentVariables(CLIENT_ID, string.Empty);
+            var clientSecret = this.GetLocalEnvironmentVariables(CLIENT_SECRET, string.Empty);
+            var keyVaultName = this.GetLocalEnvironmentVariables(KEY_VAULT_NAME, string.Empty);
             
             // Initailse key vault
             this.keyVault = new KeyVault(keyVaultName, clientId, clientSecret);

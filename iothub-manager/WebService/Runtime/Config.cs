@@ -22,29 +22,27 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
     public class Config : IConfig
     {
         private const string APPLICATION_KEY = "IothubManagerService:";
-        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
-        private const string IOTHUB_CONNSTRING_KEY = APPLICATION_KEY + "iothub_connstring";
+        private const string PORT_KEY = APPLICATION_KEY + "webservicePort";
+        private const string IOTHUB_CONNSTRING_KEY = APPLICATION_KEY + "iotHubConnectionString";
         private const string DEVICE_PROPERTIES_KEY = APPLICATION_KEY + "DevicePropertiesCache:"; 
         private const string DEVICE_PROPERTIES_WHITELIST_KEY = DEVICE_PROPERTIES_KEY + "whitelist";
         private const string DEVICE_PROPERTIES_TTL_KEY = DEVICE_PROPERTIES_KEY + "TTL";
-        private const string DEVICE_PROPERTIES_REBUILD_TIMEOUT_KEY = DEVICE_PROPERTIES_KEY + "rebuild_timeout";
+        private const string DEVICE_PROPERTIES_REBUILD_TIMEOUT_KEY = DEVICE_PROPERTIES_KEY + "rebuildTimeout";
 
-        private const string STORAGE_ADAPTER_KEY = "StorageAdapterService:";
-        private const string STORAGE_ADAPTER_URL_KEY = STORAGE_ADAPTER_KEY + "webservice_url";
-
-        private const string USER_MANAGEMENT_KEY = "UserManagementService:";
-        private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "webservice_url";
+        private const string EXTERNAL_DEPENDENCIES = "ExternalDependencies:";
+        private const string STORAGE_ADAPTER_URL_KEY = EXTERNAL_DEPENDENCIES + "webservice_url";
+        private const string USER_MANAGEMENT_URL_KEY = EXTERNAL_DEPENDENCIES + "webservice_url";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
-        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
-        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
-        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
+        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "corsWhitelist";
+        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "authType";
+        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "authRequired";
 
         private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
-        private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
-        private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
-        private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
-        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+        private const string JWT_ALGOS_KEY = JWT_KEY + "allowedAlgorithms";
+        private const string JWT_ISSUER_KEY = JWT_KEY + "authIssuer";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "aadAppId";
+        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clockSkewSeconds";
 
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }

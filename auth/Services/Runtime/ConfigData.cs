@@ -28,8 +28,8 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Runtime
         private Boolean readFromKeyVaultOnly; // Flag to indicate if to read secrets from KV only 
         
         // Constants
-        private const string CLIENT_ID = "KeyVault:app_id";
-        private const string CLIENT_SECRET = "KeyVault:aad_application_secret";
+        private const string CLIENT_ID = "KeyVault:aadAppId";
+        private const string CLIENT_SECRET = "KeyVault:aadAppSecret";
         private const string KEY_VAULT_NAME = "KeyVault:name";
         private const string READ_FROM_KV_ONLY = "READ-FROM-KV-ONLY";
 

@@ -26,11 +26,11 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
 
         private const string COSMOSDB_KEY = "TelemetryService:CosmosDb:";
-        private const string COSMOSDB_CONNSTRING_KEY = COSMOSDB_KEY + "connstring";
+        private const string COSMOSDB_CONNSTRING_KEY = COSMOSDB_KEY + "documentDBConnectionString";
         private const string COSMOSDB_RUS_KEY = COSMOSDB_KEY + "RUs";
 
         private const string TIME_SERIES_KEY = APPLICATION_KEY + "TimeSeries:";
-        private const string TIME_SERIES_FQDN = TIME_SERIES_KEY + "fqdn";
+        private const string TIME_SERIES_FQDN = TIME_SERIES_KEY + "tsiDataAccessFQDN";
         private const string TIME_SERIES_AUTHORITY = TIME_SERIES_KEY + "authority";
         private const string TIME_SERIES_AUDIENCE = TIME_SERIES_KEY + "audience";
         private const string TIME_SERIES_EXPLORER_URL = TIME_SERIES_KEY + "explorer_url";
@@ -38,49 +38,45 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string TIME_SERIES_TIMEOUT = TIME_SERIES_KEY + "timeout";
 
         private const string AAD_KEY = APPLICATION_KEY + "AzureActiveDirectory:";
-        private const string AAD_TENANT = AAD_KEY + "tenant";
-        private const string AAD_APP_ID = AAD_KEY + "app_id";
-        private const string AAD_APP_SECRET = AAD_KEY + "app_secret";
+        private const string AAD_TENANT = AAD_KEY + "aadTenantId";
+        private const string AAD_APP_ID = AAD_KEY + "aadAppId";
+        private const string AAD_APP_SECRET = AAD_KEY + "aadAppSecret";
 
         private const string MESSAGES_DB_KEY = "TelemetryService:Messages:";
         private const string MESSAGES_DB_DATABASE_KEY = MESSAGES_DB_KEY + "database";
         private const string MESSAGES_DB_COLLECTION_KEY = MESSAGES_DB_KEY + "collection";
-        private const string MESSAGES_STORAGE_TYPE = MESSAGES_DB_KEY + "storage_type";
+        private const string MESSAGES_STORAGE_TYPE = MESSAGES_DB_KEY + "telemetryStorageType";
 
         private const string ALARMS_DB_KEY = "TelemetryService:Alarms:";
         private const string ALARMS_DB_DATABASE_KEY = ALARMS_DB_KEY + "database";
         private const string ALARMS_DB_COLLECTION_KEY = ALARMS_DB_KEY + "collection";
         private const string ALARMS_DB_MAX_DELETE_RETRIES = ALARMS_DB_KEY + "max_delete_retries";
 
-        private const string STORAGE_ADAPTER_KEY = "StorageAdapterService:";
-        private const string STORAGE_ADAPTER_API_URL_KEY = STORAGE_ADAPTER_KEY + "webservice_url";
-        private const string STORAGE_ADAPTER_API_TIMEOUT_KEY = STORAGE_ADAPTER_KEY + "webservice_timeout";
-
-        private const string USER_MANAGEMENT_KEY = "UserManagementService:";
-        private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "webservice_url";
-
-        private const string DIAGNOSTICS_KEY = "DiagnosticsService:";
-        private const string DIAGNOSTICS_URL_KEY = DIAGNOSTICS_KEY + "webservice_url";
-        private const string DIAGNOSTICS_MAX_LOG_RETRIES = DIAGNOSTICS_KEY + "max_log_retries";
+        private const string EXT_DEPENDENCIES_KEY = "ExternalDependencies:";
+        private const string STORAGE_ADAPTER_API_URL_KEY = EXT_DEPENDENCIES_KEY + "storageAdapterWebServiceUrl";
+        private const string STORAGE_ADAPTER_API_TIMEOUT_KEY = EXT_DEPENDENCIES_KEY + "storageAdapterWebserviceTimeout";
+        private const string USER_MANAGEMENT_URL_KEY = EXT_DEPENDENCIES_KEY + "authWebServiceUrl";
+        private const string DIAGNOSTICS_URL_KEY = EXT_DEPENDENCIES_KEY + "diagnosticsEndpointUrl";
+        private const string DIAGNOSTICS_MAX_LOG_RETRIES = EXT_DEPENDENCIES_KEY + "diagnosticsMaxLogRetries";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
-        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
-        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
-        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
+        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "corsWhitelist";
+        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "authType";
+        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "authRequired";
 
         private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
-        private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
-        private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
-        private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
-        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+        private const string JWT_ALGOS_KEY = JWT_KEY + "allowedAlgorithms";
+        private const string JWT_ISSUER_KEY = JWT_KEY + "authIssuer";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "aadAppId";
+        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clockSkewSeconds";
 
         private const string ACTIONS_KEY = "Actions:";
-        private const string ACTIONS_EVENTHUB_NAME = ACTIONS_KEY + "event_hub_name";
-        private const string ACTIONS_EVENTHUB_CONNSTRING = ACTIONS_KEY + "event_hub_connection_string";
-        private const string ACTIONS_LOGICAPP_ENDPOINTURL = ACTIONS_KEY + "logic_app_endpoint_url";
-        private const string ACTIONS_AZUREBLOB_CONNSTRING = ACTIONS_KEY + "blob_storage_connection_string";
-        private const string ACTIONS_AZUREBLOB_CONTAINER = ACTIONS_KEY + "blob_storage_container";
-        private const string SOLUTION_URL = ACTIONS_KEY + "solution_url";
+        private const string ACTIONS_EVENTHUB_NAME = ACTIONS_KEY + "actionsEventHubName";
+        private const string ACTIONS_EVENTHUB_CONNSTRING = ACTIONS_KEY + "actionsEventHubConnectionString";
+        private const string ACTIONS_LOGICAPP_ENDPOINTURL = ACTIONS_KEY + "logicAppEndpointUrl";
+        private const string ACTIONS_AZUREBLOB_CONNSTRING = ACTIONS_KEY + "storageConnectionString";
+        private const string ACTIONS_AZUREBLOB_CONTAINER = ACTIONS_KEY + "storageContainer";
+        private const string SOLUTION_URL = ACTIONS_KEY + "solutionWebsiteUrl";
         private const string TEMPLATE_FOLDER = ACTIONS_KEY + "template_folder";
 
         public int Port { get; }
