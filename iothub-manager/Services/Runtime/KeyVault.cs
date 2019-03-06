@@ -2,6 +2,7 @@ using Microsoft.Azure.IoTSolutions.IotHubManager.Services.Diagnostics;
 using Microsoft.Azure.KeyVault;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
@@ -30,7 +31,9 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
 
         public string GetKeyVaultSecret(string secretKey)
         {
+            secretKey = secretKey.Split(':').Last();
             var uri = string.Format(KEY_VAULT_URI, this.name, secretKey);
+
             try
             {
                 return this.keyVaultClient.GetSecretAsync(uri).Result.Value;
