@@ -85,8 +85,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
             var clientSecret = this.GetLocalEnvironmentVariables(CLIENT_SECRET, string.Empty);
             var keyVaultName = this.GetLocalEnvironmentVariables(KEY_VAULT_NAME, string.Empty);
 
-            // Initailse key vault
-            this.keyVault = new KeyVault(keyVaultName, clientId, clientSecret, logger);
+            // Initailize key vault
+            this.keyVault = new KeyVault(keyVaultName, clientId, clientSecret, this.log);
         }
 
         private string GetSecrets(string key, string defaultValue = "")
