@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
 {
-    public class KeyVault {
-        
+    public class KeyVault
+    {
+
         // Key Vault details and access
         private readonly string name;
         private readonly string clientId;
         private readonly string clientSecret;
+        private ILogger log;
 
         // Key Vault Client
         private readonly KeyVaultClient keyVaultClient;
@@ -20,11 +22,16 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
         // Constants
         private const string KEY_VAULT_URI = "https://{0}.vault.azure.net/secrets/{1}";
 
-        public KeyVault(string name, string clientId, string clientSecret)
+        public KeyVault(
+            string name,
+            string clientId,
+            string clientSecret,
+            ILogger logger)
         {
             this.name = name;
             this.clientId = clientId;
             this.clientSecret = clientSecret;
+            this.log = logger;
             this.keyVaultClient = new KeyVaultClient(
                                     new KeyVaultClient.AuthenticationCallback(this.GetToken));
         }
@@ -40,6 +47,7 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
             }
             catch (Exception)
             {
+                this.log.Debug($"Secret {secretKey} not found in Key Vault.", () => { });
                 return null;
             }
         }
@@ -52,7 +60,10 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.Services.Runtime
             AuthenticationResult result = await authContext.AcquireTokenAsync(resource, clientCred);
 
             if (result == null)
+            {
+                this.log.Debug($"Failed to obtain authentication token from key vault.", () => { });
                 throw new System.InvalidOperationException("Failed to obtain the JWT token");
+            }
 
             return result.AccessToken;
         }

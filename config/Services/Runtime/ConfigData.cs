@@ -24,11 +24,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         private readonly ILogger log;
 
         // Key Vault
-        private KeyVault keyVault;             
-        private Boolean readFromKeyVaultOnly; // Flag to indicate if to read secrets from KV only 
-        
+        private KeyVault keyVault;
+
         // Constants
-        private const string CLIENT_ID = "KeyVault:aadAppId";
+        private const string CLIENT_ID = "KeyVault:aadAppIdhh";
         private const string CLIENT_SECRET = "KeyVault:aadAppSecret";
         private const string KEY_VAULT_NAME = "KeyVault:name";
         private const string READ_FROM_KV_ONLY = "READ-FROM-KV-ONLY";
@@ -85,27 +84,23 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
             var clientId = this.GetLocalEnvironmentVariables(CLIENT_ID, string.Empty);
             var clientSecret = this.GetLocalEnvironmentVariables(CLIENT_SECRET, string.Empty);
             var keyVaultName = this.GetLocalEnvironmentVariables(KEY_VAULT_NAME, string.Empty);
-            
-            // Initailse key vault
-            this.keyVault = new KeyVault(keyVaultName, clientId, clientSecret);
 
-            // Initialise key vault read only flag
-            this.readFromKeyVaultOnly = this.GetBool(READ_FROM_KV_ONLY);
+            // Initailse key vault
+            this.keyVault = new KeyVault(keyVaultName, clientId, clientSecret, logger);
         }
 
-        private string GetSecrets(string key, string defaultValue = "") {
+        private string GetSecrets(string key, string defaultValue = "")
+        {
             string value = string.Empty;
 
-            // Check the variables in Local Environment variables if the flag is not set
-            if (!this.readFromKeyVaultOnly)
-            {
-                value = this.GetLocalEnvironmentVariables(key, defaultValue);
-            }
+            value = this.GetLocalEnvironmentVariables(key, defaultValue);
 
             // If secrets are not found locally, search in Key-Vault
-            if (string.IsNullOrEmpty(value) || value.Equals("False"))
+            if (string.IsNullOrEmpty(value))
             {
-                value = this.GetSecretsFromKeyVault(key);
+                log.Warn($"Value for secret {key} not found in local env. " +
+                    $" Trying to get the secret from KeyVault.", () => { });
+                value = this.keyVault.GetKeyVaultSecret(key);
             }
 
             return !string.IsNullOrEmpty(value) ? value : defaultValue;
