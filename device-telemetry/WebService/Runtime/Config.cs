@@ -23,7 +23,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
     public class Config : IConfig
     {
         private const string APPLICATION_KEY = "TelemetryService:";
-        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
+        private const string PORT_KEY = APPLICATION_KEY + "webservicePort";
 
         private const string COSMOSDB_KEY = "TelemetryService:CosmosDb:";
         private const string COSMOSDB_CONNSTRING_KEY = COSMOSDB_KEY + "documentDBConnectionString";
