@@ -56,7 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string STORAGE_ADAPTER_API_URL_KEY = EXT_DEPENDENCIES_KEY + "storageAdapterWebServiceUrl";
         private const string STORAGE_ADAPTER_API_TIMEOUT_KEY = EXT_DEPENDENCIES_KEY + "storageAdapterWebserviceTimeout";
         private const string USER_MANAGEMENT_URL_KEY = EXT_DEPENDENCIES_KEY + "authWebServiceUrl";
-        private const string DIAGNOSTICS_URL_KEY = EXT_DEPENDENCIES_KEY + "diagnosticsEndpointUrl";
+        private const string DIAGNOSTICS_URL_KEY = EXT_DEPENDENCIES_KEY + "diagnosticsWebServiceUrl";
         private const string DIAGNOSTICS_MAX_LOG_RETRIES = EXT_DEPENDENCIES_KEY + "diagnosticsMaxLogRetries";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";

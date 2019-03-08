@@ -45,7 +45,7 @@ namespace Microsoft.Azure.IoTSolutions.Auth.Services.Runtime
             {
                 return this.keyVaultClient.GetSecretAsync(uri).Result.Value;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 this.log.Debug($"Secret {secretKey} not found in Key Vault.", () => { });
                 return null;

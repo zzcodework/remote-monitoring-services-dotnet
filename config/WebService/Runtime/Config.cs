@@ -47,7 +47,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clockSkewSeconds";
 
         private const string USER_MANAGEMENT_KEY = "UserManagementService:";
-        private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "webserviceUrl";
+        private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "authWebServiceUrl";
 
         private const string ACTIONS_KEY = APPLICATION_KEY + "Actions:";
         private const string OFFICE365_LOGIC_APP_URL_KEY = ACTIONS_KEY + "office365ConnectionUrl";

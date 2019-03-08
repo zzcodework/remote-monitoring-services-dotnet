@@ -27,7 +27,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         private KeyVault keyVault;
 
         // Constants
-        private const string CLIENT_ID = "KeyVault:aadAppIdhh";
+        private const string CLIENT_ID = "KeyVault:aadAppId";
         private const string CLIENT_SECRET = "KeyVault:aadAppSecret";
         private const string KEY_VAULT_NAME = "KeyVault:name";
         private const string READ_FROM_KV_ONLY = "READ-FROM-KV-ONLY";
@@ -81,9 +81,9 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
 
         private void SetUpKeyVault()
         {
-            var clientId = this.GetLocalEnvironmentVariables(CLIENT_ID, string.Empty);
-            var clientSecret = this.GetLocalEnvironmentVariables(CLIENT_SECRET, string.Empty);
-            var keyVaultName = this.GetLocalEnvironmentVariables(KEY_VAULT_NAME, string.Empty);
+            var clientId = this.GetEnvironmentVariable(CLIENT_ID, string.Empty);
+            var clientSecret = this.GetEnvironmentVariable(CLIENT_SECRET, string.Empty);
+            var keyVaultName = this.GetEnvironmentVariable(KEY_VAULT_NAME, string.Empty);
 
             // Initailize key vault
             this.keyVault = new KeyVault(keyVaultName, clientId, clientSecret, this.log);
@@ -93,7 +93,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         {
             string value = string.Empty;
 
-            value = this.GetLocalEnvironmentVariables(key, defaultValue);
+            value = this.GetLocalVariable(key, defaultValue);
 
             // If secrets are not found locally, search in Key-Vault
             if (string.IsNullOrEmpty(value))
@@ -106,9 +106,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
             return !string.IsNullOrEmpty(value) ? value : defaultValue;
         }
 
-        private string GetLocalEnvironmentVariables(string key, string defaultValue = "")
+        private string GetLocalVariable(string key, string defaultValue = "")
         {
             return this.configuration.GetValue(key, defaultValue);
+        }
+
+        public string GetEnvironmentVariable(string key, string defaultValue = "")
+        {
+            var value = this.configuration.GetValue(key, defaultValue);
+            this.ReplaceEnvironmentVariables(ref value, defaultValue);
+            return value;
         }
 
         private void ReplaceEnvironmentVariables(ref string value, string defaultValue = "")

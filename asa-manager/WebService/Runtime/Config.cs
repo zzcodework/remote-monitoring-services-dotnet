@@ -77,20 +77,19 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string ALARMS_KEY = APPLICATION_KEY + "AlarmsStorage:";
         private const string ALARMS_STORAGE_TYPE_KEY = ALARMS_KEY + "alarmsStorageType";
 
-        private const string DEVICE_TELEMETRY_KEY = "DeviceTelemetryService:";
-        private const string DEVICE_TELEMETRY_WEBSERVICE_URL_KEY = DEVICE_TELEMETRY_KEY + "webserviceUrl";
-        private const string DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY = DEVICE_TELEMETRY_KEY + "webserviceTimeoutmsecs";
+        private const string EXTERNAL_DEPENDENCIES_KEY = "ExternalDependencies:";
+        private const string DEVICE_TELEMETRY_WEBSERVICE_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "telemetryWebServiceUrl";
+        private const string DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "telemetryWebServiceTimeoutmsecs";
 
-        private const string CONFIG_KEY = "PCSConfigurationService:";
-        private const string CONFIG_WEBSERVICE_URL_KEY = CONFIG_KEY + "webserviceUrl";
-        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = CONFIG_KEY + "webserviceTimeoutmsecs";
+        private const string CONFIG_WEBSERVICE_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "configWebServiceUrl";
+        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "configWebServiceTimeoutmsecs";
 
-        private const string IOTHUB_MANAGER_KEY = "IoTHubManagerService:";
-        private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = IOTHUB_MANAGER_KEY + "webserviceUrl";
-        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = IOTHUB_MANAGER_KEY + "webserviceTimeoutmsecs";
-        private const string IOTHUB_MANAGER_RETRY_COUNT = IOTHUB_MANAGER_KEY + "retryCount";
-        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = IOTHUB_MANAGER_KEY + "initialRetryIntervalmsecs";
-        private const string IOTHUB_MANAGER_RETRY_INCREASE_FACTOR = IOTHUB_MANAGER_KEY + "retryIncreaseFactor";
+        private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "iothubmanagerWebServiceUrl";
+        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "iothubmanagerTimeoutmsecs";
+
+        private const string IOTHUB_MANAGER_RETRY_COUNT = EXTERNAL_DEPENDENCIES_KEY + "retryCount";
+        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = EXTERNAL_DEPENDENCIES_KEY + "initialRetryIntervalmsecs";
+        private const string IOTHUB_MANAGER_RETRY_INCREASE_FACTOR = EXTERNAL_DEPENDENCIES_KEY + "retryIncreaseFactor";
 
         // Values common to all the tables (messages and alarms)
         private const string COSMOSDBSQL_CONNSTRING_KEY = "documentDBConnectionString";
