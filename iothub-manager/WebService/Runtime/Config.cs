@@ -30,8 +30,8 @@ namespace Microsoft.Azure.IoTSolutions.IotHubManager.WebService.Runtime
         private const string DEVICE_PROPERTIES_REBUILD_TIMEOUT_KEY = DEVICE_PROPERTIES_KEY + "rebuildTimeout";
 
         private const string EXTERNAL_DEPENDENCIES = "ExternalDependencies:";
-        private const string STORAGE_ADAPTER_URL_KEY = EXTERNAL_DEPENDENCIES + "webservice_url";
-        private const string USER_MANAGEMENT_URL_KEY = EXTERNAL_DEPENDENCIES + "webservice_url";
+        private const string STORAGE_ADAPTER_URL_KEY = EXTERNAL_DEPENDENCIES + "storageAdapterWebServiceUrl";
+        private const string USER_MANAGEMENT_URL_KEY = EXTERNAL_DEPENDENCIES + "authWebServiceUrl";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "corsWhitelist";
