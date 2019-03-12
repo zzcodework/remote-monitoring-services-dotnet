@@ -43,7 +43,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
         private const string JWT_ALGOS_KEY = JWT_KEY + "allowedAlgorithms";
         private const string JWT_ISSUER_KEY = JWT_KEY + "authIssuer";
-        private const string JWT_AUDIENCE_KEY = JWT_KEY + "aadTenantId";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "aadAppId";
         private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clockSkewSeconds";
 
         private const string USER_MANAGEMENT_KEY = "UserManagementService:";
