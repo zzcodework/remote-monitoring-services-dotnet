@@ -106,10 +106,6 @@ namespace Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Runtime
             return !string.IsNullOrEmpty(value) ? value : defaultValue;
         }
 
-        private string GetSecretsFromKeyVault(string key) {
-            return this.keyVault.GetKeyVaultSecret(key);
-        }
-
         private string GetLocalVariable(string key, string defaultValue = "")
         {
             return this.configuration.GetValue(key, defaultValue);
