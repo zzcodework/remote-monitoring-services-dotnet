@@ -21,7 +21,9 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 :: Start the application
 echo Starting Storage Adapter ...
 docker run -it -p 9022:9022 ^
-    -e PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING ^
+    -e PCS_KEYVAULT_NAME ^
+    -e PCS_AAD_APPID ^
+    -e PCS_AAD_APPSECRET ^
     %DOCKER_IMAGE%:testing
 
 :: - - - - - - - - - - - - - -
