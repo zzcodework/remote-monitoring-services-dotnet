@@ -13,9 +13,9 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:9022/v1/status",
       "environmentVariables": {
-        "PCS_KEYVAULT_NAME": "keyvault-fk4ri",
-        "PCS_AAD_APPID": "241383fa-fe9b-4aae-a07a-f73bdb28f595",
-        "PCS_AAD_APPSECRET": "N4xjGzdUeWMC7BkM3hBwCRJDFYe0k2ygNWeSKfxv"
+        "PCS_KEYVAULT_NAME": "",
+        "PCS_AAD_APPID": "",
+        "PCS_AAD_APPSECRET": ""
       },
       "applicationUrl": "http://localhost:9022/v1/status"
     }
