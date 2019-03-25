@@ -63,9 +63,9 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
     :: Start the sandbox and run the application
     docker run -it ^
         -p 9022:9022 ^
-		-e PCS_KEYVAULT_NAME ^
-		-e PCS_AAD_APPID ^
-		-e PCS_AAD_APPSECRET ^
+        -e PCS_KEYVAULT_NAME ^
+        -e PCS_AAD_APPID ^
+        -e PCS_AAD_APPSECRET ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^
