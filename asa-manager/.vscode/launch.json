@@ -43,6 +43,7 @@
             },
             "type": "coreclr",
             "request": "launch",
+            "preLaunchTask": "build",
             "program": "${workspaceRoot}/WebService/bin/Debug/netcoreapp2.0/Microsoft.Azure.IoTSolutions.AsaManager.WebService.dll",
             "args": [],
             "cwd": "${workspaceRoot}/WebService/bin/Debug/netcoreapp2.0",
