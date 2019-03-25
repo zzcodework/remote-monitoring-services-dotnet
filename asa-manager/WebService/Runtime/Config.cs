@@ -113,7 +113,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             this.Port = configData.GetInt(PORT_KEY);
             this.LoggingConfig = GetLogConfig(configData);
             this.ServicesConfig = GetServicesConfig(configData);
-            this.ClientAuthConfig = GetClientAuthConfigAsync(configData);
+            this.ClientAuthConfig = GetClientAuthConfig(configData);
             this.BlobStorageConfig = GetBlobStorageConfig(configData);
         }
 
@@ -145,7 +145,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             return result;
         }
 
-        private static IClientAuthConfig GetClientAuthConfigAsync(IConfigData configData)
+        private static IClientAuthConfig GetClientAuthConfig(IConfigData configData)
         {
             return new ClientAuthConfig
             {

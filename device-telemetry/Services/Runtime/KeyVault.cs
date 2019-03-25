@@ -36,7 +36,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.Services.Runtime
                                     new KeyVaultClient.AuthenticationCallback(this.GetToken));
         }
 
-        public string GetKeyVaultSecret(string secretKey)
+        public string GetSecret(string secretKey)
         {
             secretKey = secretKey.Split(':').Last();
             var uri = string.Format(KEY_VAULT_URI, this.name, secretKey);
