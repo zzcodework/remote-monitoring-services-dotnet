@@ -58,7 +58,7 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
     IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
     :: Start the sandbox and run the application
-    docker run -it ^
+    docker run --detach ^
         -p 9005:9005 ^
         -e PCS_KEYVAULT_NAME ^
         -e PCS_AAD_APPID ^

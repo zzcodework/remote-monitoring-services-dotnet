@@ -20,11 +20,11 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 :: Start the application
 echo Starting Device Simulation ...
-docker run -it -p 9003:9003 ^
+docker run --detach -p 9003:9003 ^
     -e PCS_KEYVAULT_NAME ^
     -e PCS_AAD_APPID ^
     -e PCS_AAD_APPSECRET ^
-    %DOCKER_IMAGE%:testing
+    %DOCKER_IMAGE%:DS-1.0.4
 
 :: - - - - - - - - - - - - - -
 goto :END
