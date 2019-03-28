@@ -3,7 +3,7 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
 IF "%PCS_KEYVAULT_NAME%" == "" (
-    echo Error: the PCS_IOTHUB_CONNSTRING environment variable is not defined.
+    echo Error: the PCS_KEYVAULT_NAME environment variable is not defined.
     exit /B 1
 )
 
