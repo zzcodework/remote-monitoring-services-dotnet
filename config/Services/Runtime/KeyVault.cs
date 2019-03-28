@@ -47,7 +47,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
             }
             catch (Exception e)
             {
-                this.log.Debug($"Secret {secretKey} not found in Key Vault.", () => { });
+                this.log.Error($"Secret {secretKey} not found in Key Vault.", () => { });
                 return null;
             }
         }
