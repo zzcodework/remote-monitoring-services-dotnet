@@ -52,16 +52,29 @@ How to use the microservice
 1. Create an instance of [Azure Active Directory][aad-url] or simply
    reuse the instance coming with your Azure subscription
 1. Open the solution in Visual Studio or VS Code.
-1. Define environment variables, as needed. See [Configuration and Environment variables](#configuration-and-environment-variables) for detailed information for setting these for your enviroment.
-   1. `PCS_AUTH_AUDIENCE` = {your AAD application ID}
-   1. `PCS_AUTH_ISSUER` = {your AAD issuer URL}
-   1. `PCS_AAD_ENDPOINT_URL` = {your AAD endpoint URL}
-   1. `PCS_AAD_TENANT` = {your AAD tenant Id}
-   1. `PCS_AAD_APPSECRET` = {your AAD application secret}
-   1. `PCS_ARM_ENDPOINT_URL` = {Azure Resource Manager URL}
-1. Start the WebService project (e.g. press F5).
-1. Use an HTTP client such as [Postman][postman-url], to exercise the
-   RESTful API.
+
+## Environment variables required to run the service
+In order to run the service, some environment variables need to be created 
+at least once. See specific instructions for IDE or command line setup below
+for more information. More information on environment variables
+[here](#configuration-and-environment-variables).
+
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+## Settings used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
+
+* `aadAppId` = Azure Active Directory application / service principal id.
+* `aadAppSecret` = Azure Active Directory service princial secret.
+* `aadEndpointUrl` = The AAD endpoint url to acquire ARM token for AAD application
+* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/tenantId/
+* `aadTenantId` = GUID representing your active directory tenant.
+
+* `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman.
+* `corsWhitelist ` = Specifies where requests are allowed from "{ 'origins': ['*'], 'methods': ['*'], 'headers': ['*'] }" to allow everything. Empty to disable CORS.
+
 
 ## Project Structure
 
