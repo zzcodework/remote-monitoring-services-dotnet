@@ -30,8 +30,6 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
         private const string CLIENT_ID = "KeyVault:aadAppId";
         private const string CLIENT_SECRET = "KeyVault:aadAppSecret";
         private const string KEY_VAULT_NAME = "KeyVault:name";
-        private const string READ_FROM_KV_ONLY = "READ-FROM-KV-ONLY";
-
 
         public ConfigData(ILogger logger)
         {
@@ -100,7 +98,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
             {
                 log.Warn($"Value for secret {key} not found in local env. " +
                     $" Trying to get the secret from KeyVault.", () => { });
-                value = this.keyVault.GetKeyVaultSecret(key);
+                value = this.keyVault.GetSecret(key);
             }
 
             return !string.IsNullOrEmpty(value) ? value : defaultValue;

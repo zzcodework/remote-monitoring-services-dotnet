@@ -14,10 +14,10 @@ spec:
     servicePort: 10080
   tls:
   - hosts:
-    - paygorm-sit.southeastasia.cloudapp.azure.com
+    - DNSGIVENNAME.REGION.southeastasia.cloudapp.azure.com
     secretName: tls-secret
   rules:
-  - host: paygorm-sit.southeastasia.cloudapp.azure.com
+  - host: DNSGIVENNAME.REGION.southeastasia.cloudapp.azure.com
     http:
       paths:
       - path: /storageadapter/(.*)

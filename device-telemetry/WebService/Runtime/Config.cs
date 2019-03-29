@@ -33,8 +33,8 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string TIME_SERIES_FQDN = TIME_SERIES_KEY + "tsiDataAccessFQDN";
         private const string TIME_SERIES_AUTHORITY = TIME_SERIES_KEY + "authority";
         private const string TIME_SERIES_AUDIENCE = TIME_SERIES_KEY + "audience";
-        private const string TIME_SERIES_EXPLORER_URL = TIME_SERIES_KEY + "explorer_url";
-        private const string TIME_SERIES_API_VERSION = TIME_SERIES_KEY + "api_version";
+        private const string TIME_SERIES_EXPLORER_URL = TIME_SERIES_KEY + "explorerUrl";
+        private const string TIME_SERIES_API_VERSION = TIME_SERIES_KEY + "apiVersion";
         private const string TIME_SERIES_TIMEOUT = TIME_SERIES_KEY + "timeout";
 
         private const string AAD_KEY = APPLICATION_KEY + "AzureActiveDirectory:";
@@ -50,7 +50,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string ALARMS_DB_KEY = "TelemetryService:Alarms:";
         private const string ALARMS_DB_DATABASE_KEY = ALARMS_DB_KEY + "database";
         private const string ALARMS_DB_COLLECTION_KEY = ALARMS_DB_KEY + "collection";
-        private const string ALARMS_DB_MAX_DELETE_RETRIES = ALARMS_DB_KEY + "max_delete_retries";
+        private const string ALARMS_DB_MAX_DELETE_RETRIES = ALARMS_DB_KEY + "maxDeleteRetries";
 
         private const string EXT_DEPENDENCIES_KEY = "ExternalDependencies:";
         private const string STORAGE_ADAPTER_API_URL_KEY = EXT_DEPENDENCIES_KEY + "storageAdapterWebServiceUrl";
@@ -77,7 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.DeviceTelemetry.WebService.Runtime
         private const string ACTIONS_AZUREBLOB_CONNSTRING = ACTIONS_KEY + "storageConnectionString";
         private const string ACTIONS_AZUREBLOB_CONTAINER = ACTIONS_KEY + "storageContainer";
         private const string SOLUTION_URL = ACTIONS_KEY + "solutionWebsiteUrl";
-        private const string TEMPLATE_FOLDER = ACTIONS_KEY + "template_folder";
+        private const string TEMPLATE_FOLDER = ACTIONS_KEY + "templateFolder";
 
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }

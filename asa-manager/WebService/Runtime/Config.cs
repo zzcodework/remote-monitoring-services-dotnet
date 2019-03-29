@@ -57,7 +57,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
         private const string EVENTHUB_KEY = APPLICATION_KEY + "EventHub:";
         private const string EVENTHUB_CONNECTION_KEY = EVENTHUB_KEY + "messagesEventHubConnectionString";
         private const string EVENTHUB_NAME = EVENTHUB_KEY + "messagesEventHubName";
-        private const string EVENTHUB_CHECKPOINT_INTERVAL_MS = EVENTHUB_KEY + "checkpointIntervalmsecs";
+        private const string EVENTHUB_CHECKPOINT_INTERVAL_MS = EVENTHUB_KEY + "checkpointIntervalMsecs";
 
         private const string BLOB_STORAGE_KEY = APPLICATION_KEY + "BlobStorage:";
         private const string STORAGE_REFERENCE_DATA_CONTAINER_KEY = BLOB_STORAGE_KEY + "referenceDataContainer";
@@ -79,16 +79,16 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
 
         private const string EXTERNAL_DEPENDENCIES_KEY = "ExternalDependencies:";
         private const string DEVICE_TELEMETRY_WEBSERVICE_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "telemetryWebServiceUrl";
-        private const string DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "telemetryWebServiceTimeoutmsecs";
+        private const string DEVICE_TELEMETRY_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "telemetryWebServiceTimeoutMsecs";
 
         private const string CONFIG_WEBSERVICE_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "configWebServiceUrl";
-        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "configWebServiceTimeoutmsecs";
+        private const string CONFIG_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "configWebServiceTimeoutMsecs";
 
         private const string IOTHUB_MANAGER_WEBSERVICE_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "iothubmanagerWebServiceUrl";
-        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "iothubmanagerTimeoutmsecs";
+        private const string IOTHUB_MANAGER_WEBSERVICE_TIMEOUT_KEY = EXTERNAL_DEPENDENCIES_KEY + "iothubmanagerTimeoutMsecs";
 
         private const string IOTHUB_MANAGER_RETRY_COUNT = EXTERNAL_DEPENDENCIES_KEY + "retryCount";
-        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = EXTERNAL_DEPENDENCIES_KEY + "initialRetryIntervalmsecs";
+        private const string IOTHUB_MANAGER_INITIAL_RETRY_INTERVAL_MS = EXTERNAL_DEPENDENCIES_KEY + "initialRetryIntervalMsecs";
         private const string IOTHUB_MANAGER_RETRY_INCREASE_FACTOR = EXTERNAL_DEPENDENCIES_KEY + "retryIncreaseFactor";
 
         // Values common to all the tables (messages and alarms)
@@ -113,7 +113,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             this.Port = configData.GetInt(PORT_KEY);
             this.LoggingConfig = GetLogConfig(configData);
             this.ServicesConfig = GetServicesConfig(configData);
-            this.ClientAuthConfig = GetClientAuthConfigAsync(configData);
+            this.ClientAuthConfig = GetClientAuthConfig(configData);
             this.BlobStorageConfig = GetBlobStorageConfig(configData);
         }
 
@@ -145,7 +145,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.WebService.Runtime
             return result;
         }
 
-        private static IClientAuthConfig GetClientAuthConfigAsync(IConfigData configData)
+        private static IClientAuthConfig GetClientAuthConfig(IConfigData configData)
         {
             return new ClientAuthConfig
             {

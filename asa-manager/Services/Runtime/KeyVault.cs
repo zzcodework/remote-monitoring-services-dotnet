@@ -35,7 +35,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
                                     new KeyVaultClient.AuthenticationCallback(this.GetToken));
         }
 
-        public string GetKeyVaultSecret(string secretKey)
+        public string GetSecret(string secretKey)
         {
             secretKey = secretKey.Split(':').Last();
             var uri = string.Format(KEY_VAULT_URI, this.name, secretKey);
@@ -46,7 +46,7 @@ namespace Microsoft.Azure.IoTSolutions.AsaManager.Services.Runtime
             }
             catch (Exception e)
             {
-                this.log.Debug($"Secret {secretKey} not found in Key Vault.", ()=>{ });
+                this.log.Error($"Secret {secretKey} not found in Key Vault.", ()=>{ });
                 return null;
             }
         }
