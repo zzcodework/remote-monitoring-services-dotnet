@@ -12,10 +12,10 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "http://localhost:9024/v1/status",
-				"environmentVariables": {
-					"PCS_LOG_LEVEL": "${PCS_LOG_LEVEL}",
-					"PCS_CORS_WHITELIST": "${PCS_CORS_WHITELIST}"
-				},
+	  "environmentVariables": {
+		"PCS_LOG_LEVEL": "${PCS_LOG_LEVEL}",
+		"PCS_CORS_WHITELIST": "${PCS_CORS_WHITELIST}"
+	  },
       "applicationUrl": "http://localhost:9024/v1/status"
     }
   }
