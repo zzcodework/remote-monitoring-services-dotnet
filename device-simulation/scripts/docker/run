@@ -19,7 +19,7 @@ run_container() {
         -e PCS_KEYVAULT_NAME \
         -e PCS_AAD_APPID \
         -e PCS_AAD_APPSECRET \
-        "$DOCKER_IMAGE:DS-1.0.4"
+        "$DOCKER_IMAGE:DS-1.0.5"
 }
 
 run_container
