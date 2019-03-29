@@ -61,6 +61,44 @@ Run those services from the instructions in their READMEs in the following order
 1. [Authentication Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/auth)
 
 ### 3. Environment variables required to run the service
+In order to run the service, some environment variables need to be created 
+at least once. See specific instructions for IDE or command line setup below
+for more information. More information on environment variables
+[here](#configuration-and-environment-variables).
+
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+## Settings used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
+
+* `` = Azure 
+* `` = Azure 
+* `` = Azure 
+* `` = Azure 
+* `` = Azure 
+* `` = Azure 
+* `authWebServiceUrl` = Azure 
+* `azureMapsKey` = Azure 
+* `` = Azure 
+* `deviceSimulationWebServiceUrl` = Azure 
+* `` = Azure 
+* `` = Azure 
+* `` = Azure 
+* `office365ConnectionUrl` = Azure 
+* `seedTemplate` = Azure 
+* `` = Azure 
+* `` = Azure 
+* `solutionName` = Azure 
+* `` = Azure 
+
+* `solutionType` = Azure 
+* `storageAdapterWebServiceUrl` = Azure 
+* `subscriptionId` = Azure 
+* `telemetryWebServiceUrl` = Azure 
+
+### 3. Environment variables required to run the service
 In order to run the service, some environment variables need to be
 created at least once. See specific instructions for IDE or command
 line setup below for more information. More information on environment

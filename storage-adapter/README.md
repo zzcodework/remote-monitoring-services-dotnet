@@ -64,6 +64,21 @@ are configured. See the [Configuration and Environment variables](#configuration
    with details such as the URL where the web service is running, plus
    the service logs.
 
+## Environment variables required to run the service
+In order to run the service, some environment variables need to be created 
+at least once. See specific instructions for IDE or command line setup below
+for more information. More information on environment variables
+[here](#configuration-and-environment-variables).
+
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+## Settings used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
+
+* `documentDBConnectionString` = Azure Cosmos DB Connection String
+
 ## Project Structure
 
 This microservice contains the following projects:
@@ -112,12 +127,18 @@ The Docker compose configuration requires the IoTHub and StorageAdapter web serv
 The service configuration is stored using ASP.NET Core configuration
 adapters, in [appsettings.ini](WebService/appsettings.ini). The INI
 format allows to store values in a readable format, with comments.
-The application also supports inserting environment variables, such as
-credentials and networking details.
 
-The configuration file in the repository references some environment
-variables that need to created at least once. Depending on your OS and
-the IDE, there are several ways to manage environment variables:
+Configuration in appsettings.ini are typically set in 3 different ways:
+
+1. Environment variables as is the case with ${PCS_AAD_APPID}. This is typically
+only done with the 3 variables described above as these are needed to access Key Vault. 
+More details about setting environment variables are located below.
+1. Key Vault: A number of the settings in this file will be blank as they are expecting
+to get their value from a Key Vault secret of the same name.
+1. Direct Value: For some values that aren't typically changed or for local development
+you can set the value directly in the file.
+
+Depending on the OS and the IDE used, there are several ways to manage environment variables.
 
 1. If you're using Visual Studio or Visual Studio for Mac, the environment
    variables are loaded from the project settings. Right click on WebService,
