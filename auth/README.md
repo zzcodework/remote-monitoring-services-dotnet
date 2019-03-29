@@ -115,15 +115,17 @@ The service configuration is accessed via ASP.NET Core configuration
 adapters, and stored in [appsettings.ini](WebService/appsettings.ini).
 The INI format allows to store values in a readable format, with comments.
 
-The configuration also supports references to environment variables, e.g. to
-import credentials and network details. Environment variables are not
-mandatory though, you can for example edit appsettings.ini and write
-credentials directly in the file. Just be careful not sharing the changes,
-e.g. sending a Pull Request or checking in the changes in git.
+Configuration in appsettings.ini are typically set in 3 different ways:
 
-The configuration file in the repository references some environment
-variables that need to be defined. Depending on the OS and the IDE used,
-there are several ways to manage environment variables.
+1. Environment variables as is the case with ${PCS_AAD_APPID}. This is typically
+only done with the 3 variables described above as these are needed to access Key Vault. 
+More details about setting environment variables are located below.
+1. Key Vault: A number of the settings in this file will be blank as they are expecting
+to get their value from a Key Vault secret of the same name.
+1. Direct Value: For some values that aren't typically changed or for local development
+you can set the value directly in the file.
+
+Depending on the OS and the IDE used, there are several ways to manage environment variables.
 
 1. If you're using Visual Studio or Visual Studio for Mac, the environment
    variables are loaded from the project settings. Right click on WebService,
