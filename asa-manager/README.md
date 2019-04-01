@@ -85,6 +85,13 @@ at least once. See specific instructions for IDE or command line setup below
 for more information. More information on environment variables
 [here](#configuration-and-environment-variables).
 
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+### 3.1 Settings used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
+
 * `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = { Azure Cosmos DB connection string }
 * `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
 * `PCS_CONFIG_WEBSERVICE_URL` = http://localhost:9005/v1
@@ -96,6 +103,7 @@ for more information. More information on environment variables
 * `PCS_EVENTHUB_CONNSTRING` = { Event Hub Connection String for RootManageSharedAccessKey }
 * `PCS_EVENTHUB_NAME` = { Name of Event Hub }
 * `PCS_TELEMETRY_STORAGE_TYPE` = { "tsi" or "cosmosdb", default is "tsi" }
+* `PCS_LOG_LEVEL` = { Log level debug, error. default is Warn }
 
 ## Running the service with Visual Studio
 

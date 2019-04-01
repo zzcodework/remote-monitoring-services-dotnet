@@ -52,6 +52,14 @@ In order to run the service, some environment variables need to be created
 at least once. See specific instructions for IDE or command line setup below
 for more information. More information on environment variables
 [here](#configuration-and-environment-variables).
+ 
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+### 3.1 Settings used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The telemetry microservice uses:
+
   * `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
   * `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
   * `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
@@ -74,6 +82,7 @@ for more information. More information on environment variables
   * `PCS_AZUREBLOB_CONNSTRING` = {connection string}
     * see: Azure Portal => Your resource group => Your Storage Account => Access keys => Connection String
   * `PCS_SOLUTION_WEBSITE_URL` = {Solution Url}
+  * `PCS_CORS_WHITELIST` = { CORS whitelisted urls }
 
 ## Running the service with Visual Studio or VS Code
 

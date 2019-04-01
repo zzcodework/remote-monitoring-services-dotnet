@@ -6,18 +6,20 @@ How to use the microservice
 
 ## Quickstart - Running the service with Docker
 
-1. Create an instance of [Azure IoT Hub][iothub-url]
-1. Follow the [Storage quickstart instructions][storageadapter-url]
-   for setting up the storage used by Storage Adapter microservice.
-1. Find your Iot Hub connection string. See
-   [Understanding IoTHub Connection Strings][iothubconnstring-url] if you
-   need help finding it.
-1. Store the "IoT Hub Connection string" in the [env-vars-setup](scripts)
-   script, then run the script. When using MacOS/Linux, the environment
-   variables need to be set in the same terminal session where Docker is
-   executed, every time a new session is created.
-1. [Install Docker Compose][docker-compose-install-url]
-1. Start the Simulation service using docker compose:
+1. Install docker-compose.
+2. Create RM local installation (cloud resoures and environment variables) using [pcs-cli](pcs-cli-url). Build the cli as per the instruction given on the github  page and run the following command.
+    ```
+    pcs -s local
+    ```
+2. In order to run the service, some environment variables need to be created
+at least once. See specific instructions for IDE or command line setup below
+for more information. More information on environment variables
+[here](#configuration-and-environment-variables). 
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+3. Start the Simulation service using docker compose:
    ```
    cd scripts
    cd docker
@@ -25,6 +27,7 @@ How to use the microservice
    ```
 1. Use an HTTP client such as [Postman][postman-url], to exercise the
    [RESTful API][wiki-createsim-url] to create a simulation.
+
 
 
 ## Configuration and Environment variables
@@ -64,3 +67,5 @@ there are several ways to manage environment variables.
 [windows-envvars-howto-url]: https://superuser.com/questions/949560/how-do-i-set-system-environment-variables-in-windows-10
 [postman-url]: https://www.getpostman.com
 [wiki-createsim-url]: https://github.com/Azure/device-simulation-dotnet/wiki/%5BAPI-Specifications%5D-Simulations#create-default-simulation
+[key-vault-url]: https://docs.microsoft.com/en-us/azure/azure-stack/user/azure-stack-key-vault-manage-portal
+[pcs-cli-url]: https://github.com/Azure/pcs-cli
