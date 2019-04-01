@@ -59,17 +59,25 @@ This service depends on the [Storage Adapter microservice](https://github.com/Az
 > Note: you can also use a [deployed endpoint][deploy-rm] with [Authentication disabled][disable-auth] (e.g. https://{your-resource-group}.azurewebsites.net/storageadapter/v1)
 
 ### 3. Environment variables required to run the service
-In order to run the service, some environment variables need to be created
-at least once. See specific instructions for IDE or command line setup below for
-more information. More information on environment variables
+In order to run the service, some environment variables need to be created 
+at least once. See specific instructions for IDE or command line setup below
+for more information. More information on environment variables
 [here](#configuration-and-environment-variables).
 
-* `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-    * The url for the [Authentication service](https://github.com/Azure/pcs-auth-dotnet) from [Setup Dependencies](#setup-dependencies)
-* `PCS_IOTHUB_CONNSTRING` = {your Azure IoT Hub connection string from [Deploy Azure Services](#deploy-azure-services)}
-    *  More information on where to find your IoT Hub connection string [here][iothub-connstring-blog].
-* `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-    * The url for the [Storage Adapter service](https://github.com/Azure/pcs-storage-adapter-dotnet) from [Setup Dependencies](#setup-dependencies)
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+## Settings used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The iothub-manager microservice uses:
+
+* `aadAppId` = Azure Active Directory application / service principal id.
+* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/tenantId/ 
+* `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman
+* `authWebServiceUrl` = Endpoint for the remote monitoring auth microservice
+* `corsWhitelist` = Specifies where requests are allowed from "{ 'origins': ['*'], 'methods': ['*'], 'headers': ['*'] }" to allow everything. Empty to disable CORS
+* `storageAdapterWebServiceUrl` = Endpoint for storage adapter microservice
+* `subscriptionId` = GUID that uniquely identifies your subscription to use Azure services
 
 ## Running the service with Visual Studio or VS Code
 
@@ -83,9 +91,9 @@ more information. More information on environment variables
    * If you already have VS Code installed, then ensure you have the [C# for Visual Studio Code (powered by OmniSharp)][omnisharp-url] extension installed.
 1. Open the solution in Visual Studio or VS Code
 1. Define the following environment variables. See [Configuration and Environment variables](#configuration-and-environment-variables) for detailed information for setting these for your enviroment.
-   1. `PCS_AUTH_WEBSERVICE_URL` = {authentication service endpoint}
-   1. `PCS_IOTHUB_CONNSTRING` = {your Azure IoT Hub connection string}
-   1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = {storage adapter service endpoint}
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 1. Start the WebService project (e.g. press F5).
 1. Using an HTTP client like [Postman][postman-url],
    use the [RESTful API][project-wiki] to test out the service.
@@ -94,9 +102,9 @@ more information. More information on environment variables
 
 1. Make sure the [Prerequisites](#prerequisites) are set up.
 1. Set the following environment variables in your system. More information on environment variables [here](#configuration-and-environment-variables).
-    1. `PCS_AUTH_WEBSERVICE_URL` = {authentication service endpoint}
-    1. `PCS_IOTHUB_CONNSTRING` = {your Azure IoT Hub connection string}
-    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = {storage adapter service endpoint}
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
 
 * `build`: compile all the projects and run the tests.

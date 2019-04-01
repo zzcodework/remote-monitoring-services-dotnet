@@ -71,60 +71,23 @@ for more information. More information on environment variables
 * `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 
 ## Settings used from Key Vault
-Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The config microservice uses:
 
-* `` = Azure 
-* `` = Azure 
-* `` = Azure 
-* `` = Azure 
-* `` = Azure 
-* `` = Azure 
-* `authWebServiceUrl` = Azure 
-* `azureMapsKey` = Azure 
-* `` = Azure 
-* `deviceSimulationWebServiceUrl` = Azure 
-* `` = Azure 
-* `` = Azure 
-* `` = Azure 
-* `office365ConnectionUrl` = Azure 
-* `seedTemplate` = Azure 
-* `` = Azure 
-* `` = Azure 
-* `solutionName` = Azure 
-* `` = Azure 
-
-* `solutionType` = Azure 
-* `storageAdapterWebServiceUrl` = Azure 
-* `subscriptionId` = Azure 
-* `telemetryWebServiceUrl` = Azure 
-
-### 3. Environment variables required to run the service
-In order to run the service, some environment variables need to be
-created at least once. See specific instructions for IDE or command
-line setup below for more information. More information on environment
-variables [here](#configuration-and-environment-variables).
-
-* `PCS_STORAGEADAPTER_WEBSERVICE_URL` - the url for
-  the [Storage Adapter Webservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter)
-  used for key value storage
-* `PCS_DEVICESIMULATION_WEBSERVICE_URL` - the url for
-  the [Device Simulation Webservice](https://github.com/Azure/device-simulation-dotnet.git)
-  used for key value storage
-- `PCS_TELEMETRY_WEBSERVICE_URL` - the url for
-  the [Telemetry Webservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-telemetry)
-  used for key value storage
-*  `PCS_AZUREMAPS_KEY` - the [Azure Maps](https://azure.microsoft.com/services/azure-maps/) 
-  API Key. This can be set to "static" if you do not have one.
-* `PCS_AUTH_WEBSERVICE_URL` = the url for
-  the [Auth Webservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/auth)
-  used for key value storage
-* `PCS_OFFICE365_CONNECTION_URL` (Optional) = the url for the Office 365 Logic App connector
-* `PCS_SOLUTION_NAME` (Optional) = The name of the resource group for the solution. Used only if
-  using logic apps for actions.
-* `PCS_SUBSCRIPTION_ID`(Optional) = The subscription id for the solution. Used only if
-  using logic apps for actions.
-  * `PCS_ARM_ENDPOINT_URL` (Optional) = the url for the Azure management APIs. Used only if
-  using logic apps for actions.
+* `aadTenantId` = GUID representing your active directory tenant
+* `armEndpointUrl` = The endpoint for the Azure Resource Manager API
+* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/tenantId/ 
+* `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman
+* `authWebServiceUrl` = Endpoint for the remote monitoring auth microservice
+* `azureMapsKey` = Key needed for Azure Maps Account
+* `corsWhitelist` = Specifies where requests are allowed from "{ 'origins': ['*'], 'methods': ['*'], 'headers': ['*'] }" to allow everything. Empty to disable CORS
+* `deviceSimulationWebServiceUrl` = Endpoint for device simulation microservice
+* `office365ConnectionUrl` = Office 365 url used for enabling e-mail actions when alerting on rules
+* `seedTemplate` = The template used by device simulation when seeding devices. This is typically DEFAULT
+* `solutionName` = The name of the RM solution that was created. This is typically the same as your Resource Group name
+* `solutionType` = Type of solution. remotemonitoring or device-simulation 
+* `storageAdapterWebServiceUrl` = Endpoint for storage adapter microservice
+* `subscriptionId` = GUID that uniquely identifies your subscription to use Azure services
+* `telemetryWebServiceUrl` = Endpoint for telemetry microservice
 
 ## Running the service with Visual Studio or VS Code
 
@@ -138,15 +101,9 @@ variables [here](#configuration-and-environment-variables).
    * If you already have VS Code installed, then ensure you have the [C# for Visual Studio Code (powered by OmniSharp)][omnisharp-url] extension installed.
 1. Open the solution in Visual Studio or VS Code.
 1. Define the following environment variables. See [Configuration and Environment variables](#configuration-and-environment-variables) for detailed information for setting these for your enviroment.
-   1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-   1. `PCS_DEVICESIMULATION_WEBSERVICE_URL` = http://localhost:9003/v1
-   1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
-   1. `PCS_AZUREMAPS_KEY` = static
-   1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-   1. `PCS_OFFICE365_CONNECTION_URL` (Optional)
-   1. `PCS_SOLUTION_NAME` (Optional)
-   1. `PCS_SUBSCRIPTION_ID`(Optional)
-   1. `PCS_ARM_ENDPOINT_URL` (Optional)
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 1. Start the WebService project (e.g. press F5).
 1. Use an HTTP client such as [Postman][postman-url], to exercise the
    [RESTful API](https://github.com/Azure/pcs-config-dotnet/wiki/API-Specs).
@@ -157,15 +114,9 @@ variables [here](#configuration-and-environment-variables).
 1. Set the following environment variables in your system. 
 More information on environment variables
 [here](#configuration-and-environment-variables).
-   1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-   1. `PCS_DEVICESIMULATION_WEBSERVICE_URL` = http://localhost:9003/v1
-   1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
-   1. `PCS_AZUREMAPS_KEY` = static
-   1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-   1. `PCS_OFFICE365_CONNECTION_URL` (Optional)
-   1. `PCS_SOLUTION_NAME` (Optional)
-   1. `PCS_SUBSCRIPTION_ID`(Optional)
-   1. `PCS_ARM_ENDPOINT_URL` (Optional)
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    *  `build`: compile all the projects and run the tests.
    *  `compile`: compile all the projects.
