@@ -29,7 +29,6 @@ for more information. More information on environment variables
    [RESTful API][wiki-createsim-url] to create a simulation.
 
 
-
 ## Configuration and Environment variables
 
 The service configuration is accessed via ASP.NET Core configuration

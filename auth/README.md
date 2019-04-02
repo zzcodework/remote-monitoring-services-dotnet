@@ -63,13 +63,13 @@ for more information. More information on environment variables
 * `PCS_AAD_APPSECRET` = { Azure service principal secret }
 * `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 
-## Settings used from Key Vault
+## Configuration values used from Key Vault
 Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
 
 * `aadAppId` = Azure Active Directory application / service principal id.
 * `aadAppSecret` = Azure Active Directory service princial secret.
 * `aadEndpointUrl` = The AAD endpoint url to acquire ARM token for AAD application
-* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/tenantId/
+* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/\{tenantId\}/
 * `aadTenantId` = GUID representing your active directory tenant.
 
 * `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman.
@@ -111,9 +111,9 @@ scripts required to package the service into a Docker image:
 
 ## Configuration and Environment variables
 
-The service configuration is accessed via ASP.NET Core configuration
-adapters, and stored in [appsettings.ini](WebService/appsettings.ini).
-The INI format allows to store values in a readable format, with comments.
+The service configuration is stored using ASP.NET Core configuration
+adapters, in [appsettings.ini](WebService/appsettings.ini). The INI
+format allows to store values in a readable format, with comments.
 
 Configuration in appsettings.ini are typically set in 3 different ways:
 
@@ -135,17 +135,14 @@ Depending on the OS and the IDE used, there are several ways to manage environme
    [.vscode/launch.json](.vscode/launch.json)
 1. When running the service **with Docker** or **from the command line**, the
    application will inherit environment variables values from the system. 
-   * [This page][windows-envvars-howto-url] describes how to setup env vars
-     in Windows. We suggest to edit and execute once the
-     [env-vars-setup.cmd](scripts/env-vars-setup.cmd) script included in the
-     repository. The settings will persist across terminal sessions and reboots.
-   * For Linux and MacOS, we suggest to edit and execute
-     [env-vars-setup](scripts/env-vars-setup) each time, before starting the
-     service. Depending on OS and terminal, there are ways to persist values
+   * Depending on OS and terminal, there are different ways to persist values
      globally, for more information these pages should help:
+     * https://superuser.com/questions/949560/
      * https://stackoverflow.com/questions/13046624/how-to-permanently-export-a-variable-in-linux
      * https://stackoverflow.com/questions/135688/setting-environment-variables-in-os-x
      * https://help.ubuntu.com/community/EnvironmentVariables
+1. IntelliJ Rider: env. vars can be set in each Run Configuration, similarly to
+  IntelliJ IDEA (https://www.jetbrains.com/help/idea/run-debug-configuration-application.html)
 
 Contributing to the solution
 ============================
