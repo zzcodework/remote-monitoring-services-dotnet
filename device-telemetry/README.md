@@ -60,29 +60,29 @@ for more information. More information on environment variables
 ### 3.1 Settings used from Key Vault
 Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The telemetry microservice uses:
 
-  * `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
-  * `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-  * `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-  * `PCS_AAD_TENANT` = {Azure Active Directory Tenant ID}
+  * `documentDBConnectionString ` = {your Azure Cosmos DB connection string}
+  * `storageAdapterWebServiceUrl ` = http://localhost:9022/v1
+  * `authWebServiceUrl` = http://localhost:9001/v1
+  * `aadTenantId` = {Azure Active Directory Tenant ID}
     * see: Azure Portal => Azure Active Directory => Properties => Directory ID
-  * `PCS_AAD_APPID` = {Azure Active Directory application ID}
+  * `aadAppId` = {Azure Active Directory application ID}
     * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Application ID
-  * `PCS_AAD_APPSECRET` = {application secret}
+  * `aadAppSecret` = {application secret}
     * see: Azure Portal => Azure Active Directory => App Registrations => Your App => Settings => Passwords
-  * `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
+  * `telemetryStorageType` = "tsi"
     * Allowed values: ["cosmosdb", "tsi"]. Default is "tsi"
-  * `PCS_TSI_FQDN` = {Time Series FQDN}
+  * `tsiDataAccessFQDN` = {Time Series FQDN}
     * see: Azure Portal => Your Resource Group => Time Series Insights Environment => Data Access FQDN
-  * `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
-  * `PCS_ACTION_EVENTHUB_NAME` = {Event hub name}
-  * `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
+  * `diagnosticsWebServiceUrl` (optional) = http://localhost:9006/v1
+  * `actionsEventHubName` = {Event hub name}
+  * `actionsEventHubConnectionString` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
     * see: Azure Portal => Your resource group => your event hub namespace => Shared access policies
-  * `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
+  * `logicAppEndpointUrl` = {Logic App Endpoint}
     * see: Azure Portal => Your resource group => Your Logic App => Logic App Designer => When a Http Request is received => HTTP POST URL
-  * `PCS_AZUREBLOB_CONNSTRING` = {connection string}
+  * `storageConnectionString` = {connection string}
     * see: Azure Portal => Your resource group => Your Storage Account => Access keys => Connection String
-  * `PCS_SOLUTION_WEBSITE_URL` = {Solution Url}
-  * `PCS_CORS_WHITELIST` = { CORS whitelisted urls }
+  * `solutionWebsiteUrl` = {Solution Url}
+  * `corsWhitelist` = { CORS whitelisted urls }
 
 ## Running the service with Visual Studio or VS Code
 
@@ -96,18 +96,9 @@ Some of the configuration needed by the microservice is stored in an instance of
    * If you already have VS Code installed, then ensure you have the [C# for Visual Studio Code (powered by OmniSharp)][omnisharp-url] extension installed.
 1. Open the solution in Visual Studio or VS Code.
 1. Define the following environment variables. See [Configuration and Environment variables](#configuration-and-environment-variables) for detailed information for setting these for your enviroment.
-   1. `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Document Db connection string}
-   1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-   1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-   1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
-   1. `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
-   1. `PCS_TSI_FQDN` = {Time Series FQDN}
-   1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
-   1. `PCS_ACTION_EVENTHUB_NAME` = {Event hub name}
-   1. `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
-   1. `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
-   1. `PCS_AZUREBLOB_CONNSTRING` = {connection string}
-   1. `PCS_SOLUTION_WEBSITE_URL` = {Solution Url}
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 1. Start the WebService project (e.g. press F5).
 1. Using an HTTP client like [Postman][postman-url], use the
 [RESTful API][project-wiki] to test out the service.
@@ -118,18 +109,9 @@ Some of the configuration needed by the microservice is stored in an instance of
 1. Set the following environment variables in your system.
 More information on environment variables
 [here](#configuration-and-environment-variables).
-    1. `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = {your Azure Cosmos DB connection string}
-    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-    1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-    1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
-    1. `PCS_TELEMETRY_STORAGE_TYPE` = "tsi"
-    1. `PCS_TSI_FQDN` = {Time Series FQDN}
-    1. `PCS_DIAGNOSTICS_WEBSERVICE_URL` (optional) = http://localhost:9006/v1
-    1. `PCS_ACTION_EVENTHUB_NAME` = {Event hub name}
-    1. `PCS_ACTION_EVENTHUB_CONNSTRING` = {Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...}
-    1. `PCS_LOGICAPP_ENDPOINT_URL` = {Logic App Endpoint}
-    1. `PCS_AZUREBLOB_CONNSTRING` = {connection string}
-    1. `PCS_SOLUTION_WEBSITE_URL` = {Solution Url}
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    * `build`: compile all the projects and run the tests.
    * `compile`: compile all the projects.

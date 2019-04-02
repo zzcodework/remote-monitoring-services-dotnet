@@ -92,18 +92,17 @@ for more information. More information on environment variables
 ### 3.1 Settings used from Key Vault
 Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
 
-* `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = { Azure Cosmos DB connection string }
-* `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
-* `PCS_CONFIG_WEBSERVICE_URL` = http://localhost:9005/v1
-* `PCS_IOTHUBMANAGER_WEBSERVICE_URL` = http://localhost:9002/v1
-* `PCS_ASA_DATA_AZUREBLOB_ACCOUNT` = { Azure Blob Storage account name }
-* `PCS_ASA_DATA_AZUREBLOB_KEY` = { Azure Blob Storage Key }
-* `PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX` = { Azure Blob Storage endpoint suffix, 
+* `documentDBConnectionString` = { Azure Cosmos DB connection string }
+* `telemetryWebServiceUrl ` = http://localhost:9004/v1
+* `configWebServiceUrl ` = http://localhost:9005/v1
+* `iothubmanagerWebServiceUrl` = http://localhost:9002/v1
+* `storageAccountName` = { Azure Blob Storage account name }
+* `storageAccountKey` = { Azure Blob Storage Key }
+* `storageEndpointSuffix` = { Azure Blob Storage endpoint suffix, 
    ex. "core.windows.net" }
-* `PCS_EVENTHUB_CONNSTRING` = { Event Hub Connection String for RootManageSharedAccessKey }
-* `PCS_EVENTHUB_NAME` = { Name of Event Hub }
-* `PCS_TELEMETRY_STORAGE_TYPE` = { "tsi" or "cosmosdb", default is "tsi" }
-* `PCS_LOG_LEVEL` = { Log level debug, error. default is Warn }
+* `messagesEventHubConnectionString` = { Event Hub Connection String for RootManageSharedAccessKey }
+* `messagesEventHubName` = { Name of Event Hub }
+* `telemetryStorageType` = { "tsi" or "cosmosdb", default is "tsi" }
 
 ## Running the service with Visual Studio
 
