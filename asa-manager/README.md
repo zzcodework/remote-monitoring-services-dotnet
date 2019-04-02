@@ -74,9 +74,9 @@ Follow the instructions for
 
 This service depends on the following repositories. Run those services from the instruction in their README's in the following order.
 
-1. [Storage Adapter Microservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
+1. [Storage Adapter Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter)
 1. [Telemetry Microservice][telemetry-microservice-url]
-1. [Iot Hub Manager Microservice](https://github.com/Azure/iothub-manager-dotnet)
+1. [Iot Hub Manager Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/iothub-manager)
 1. [Configuration Microservice][configuration-microservice-url] 
 
 ### 3. Environment variables required to run the service
@@ -89,7 +89,7 @@ for more information. More information on environment variables
 * `PCS_AAD_APPSECRET` = { Azure service principal secret }
 * `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 
-### 3.1 Settings used from Key Vault
+### 3.1 Configuration used from Key Vault
 Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
 
 * `documentDBConnectionString` = { Azure Cosmos DB connection string }
@@ -187,13 +187,7 @@ there are several ways to manage environment variables.
 1. When running the service **with Docker** or **from the command line**, the
    application will inherit environment variables values from the system. 
    * [This page][windows-envvars-howto-url] describes how to setup env vars
-     in Windows. We suggest to edit and execute once the
-     [env-vars-setup.cmd](scripts/env-vars-setup.cmd) script included in the
-     repository. The settings will persist across terminal sessions and reboots.
-   * For Linux and MacOS, we suggest to edit and execute
-     [env-vars-setup](scripts/env-vars-setup) each time, before starting the
-     service. Depending on OS and terminal, there are ways to persist values
-     globally, for more information these pages should help:
+     in Windows. For linux and OS-X please follow the links 
      * https://stackoverflow.com/questions/13046624/how-to-permanently-export-a-variable-in-linux
      * https://stackoverflow.com/questions/135688/setting-environment-variables-in-os-x
      * https://help.ubuntu.com/community/EnvironmentVariables
@@ -237,8 +231,8 @@ Licensed under the [MIT](LICENSE) License.
 
 
 [asa-url]: https://azure.microsoft.com/services/stream-analytics
-[telemetry-microservice-url]: https://github.com/Azure/device-telemetry-dotnet
-[configuration-microservice-url]: https://github.com/azure/pcs-config-dotnet
+[telemetry-microservice-url]: https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-telemetry
+[configuration-microservice-url]: https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/config
 [postman-url]: https://www.getpostman.com
 [dotnet-install]: https://www.microsoft.com/net/learn/get-started
 [vs-install-url]: https://www.visualstudio.com/downloads

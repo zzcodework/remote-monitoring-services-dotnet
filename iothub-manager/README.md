@@ -52,9 +52,7 @@ for [Deploy the Azure services](https://docs.microsoft.com/azure/iot-suite/iot-s
 
 ### 2. Setup Dependencies
 
-This service depends on the [Storage Adapter microservice](https://github.com/Azure/pcs-storage-adapter-dotnet). Run the Storage Adapter microservice using the the instructions in the Storage Adapter service [README.md](https://github.com/Azure/pcs-storage-adapter-dotnet/blob/master/README.md).
-
-* [Storage Adapter microservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
+This service depends on the [Storage Adapter microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter). Run the Storage Adapter microservice using the the instructions in the Storage Adapter service [README.md](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter).
 
 > Note: you can also use a [deployed endpoint][deploy-rm] with [Authentication disabled][disable-auth] (e.g. https://{your-resource-group}.azurewebsites.net/storageadapter/v1)
 

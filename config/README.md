@@ -57,7 +57,7 @@ Run those services from the instructions in their READMEs in the following order
 
 1. [Storage Adapter Dotnet Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter)
 1. [Telemetry Dotnet Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-telemetry)
-1. [Device Simulation Dotnet Microservice](https://github.com/Azure/device-simulation-dotnet)
+1. [Device Simulation Dotnet Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-simulation)
 1. [Authentication Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/auth)
 
 ### 3. Environment variables required to run the service
