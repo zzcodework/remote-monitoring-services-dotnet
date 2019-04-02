@@ -148,14 +148,9 @@ Depending on the OS and the IDE used, there are several ways to manage environme
    [.vscode/launch.json](.vscode/launch.json)
 1. When running the service **with Docker** or **from the command line**, the
    application will inherit environment variables values from the system. 
-   * [This page][windows-envvars-howto-url] describes how to setup env vars
-     in Windows. We suggest to edit and execute once the
-     [env-vars-setup.cmd](scripts/env-vars-setup.cmd) script included in the
-     repository. The settings will persist across terminal sessions and reboots.
-   * For Linux and MacOS, we suggest to edit and execute
-     [env-vars-setup](scripts/env-vars-setup) each time, before starting the
-     service. Depending on OS and terminal, there are ways to persist values
+   * Depending on OS and terminal, there are different ways to persist values
      globally, for more information these pages should help:
+     * https://superuser.com/questions/949560/
      * https://stackoverflow.com/questions/13046624/how-to-permanently-export-a-variable-in-linux
      * https://stackoverflow.com/questions/135688/setting-environment-variables-in-os-x
      * https://help.ubuntu.com/community/EnvironmentVariables
