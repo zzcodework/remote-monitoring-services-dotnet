@@ -68,14 +68,14 @@ for more information. More information on environment variables
 * `PCS_AAD_APPSECRET` = { Azure service principal secret }
 * `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 
-## Settings used from Key Vault
+## Configuration values used from Key Vault
 Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The iothub-manager microservice uses:
 
 * `aadAppId` = Azure Active Directory application / service principal id.
 * `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/tenantId/ 
 * `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman
 * `authWebServiceUrl` = Endpoint for the remote monitoring auth microservice
-* `corsWhitelist` = Specifies where requests are allowed from "{ 'origins': ['*'], 'methods': ['*'], 'headers': ['*'] }" to allow everything. Empty to disable CORS
+* `corsWhitelist` = Specifies where requests are allowed from "{ 'origins': ['\*'], 'methods': ['\*'], 'headers': ['\*'] }" to allow everything. Empty to disable CORS
 * `storageAdapterWebServiceUrl` = Endpoint for storage adapter microservice
 * `subscriptionId` = GUID that uniquely identifies your subscription to use Azure services
 

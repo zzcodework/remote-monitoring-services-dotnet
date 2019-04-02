@@ -70,7 +70,7 @@ for more information. More information on environment variables
 * `PCS_AAD_APPSECRET` = { Azure service principal secret }
 * `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 
-## Settings used from Key Vault
+## Configuration values used from Key Vault
 Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The config microservice uses:
 
 * `aadTenantId` = GUID representing your active directory tenant
@@ -116,7 +116,7 @@ More information on environment variables
 [here](#configuration-and-environment-variables).
     1. `PCS_AAD_APPID` = { Azure service principal id }
     1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
-    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration values }
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    *  `build`: compile all the projects and run the tests.
    *  `compile`: compile all the projects.

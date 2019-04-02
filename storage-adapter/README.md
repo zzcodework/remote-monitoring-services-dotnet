@@ -74,7 +74,7 @@ for more information. More information on environment variables
 * `PCS_AAD_APPSECRET` = { Azure service principal secret }
 * `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 
-## Settings used from Key Vault
+## Configuration values used from Key Vault
 Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
 
 * `documentDBConnectionString` = Azure Cosmos DB Connection String
