@@ -70,8 +70,8 @@ Some of the configuration needed by the microservice is stored in an instance of
 
 * `aadAppId` = Azure Active Directory application / service principal id.
 * `aadAppSecret` = Azure Active Directory service princial secret.
-* `aadEndpointUrl` = The AAD endpoint url to acquire ARM token for AAD application
-* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/\{tenantId\}/
+* `aadEndpointUrl` = The AAD endpoint url to acquire ARM token for AAD application.
+* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/{tenantId}/.
 * `aadTenantId` = GUID representing your active directory tenant.
 * `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman.
 * `corsWhitelist ` = Specifies where requests are allowed from "{ 'origins': ['\*'], 'methods': ['\*'], 'headers': ['\*'] }" to allow everything. Empty to disable CORS.
