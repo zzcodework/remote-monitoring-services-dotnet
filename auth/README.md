@@ -33,9 +33,11 @@ How to use the microservice
 1. [Install Docker][docker-install-url]
 1. Start the Auth service using docker compose:
    ```
-   cd scripts
+   cd scripts (in the auth folder)
    cd docker
-   run
+   docker-compose up OR
+   run.cmd (win) OR
+   ./run (Linux / Mac OS)
    ```
 1. Use an HTTP client such as [Postman][postman-url], to exercise the
    RESTful API.
