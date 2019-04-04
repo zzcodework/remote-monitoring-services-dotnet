@@ -22,39 +22,39 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
     public class Config : IConfig
     {
         private const string APPLICATION_KEY = "ConfigService:";
-        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
+        private const string PORT_KEY = APPLICATION_KEY + "webservicePort";
         private const string SOLUTION_TYPE_KEY = APPLICATION_KEY + "solutionType";
         private const string SEED_TEMPLATE_KEY = APPLICATION_KEY + "seedTemplate";
-        private const string AZURE_MAPS_KEY = APPLICATION_KEY + "azuremaps_key";
+        private const string AZURE_MAPS_KEY = APPLICATION_KEY + "azureMapsKey";
 
-        private const string STORAGE_ADAPTER_KEY = "StorageAdapterService:";
-        private const string STORAGE_ADAPTER_URL_KEY = STORAGE_ADAPTER_KEY + "webservice_url";
+        private const string EXTERNAL_DEPENDENCIES_KEY = "ExternalDependencies:";
+        private const string STORAGE_ADAPTER_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "storageAdapterWebServiceUrl";
+        private const string DEVICE_SIMULATION_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "deviceSimulationWebServiceUrl";
+        private const string TELEMETRY_URL_KEY = EXTERNAL_DEPENDENCIES_KEY + "telemetryWebServiceUrl";
 
         private const string DEVICE_SIMULATION_KEY = "DeviceSimulationService:";
-        private const string DEVICE_SIMULATION_URL_KEY = DEVICE_SIMULATION_KEY + "webservice_url";
         private const string TELEMETRY_KEY = "TelemetryService:";
-        private const string TELEMETRY_URL_KEY = TELEMETRY_KEY + "webservice_url";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
-        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
-        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
-        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
+        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "corsWhitelist";
+        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "authType";
+        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "authRequired";
 
         private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
-        private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
-        private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
-        private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
-        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+        private const string JWT_ALGOS_KEY = JWT_KEY + "allowedAlgorithms";
+        private const string JWT_ISSUER_KEY = JWT_KEY + "authIssuer";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "aadAppId";
+        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clockSkewSeconds";
 
         private const string USER_MANAGEMENT_KEY = "UserManagementService:";
-        private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "webservice_url";
+        private const string USER_MANAGEMENT_URL_KEY = USER_MANAGEMENT_KEY + "authWebServiceUrl";
 
         private const string ACTIONS_KEY = APPLICATION_KEY + "Actions:";
-        private const string OFFICE365_LOGIC_APP_URL_KEY = ACTIONS_KEY + "office365_logic_app_url";
-        private const string RESOURCE_GROUP_KEY = ACTIONS_KEY + "resource_group";
-        private const string SUBSCRIPTION_ID_KEY = ACTIONS_KEY + "subscription_id";
-        private const string MANAGEMENT_API_VERSION_KEY = ACTIONS_KEY + "management_api_version";
-        private const string ARM_ENDPOINT_URL_KEY = ACTIONS_KEY + "arm_endpoint_url";
+        private const string OFFICE365_LOGIC_APP_URL_KEY = ACTIONS_KEY + "office365ConnectionUrl";
+        private const string RESOURCE_GROUP_KEY = ACTIONS_KEY + "solutionName";
+        private const string SUBSCRIPTION_ID_KEY = ACTIONS_KEY + "subscriptionId";
+        private const string MANAGEMENT_API_VERSION_KEY = ACTIONS_KEY + "managementApiVersion";
+        private const string ARM_ENDPOINT_URL_KEY = ACTIONS_KEY + "armEndpointUrl";
 
         public int Port { get; }
         public IServicesConfig ServicesConfig { get; }

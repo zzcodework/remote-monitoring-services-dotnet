@@ -18,12 +18,12 @@ namespace Microsoft.Azure.IoTSolutions.StorageAdapter.WebService.Runtime
     public class Config : IConfig
     {
         private const string APPLICATION_KEY = "StorageAdapter:";
-        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
+        private const string PORT_KEY = APPLICATION_KEY + "webservicePort";
         private const string STORAGE_TYPE_KEY = APPLICATION_KEY + "storageType";
-        private const string DOCUMENT_DB_CONNECTION_STRING_KEY = APPLICATION_KEY + "documentdb_connstring";
-        private const string DOCUMENT_DB_DATABASE_KEY = APPLICATION_KEY + "documentdb_database";
-        private const string DOCUMENT_DB_COLLECTION_KEY = APPLICATION_KEY + "documentdb_collection";
-        private const string DOCUMENT_DB_RUS_KEY = APPLICATION_KEY + "documentdb_RUs";
+        private const string DOCUMENT_DB_CONNECTION_STRING_KEY = APPLICATION_KEY + "documentDBConnectionString";
+        private const string DOCUMENT_DB_DATABASE_KEY = APPLICATION_KEY + "documentDBdatabase";
+        private const string DOCUMENT_DB_COLLECTION_KEY = APPLICATION_KEY + "documentDBcollection";
+        private const string DOCUMENT_DB_RUS_KEY = APPLICATION_KEY + "documentDBRUs";
 
         /// <summary>Web service listening port</summary>
         public int Port { get; }
