@@ -57,36 +57,37 @@ Run those services from the instructions in their READMEs in the following order
 
 1. [Storage Adapter Dotnet Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter)
 1. [Telemetry Dotnet Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-telemetry)
-1. [Device Simulation Dotnet Microservice](https://github.com/Azure/device-simulation-dotnet)
+1. [Device Simulation Dotnet Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-simulation)
 1. [Authentication Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/auth)
 
 ### 3. Environment variables required to run the service
-In order to run the service, some environment variables need to be
-created at least once. See specific instructions for IDE or command
-line setup below for more information. More information on environment
-variables [here](#configuration-and-environment-variables).
+In order to run the service, some environment variables need to be created 
+at least once. See specific instructions for IDE or command line setup below
+for more information. More information on environment variables
+[here](#configuration-and-environment-variables).
 
-* `PCS_STORAGEADAPTER_WEBSERVICE_URL` - the url for
-  the [Storage Adapter Webservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter)
-  used for key value storage
-* `PCS_DEVICESIMULATION_WEBSERVICE_URL` - the url for
-  the [Device Simulation Webservice](https://github.com/Azure/device-simulation-dotnet.git)
-  used for key value storage
-- `PCS_TELEMETRY_WEBSERVICE_URL` - the url for
-  the [Telemetry Webservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-telemetry)
-  used for key value storage
-*  `PCS_AZUREMAPS_KEY` - the [Azure Maps](https://azure.microsoft.com/services/azure-maps/) 
-  API Key. This can be set to "static" if you do not have one.
-* `PCS_AUTH_WEBSERVICE_URL` = the url for
-  the [Auth Webservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/auth)
-  used for key value storage
-* `PCS_OFFICE365_CONNECTION_URL` (Optional) = the url for the Office 365 Logic App connector
-* `PCS_SOLUTION_NAME` (Optional) = The name of the resource group for the solution. Used only if
-  using logic apps for actions.
-* `PCS_SUBSCRIPTION_ID`(Optional) = The subscription id for the solution. Used only if
-  using logic apps for actions.
-  * `PCS_ARM_ENDPOINT_URL` (Optional) = the url for the Azure management APIs. Used only if
-  using logic apps for actions.
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+## Configuration values used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The config microservice uses:
+
+* `aadTenantId` = GUID representing your active directory tenant
+* `armEndpointUrl` = The endpoint for the Azure Resource Manager API
+* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/tenantId/ 
+* `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman
+* `authWebServiceUrl` = Endpoint for the remote monitoring auth microservice
+* `azureMapsKey` = Key needed for Azure Maps Account
+* `corsWhitelist` = Specifies where requests are allowed from "{ 'origins': ['\*'], 'methods': ['\*'], 'headers': ['\*'] }" to allow everything. Empty to disable CORS
+* `deviceSimulationWebServiceUrl` = Endpoint for device simulation microservice
+* `office365ConnectionUrl` = Office 365 url used for enabling e-mail actions when alerting on rules
+* `seedTemplate` = The template used by device simulation when seeding devices. This is typically DEFAULT
+* `solutionName` = The name of the RM solution that was created. This is typically the same as your Resource Group name
+* `solutionType` = Type of solution. remotemonitoring or device-simulation 
+* `storageAdapterWebServiceUrl` = Endpoint for storage adapter microservice
+* `subscriptionId` = GUID that uniquely identifies your subscription to use Azure services
+* `telemetryWebServiceUrl` = Endpoint for telemetry microservice
 
 ## Running the service with Visual Studio or VS Code
 
@@ -100,15 +101,9 @@ variables [here](#configuration-and-environment-variables).
    * If you already have VS Code installed, then ensure you have the [C# for Visual Studio Code (powered by OmniSharp)][omnisharp-url] extension installed.
 1. Open the solution in Visual Studio or VS Code.
 1. Define the following environment variables. See [Configuration and Environment variables](#configuration-and-environment-variables) for detailed information for setting these for your enviroment.
-   1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-   1. `PCS_DEVICESIMULATION_WEBSERVICE_URL` = http://localhost:9003/v1
-   1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
-   1. `PCS_AZUREMAPS_KEY` = static
-   1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-   1. `PCS_OFFICE365_CONNECTION_URL` (Optional)
-   1. `PCS_SOLUTION_NAME` (Optional)
-   1. `PCS_SUBSCRIPTION_ID`(Optional)
-   1. `PCS_ARM_ENDPOINT_URL` (Optional)
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
 1. Start the WebService project (e.g. press F5).
 1. Use an HTTP client such as [Postman][postman-url], to exercise the
    [RESTful API](https://github.com/Azure/pcs-config-dotnet/wiki/API-Specs).
@@ -119,15 +114,9 @@ variables [here](#configuration-and-environment-variables).
 1. Set the following environment variables in your system. 
 More information on environment variables
 [here](#configuration-and-environment-variables).
-   1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
-   1. `PCS_DEVICESIMULATION_WEBSERVICE_URL` = http://localhost:9003/v1
-   1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
-   1. `PCS_AZUREMAPS_KEY` = static
-   1. `PCS_AUTH_WEBSERVICE_URL` = http://localhost:9001/v1
-   1. `PCS_OFFICE365_CONNECTION_URL` (Optional)
-   1. `PCS_SOLUTION_NAME` (Optional)
-   1. `PCS_SUBSCRIPTION_ID`(Optional)
-   1. `PCS_ARM_ENDPOINT_URL` (Optional)
+    1. `PCS_AAD_APPID` = { Azure service principal id }
+    1. `PCS_AAD_APPSECRET` = { Azure service principal secret }
+    1. `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration values }
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    *  `build`: compile all the projects and run the tests.
    *  `compile`: compile all the projects.
@@ -153,41 +142,40 @@ required to package the service into a Docker image:
 * `run`: run the Docker container from the image stored in the local registry
 * `content`: a folder with files copied into the image, including the entry point script
 
-# Configuration and Environment variables
+## Configuration and Environment variables
 
-The service configuration is accessed via ASP.NET Core configuration
-adapters, and stored in [appsettings.ini](WebService/appsettings.ini).
-The INI format allows to store values in a readable format, with comments.
+The service configuration is stored using ASP.NET Core configuration
+adapters, in [appsettings.ini](WebService/appsettings.ini). The INI
+format allows to store values in a readable format, with comments.
 
-The configuration also supports references to environment variables, e.g. to
-import credentials and network details. Environment variables are not
-mandatory though, you can for example edit appsettings.ini and write
-credentials directly in the file. Just be careful not sharing the changes,
-e.g. sending a Pull Request or checking in the changes in git.
+Configuration in appsettings.ini are typically set in 3 different ways:
 
-The configuration file in the repository references some environment
-variables that need to be defined. Depending on the OS and the IDE used,
-there are several ways to manage environment variables.
+1. Environment variables as is the case with ${PCS_AAD_APPID}. This is typically
+only done with the 3 variables described above as these are needed to access Key Vault. 
+More details about setting environment variables are located below.
+1. Key Vault: A number of the settings in this file will be blank as they are expecting
+to get their value from a Key Vault secret of the same name.
+1. Direct Value: For some values that aren't typically changed or for local development
+you can set the value directly in the file.
 
-1. If you're using Visual Studio (Windows/MacOS), the environment
+Depending on the OS and the IDE used, there are several ways to manage environment variables.
+
+1. If you're using Visual Studio or Visual Studio for Mac, the environment
    variables are loaded from the project settings. Right click on WebService,
    and select Options/Properties, and find the section with the list of env
    vars. See [WebService/Properties/launchSettings.json](WebService/Properties/launchSettings.json).
-1. Visual Studio Code (Windows/MacOS/Linux) loads the environment variables from
+1. Visual Studio Code loads the environment variables from
    [.vscode/launch.json](.vscode/launch.json)
 1. When running the service **with Docker** or **from the command line**, the
    application will inherit environment variables values from the system. 
-   * [This page](windows-envvars-howto-url) describes how to setup env vars
-     in Windows. We suggest to edit and execute once the
-     [env-vars-setup.cmd](scripts/env-vars-setup.cmd) script included in the
-     repository. The settings will persist across terminal sessions and reboots.
-   * For Linux and MacOS, we suggest to edit and execute
-     [env-vars-setup](scripts/env-vars-setup) each time, before starting the
-     service. Depending on OS and terminal, there are ways to persist values
+   * Depending on OS and terminal, there are different ways to persist values
      globally, for more information these pages should help:
+     * https://superuser.com/questions/949560/
      * https://stackoverflow.com/questions/13046624/how-to-permanently-export-a-variable-in-linux
      * https://stackoverflow.com/questions/135688/setting-environment-variables-in-os-x
      * https://help.ubuntu.com/community/EnvironmentVariables
+1. IntelliJ Rider: env. vars can be set in each Run Configuration, similarly to
+  IntelliJ IDEA (https://www.jetbrains.com/help/idea/run-debug-configuration-application.html)
 
 # Contributing to the solution
 Please follow our [contribution guildelines](CONTRIBUTING.md) and code style

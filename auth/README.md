@@ -33,9 +33,11 @@ How to use the microservice
 1. [Install Docker][docker-install-url]
 1. Start the Auth service using docker compose:
    ```
-   cd scripts
+   cd scripts (in the auth folder)
    cd docker
-   run
+   docker-compose up OR
+   run.cmd (win) OR
+   ./run (Linux / Mac OS)
    ```
 1. Use an HTTP client such as [Postman][postman-url], to exercise the
    RESTful API.
@@ -52,16 +54,27 @@ How to use the microservice
 1. Create an instance of [Azure Active Directory][aad-url] or simply
    reuse the instance coming with your Azure subscription
 1. Open the solution in Visual Studio or VS Code.
-1. Define environment variables, as needed. See [Configuration and Environment variables](#configuration-and-environment-variables) for detailed information for setting these for your enviroment.
-   1. `PCS_AUTH_AUDIENCE` = {your AAD application ID}
-   1. `PCS_AUTH_ISSUER` = {your AAD issuer URL}
-   1. `PCS_AAD_ENDPOINT_URL` = {your AAD endpoint URL}
-   1. `PCS_AAD_TENANT` = {your AAD tenant Id}
-   1. `PCS_AAD_APPSECRET` = {your AAD application secret}
-   1. `PCS_ARM_ENDPOINT_URL` = {Azure Resource Manager URL}
-1. Start the WebService project (e.g. press F5).
-1. Use an HTTP client such as [Postman][postman-url], to exercise the
-   RESTful API.
+
+## Environment variables required to run the service
+In order to run the service, some environment variables need to be created 
+at least once. See specific instructions for IDE or command line setup below
+for more information. More information on environment variables
+[here](#configuration-and-environment-variables).
+
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+## Configuration values used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
+
+* `aadAppId` = Azure Active Directory application / service principal id.
+* `aadAppSecret` = Azure Active Directory service princial secret.
+* `aadEndpointUrl` = The AAD endpoint url to acquire ARM token for AAD application.
+* `authIssuer` = Identifies the security token service (STS) i.e. https://sts.windows.net/{tenantId}/.
+* `aadTenantId` = GUID representing your active directory tenant.
+* `authRequired` = Whether or not authentication is needed for calls to microservices i.e. from the web ui or postman.
+* `corsWhitelist ` = Specifies where requests are allowed from "{ 'origins': ['\*'], 'methods': ['\*'], 'headers': ['\*'] }" to allow everything. Empty to disable CORS.
 
 ## Project Structure
 
@@ -98,19 +111,21 @@ scripts required to package the service into a Docker image:
 
 ## Configuration and Environment variables
 
-The service configuration is accessed via ASP.NET Core configuration
-adapters, and stored in [appsettings.ini](WebService/appsettings.ini).
-The INI format allows to store values in a readable format, with comments.
+The service configuration is stored using ASP.NET Core configuration
+adapters, in [appsettings.ini](WebService/appsettings.ini). The INI
+format allows to store values in a readable format, with comments.
 
-The configuration also supports references to environment variables, e.g. to
-import credentials and network details. Environment variables are not
-mandatory though, you can for example edit appsettings.ini and write
-credentials directly in the file. Just be careful not sharing the changes,
-e.g. sending a Pull Request or checking in the changes in git.
+Configuration in appsettings.ini are typically set in 3 different ways:
 
-The configuration file in the repository references some environment
-variables that need to be defined. Depending on the OS and the IDE used,
-there are several ways to manage environment variables.
+1. Environment variables as is the case with ${PCS_AAD_APPID}. This is typically
+only done with the 3 variables described above as these are needed to access Key Vault. 
+More details about setting environment variables are located below.
+1. Key Vault: A number of the settings in this file will be blank as they are expecting
+to get their value from a Key Vault secret of the same name.
+1. Direct Value: For some values that aren't typically changed or for local development
+you can set the value directly in the file.
+
+Depending on the OS and the IDE used, there are several ways to manage environment variables.
 
 1. If you're using Visual Studio or Visual Studio for Mac, the environment
    variables are loaded from the project settings. Right click on WebService,
@@ -120,17 +135,14 @@ there are several ways to manage environment variables.
    [.vscode/launch.json](.vscode/launch.json)
 1. When running the service **with Docker** or **from the command line**, the
    application will inherit environment variables values from the system. 
-   * [This page][windows-envvars-howto-url] describes how to setup env vars
-     in Windows. We suggest to edit and execute once the
-     [env-vars-setup.cmd](scripts/env-vars-setup.cmd) script included in the
-     repository. The settings will persist across terminal sessions and reboots.
-   * For Linux and MacOS, we suggest to edit and execute
-     [env-vars-setup](scripts/env-vars-setup) each time, before starting the
-     service. Depending on OS and terminal, there are ways to persist values
+   * Depending on OS and terminal, there are different ways to persist values
      globally, for more information these pages should help:
+     * https://superuser.com/questions/949560/
      * https://stackoverflow.com/questions/13046624/how-to-permanently-export-a-variable-in-linux
      * https://stackoverflow.com/questions/135688/setting-environment-variables-in-os-x
      * https://help.ubuntu.com/community/EnvironmentVariables
+1. IntelliJ Rider: env. vars can be set in each Run Configuration, similarly to
+  IntelliJ IDEA (https://www.jetbrains.com/help/idea/run-debug-configuration-application.html)
 
 Contributing to the solution
 ============================

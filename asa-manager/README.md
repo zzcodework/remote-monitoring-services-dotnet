@@ -74,9 +74,9 @@ Follow the instructions for
 
 This service depends on the following repositories. Run those services from the instruction in their README's in the following order.
 
-1. [Storage Adapter Microservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
+1. [Storage Adapter Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/storage-adapter)
 1. [Telemetry Microservice][telemetry-microservice-url]
-1. [Iot Hub Manager Microservice](https://github.com/Azure/iothub-manager-dotnet)
+1. [Iot Hub Manager Microservice](https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/iothub-manager)
 1. [Configuration Microservice][configuration-microservice-url] 
 
 ### 3. Environment variables required to run the service
@@ -85,17 +85,25 @@ at least once. See specific instructions for IDE or command line setup below
 for more information. More information on environment variables
 [here](#configuration-and-environment-variables).
 
-* `PCS_TELEMETRY_DOCUMENTDB_CONNSTRING` = { Azure Cosmos DB connection string }
-* `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
-* `PCS_CONFIG_WEBSERVICE_URL` = http://localhost:9005/v1
-* `PCS_IOTHUBMANAGER_WEBSERVICE_URL` = http://localhost:9002/v1
-* `PCS_ASA_DATA_AZUREBLOB_ACCOUNT` = { Azure Blob Storage account name }
-* `PCS_ASA_DATA_AZUREBLOB_KEY` = { Azure Blob Storage Key }
-* `PCS_ASA_DATA_AZUREBLOB_ENDPOINT_SUFFIX` = { Azure Blob Storage endpoint suffix, 
+* `PCS_AAD_APPID` = { Azure service principal id }
+* `PCS_AAD_APPSECRET` = { Azure service principal secret }
+* `PCS_KEYVAULT_NAME` = { Name of Key Vault resource that stores settings and configuration }
+
+
+### 3.1 Configuration values used from Key Vault
+Some of the configuration needed by the microservice is stored in an instance of Key Vault that was created on initial deployment. The auth microservice uses:
+
+* `documentDBConnectionString` = { Azure Cosmos DB connection string }
+* `telemetryWebServiceUrl ` = http://localhost:9004/v1
+* `configWebServiceUrl ` = http://localhost:9005/v1
+* `iothubmanagerWebServiceUrl` = http://localhost:9002/v1
+* `storageAccountName` = { Azure Blob Storage account name }
+* `storageAccountKey` = { Azure Blob Storage Key }
+* `storageEndpointSuffix` = { Azure Blob Storage endpoint suffix, 
    ex. "core.windows.net" }
-* `PCS_EVENTHUB_CONNSTRING` = { Event Hub Connection String for RootManageSharedAccessKey }
-* `PCS_EVENTHUB_NAME` = { Name of Event Hub }
-* `PCS_TELEMETRY_STORAGE_TYPE` = { "tsi" or "cosmosdb", default is "tsi" }
+* `messagesEventHubConnectionString` = { Event Hub Connection String for RootManageSharedAccessKey }
+* `messagesEventHubName` = { Name of Event Hub }
+* `telemetryStorageType` = { "tsi" or "cosmosdb", default is "tsi" }
 
 ## Running the service with Visual Studio
 
@@ -157,19 +165,21 @@ required to package the service into a Docker image:
 
 ## Configuration and Environment variables
 
-The service configuration is accessed via ASP.NET Core configuration
-adapters, and stored in [appsettings.ini](WebService/appsettings.ini).
-The INI format allows to store values in a readable format, with comments.
+The service configuration is stored using ASP.NET Core configuration
+adapters, in [appsettings.ini](WebService/appsettings.ini). The INI
+format allows to store values in a readable format, with comments.
 
-The configuration also supports references to environment variables, e.g. to
-import credentials and network details. Environment variables are not
-mandatory though, you can for example edit appsettings.ini and write
-credentials directly in the file. Just be careful not sharing the changes,
-e.g. sending a Pull Request or checking in the changes in git.
+Configuration in appsettings.ini are typically set in 3 different ways:
 
-The configuration file in the repository references some environment
-variables that need to be defined. Depending on the OS and the IDE used,
-there are several ways to manage environment variables.
+1. Environment variables as is the case with ${PCS_AAD_APPID}. This is typically
+only done with the 3 variables described above as these are needed to access Key Vault. 
+More details about setting environment variables are located below.
+1. Key Vault: A number of the settings in this file will be blank as they are expecting
+to get their value from a Key Vault secret of the same name.
+1. Direct Value: For some values that aren't typically changed or for local development
+you can set the value directly in the file.
+
+Depending on the OS and the IDE used, there are several ways to manage environment variables.
 
 1. If you're using Visual Studio or Visual Studio for Mac, the environment
    variables are loaded from the project settings. Right click on WebService,
@@ -179,17 +189,14 @@ there are several ways to manage environment variables.
    [.vscode/launch.json](.vscode/launch.json)
 1. When running the service **with Docker** or **from the command line**, the
    application will inherit environment variables values from the system. 
-   * [This page][windows-envvars-howto-url] describes how to setup env vars
-     in Windows. We suggest to edit and execute once the
-     [env-vars-setup.cmd](scripts/env-vars-setup.cmd) script included in the
-     repository. The settings will persist across terminal sessions and reboots.
-   * For Linux and MacOS, we suggest to edit and execute
-     [env-vars-setup](scripts/env-vars-setup) each time, before starting the
-     service. Depending on OS and terminal, there are ways to persist values
+   * Depending on OS and terminal, there are different ways to persist values
      globally, for more information these pages should help:
+     * https://superuser.com/questions/949560/
      * https://stackoverflow.com/questions/13046624/how-to-permanently-export-a-variable-in-linux
      * https://stackoverflow.com/questions/135688/setting-environment-variables-in-os-x
      * https://help.ubuntu.com/community/EnvironmentVariables
+1. IntelliJ Rider: env. vars can be set in each Run Configuration, similarly to
+  IntelliJ IDEA (https://www.jetbrains.com/help/idea/run-debug-configuration-application.html)
 
 # Contributing to the solution
 
@@ -230,8 +237,8 @@ Licensed under the [MIT](LICENSE) License.
 
 
 [asa-url]: https://azure.microsoft.com/services/stream-analytics
-[telemetry-microservice-url]: https://github.com/Azure/device-telemetry-dotnet
-[configuration-microservice-url]: https://github.com/azure/pcs-config-dotnet
+[telemetry-microservice-url]: https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/device-telemetry
+[configuration-microservice-url]: https://github.com/Azure/remote-monitoring-services-dotnet/tree/master/config
 [postman-url]: https://www.getpostman.com
 [dotnet-install]: https://www.microsoft.com/net/learn/get-started
 [vs-install-url]: https://www.visualstudio.com/downloads
