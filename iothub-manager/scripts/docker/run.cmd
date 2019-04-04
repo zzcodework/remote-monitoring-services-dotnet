@@ -19,11 +19,9 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 :: Start the application
 echo Starting IoT Hub Manager ...
 docker run -it -p 9002:9002 ^
-    -e PCS_IOTHUB_CONNSTRING ^
-    -e PCS_STORAGEADAPTER_WEBSERVICE_URL ^
-    -e PCS_AUTH_WEBSERVICE_URL ^
-    -e PCS_AUTH_ISSUER ^
-    -e PCS_AUTH_AUDIENCE ^
+    -e PCS_KEYVAULT_NAME ^
+    -e PCS_AAD_APPID ^
+    -e PCS_AAD_APPSECRET ^
     %DOCKER_IMAGE%:testing
 
 :: - - - - - - - - - - - - - -

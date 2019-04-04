@@ -14,10 +14,10 @@ spec:
     servicePort: 10080
   tls:
   - hosts:
-    - DNSGIVENNAME.REGION.cloudapp.azure.com 
+    - DNSGIVENNAME.REGION.southeastasia.cloudapp.azure.com
     secretName: tls-secret
   rules:
-  - host: DNSGIVENNAME.REGION.cloudapp.azure.com
+  - host: DNSGIVENNAME.REGION.southeastasia.cloudapp.azure.com
     http:
       paths:
       - path: /storageadapter/(.*)

@@ -2,6 +2,8 @@
 
 using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.StorageAdapter.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.StorageAdapter.WebService.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.StorageAdapter.WebService
@@ -11,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.StorageAdapter.WebService
     {
         public static void Main(string[] args)
         {
-            var config = new Config(new ConfigData());
+            var config = new Config(new ConfigData(new Logger(Uptime.ProcessId, LogLevel.Info)));
 
             /*
             Print some information to help development and debugging, like

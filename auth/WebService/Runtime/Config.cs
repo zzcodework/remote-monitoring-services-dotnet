@@ -23,29 +23,29 @@ namespace Microsoft.Azure.IoTSolutions.Auth.WebService.Runtime
     public class Config : IConfig
     {
         private const string APPLICATION_KEY = "AuthService:";
-        private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
-        private const string JWT_USER_ID_FROM_KEY = APPLICATION_KEY + "extract_userid_from";
-        private const string JWT_NAME_FROM_KEY = APPLICATION_KEY + "extract_name_from";
-        private const string JWT_EMAIL_FROM_KEY = APPLICATION_KEY + "extract_email_from";
-        private const string JWT_ROLES_FROM_KEY = APPLICATION_KEY + "extract_roles_from";
-        private const string POLICIES_FOLDER_KEY = APPLICATION_KEY + "policies_folder";
-        private const string AAD_ENDPOINT_URL = APPLICATION_KEY + "aad_endpoint_url";
-        private const string AAD_TENANT_ID = APPLICATION_KEY + "aad_tenant_id";
-        private const string AAD_APPLICATION_ID = APPLICATION_KEY + "aad_application_id";
-        private const string AAD_APPLICATION_SECRET = APPLICATION_KEY + "aad_application_secret";
-        private const string ARM_ENDPOINT_URL = APPLICATION_KEY + "arm_endpoint_url";
+        private const string PORT_KEY = APPLICATION_KEY + "webservicePort";
+        private const string JWT_USER_ID_FROM_KEY = APPLICATION_KEY + "extractUserIdFrom";
+        private const string JWT_NAME_FROM_KEY = APPLICATION_KEY + "extractNameFrom";
+        private const string JWT_EMAIL_FROM_KEY = APPLICATION_KEY + "extractEmailFrom";
+        private const string JWT_ROLES_FROM_KEY = APPLICATION_KEY + "extractRolesFrom";
+        private const string POLICIES_FOLDER_KEY = APPLICATION_KEY + "policiesFolder";
+        private const string AAD_ENDPOINT_URL = APPLICATION_KEY + "aadEndpointUrl";
+        private const string AAD_TENANT_ID = APPLICATION_KEY + "aadTenantId";
+        private const string AAD_APPLICATION_ID = APPLICATION_KEY + "aadAppId";
+        private const string AAD_APPLICATION_SECRET = APPLICATION_KEY + "aadAppSecret";
+        private const string ARM_ENDPOINT_URL = APPLICATION_KEY + "armEndpointUrl";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
-        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
-        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "auth_type";
-        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "auth_required";
+        private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "corsWhitelist";
+        private const string AUTH_TYPE_KEY = CLIENT_AUTH_KEY + "authType";
+        private const string AUTH_REQUIRED_KEY = CLIENT_AUTH_KEY + "authRequired";
 
         private const string JWT_KEY = APPLICATION_KEY + "ClientAuth:JWT:";
-        private const string JWT_ALGOS_KEY = JWT_KEY + "allowed_algorithms";
-        private const string JWT_ISSUER_KEY = JWT_KEY + "issuer";
-        private const string JWT_AUDIENCE_KEY = JWT_KEY + "audience";
+        private const string JWT_ALGOS_KEY = JWT_KEY + "allowedAlgorithms";
+        private const string JWT_ISSUER_KEY = JWT_KEY + "authIssuer";
+        private const string JWT_AUDIENCE_KEY = JWT_KEY + "aadAppId";
 
-        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clock_skew_seconds";
+        private const string JWT_CLOCK_SKEW_KEY = JWT_KEY + "clockSkewSeconds";
 
         public const string DEFAULT_ARM_ENDPOINT_URL = "https://management.azure.com/";
         public const string DEFAULT_AAD_ENDPOINT_URL = "https://login.microsoftonline.com/";
