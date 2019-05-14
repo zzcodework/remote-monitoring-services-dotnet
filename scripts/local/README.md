@@ -1,1 +1,1 @@
-This folder contains all the files and tools for starting RM on local environment.
+This folder contains all the files and tools for starting Remote Monitoring on local environment.
