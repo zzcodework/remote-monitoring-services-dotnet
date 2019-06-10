@@ -25,7 +25,7 @@ docker run --detach -p 9003:9003 ^
     -e PCS_AAD_APPID ^
     -e PCS_AAD_APPSECRET ^
     -e PCS_STORAGEADAPTER_WEBSERVICE_URL=http://host.docker.internal:9022/v1 ^
-    %DOCKER_IMAGE%:DS-1.0.5
+    %DOCKER_IMAGE%:DS-1.0.6
 
 :: - - - - - - - - - - - - - -
 goto :END
