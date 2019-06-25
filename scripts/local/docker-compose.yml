@@ -61,7 +61,7 @@ services:
       - PCS_AAD_APPSECRET
 
   devicesimulation:
-    image: azureiotpcs/device-simulation-dotnet:DS-1.0.3
+    image: azureiotpcs/device-simulation-dotnet:DS-1.0.6
     depends_on:
       - storageadapter
     environment:
